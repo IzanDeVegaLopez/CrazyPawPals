@@ -1,0 +1,25 @@
+.modak-regular {
+    font-family: "Modak", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+.cherry-bomb-one-regular {
+    font-family: "Cherry Bomb One", serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+h1 {
+    font-family: "Cherry Bomb One";
+    font-size: 92px;
+    text-align: center;
+}
+h2{
+    
+    text-align: center;
+}
+p {
+    font-family: "Modak";
+    font-size: 92px;
+    text-align: center;
+}
