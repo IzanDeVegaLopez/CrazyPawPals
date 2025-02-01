@@ -9,17 +9,66 @@
     font-style: normal;
   }
 
+.sour-gummy-200 {
+  font-family: "Sour Gummy", serif;
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+body{
+    margin-left: 5%;
+    margin-right: 5%;
+}
 h1 {
-    font-family: "Cherry Bomb One";
-    font-size: 92px;
-    text-align: center;
-}
-h2{
-    
-    text-align: center;
-}
-p {
     font-family: "Modak";
     font-size: 92px;
     text-align: center;
+    font-weight: normal;
+}
+h2{
+    font-family: "Modak";
+    font-size: 52px;
+    text-align: center;
+    font-weight: normal;
+    margin-left: 10%;
+  margin-right: 10%;
+}
+h3{
+    font-family: "Modak";
+    font-size: 32px;
+    text-align: center;
+    font-weight: normal;
+    margin-left: 10%;
+  margin-right: 10%;
+}
+p {
+    font-family: "Sour Gummy";
+    font-size: 22px;
+    text-align: center;
+    margin-left: 20%;
+    margin-right: 20%;
+}
+.column {
+    float: left;
+    width: 25%;
+}
+.column2 {
+    float: left;
+    width: 33%;
+}
+.column3 {
+    float: left;
+    width: 50%;
+}
+.footer{
+    position: fixed;
+    bottom: 0;
+    width: 90%;
+    padding: 10px;
+    text-align: center;
+    font-family: "Sour Gummy";
+    font-size: 10px;
+    color: grey;
 }
