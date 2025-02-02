@@ -72,3 +72,14 @@ p {
     font-size: 10px;
     color: grey;
 }
+.image{
+    align-content: center;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+.iconimage{
+    filter: brightness(0%);
+    align-content: center;
+    margin-left: 10%;
+    margin-right: 10%;
+}
