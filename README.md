@@ -4,7 +4,7 @@
 
 ---
 # *Game Design Document*
-**Equipo de desarrollo:** Curtain Reapers
+### Equipo de desarrollo: Curtain Reapers
 
 **Integrantes:**  
 - Izan de Vega López  
@@ -222,22 +222,25 @@ Tiene fijado al personaje en el centro, pero cuando este se acerque a las esquin
 ![Boceto HUD](https://github.com/UCM-FDI-DISIA/CrazyPawPals/blob/main/docs/img/bocetoHUD.jpg))
 
 ### 4.4. Menús  
--**Menú principal**
-    -Jugar (dentro de este menú pulsar arriba o abajo alterna la opción modificada).
-    -Escoger arma (pulsando izquierda o derecha).
-    -Escoger mazo inicial (pulsando izquierda o derecha)/
-    -Comenzar.
-    -Salir.
--**Menú de pausa**
-    -Restaurar.
-    -Salir.
--**Menú de recompensa**
-    -Recompensa de cartas.
-    -Recompensa de mejorar carta cuando es una oleada de eventos.
--**Menú de Fin de Juego**
-    -Volver a jugar.
-    -Menú principal.
-    -Salir del Juego.
+- **Menú principal**
+    - Jugar (dentro de este menú pulsar arriba o abajo alterna la opción modificada).
+    - Escoger arma (pulsando izquierda o derecha).
+    - Escoger mazo inicial (pulsando izquierda o derecha)/
+    - Comenzar.
+    - Salir.
+
+- **Menú de pausa**
+    - Restaurar.
+    - Salir.
+
+- **Menú de recompensa**
+    - Recompensa de cartas.
+    - Recompensa de mejorar carta cuando es una oleada de eventos.
+
+- **Menú de Fin de Juego**
+    - Volver a jugar.
+    - Menú principal.
+    - Salir del Juego.
 
 ## 5. Mundo del juego  
 
@@ -262,6 +265,7 @@ Buscamos dinámicas de roguelike, de disparos en visión cenital, de deckbuildin
 **Descripción de Partida**
 
 *Menú Inicial*
+
 El juego comienza en el **menú principal**, donde el jugador puede:
 - Iniciar una nueva partida.
 - Ajustar configuraciones.
@@ -282,26 +286,31 @@ El personaje del jugador aparece en el **campo de batalla** sin nada a su alrede
 La música cambia a un tono más intenso, señalando el inicio de la acción. Los enemigos comienzan a aparecer en los bordes del mapa y se acercan al jugador.
 
 *Acciones del Jugador*
+
 - **Disparar con clic izquierdo**: Usa el arma equipada para atacar a los enemigos. Cada disparo consume un breve tiempo de enfriamiento.
 - **Usar cartas con clic derecho**: Activa la carta actual en la mano, consumiendo maná. Si no hay suficiente maná, la carta se muestra en colores apagados y se reproduce un sonido de error.
 
 Después de usar o descartar una carta, el mazo avanza, mostrando una nueva carta en la mano. El maná se regenera pasivamente con el tiempo, permitiendo al jugador usar cartas más poderosas más adelante.
 
 *Combate y Estrategia*
+
 Al atacar a los enemigos, estos cambian de color (por ejemplo, se ponen rojos) para indicar que han recibido daño. Después de varios impactos, los enemigos son eliminados y desaparecen del campo de batalla. El jugador debe:
 - Moverse constantemente para evitar los ataques enemigos.
 - Gestionar su maná para usar las cartas de manera efectiva.
 
 *Fin de la Oleada*
+
 Una vez que todos los enemigos son derrotados, aparecen un **menú de recompensas**. El jugador puede:
 - Seleccionar una recompensa presionando la tecla **F**.
 
 Al elegir una recompensa, las demás desaparecen, y la selección se aplica inmediatamente (por ejemplo, una nueva carta se añade al mazo, se mejora una estadística o se recupera salud).
 
 *Eventos Especiales*
+
 En algunas oleadas, puede ocurrir un **evento especial** (por ejemplo, una oleada de jefe o un modificador de dificultad). Estos eventos se anuncian con un mensaje y un icono en pantalla, y ofrecen recompensas más poderosas al completarse.
 
 *Derrota y Menú de Fin de Juego*
+
 Si el jugador pierde toda su salud, aparece un **menú de derrota** que muestra:
 - **Puntuación**: Basada en el progreso y las oleadas completadas.
 - **Cartas del mazo**: Un resumen de las cartas que se usaron durante la partida.
