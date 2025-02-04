@@ -4,7 +4,7 @@
 
 ---
 # *Game Design Document*
-### Equipo de desarrollo: Curtain Reapers
+### Equipo de desarrollo: Curtain Reaper
 
 **Integrantes:**  
 - Izan de Vega López  
