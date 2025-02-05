@@ -69,6 +69,14 @@ project(CrazyPawPals)
         ${CrazyPawPals_SRC_DIRECTORY}/main.cpp
         ${CrazyPawPals_SOURCES}
     )
+
+    # set_target_properties(
+    #     ${PROJECT_NAME}
+    #     PROPERTIES
+    #     CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/out/build/x64-$<CONFIGURATION>
+    #     CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/out/build/x64-$<CONFIGURATION>
+    #     CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/out/build/x64-$<CONFIGURATION>
+    # )
     
     target_include_directories(
         ${PROJECT_NAME}
@@ -104,11 +112,23 @@ project(CrazyPawPals)
         SDL2_net
         SDL2_mixer
     )
+
+    if (V_VSCOMMUNITY_BUILD)
+        set(
+            CrazyPawPals_EXE_DIRECTORY
+            ${CMAKE_CURRENT_LIST_DIR}/out/build/x64-$<CONFIGURATION>
+        )
+    else()
+        set(
+            CrazyPawPals_EXE_DIRECTORY
+            ${CMAKE_CURRENT_LIST_DIR}/build/$<CONFIGURATION>
+        )
+    endif()
     
     add_custom_target(
         copy_resources_bin
         COMMAND ${CMAKE_COMMAND}
-            -D V_CONFIGURATION=$<CONFIGURATION> -D V_PROJECT_DIRECTORY=${CrazyPawPals_PROJECT_DIRECTORY}
+            -D V_PROJECT_DIRECTORY=${CrazyPawPals_PROJECT_DIRECTORY} -D V_EXECUTABLE_DIRECTORY=${CrazyPawPals_EXE_DIRECTORY}
             -P ${CMAKE_CURRENT_LIST_DIR}/copy-resources.cmake
     )
     add_dependencies(CrazyPawPals copy_resources_bin)
