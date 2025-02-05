@@ -1,0 +1,10 @@
+file(
+    COPY ${V_PROJECT_DIRECTORY}/crazypawpals/resources
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${V_CONFIGURATION}
+)
+
+file(
+    COPY ${V_PROJECT_DIRECTORY}/crazypawpals/bin/
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${V_CONFIGURATION}
+    PATTERN "*.dll"
+)
