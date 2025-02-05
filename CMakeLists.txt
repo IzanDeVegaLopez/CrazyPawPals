@@ -69,14 +69,6 @@ project(CrazyPawPals)
         ${CrazyPawPals_SRC_DIRECTORY}/main.cpp
         ${CrazyPawPals_SOURCES}
     )
-
-    # set_target_properties(
-    #     ${PROJECT_NAME}
-    #     PROPERTIES
-    #     CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/out/build/x64-$<CONFIGURATION>
-    #     CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/out/build/x64-$<CONFIGURATION>
-    #     CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/out/build/x64-$<CONFIGURATION>
-    # )
     
     target_include_directories(
         ${PROJECT_NAME}
