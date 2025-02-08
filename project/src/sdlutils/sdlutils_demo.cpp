@@ -8,6 +8,8 @@
 #include "macros.h"
 #include "SDLUtils.h"
 
+#include "../our_scripts/card_system/Deck.hpp"
+
 using namespace std;
 
 void sdlutils_basic_demo() {
@@ -69,6 +71,13 @@ void sdlutils_basic_demo() {
 
 	// a boolean to exit the loop
 	bool exit_ = false;
+
+	//modified---------------------------------------------------------------------------------------------------------------------------------
+	Deck deck = Deck();
+	cout << deck << endl;
+	deck.reload();
+	cout << deck << endl;
+	//-------------------------------------------------------------------------------------------------------------------------------------------
 
 	while (!exit_) {
 		Uint32 startTime = sdl.currRealTime();
