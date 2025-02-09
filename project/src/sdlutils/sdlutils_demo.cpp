@@ -73,9 +73,9 @@ void sdlutils_basic_demo() {
 	bool exit_ = false;
 
 	//modified---------------------------------------------------------------------------------------------------------------------------------
-	Deck deck = Deck();
-	cout << deck << endl;
-	deck.reload();
+	Deck deck = Deck(std::list<Card*>{new Card("1"), new Card("2"), new Card("3"), new Card("4")});
+	//cout << deck << endl;
+	deck.addCardToDeck(new Card("5"));
 	cout << deck << endl;
 	//-------------------------------------------------------------------------------------------------------------------------------------------
 

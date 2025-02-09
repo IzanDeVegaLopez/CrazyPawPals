@@ -5,9 +5,14 @@ Card::Card(char* card_name)
 {
 }
 
+Card::~Card()
+{
+}
+
 bool Card::useCard()
 {
 	//Do Things
+	//Returns if it could be used (because of mana and that sort of things)
 	return true;
 }
 

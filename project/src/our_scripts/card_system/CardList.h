@@ -11,9 +11,11 @@ protected:
 	std::list<Card*> _my_card_list;
 public:
 	CardList();
+	~CardList();
 	CardList(std::list<Card*>&);
 	void moveFromThisTo(CardList&);
 	void addCard(Card*&&);
+	void eraseCard(std::list<Card*>::iterator);
 	Card* popFirst();
 	int numberOfCards();
 	bool empty();

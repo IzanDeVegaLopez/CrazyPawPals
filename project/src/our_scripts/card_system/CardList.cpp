@@ -5,6 +5,11 @@ CardList::CardList()
 	_my_card_list = std::list<Card*>();
 }
 
+CardList::~CardList()
+{
+
+}
+
 CardList::CardList(std::list<Card*>& l)
 {
 	_my_card_list = std::list<Card*>(l);
@@ -18,6 +23,13 @@ void CardList::moveFromThisTo(CardList& my_new_list)
 void CardList::addCard(Card*&& c)
 {
 	_my_card_list.emplace_back(c);
+}
+
+//
+void CardList::eraseCard(std::list<Card*>::iterator it)
+{
+	delete* it;
+	_my_card_list.erase(it);
 }
 
 Card* CardList::popFirst()

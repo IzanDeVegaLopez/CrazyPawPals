@@ -1,6 +1,7 @@
 #include "Deck.hpp"
 
 
+
 void Deck::_putNewCardOnHand()
 {
 	if (_hand != nullptr) {
@@ -15,17 +16,24 @@ void Deck::_putNewCardOnHand()
 	}
 }
 //For testing Purposes
-Deck::Deck()
+Deck::Deck() noexcept
 {
-	std::list<Card*> my_card_list{new Card("1"),new Card("2"),new Card("3"),new Card("4")};
-	_draw_pile = CardList(my_card_list);
+	_draw_pile = CardList();
 	_hand = nullptr;
 	_discard_pile = CardList();
 	_draw_pile.shuffle();
 	_putNewCardOnHand();
 }
 
-Deck::Deck(CardList&& starterDeck)
+Deck::Deck(std::list<Card*>& starterDeck) noexcept
+{
+	_discard_pile = CardList();
+	_hand = nullptr;
+	_draw_pile = CardList(starterDeck);
+	_putNewCardOnHand();
+}
+
+Deck::Deck(CardList&& starterDeck) noexcept
 {
 	_discard_pile = CardList();
 	_hand = nullptr;
@@ -33,7 +41,15 @@ Deck::Deck(CardList&& starterDeck)
 	_putNewCardOnHand();
 }
 
-bool Deck::useCard()
+Deck::~Deck()
+{
+	//Hand es un puntero a una carta
+	if(_hand!=nullptr)
+		delete _hand;
+	//_draw_pile y _discard_pile llamarán a su destructor cuando esto se destruya al salir de ámbito
+}
+
+bool Deck::useCard() noexcept
 {
 	if (_hand->useCard()) {
 		//Se pudo usar la carta
@@ -46,7 +62,7 @@ bool Deck::useCard()
 	}
 }
 
-bool Deck::discardCard()
+bool Deck::discardCard() noexcept
 {
 	if (_hand != nullptr) {
 		_putNewCardOnHand();
@@ -57,14 +73,14 @@ bool Deck::discardCard()
 	}
 }
 
-void Deck::mill()
+void Deck::mill() noexcept
 {
 	if (!_draw_pile.empty()) {
 		_discard_pile.addCard(_draw_pile.popFirst()->mill());
 	}
 }
 
-void Deck::reload()
+void Deck::reload() noexcept
 {
 	//TODO
 	//TODO -> block player action
@@ -78,6 +94,23 @@ void Deck::reload()
 	//Puts all cards on draw pile shuffled
 	_discard_pile.moveFromThisTo(_draw_pile);
 	_draw_pile.shuffle();
+}
+
+void Deck::render() noexcept
+{
+	//TODO
+	//Mostrar carta en la mano
+	//nº cartas draw_pile and discard_pile
+}
+
+void Deck::addCardToDeck(Card* c)
+{
+	assert(c != nullptr);
+	_draw_pile.addCard(std::move(c));
+}
+
+void Deck::removeCard(std::list<Card*>::iterator)
+{
 }
 
 std::ostream& operator<<(std::ostream& os, const Deck& deck)
