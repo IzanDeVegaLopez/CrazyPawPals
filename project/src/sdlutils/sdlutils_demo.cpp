@@ -7,6 +7,9 @@
 #include "InputHandler.h"
 #include "macros.h"
 #include "SDLUtils.h"
+#include "../our_scripts/Container.h"
+#include "../our_scripts/SimpleMove.h"
+#include "../our_scripts/ImageRenderer.h"
 
 using namespace std;
 
@@ -60,8 +63,17 @@ void sdlutils_basic_demo() {
 	auto x2 = (winWidth - sdlLogo.width()) / 2;
 	auto y2 = y0 + 2 * pressAnyKey.height();
 
+	std::vector<GameObject*> _objs;
+
+	Container* _enemy = new Container();
+
+
+
+
+
+
 	// start the music in a loop
-	sdl.musics().at("beat").play();
+	//sdl.musics().at("beat").play();
 
 	// reference to the input handler (we could use a pointer, I just . rather than ->).
 	// you can also use the inline method ih() that is defined in InputHandler.h
@@ -84,16 +96,16 @@ void sdlutils_basic_demo() {
 		sdl.clearRenderer();
 
 		// render Hello SDL
-		helloSDL.render(x1, y1);
+		/*helloSDL.render(x1, y1);
 		if (x1 + helloSDL.width() > winWidth)
-			helloSDL.render(x1 - winWidth, y1);
+			helloSDL.render(x1 - winWidth, y1);*/
 		x1 = (x1 + 5) % winWidth;
 
 		// render Press Any Key
 		pressAnyKey.render(x0, y0);
 
 		// render the SDLogo
-		sdlLogo.render(x2, y2);
+		//sdlLogo.render(x2, y2);
 
 		// present new frame
 		sdl.presentRenderer();
