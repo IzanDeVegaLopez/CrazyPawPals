@@ -13,24 +13,25 @@ KeyboardPlayerCtrl::~KeyboardPlayerCtrl() {
 void KeyboardPlayerCtrl::handleInput(Container* o) {
     auto& ihdlr = ih();
 
+    //suponiendo que luego cambiare vel por dir probablemente
     if (ihdlr.keyDownEvent()) {
         auto& vel = o->getVel();
 
         if (ihdlr.isKeyDown(_left)) {
-            std::cout << "izquierda" << std::endl;
+            vel.setX(-1);
         }
         else if (ihdlr.isKeyDown(_right)) {
-            std::cout << "derecha" << std::endl;
+            vel.setX(1);
         }
         else {
             vel.setX(0); //stop x axis movement
         }
 
         if (ihdlr.isKeyDown(_up)) {
-            std::cout << "arriba" << std::endl;
+            vel.setY(-1);
         }
         else if (ihdlr.isKeyDown(_down)) {
-            std::cout << "abajo" << std::endl;
+            vel.setY(1);
         }
         else {
             vel.setY(0); //stop y axis movement
