@@ -14,5 +14,6 @@ private:
 	SDL_Scancode _right;
 	SDL_Scancode _up;
 	SDL_Scancode _down;
-	SDL_Scancode _interact;
+	SDL_Scancode _reload;
+	SDL_Scancode _collect;
 };

@@ -4,7 +4,8 @@
 #include "Container.h"
 
 KeyboardPlayerCtrl::KeyboardPlayerCtrl()
-    : _left(SDL_SCANCODE_A), _right(SDL_SCANCODE_D), _up(SDL_SCANCODE_W), _down(SDL_SCANCODE_S) {}
+    : _left(SDL_SCANCODE_A), _right(SDL_SCANCODE_D), _up(SDL_SCANCODE_W), _down(SDL_SCANCODE_S), 
+      _reload(SDL_SCANCODE_SPACE), _collect(SDL_SCANCODE_F) {}
 
 KeyboardPlayerCtrl::~KeyboardPlayerCtrl() {
 }
@@ -22,7 +23,7 @@ void KeyboardPlayerCtrl::handleInput(Container* o) {
             std::cout << "derecha" << std::endl;
         }
         else {
-            vel.setX(0); // Detener el movimiento horizontal
+            vel.setX(0); //stop x axis movement
         }
 
         if (ihdlr.isKeyDown(_up)) {
@@ -32,7 +33,20 @@ void KeyboardPlayerCtrl::handleInput(Container* o) {
             std::cout << "abajo" << std::endl;
         }
         else {
-            vel.setY(0); // Detener el movimiento vertical
+            vel.setY(0); //stop y axis movement
         }
+
+        //reload
+        if (ihdlr.isKeyDown(_reload)) {
+            std::cout << "recarga" << std::endl;
+        }
+
+        //collect
+        if (ihdlr.isKeyDown(_get_reward)) {
+            //if we are not close enought to a reward, do nothing
+            std::cout << "colecta" << std::endl;
+        }
+
+
     }
 }
