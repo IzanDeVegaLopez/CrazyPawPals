@@ -7,6 +7,8 @@
 #include "InputHandler.h"
 #include "macros.h"
 #include "SDLUtils.h"
+#include "../our_scripts/Container.h"
+#include "../our_scripts/KeyboardPlayerCtrl.h"
 
 using namespace std;
 
@@ -50,6 +52,10 @@ void sdlutils_basic_demo() {
 			sdl.fonts().at("ARIAL24"), build_sdlcolor(0x112233ff),
 			build_sdlcolor(0xffffffff));
 
+
+	//gameObjects
+	std::vector<GameObject*> _objs;
+
 	// some coordinates
 	auto winWidth = sdl.width();
 	auto winHeight = sdl.height();
@@ -60,6 +66,12 @@ void sdlutils_basic_demo() {
 	auto x2 = (winWidth - sdlLogo.width()) / 2;
 	auto y2 = y0 + 2 * pressAnyKey.height();
 
+
+	
+	//crear un contenedor para el jugador
+	Container* _player = new Container();
+	_player->addComponent(new KeyboardPlayerCtrl());
+	_objs.push_back(_player);
 	// start the music in a loop
 	sdl.musics().at("beat").play();
 
@@ -77,8 +89,17 @@ void sdlutils_basic_demo() {
 		ih.refresh();
 
 		// exit when any key is down
-		if (ih.keyDownEvent())
-			exit_ = true;
+		//if (ih.keyDownEvent())
+		//	exit_ = true;
+
+		for (auto& o : _objs) {
+			o->handleInput();
+		}
+
+		// update
+		for (auto& o : _objs) {
+			o->update();
+		}
 
 		// clear screen
 		sdl.clearRenderer();
