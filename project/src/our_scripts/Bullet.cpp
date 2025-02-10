@@ -16,7 +16,6 @@ Bullet::Bullet(Vector2D& pos, Vector2D& dir, float speed)
 	addComponent(new ImageRenderer(&sdlutils().images().at("pacman")));
 	addComponent(new SimpleMove());
 
-	std::cout << "bala creada" << std::endl;
 }
 
 void

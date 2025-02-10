@@ -18,9 +18,7 @@ void ShootComponent::handleInput(Container* o) {
         Vector2D playerPos = o->getPos();
         Vector2D direction = (mousePos - playerPos).normalize();
 
-        std::cout << direction << std::endl;
-
-        Bullet* bullet = new Bullet(playerPos, direction, 5.0f);
+       // Bullet* bullet = new Bullet(playerPos, direction, 5.0f);
         _lastShoot = sdlutils().currRealTime();
     }
 }
