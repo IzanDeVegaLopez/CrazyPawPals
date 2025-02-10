@@ -1,6 +1,7 @@
 #pragma once
 #include "CardList.h"
 #include "Card.hpp"
+#include "PlayableCards.hpp"
 #include <list>
 #include <cassert>
 

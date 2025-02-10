@@ -52,7 +52,7 @@ bool Deck::use_card() noexcept
 {
 	if (_can_play_hand_card()) {
 		//Se pudo usar la carta
-		_hand->useCard();
+		_hand->on_play();
 		_put_new_card_on_hand();
 		return true;
 	}
@@ -116,7 +116,7 @@ bool Deck::_can_finish_reloading()
 bool Deck::_can_play_hand_card()
 {
 	//TODO: card checks mana and life costs
-	return true;
+	return !_is_reloading;
 }
 
 void Deck::update(float deltaTime) noexcept
@@ -124,7 +124,7 @@ void Deck::update(float deltaTime) noexcept
 	//TODO
 	//Counts time down for reload time and do the rest of things needed for finishing reload
 	_time_till_reload_finishes -= deltaTime;
-	std::cout << _time_till_reload_finishes << std::endl;
+	//std::cout << _time_till_reload_finishes << std::endl;
 	if (_can_finish_reloading()) {
 		_finish_realoading();
 	}
