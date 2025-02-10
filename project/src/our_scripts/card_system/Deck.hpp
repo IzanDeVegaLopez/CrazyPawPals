@@ -9,7 +9,7 @@ protected:
 	CardList _draw_pile;
 	CardList _discard_pile;
 	Card* _hand;
-	void _putNewCardOnHand();
+	void _put_new_card_on_hand();
 public:
 	Deck() noexcept;
 	//Creates a starter with a list of cards
@@ -18,11 +18,11 @@ public:
 	~Deck();
 	//returns true if the card can be used, calls the useCard function of the card
 	//and puts the top card of deck on hand, if there's non left it reloads
-	bool useCard() noexcept;
+	bool use_card() noexcept;
 	//puts the card on hand on discard pile
 	//and puts the top card of deck on hand, if there's non left it reloads
 	//returns true, if a card could be discarded
-	bool discardCard() noexcept;
+	bool discard_card() noexcept;
 	//Puts the top card of draw pile on discard and fires its mill effect
 	//If there's no cards left on deck this does nothing
 	void mill() noexcept;
@@ -32,12 +32,12 @@ public:
 	void render() noexcept;
 	friend std::ostream& operator << (std::ostream& os, const Deck& deck);
 
-	void addCardToDeck(Card*);
+	void add_card_to_deck(Card*);
 	//removeCard, must only be used during menu time
 	//Whenever this happens the iterator passed to this function must
 	//belong to _draw_pile (during rewards menu all cards are exclusively in
 	//the draw pile)
-	void removeCard(std::list<Card*>::iterator);
+	void remove_card(std::list<Card*>::iterator);
 	/*
 	class const_iterator {
 	private:

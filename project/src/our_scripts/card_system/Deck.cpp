@@ -2,13 +2,13 @@
 
 
 
-void Deck::_putNewCardOnHand()
+void Deck::_put_new_card_on_hand()
 {
 	if (_hand != nullptr) {
-		_discard_pile.addCard(std::move(_hand));
+		_discard_pile.add_card(std::move(_hand));
 	}
 	if (!_draw_pile.empty()) {
-		_hand = _draw_pile.popFirst();
+		_hand = _draw_pile.pop_first();
 	}
 	else {
 		_hand = nullptr;
@@ -22,7 +22,7 @@ Deck::Deck() noexcept
 	_hand = nullptr;
 	_discard_pile = CardList();
 	_draw_pile.shuffle();
-	_putNewCardOnHand();
+	_put_new_card_on_hand();
 }
 
 Deck::Deck(std::list<Card*>& starterDeck) noexcept
@@ -30,7 +30,7 @@ Deck::Deck(std::list<Card*>& starterDeck) noexcept
 	_discard_pile = CardList();
 	_hand = nullptr;
 	_draw_pile = CardList(starterDeck);
-	_putNewCardOnHand();
+	_put_new_card_on_hand();
 }
 
 Deck::Deck(CardList&& starterDeck) noexcept
@@ -38,7 +38,7 @@ Deck::Deck(CardList&& starterDeck) noexcept
 	_discard_pile = CardList();
 	_hand = nullptr;
 	_draw_pile = starterDeck;
-	_putNewCardOnHand();
+	_put_new_card_on_hand();
 }
 
 Deck::~Deck()
@@ -49,11 +49,11 @@ Deck::~Deck()
 	//_draw_pile y _discard_pile llamarán a su destructor cuando esto se destruya al salir de ámbito
 }
 
-bool Deck::useCard() noexcept
+bool Deck::use_card() noexcept
 {
 	if (_hand->useCard()) {
 		//Se pudo usar la carta
-		_putNewCardOnHand();
+		_put_new_card_on_hand();
 		return true;
 	}
 	else {
@@ -62,10 +62,10 @@ bool Deck::useCard() noexcept
 	}
 }
 
-bool Deck::discardCard() noexcept
+bool Deck::discard_card() noexcept
 {
 	if (_hand != nullptr) {
-		_putNewCardOnHand();
+		_put_new_card_on_hand();
 		return true;
 	}
 	else {
@@ -76,7 +76,7 @@ bool Deck::discardCard() noexcept
 void Deck::mill() noexcept
 {
 	if (!_draw_pile.empty()) {
-		_discard_pile.addCard(_draw_pile.popFirst()->mill());
+		_discard_pile.add_card(_draw_pile.pop_first()->mill());
 	}
 }
 
@@ -86,13 +86,13 @@ void Deck::reload() noexcept
 	//TODO -> block player action
 	//Puts all cards on discard
 	if (_hand != nullptr) {
-		_discard_pile.addCard(std::move(_hand));
+		_discard_pile.add_card(std::move(_hand));
 		_hand = nullptr;
 	}
-	_draw_pile.moveFromThisTo(_discard_pile);
+	_draw_pile.move_from_this_to(_discard_pile);
 	//TODO -> waits X time
 	//Puts all cards on draw pile shuffled
-	_discard_pile.moveFromThisTo(_draw_pile);
+	_discard_pile.move_from_this_to(_draw_pile);
 	_draw_pile.shuffle();
 }
 
@@ -103,13 +103,13 @@ void Deck::render() noexcept
 	//nº cartas draw_pile and discard_pile
 }
 
-void Deck::addCardToDeck(Card* c)
+void Deck::add_card_to_deck(Card* c)
 {
 	assert(c != nullptr);
-	_draw_pile.addCard(std::move(c));
+	_draw_pile.add_card(std::move(c));
 }
 
-void Deck::removeCard(std::list<Card*>::iterator)
+void Deck::remove_card(std::list<Card*>::iterator)
 {
 }
 

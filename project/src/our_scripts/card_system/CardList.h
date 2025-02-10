@@ -13,11 +13,11 @@ public:
 	CardList();
 	~CardList();
 	CardList(std::list<Card*>&);
-	void moveFromThisTo(CardList&);
-	void addCard(Card*&&);
-	void eraseCard(std::list<Card*>::iterator);
-	Card* popFirst();
-	int numberOfCards();
+	void move_from_this_to(CardList&);
+	void add_card(Card*&&);
+	void erase_card(std::list<Card*>::iterator);
+	Card* pop_first();
+	int number_of_cards();
 	bool empty();
 	void shuffle();
 
