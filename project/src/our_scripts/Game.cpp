@@ -9,6 +9,7 @@
 #include "Container.h"
 #include "ImageRenderer.h"
 #include "SimpleMove.h"
+#include "EnemyMovement.h"
 
 Game::Game() :
 		_gm(nullptr), //
@@ -53,9 +54,15 @@ void Game::init() {
 	}
 
 	_enemy = new Container();
-	_enemy->addComponent(new ImageRenderer(&sdlutils().images().at("sdl_logo")));
+	Container* _player_ref = new Container();
+	_player_ref->getPos().set(sdlutils().width() / 2 + 50,
+		sdlutils().height() / 2 +50);
+	_player_ref->addComponent(new ImageRenderer(&sdlutils().images().at("sdl_logo")));
 
+	_enemy->addComponent(new ImageRenderer(&sdlutils().images().at("sdl_logo")));
 	_enemy->addComponent(new SimpleMove());
+	_enemy->addComponent(new EnemyMovement(_player_ref));
+
 	_enemy->setWidth(50.0f);
 	_enemy->setHeight(50.0f);
 	_enemy->getPos().set(sdlutils().width() / 2,
