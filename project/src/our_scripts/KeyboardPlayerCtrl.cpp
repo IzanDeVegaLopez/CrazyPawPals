@@ -43,7 +43,7 @@ void KeyboardPlayerCtrl::handleInput(Container* o) {
         }
 
         //collect
-        if (ihdlr.isKeyDown(_get_reward)) {
+        if (ihdlr.isKeyDown(_collect)) {
             //if we are not close enought to a reward, do nothing
             std::cout << "colecta" << std::endl;
         }
