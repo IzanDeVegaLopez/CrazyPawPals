@@ -10,6 +10,9 @@
 #include "../our_scripts/Container.h"
 #include "../our_scripts/KeyboardPlayerCtrl.h"
 
+#include "../our_scripts/ShootComponent.h"
+#include "../our_scripts/Bullet.h"
+
 using namespace std;
 
 void sdlutils_basic_demo() {
@@ -45,6 +48,9 @@ void sdlutils_basic_demo() {
 	// store the 'renderer' in a local variable, just for convenience
 	SDL_Renderer *renderer = sdl.renderer();
 
+	/*
+	
+	*/
 	// we can take textures from the predefined ones, and we can create a custom one as well
 	auto &sdlLogo = sdl.images().at("sdl_logo");
 	auto &helloSDL = sdl.msgs().at("HelloSDL");
@@ -71,9 +77,16 @@ void sdlutils_basic_demo() {
 	//crear un contenedor para el jugador
 	Container* _player = new Container();
 	_player->addComponent(new KeyboardPlayerCtrl());
+	_player->addComponent(new ShootComponent(0.5f));
+
+
+	//Container* b = new Bullet(Vector2D{ 0,0 }, Vector2D{ 1,1}, 0.1f);
 	_objs.push_back(_player);
+
+	//_objs.push_back(b);
+	
 	// start the music in a loop
-	sdl.musics().at("beat").play();
+	//sdl.musics().at("beat").play();
 
 	// reference to the input handler (we could use a pointer, I just . rather than ->).
 	// you can also use the inline method ih() that is defined in InputHandler.h
@@ -104,7 +117,12 @@ void sdlutils_basic_demo() {
 		// clear screen
 		sdl.clearRenderer();
 
-		// render Hello SDL
+		for (auto& o : _objs) {
+			o->render();
+		}
+
+		/*
+		* 		// render Hello SDL
 		helloSDL.render(x1, y1);
 		if (x1 + helloSDL.width() > winWidth)
 			helloSDL.render(x1 - winWidth, y1);
@@ -115,6 +133,8 @@ void sdlutils_basic_demo() {
 
 		// render the SDLogo
 		sdlLogo.render(x2, y2);
+		*/
+
 
 		// present new frame
 		sdl.presentRenderer();
