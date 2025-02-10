@@ -48,15 +48,14 @@ void KeyboardPlayerCtrl::handleInput(Container* o) {
         if (ihdlr.isKeyDown(_collect)) {
             //if we are not close enought to a reward, do nothing
             std::cout << "colecta" << std::endl;
+     
         }
-
-        //shoot
-        if (ihdlr.mouseButtonEvent()) {
-            //send message to shoot
-            std::cout << "d" << std::endl;
-            Vector2D mousePos = {(float)ihdlr.getMousePos().first, (float)ihdlr.getMousePos().second}; 
-            static_cast<Player*>(o)->shoot(mousePos);
-        }
-        
+    }
+    //shoot
+    if (ihdlr.mouseButtonEvent() && ihdlr.getMouseButtonState(InputHandler::LEFT)) {
+        //send message to shoot
+        std::cout << "d" << std::endl;
+        Vector2D mousePos = { (float)ihdlr.getMousePos().first, (float)ihdlr.getMousePos().second };
+        static_cast<Player*>(o)->shoot(mousePos);
     }
 }
