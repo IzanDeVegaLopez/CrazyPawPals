@@ -8,7 +8,8 @@
 
   "images": [
     { "id": "sdl_logo", "file": "resources/images/SDL_logo.png"},
-    { "id": "pacman","file": "resources/images/pacman.png" }
+    { "id": "pacman","file": "resources/images/pacman.png" },
+    { "id": "gato","file": "resources/images/gato.png" }
   ],
   
   "messages" : [
