@@ -2,6 +2,7 @@
 
 #include "PhysicsComponent.h"
 #include "KeyboardPlayerCtrl.h"
+#include "../utils/Vector2D.h"
 
 class MovementController : public PhysicsComponent
 {

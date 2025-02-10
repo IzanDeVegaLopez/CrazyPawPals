@@ -11,15 +11,15 @@ MovementController::~MovementController() {
 
 void MovementController::update(Container* o)
 {
-	Vector2D movementSpeed = o->getVel() * _direction * _maxSpeed;
+	//Vector2D movementSpeed = o->getVel() * _direction * _maxSpeed;
 
-	if (movementSpeed.magnitude() > _maxSpeed) {
-		movementSpeed = movementSpeed.normalize() * _maxSpeed;
-	}
-	o->getVel().setX(movementSpeed.getX());
-	o->getVel().setY(movementSpeed.getY());
+	//if (movementSpeed.magnitude() > _maxSpeed) {
+	//	movementSpeed = movementSpeed.normalize() * _maxSpeed;
+	//}
+	//o->getVel().setX(movementSpeed.getX());
+	//o->getVel().setY(movementSpeed.getY());
 
-	if (_direction = )
-	Vector2D deceleration = o->getVel() * _reduceSpeed;
-	o->setVel(deceleration);
+	//if (_direction = )
+	//Vector2D deceleration = o->getVel() * _reduceSpeed;
+	//o->setVel(deceleration);
 }
