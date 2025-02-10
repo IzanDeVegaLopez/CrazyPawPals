@@ -9,9 +9,8 @@
 #include "SDLUtils.h"
 #include "../our_scripts/Container.h"
 #include "../our_scripts/KeyboardPlayerCtrl.h"
-
-#include "../our_scripts/ShootComponent.h"
 #include "../our_scripts/Bullet.h"
+#include "../our_scripts/Player.h"
 
 using namespace std;
 
@@ -72,16 +71,8 @@ void sdlutils_basic_demo() {
 	auto x2 = (winWidth - sdlLogo.width()) / 2;
 	auto y2 = y0 + 2 * pressAnyKey.height();
 
-
-	
-	//crear un contenedor para el jugador
-	Container* _player = new Container();
-	_player->addComponent(new KeyboardPlayerCtrl());
-	_player->addComponent(new ShootComponent(0.5f));
-
-
 	//Container* b = new Bullet(Vector2D{ 0,0 }, Vector2D{ 1,1}, 0.1f);
-	_objs.push_back(_player);
+	_objs.push_back(new Player());
 
 	//_objs.push_back(b);
 	

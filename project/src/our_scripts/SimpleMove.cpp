@@ -15,8 +15,8 @@ SimpleMove::~SimpleMove() {
 void SimpleMove::update(Container *o) {
 
 	auto &pos = o->getPos();
-	auto &vel = o->getVel();
-
-	pos = pos + vel;
+	auto &dir = o->getDir();
+	auto &speed = o->getSpeed();
+	pos += dir*speed;
 
 }

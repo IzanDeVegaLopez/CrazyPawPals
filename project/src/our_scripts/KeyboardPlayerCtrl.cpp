@@ -2,6 +2,7 @@
 
 #include "../sdlutils/InputHandler.h"
 #include "Container.h"
+#include "Player.h"
 
 KeyboardPlayerCtrl::KeyboardPlayerCtrl()
     : _left(SDL_SCANCODE_A), _right(SDL_SCANCODE_D), _up(SDL_SCANCODE_W), _down(SDL_SCANCODE_S), 
@@ -15,26 +16,27 @@ void KeyboardPlayerCtrl::handleInput(Container* o) {
 
     //suponiendo que luego cambiare vel por dir probablemente
     if (ihdlr.keyDownEvent()) {
-        auto& vel = o->getVel();
+        auto& dir = o->getDir();
 
+        //send direction value
         if (ihdlr.isKeyDown(_left)) {
-            vel.setX(-1);
+            dir.setX(-1);
         }
         else if (ihdlr.isKeyDown(_right)) {
-            vel.setX(1);
+            dir.setX(1);
         }
         else {
-            vel.setX(0); //stop x axis movement
+            dir.setX(0); //stop x axis movement
         }
 
         if (ihdlr.isKeyDown(_up)) {
-            vel.setY(-1);
+            dir.setY(-1);
         }
         else if (ihdlr.isKeyDown(_down)) {
-            vel.setY(1);
+            dir.setY(1);
         }
         else {
-            vel.setY(0); //stop y axis movement
+            dir.setY(0); //stop y axis movement
         }
 
         //reload
@@ -48,6 +50,13 @@ void KeyboardPlayerCtrl::handleInput(Container* o) {
             std::cout << "colecta" << std::endl;
         }
 
-
+        //shoot
+        if (ihdlr.mouseButtonEvent()) {
+            //send message to shoot
+            std::cout << "d" << std::endl;
+            Vector2D mousePos = {(float)ihdlr.getMousePos().first, (float)ihdlr.getMousePos().second}; 
+            static_cast<Player*>(o)->shoot(mousePos);
+        }
+        
     }
 }

@@ -10,7 +10,7 @@
 class GameObject {
 public:
 	GameObject() :
-			_pos(), _vel(), _width(), _height(), _rot(0.0f) {
+			_pos(), _dir(), _width(), _height(), _rot(0.0f) {
 	}
 	virtual ~GameObject() {
 	}
@@ -31,8 +31,12 @@ public:
 		return _pos;
 	}
 
-	inline Vector2D& getVel() {
-		return _vel;
+	inline Vector2D& getDir() {
+		return _dir;
+	}
+
+	inline float& getSpeed() {
+		return _speed;
 	}
 
 	inline float getWidth() const {
@@ -52,7 +56,8 @@ public:
 protected:
 
 	Vector2D _pos;
-	Vector2D _vel;
+	Vector2D _dir;
+	float _speed;
 	float _width;
 	float _height;
 	float _rot;
