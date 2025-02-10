@@ -6,10 +6,15 @@
 
 class Deck {
 protected:
+	int reload_time = 100;
 	CardList _draw_pile;
 	CardList _discard_pile;
 	Card* _hand;
+	bool _is_reloading = false;
+	float _time_till_reload_finishes;
 	void _put_new_card_on_hand();
+	void _finish_realoading();
+	bool _can_finish_reloading();
 public:
 	Deck() noexcept;
 	//Creates a starter with a list of cards
@@ -29,6 +34,7 @@ public:
 	//Puts all cards on discard pile and sets player unable to use any action outside moving
 	//Then puts all cards on drawPile and shuffles
 	void reload() noexcept;
+	void update(float deltaTime) noexcept;
 	void render() noexcept;
 	friend std::ostream& operator << (std::ostream& os, const Deck& deck);
 

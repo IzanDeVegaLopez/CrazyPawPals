@@ -1,6 +1,5 @@
 #include "Deck.hpp"
-
-
+#include <iostream>
 
 void Deck::_put_new_card_on_hand()
 {
@@ -82,18 +81,46 @@ void Deck::mill() noexcept
 
 void Deck::reload() noexcept
 {
-	//TODO
-	//TODO -> block player action
-	//Puts all cards on discard
-	if (_hand != nullptr) {
-		_discard_pile.add_card(std::move(_hand));
-		_hand = nullptr;
+	if (!_is_reloading) {
+		//TODO
+		//TODO -> block player action
+		
+		_is_reloading = true;
+		_time_till_reload_finishes = reload_time;
+
+		//Puts all cards on discard
+		if (_hand != nullptr) {
+			_discard_pile.add_card(std::move(_hand));
+			_hand = nullptr;
+		}
+		_draw_pile.move_from_this_to(_discard_pile);
 	}
-	_draw_pile.move_from_this_to(_discard_pile);
-	//TODO -> waits X time
-	//Puts all cards on draw pile shuffled
+
+}
+void Deck::_finish_realoading()
+{
+	//this is called after waiting
+	//this moves everything to draw_pile, shuffles and return control to player
+	_is_reloading = false;
 	_discard_pile.move_from_this_to(_draw_pile);
 	_draw_pile.shuffle();
+
+	std::cout << *this;
+}
+bool Deck::_can_finish_reloading()
+{
+	return _is_reloading && _time_till_reload_finishes <= 0;
+}
+
+void Deck::update(float deltaTime) noexcept
+{
+	//TODO
+	//Counts time down for reload time and do the rest of things needed for finishing reload
+	_time_till_reload_finishes -= deltaTime;
+	std::cout << _time_till_reload_finishes << std::endl;
+	if (_can_finish_reloading()) {
+		_finish_realoading();
+	}
 }
 
 void Deck::render() noexcept
@@ -127,5 +154,4 @@ std::ostream& operator<<(std::ostream& os, const Deck& deck)
 	os<<std::endl;
 	
 	return os;
-	// TODO: insert return statement here
 }

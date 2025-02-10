@@ -75,7 +75,8 @@ void sdlutils_basic_demo() {
 	//modified---------------------------------------------------------------------------------------------------------------------------------
 	Deck deck = Deck(std::list<Card*>{new Card("1"), new Card("2"), new Card("3"), new Card("4")});
 	//cout << deck << endl;
-	deck.addCardToDeck(new Card("5"));
+	deck.reload();
+	//deck.addCardToDeck(new Card("5"));
 	cout << deck << endl;
 	//-------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -108,6 +109,8 @@ void sdlutils_basic_demo() {
 		sdl.presentRenderer();
 
 		Uint32 frameTime = sdl.currRealTime() - startTime;
+
+		deck.update(frameTime);
 
 		if (frameTime < 20)
 			SDL_Delay(20 - frameTime);
