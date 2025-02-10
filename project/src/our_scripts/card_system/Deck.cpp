@@ -50,8 +50,9 @@ Deck::~Deck()
 
 bool Deck::use_card() noexcept
 {
-	if (_hand->useCard()) {
+	if (_can_play_hand_card()) {
 		//Se pudo usar la carta
+		_hand->useCard();
 		_put_new_card_on_hand();
 		return true;
 	}
@@ -110,6 +111,12 @@ void Deck::_finish_realoading()
 bool Deck::_can_finish_reloading()
 {
 	return _is_reloading && _time_till_reload_finishes <= 0;
+}
+
+bool Deck::_can_play_hand_card()
+{
+	//TODO: card checks mana and life costs
+	return true;
 }
 
 void Deck::update(float deltaTime) noexcept

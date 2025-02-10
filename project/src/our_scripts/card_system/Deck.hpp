@@ -15,6 +15,7 @@ protected:
 	void _put_new_card_on_hand();
 	void _finish_realoading();
 	bool _can_finish_reloading();
+	bool _can_play_hand_card();
 public:
 	Deck() noexcept;
 	//Creates a starter with a list of cards
