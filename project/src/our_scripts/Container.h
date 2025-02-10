@@ -5,7 +5,7 @@
 #include <vector>
 #include "GameObject.h"
 
-//class InputComponent;
+class InputComponent;
 class RenderComponent;
 class PhysicsComponent;
 
@@ -31,7 +31,7 @@ public:
 	}
 
 private:
-	//std::vector<InputComponent*> _ic;
+	std::vector<InputComponent*> _ic;
 	std::vector<RenderComponent*> _rc;
 	std::vector<PhysicsComponent*> _pc;
 };
