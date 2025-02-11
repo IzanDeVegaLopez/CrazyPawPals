@@ -10,7 +10,7 @@
 class GameObject {
 public:
 	GameObject() :
-			_pos(), _dir(), _width(), _height(), _rot(0.0f) {
+			_pos(), _dir(), _width(), _height(), _rot(0.0f), _speed() {
 	}
 	virtual ~GameObject() {
 	}

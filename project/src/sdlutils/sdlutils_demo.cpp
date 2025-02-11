@@ -51,30 +51,14 @@ void sdlutils_basic_demo() {
 	
 	*/
 	// we can take textures from the predefined ones, and we can create a custom one as well
-	auto &sdlLogo = sdl.images().at("sdl_logo");
-	auto &helloSDL = sdl.msgs().at("HelloSDL");
-	Texture pressAnyKey(renderer, "Press any key to exit",
-			sdl.fonts().at("ARIAL24"), build_sdlcolor(0x112233ff),
-			build_sdlcolor(0xffffffff));
 
 
 	//gameObjects
 	std::vector<GameObject*> _objs;
+	std::vector<GameObject*> _bullets;
+	_objs.push_back(new Player(&_bullets));
 
-	// some coordinates
-	auto winWidth = sdl.width();
-	auto winHeight = sdl.height();
-	auto x0 = (winWidth - pressAnyKey.width()) / 2;
-	auto y0 = (winHeight - pressAnyKey.height()) / 2;
-	auto x1 = 0;
-	auto y1 = y0 - 4 * pressAnyKey.height();
-	auto x2 = (winWidth - sdlLogo.width()) / 2;
-	auto y2 = y0 + 2 * pressAnyKey.height();
-
-	//Container* b = new Bullet(Vector2D{ 0,0 }, Vector2D{ 1,1}, 0.1f);
-	_objs.push_back(new Player());
-
-	//_objs.push_back(b);
+	
 	
 	// start the music in a loop
 	//sdl.musics().at("beat").play();
@@ -105,6 +89,9 @@ void sdlutils_basic_demo() {
 			o->update();
 		}
 
+		for (auto& b : _bullets) {
+			b->update();
+		}
 		// clear screen
 		sdl.clearRenderer();
 
@@ -112,19 +99,10 @@ void sdlutils_basic_demo() {
 			o->render();
 		}
 
-		/*
-		* 		// render Hello SDL
-		helloSDL.render(x1, y1);
-		if (x1 + helloSDL.width() > winWidth)
-			helloSDL.render(x1 - winWidth, y1);
-		x1 = (x1 + 5) % winWidth;
+		for (auto& b : _bullets) {
+			b->render();
+		}
 
-		// render Press Any Key
-		pressAnyKey.render(x0, y0);
-
-		// render the SDLogo
-		sdlLogo.render(x2, y2);
-		*/
 
 
 		// present new frame

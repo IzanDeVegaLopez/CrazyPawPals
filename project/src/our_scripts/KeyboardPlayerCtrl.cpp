@@ -54,7 +54,6 @@ void KeyboardPlayerCtrl::handleInput(Container* o) {
     //shoot
     if (ihdlr.mouseButtonEvent() && ihdlr.getMouseButtonState(InputHandler::LEFT)) {
         //send message to shoot
-        std::cout << "d" << std::endl;
         Vector2D mousePos = { (float)ihdlr.getMousePos().first, (float)ihdlr.getMousePos().second };
         static_cast<Player*>(o)->shoot(mousePos);
     }

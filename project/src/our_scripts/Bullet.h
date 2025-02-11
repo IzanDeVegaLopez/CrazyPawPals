@@ -4,7 +4,7 @@ class Bullet: public Container
 {
 public:
 	Bullet(Vector2D& pos, Vector2D& dir, float speed);
-	~Bullet() {};
+	virtual ~Bullet() {};
 
 	void update() override;
 
@@ -12,7 +12,6 @@ public:
 
 private:
 	bool _active;
-	float _speed;
 };
 
 inline bool
