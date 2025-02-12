@@ -27,7 +27,7 @@ public:
 
 	//bool can_play();
 	virtual void on_play();
-	virtual Card* mill();
+	virtual Card* on_mill();
 	friend std::ostream& operator << (std::ostream& os, const Card& card);
 	//Debug purposes
 	char* getName();

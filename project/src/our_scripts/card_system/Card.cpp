@@ -19,7 +19,7 @@ Card::Card(char* card_name)
 Card::~Card() { delete _name; }
 
 
-Card* Card::mill()
+Card* Card::on_mill()
 {
 	// Mill effect
 	return this;
