@@ -1,10 +1,10 @@
 #pragma once
-#include "../ecs/Component.h"
+#include "../../ecs/Component.h"
 
 class Texture;
-class Health:public ecs::Component
+class Health :public ecs::Component
 {
-public: 
+public:
 	__CMPID_DECL__(ecs::cmp::HEALTH);
 	Health();
 	virtual ~Health();
@@ -12,18 +12,17 @@ public:
 	void release();
 	int Lives()const;
 	void reset();
-	
+
 protected:
 	int _lives;
 	Texture* _heartTexture;
 	const int DEFAULT_LIVES = 3;
 };
-inline int 
+inline int
 Health::Lives()const {
 	return _lives;
 }
-inline void 
+inline void
 Health::reset() {
 	_lives = DEFAULT_LIVES;
 }
-

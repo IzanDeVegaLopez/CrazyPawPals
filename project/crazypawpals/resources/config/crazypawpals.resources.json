@@ -7,7 +7,7 @@
   
   "images" : [
     {
-      "id": "tennis_ball",
+      "id": "player",
       "file": "resources/images/tennis_ball.png"
     },
     {
