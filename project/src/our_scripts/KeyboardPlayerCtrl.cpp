@@ -13,10 +13,32 @@ KeyboardPlayerCtrl::~KeyboardPlayerCtrl() {
 
 void KeyboardPlayerCtrl::handleInput(Container* o) {
     auto& ihdlr = ih();
+    auto& dir = o->getDir();
 
-    //suponiendo que luego cambiare vel por dir probablemente
-    if (ihdlr.keyDownEvent()) { //Si comentamos esta linea (y el cierre de llave abajo) el movimiento parece mas natural
+    //New input
+    //Horizontal axis
+    dir.setX((ihdlr.isKeyDown(_left) ? -1 : 0) + (ihdlr.isKeyDown(_right) ? 1 : 0));
+
+    //Vertical axis
+    dir.setY((ihdlr.isKeyDown(_up) ? -1 : 0) + (ihdlr.isKeyDown(_down) ? 1 : 0));
+
+    static_cast<Player*>(o)->move();
+
+    //reload
+    if (ihdlr.isKeyDown(_reload)) {
+        std::cout << "recarga" << std::endl;
+    }
+
+    //collect
+    if (ihdlr.isKeyDown(_collect)) {
+        //if we are not close enought to a reward, do nothing
+        std::cout << "colecta" << std::endl;
+    }
+
+    //Old input
+    /*if (ihdlr.keyDownEvent()) { //Si comentamos esta linea (y el cierre de llave abajo) el movimiento parece mas natural
         auto& dir = o->getDir();
+
 
         //send direction value
         if (ihdlr.isKeyDown(_left)) {
@@ -50,9 +72,9 @@ void KeyboardPlayerCtrl::handleInput(Container* o) {
         if (ihdlr.isKeyDown(_collect)) {
             //if we are not close enought to a reward, do nothing
             std::cout << "colecta" << std::endl;
-     
         }
-    }
+    }*/
+
     //shoot
     if (ihdlr.mouseButtonEvent() && ihdlr.getMouseButtonState(InputHandler::LEFT)) {
         //send message to shoot

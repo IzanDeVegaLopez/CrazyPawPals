@@ -5,6 +5,7 @@ class Player : public Container {
 protected:
 	float _shootCooldown;
 	float _lastShoot;
+	float _maxSpeed;
 
 	std::vector<GameObject*>* b;
 public:

@@ -3,8 +3,9 @@
 #include "KeyboardPlayerCtrl.h"
 #include "ImageRenderer.h"
 #include "Bullet.h"
+#include "MovementController.h"
 
-Player::Player(std::vector<GameObject*>* b): _shootCooldown(0.5f), _lastShoot(0.0f) , b(b){
+Player::Player(std::vector<GameObject*>* b) : _shootCooldown(0.5f), _lastShoot(0.0f), _maxSpeed(10.0f), b(b) {
 	_width = 100.0f;
 	_height = 100.0f;
 	_pos = {(float)sdlutils().width()/2 - _width/2, (float)sdlutils().height()/2 - _height/2};
@@ -12,6 +13,7 @@ Player::Player(std::vector<GameObject*>* b): _shootCooldown(0.5f), _lastShoot(0.
 	_speed = 5.0f;
 	addComponent(new KeyboardPlayerCtrl());
 	addComponent(new ImageRenderer(&sdlutils().images().at("gato")));
+	addComponent(new MovementController());
 }
 
 Player::~Player() {}
@@ -30,6 +32,6 @@ Player::shoot(const Vector2D& target) {
 void 
 Player::move(){
 
-	//Modificamos la posición actual en cuestión de la dirección (input) y la velocidad
+	//Modificamos la posición actual en cuestión de la dirección (dada por input) y la velocidad
 	_pos += (_dir * _speed);
 }

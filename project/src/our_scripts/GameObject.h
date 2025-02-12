@@ -46,6 +46,11 @@ public:
 	inline void setWidth(float width) {
 		_width = width;
 	}
+	
+	inline void setSpeed(float speed) {
+		_speed = speed;
+	}
+
 	inline void setRotation(float rotation) {
 		_rot = rotation;
 	}

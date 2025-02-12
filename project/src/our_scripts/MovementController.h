@@ -1,7 +1,6 @@
 #pragma once
 
 #include "PhysicsComponent.h"
-#include "KeyboardPlayerCtrl.h"
 #include "../utils/Vector2D.h"
 
 class MovementController : public PhysicsComponent
@@ -14,5 +13,5 @@ public:
 private:
 	float _maxSpeed;
 	float _reduceSpeed;
-	Vector2D _direction;
+
 };
