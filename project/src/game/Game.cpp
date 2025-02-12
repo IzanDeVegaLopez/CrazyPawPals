@@ -59,6 +59,9 @@ void Game::init() {
 
 	}
 
+	// Habilitar el cursor del ratón
+	SDL_ShowCursor(SDL_ENABLE);
+
 	// Create the manager
 	_mngr = new Manager();
 

@@ -28,7 +28,7 @@ ShootComponent::shoot(const Vector2D& target) {
 	if (sdlutils().currRealTime() >= _lastShoot + _shootCooldown) { 
 		Vector2D shootDir = (target - pos).normalize(); 
 		Vector2D shootPos = { pos.getX() + (_tr->getWidth() / 2), pos.getY() + (_tr->getHeight() / 2) };
-		_bulletPool.push_back(new Bullet(_ent->getMngr(),shootPos , shootDir, 1.0f));
+		_bulletPool.push_back(new Bullet(_ent->getMngr(),shootPos , shootDir, 5.0f));
 		_lastShoot = sdlutils().currRealTime(); 
 	}
 }
