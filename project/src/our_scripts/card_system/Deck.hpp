@@ -2,6 +2,7 @@
 #include "CardList.h"
 #include "Card.hpp"
 #include "PlayableCards.hpp"
+#include "Mana.h"
 #include <list>
 #include <cassert>
 
@@ -11,6 +12,7 @@ protected:
 	CardList _draw_pile;
 	CardList _discard_pile;
 	Card* _hand;
+	Mana* _mana;
 	bool _is_reloading = false;
 	float _time_till_reload_finishes;
 	void _put_new_card_on_hand();

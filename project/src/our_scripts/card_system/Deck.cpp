@@ -19,6 +19,7 @@ Deck::Deck() noexcept
 {
 	_draw_pile = CardList();
 	_hand = nullptr;
+	_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
 	_discard_pile = CardList();
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
@@ -52,6 +53,7 @@ bool Deck::use_card() noexcept
 {
 	if (_can_play_hand_card()) {
 		//Se pudo usar la carta
+		_mana->change_mana(_hand->mana_cost());
 		_hand->on_play();
 		_put_new_card_on_hand();
 		return true;
@@ -76,7 +78,7 @@ bool Deck::discard_card() noexcept
 void Deck::mill() noexcept
 {
 	if (!_draw_pile.empty()) {
-		_discard_pile.add_card(_draw_pile.pop_first()->mill());
+		_discard_pile.add_card(_draw_pile.pop_first()->on_mill());
 	}
 }
 
@@ -115,8 +117,9 @@ bool Deck::_can_finish_reloading()
 
 bool Deck::_can_play_hand_card()
 {
+	return (!_is_reloading && _mana->mana_count() >= _hand->mana_cost());
 	//TODO: card checks mana and life costs
-	return !_is_reloading;
+	
 }
 
 void Deck::update(float deltaTime) noexcept
