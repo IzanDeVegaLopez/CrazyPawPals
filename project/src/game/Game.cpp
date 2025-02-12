@@ -1,4 +1,5 @@
 // This file is part of the course TPV2@UCM - Samir Genaim
+#include <ctime>
 
 #include "Game.h"
 
@@ -9,6 +10,12 @@
 #include "../utils/Collisions.h"
 
 #include "../our_scripts/card_system/Deck.hpp"
+
+
+//#include "Container.h"
+//#include "ImageRenderer.h"
+//#include "SimpleMove.h"
+//#include "EnemyMovement.h"
 
 using namespace std;
 
@@ -71,6 +78,38 @@ void Game::init() {
 	cout << deck << endl;
 	//-------------------------------------------------------------------------------------------------------------------------------------------
 
+	//modified---------------------------------------------------------------------------------------------------------------------------------
+	// ORDEN: Crear, componentes, posición, escala, rotación, añadir al vector
+
+	//Container* _player_ref = new Container();
+	//_player_ref->addComponent(new ImageRenderer(&sdlutils().images().at("sdl_logo")));
+
+	//// Posicion aleatoria cada vez que se ejecuta el juego
+	//srand(static_cast<unsigned int>(time(0)));
+	//float randomX = (rand() % sdlutils().width()) * 0.75;
+	//float randomY = (rand() % sdlutils().height()) * 0.75;
+	//_player_ref->getPos().set(randomX, randomY);
+
+	//// _player_ref->getPos().set(sdlutils().width() / 2 + 50, sdlutils().height() / 2 + 50);
+	//_player_ref->setWidth(100.0f);
+	//_player_ref->setHeight(100.0f);
+
+
+	//_enemy = new Container();
+	//_enemy->addComponent(new ImageRenderer(&sdlutils().images().at("sdl_logo")));
+	//_enemy->addComponent(new SimpleMove());
+	//_enemy->addComponent(new EnemyMovement(_player_ref));
+
+	//_enemy->getPos().set(sdlutils().width() / 2, sdlutils().height() / 2);
+	//_enemy->setWidth(50.0f);
+	//_enemy->setHeight(50.0f);
+	//_enemy->setRotation(90.0f);
+
+
+	//_objs.push_back(_player_ref);
+	//_objs.push_back(_enemy);
+	
+	//
 
 }
 

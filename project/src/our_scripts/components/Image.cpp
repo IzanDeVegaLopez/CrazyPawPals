@@ -4,9 +4,9 @@
 
 #include <cassert>
 
-#include "../ecs/Manager.h"
-#include "../sdlutils/macros.h"
-#include "../sdlutils/Texture.h"
+#include "../../ecs/Manager.h"
+#include "../../sdlutils/macros.h"
+#include "../../sdlutils/Texture.h"
 #include "Transform.h"
 
 Image::Image() :
