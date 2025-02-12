@@ -12,12 +12,14 @@
 	KEYBOARDPLAYERCTRL, \
 	MOVEMENTCONTROLLER, \
     SIMPLEMOVE, \
-    HEALTH
+    HEALTH,\
+	LIFETIMETIMER
 
 
 // Groups list - must have at least one element
 //
 #define _GRPS_LIST_ \
+	BULLET,\
 	STARS
 
 // Handlers list - must have at least one element

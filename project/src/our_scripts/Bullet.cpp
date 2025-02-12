@@ -1,33 +1,19 @@
-/*
-* #include "Bullet.h"
+#include "Bullet.h"
 #include "../our_scripts/components/SimpleMove.h"
+#include "../our_scripts/components/Image.h"
+#include "../our_scripts/components/LifetimeTimer.h"
 
-#include "../sdlutils/SDLUtils.h"
-#include <iostream>
-
-
-Bullet::Bullet(Vector2D& pos, Vector2D& dir, float speed, float lifeTime)
-	:_active(true)
+Bullet::Bullet(ecs::Manager* mngr,Vector2D& pos, Vector2D& dir, float speed, float lifeTime)
+	:GameObject::GameObject(mngr,ecs::grp::BULLET)
 {
-	_width = 40.0f;
-	_height = 40.0f;
-	_speed = speed;
-	_pos = pos;
-	_dir = dir;
-	addComponent(new ImageRenderer(&sdlutils().images().at("pacman")));
-	addComponent(new SimpleMove());
-	_lifeTime = sdlutils().currRealTime() + lifeTime;
+	_tr = _mngr->getComponent<Transform>(_entity);
+	_mngr->addComponent<Image>(_entity, &sdlutils().images().at("pacman"));
+	_mngr->addComponent<SimpleMove>(_entity);
+	_mngr->addComponent<LifetimeTimer>(_entity,lifeTime);
+
+	_tr->setHeight(40.0f);
+	_tr->setWidth(40.0f);
+	_tr->setSpeed(speed);
+	_tr->setDir(dir);
+	_tr->setPos(pos);
 }
-
-void
-Bullet::update() {
-	Container::update();
-
-	if (_pos.getX() < 0 || _pos.getX() > sdlutils().width() ||
-		_pos.getY() < 0 || _pos.getY() > sdlutils().height()||
-		(sdlutils().currRealTime() > _lifeTime)) {
-		_active = false;
-	}
-}
-
-*/

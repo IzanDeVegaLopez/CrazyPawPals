@@ -3,13 +3,15 @@
 #include "../../sdlutils/SDLUtils.h"
 #include "../../sdlutils/InputHandler.h"
 #include "../../ecs/Manager.h"
+#include "../../our_scripts/Bullet.h"
 
 #include "Transform.h"
+
 using namespace ecs;
 
 ShootComponent::ShootComponent(): _shootCooldown(0.5f), _lastShoot(0.0f), _maxSpeed(10.0f) {}
 
-//ShootComponent::ShootComponent(std::vector<Entity*>* b): _bulletPool(b) {}
+//ShootComponent::ShootComponent(std::vector<Bullet*>* b):_bulletPool(b), _shootCooldown(0.5f), _lastShoot(0.0f), _maxSpeed(10.0f) {}
 
 ShootComponent::~ShootComponent() {}
 
@@ -25,9 +27,8 @@ ShootComponent::shoot(const Vector2D& target) {
 	auto& pos = _tr->getPos();
 	if (sdlutils().currRealTime() >= _lastShoot + _shootCooldown) { 
 		Vector2D shootDir = (target - pos).normalize(); 
-
-		std::cout << "shot" << std::endl;
-		//_bulletPool->push_back(bullet);
+		Vector2D shootPos = { pos.getX() + (_tr->getWidth() / 2), pos.getY() + (_tr->getHeight() / 2) };
+		_bulletPool.push_back(new Bullet(_ent->getMngr(),shootPos , shootDir, 1.0f));
 		_lastShoot = sdlutils().currRealTime(); 
 	}
 }

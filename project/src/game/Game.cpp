@@ -15,6 +15,10 @@
 #include "../our_scripts/components/KeyboardPlayerCtrl.h"
 #include "../our_scripts/components/MovementController.h"
 #include "../our_scripts//components/ShootComponent.h"
+#include "../our_scripts//components/SimpleMove.h"
+
+#include "../our_scripts/Bullet.h"
+
 
 using namespace std;
 
@@ -59,18 +63,20 @@ void Game::init() {
 	_mngr = new Manager();
 
 #pragma region bullets
-	std::vector<ecs::Entity*> b;
-
-	for (int i = 0; i < 100; ++i) {
+	std::vector<Bullet*> b;
+	/*
+		for (int i = 0; i < 100; ++i) {
 		auto ins = _mngr->addEntity();
 		auto tr = _mngr->addComponent<Transform>(ins);
 		float s = 20.0f;
 		float x = -1.0f;
 		float y = -1.0f;
 		tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 2.0f);
-		_mngr->addComponent<MovementController>(ins);
+		_mngr->addComponent<SimpleMove>(ins);
 		b.push_back(ins);
 	}
+	*/
+
 #pragma endregion
 
 #pragma region player
@@ -82,7 +88,7 @@ void Game::init() {
 	float y = (sdlutils().height() - s) / 2.0f; 
 	tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 2.0f); 
 	_mngr->addComponent<Image>(player, &sdlutils().images().at("player")); 
-	_mngr->addComponent<ShootComponent>(player); 
+	_mngr->addComponent<ShootComponent>(player);
 	_mngr->addComponent<KeyboardPlayerCtrl>(player); 
 	_mngr->addComponent<MovementController>(player); 
 #pragma endregion
@@ -126,6 +132,10 @@ void Game::start() {
 		ihdlr.refresh();
 
 		if (ihdlr.isKeyDown(SDL_SCANCODE_ESCAPE)) {
+			exit = true;
+			continue;
+		}
+		if (ihdlr.closeWindowEvent()) {
 			exit = true;
 			continue;
 		}

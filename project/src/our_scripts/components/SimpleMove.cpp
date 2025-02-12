@@ -3,6 +3,8 @@
 #include "SimpleMove.h"
 
 #include "../../sdlutils/SDLUtils.h"
+#include "Transform.h"
+#include "../../ecs/Manager.h"
 
 
 SimpleMove::SimpleMove() {
@@ -12,13 +14,16 @@ SimpleMove::SimpleMove() {
 SimpleMove::~SimpleMove() {
 }
 
-void SimpleMove::update() {
-	/*
-	* auto &pos = o->getPos();
-	auto &dir = o->getDir();
-	auto &speed = o->getSpeed();
-	pos += dir*speed;
-	*/
-	
+void
+SimpleMove::initComponent() {
+	auto* mngr = _ent->getMngr();
+	_tr = mngr->getComponent<Transform>(_ent);
+	assert(_tr != nullptr);
+}
 
+void SimpleMove::update() {
+	auto &pos = _tr->getPos();
+	auto &dir = _tr->getDir();
+	auto speed = _tr->getSpeed();
+	pos += dir * speed;
 }

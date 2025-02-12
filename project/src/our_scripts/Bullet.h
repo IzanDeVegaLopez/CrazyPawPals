@@ -1,22 +1,13 @@
-/*
-* class Bullet: public Container
+
+#include "../game/GameObject.h"
+
+class Bullet: public GameObject
 {
 public:
-	Bullet(Vector2D& pos, Vector2D& dir, float speed, float lifeTime = 2.0f);
+	Bullet(ecs::Manager* mngr,Vector2D& pos, Vector2D& dir, float speed, float lifeTime = 2.0f);
 	virtual ~Bullet() {};
-
-	void update() override;
-
-	bool isActive() const;
-
 private:
-	bool _active;
-	float _lifeTime;
+	Transform* _tr;
 };
 
-inline bool
-Bullet::isActive() const {
-	return _active;
-}
-*/
 

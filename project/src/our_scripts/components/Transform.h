@@ -46,6 +46,12 @@ public:
 	Vector2D& getDir() {
 		return _dir;
 	}
+	void setPos(Vector2D& p) {
+		_pos=p;
+	}
+	void setDir(Vector2D& d) {
+		_dir = d;
+	}
 
 	float getWidth() {
 		return _width;
