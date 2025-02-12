@@ -59,7 +59,7 @@ void Game::init() {
 
 	}
 
-	// Habilitar el cursor del ratón
+	// enable the cursor visibility
 	SDL_ShowCursor(SDL_ENABLE);
 
 	// Create the manager
