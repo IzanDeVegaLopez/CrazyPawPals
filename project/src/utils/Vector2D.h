@@ -120,6 +120,12 @@ public:
 		return Vector2D(_x + v._x, _y + v._y);
 	}
 
+	// vector +=
+	inline void operator+=(const Vector2D& v){
+		_x = _x + v._x;
+		_y = _y + v._y;
+	}
+
 	// multiplication by constant (scaling)
 	inline Vector2D operator*(float d) const {
 		return Vector2D(_x * d, _y * d);
