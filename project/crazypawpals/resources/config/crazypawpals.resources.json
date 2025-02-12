@@ -6,7 +6,14 @@
   ],
   
   "images" : [
-    { "id" : "tennis_ball", "file" : "resources/images/tennis_ball.png" }
+    {
+      "id": "tennis_ball",
+      "file": "resources/images/tennis_ball.png"
+    },
+    {
+      "id": "sdl_logo",
+      "file": "resources/images/SDL_logo.png"
+    }
   ],
   
   "messages" : [
