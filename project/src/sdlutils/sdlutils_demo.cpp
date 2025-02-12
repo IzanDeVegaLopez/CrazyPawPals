@@ -11,6 +11,8 @@
 #include "../our_scripts/SimpleMove.h"
 #include "../our_scripts/ImageRenderer.h"
 
+#include "../our_scripts/card_system/Deck.hpp"
+
 using namespace std;
 
 void sdlutils_basic_demo() {
@@ -90,6 +92,24 @@ void sdlutils_basic_demo() {
 	// a boolean to exit the loop
 	bool exit_ = false;
 
+	//modified---------------------------------------------------------------------------------------------------------------------------------
+	Deck deck = Deck(std::list<Card*>{new Card("1"), new Card("2"), new Card("3"), new Card("4")});
+	//cout << deck << endl;
+	deck.add_card_to_deck(new Fireball());
+	deck.add_card_to_deck(new Minigun());
+	
+	deck.use_card();
+	deck.use_card();
+	deck.use_card();
+	deck.use_card();
+	deck.use_card();
+	deck.use_card();
+	deck.reload();
+	
+	//deck.addCardToDeck(new Card("5"));
+	cout << deck << endl;
+	//-------------------------------------------------------------------------------------------------------------------------------------------
+
 	while (!exit_) {
 		Uint32 startTime = sdl.currRealTime();
 
@@ -119,6 +139,8 @@ void sdlutils_basic_demo() {
 		sdl.presentRenderer();
 
 		Uint32 frameTime = sdl.currRealTime() - startTime;
+
+		deck.update(frameTime);
 
 		if (frameTime < 20)
 			SDL_Delay(20 - frameTime);
