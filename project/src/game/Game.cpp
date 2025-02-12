@@ -8,11 +8,13 @@
 #include "../utils/Vector2D.h"
 #include "../utils/Collisions.h"
 
+
 #include "../our_scripts/card_system/Deck.hpp"
 #include "../our_scripts/components/Image.h"
 #include "../our_scripts/components/Transform.h"
 #include "../our_scripts/components/KeyboardPlayerCtrl.h"
 #include "../our_scripts/components/MovementController.h"
+#include "../our_scripts//components/ShootComponent.h"
 
 using namespace std;
 
@@ -56,18 +58,35 @@ void Game::init() {
 	// Create the manager
 	_mngr = new Manager();
 
-	auto player = _mngr->addEntity();
-	_mngr->setHandler(ecs::hdlr::PLAYER, player);
+#pragma region bullets
+	std::vector<ecs::Entity*> b;
+
+	for (int i = 0; i < 100; ++i) {
+		auto ins = _mngr->addEntity();
+		auto tr = _mngr->addComponent<Transform>(ins);
+		float s = 20.0f;
+		float x = -1.0f;
+		float y = -1.0f;
+		tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 2.0f);
+		_mngr->addComponent<MovementController>(ins);
+		b.push_back(ins);
+	}
+#pragma endregion
+
+#pragma region player
+	auto player = _mngr->addEntity(); 
+	_mngr->setHandler(ecs::hdlr::PLAYER, player); 
 	auto tr = _mngr->addComponent<Transform>(player); 
-	auto s = 50.0f;
-	auto x = (sdlutils().width() - s) / 2.0f;
-	auto y = (sdlutils().height() - s) / 2.0f;
-	tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 0.0f);
-
-	_mngr->addComponent<Image>(player, &sdlutils().images().at("player"));
-	_mngr->addComponent<KeyboardPlayerCtrl>(player);
-
-
+	float s = 100.0f; 
+	float x = (sdlutils().width() - s) / 2.0f; 
+	float y = (sdlutils().height() - s) / 2.0f; 
+	tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 2.0f); 
+	_mngr->addComponent<Image>(player, &sdlutils().images().at("player")); 
+	_mngr->addComponent<ShootComponent>(player); 
+	_mngr->addComponent<KeyboardPlayerCtrl>(player); 
+	_mngr->addComponent<MovementController>(player); 
+#pragma endregion
+	
 	Deck deck = Deck(std::list<Card*>{new Card("1"), new Card("2"), new Card("3"), new Card("4")});
 	//cout << deck << endl;
 	deck.add_card_to_deck(new Fireball());

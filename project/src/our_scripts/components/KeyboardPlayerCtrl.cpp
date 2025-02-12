@@ -2,7 +2,9 @@
 
 #include "../../sdlutils/InputHandler.h"
 #include "../Player.h"
+#include "../../ecs/Manager.h"
 #include "Transform.h"
+#include "ShootComponent.h"
 
 KeyboardPlayerCtrl::KeyboardPlayerCtrl()
     : _left(SDL_SCANCODE_A), _right(SDL_SCANCODE_D), _up(SDL_SCANCODE_W), _down(SDL_SCANCODE_S), 
@@ -11,9 +13,19 @@ KeyboardPlayerCtrl::KeyboardPlayerCtrl()
 KeyboardPlayerCtrl::~KeyboardPlayerCtrl() {
 }
 
+void 
+KeyboardPlayerCtrl::initComponent() {
+    auto* mngr = _ent->getMngr();
+    _tr = mngr->getComponent<Transform>(_ent);
+    assert(_tr != nullptr);
+
+    _sc = mngr->getComponent<ShootComponent>(_ent);
+    assert(_sc != nullptr);
+}
+
 void KeyboardPlayerCtrl::update() {
-    /*
-    * auto& ihdlr = ih();
+    
+    auto& ihdlr = ih();
     auto& dir = _tr->getDir();
 
     //New input
@@ -22,8 +34,6 @@ void KeyboardPlayerCtrl::update() {
 
     //Vertical axis
     dir.setY((ihdlr.isKeyDown(_up) ? -1 : 0) + (ihdlr.isKeyDown(_down) ? 1 : 0));
-
-    static_cast<Player*>(_ent)->move();
 
     //reload
     if (ihdlr.isKeyDown(_reload)) {
@@ -74,13 +84,13 @@ void KeyboardPlayerCtrl::update() {
             //if we are not close enought to a reward, do nothing
             std::cout << "colecta" << std::endl;
         }
-    }
+    } */
 
     //shoot
     if (ihdlr.mouseButtonEvent() && ihdlr.getMouseButtonState(InputHandler::LEFT)) {
         //send message to shoot
         Vector2D mousePos = { (float)ihdlr.getMousePos().first, (float)ihdlr.getMousePos().second };
-        static_cast<Player*>(o)->shoot(mousePos);
-    } */
+        _sc->shoot(mousePos);
+    } 
     
 }

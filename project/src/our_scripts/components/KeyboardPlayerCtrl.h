@@ -3,12 +3,14 @@
 #include <SDL.h>
 
 class Transform;
+class ShootComponent;
 class KeyboardPlayerCtrl :public ecs::Component
 {
 public:
 	__CMPID_DECL__(ecs::cmp::KEYBOARDPLAYERCTRL);
 	KeyboardPlayerCtrl(); 
 	virtual ~KeyboardPlayerCtrl(); 
+	void initComponent() override;
 	void update() override;
 private:
 	SDL_Scancode _left;
@@ -19,4 +21,5 @@ private:
 	SDL_Scancode _collect;
 
 	Transform* _tr;
+	ShootComponent* _sc;
 };

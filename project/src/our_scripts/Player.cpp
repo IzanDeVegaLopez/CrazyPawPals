@@ -1,13 +1,24 @@
 /*
 #include "Player.h"
 #include "../sdlutils/SDLUtils.h"
-#include "Bullet.h"
+#include "../ecs/Manager.h"
+
 #include "../our_scripts/components/Image.h"
 #include "../our_scripts/components/KeyboardPlayerCtrl.h"
 #include "../our_scripts/components/MovementController.h"
 
+using namespace ecs;
 
-Player::Player(std::vector<ecs::Entity*>* b) : _shootCooldown(0.5f), _lastShoot(0.0f), _maxSpeed(10.0f), _prevDir({ 0.0f,0.0f }), b(b) {
+Player::Player(grpId_t gId, Manager* mngr, std::vector<ecs::Entity*>* b) : ecs::Entity(gId, mngr), _shootCooldown(0.5f), _lastShoot(0.0f), _maxSpeed(10.0f), _prevDir({0.0f, 0.0f}), _b(b) {
+	//auto* mngr = getMngr();
+
+	//_tr = mngr->getComponent<Transform>(_ent);
+	//assert(_tr != nullptr);
+
+}
+
+/*
+* Player::Player(std::vector<ecs::Entity*>* b) : ecs::entity (),_shootCooldown(0.5f), _lastShoot(0.0f), _maxSpeed(10.0f), _prevDir({ 0.0f,0.0f }), b(b) {
 	_width = 100.0f;
 	_height = 100.0f;
 	_pos = {(float)sdlutils().width()/2 - _width/2, (float)sdlutils().height()/2 - _height/2};
@@ -18,6 +29,7 @@ Player::Player(std::vector<ecs::Entity*>* b) : _shootCooldown(0.5f), _lastShoot(
 	addComponent(new ImageRenderer(&sdlutils().images().at("gato")));
 	addComponent(new MovementController());
 }
+
 
 Player::~Player() {}
 
@@ -40,3 +52,4 @@ Player::move(){
 
 }
 */
+
