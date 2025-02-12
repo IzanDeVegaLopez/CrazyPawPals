@@ -5,12 +5,13 @@
 #include "Bullet.h"
 #include "MovementController.h"
 
-Player::Player(std::vector<GameObject*>* b) : _shootCooldown(0.5f), _lastShoot(0.0f), _maxSpeed(10.0f), b(b) {
+Player::Player(std::vector<GameObject*>* b) : _shootCooldown(0.5f), _lastShoot(0.0f), _maxSpeed(10.0f), _prevDir({ 0.0f,0.0f }), b(b) {
 	_width = 100.0f;
 	_height = 100.0f;
 	_pos = {(float)sdlutils().width()/2 - _width/2, (float)sdlutils().height()/2 - _height/2};
 	_dir = { 0.0f,0.0f };
 	_speed = 5.0f;
+
 	addComponent(new KeyboardPlayerCtrl());
 	addComponent(new ImageRenderer(&sdlutils().images().at("gato")));
 	addComponent(new MovementController());
@@ -34,4 +35,5 @@ Player::move(){
 	//We change the position accoding to the inputs we've recieved from keyboard control
 	if (_dir.getX() != 0 && _dir.getY() != 0) _dir = _dir.normalize(); //If its a diagonal movement, normalize dir
 	_pos = _pos + (_dir * _speed);
+
 }

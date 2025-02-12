@@ -6,6 +6,7 @@ protected:
 	float _shootCooldown;
 	float _lastShoot;
 	float _maxSpeed;
+	Vector2D _prevDir;
 
 	std::vector<GameObject*>* b;
 public:
