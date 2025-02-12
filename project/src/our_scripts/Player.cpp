@@ -31,7 +31,7 @@ Player::shoot(const Vector2D& target) {
 
 void 
 Player::move(){
-
-	//Modificamos la posición actual en cuestión de la dirección (dada por input) y la velocidad
-	_pos += (_dir * _speed);
+	//We change the position accoding to the inputs we've recieved from keyboard control
+	if (_dir.getX() != 0 && _dir.getY() != 0) _dir = _dir.normalize(); //If its a diagonal movement, normalize dir
+	_pos = _pos + (_dir * _speed);
 }
