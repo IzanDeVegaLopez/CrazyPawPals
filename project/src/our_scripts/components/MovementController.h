@@ -1,15 +1,16 @@
 #pragma once
 
-#include "PhysicsComponent.h"
-#include "../utils/Vector2D.h"
+#include "../../ecs/Component.h"
+#include "../../utils/Vector2D.h"
 
-class MovementController : public PhysicsComponent
+class MovementController : public ecs::Component
 {
 public:
+	__CMPID_DECL__(ecs::cmp::MOVEMENTCONTROLLER);
 	MovementController();
 	virtual ~MovementController();
-	void update(Container* o) override;
-	void accelerate(Container* o);
+	void update() override;
+	void accelerate();
 
 private:
 	float _maxSpeed;

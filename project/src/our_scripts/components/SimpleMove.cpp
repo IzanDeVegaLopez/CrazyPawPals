@@ -2,8 +2,8 @@
 
 #include "SimpleMove.h"
 
-#include "../sdlutils/SDLUtils.h"
-#include "Container.h"
+#include "../../sdlutils/SDLUtils.h"
+
 
 SimpleMove::SimpleMove() {
 
@@ -12,11 +12,13 @@ SimpleMove::SimpleMove() {
 SimpleMove::~SimpleMove() {
 }
 
-void SimpleMove::update(Container *o) {
-
-	auto &pos = o->getPos();
+void SimpleMove::update() {
+	/*
+	* auto &pos = o->getPos();
 	auto &dir = o->getDir();
 	auto &speed = o->getSpeed();
 	pos += dir*speed;
+	*/
+	
 
 }

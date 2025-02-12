@@ -8,11 +8,9 @@
 #define _CMPS_LIST_ \
 	TRANSFORM, \
 	IMAGE, \
-	PACMANCTRL, \
-	STARMOTION, \
-	GAMECTRL, \
-	STOPONBORDER, \
-    DEACCELERATION, \
+	KEYBOARDPLAYERCTRL, \
+	MOVEMENTCONTROLLER, \
+    SIMPLEMOVE, \
     HEALTH
 
 
@@ -24,6 +22,6 @@
 // Handlers list - must have at least one element
 //
 #define _HDLRS_LIST_ \
-    PACMAN, \
+    PLAYER, \
 	GAMEINFO
 

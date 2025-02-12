@@ -2,6 +2,7 @@
 #include "../../ecs/Manager.h"
 #include "../../sdlutils/SDLUtils.h"
 
+
 Health::Health() : _lives(DEFAULT_LIVES), _heartTexture(&sdlutils().images().at("heart")) {}
 
 Health::~Health() {}

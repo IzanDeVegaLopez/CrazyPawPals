@@ -1,6 +1,8 @@
 #pragma once
 #include "../../ecs/Component.h"
 
+const int DEFAULT_LIVES = 3;
+
 class Texture;
 class Health :public ecs::Component
 {
@@ -16,7 +18,6 @@ public:
 protected:
 	int _lives;
 	Texture* _heartTexture;
-	const int DEFAULT_LIVES = 3;
 };
 inline int
 Health::Lives()const {

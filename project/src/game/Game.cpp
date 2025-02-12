@@ -9,6 +9,10 @@
 #include "../utils/Collisions.h"
 
 #include "../our_scripts/card_system/Deck.hpp"
+#include "../our_scripts/components/Image.h"
+#include "../our_scripts/components/Transform.h"
+#include "../our_scripts/components/KeyboardPlayerCtrl.h"
+#include "../our_scripts/components/MovementController.h"
 
 using namespace std;
 
@@ -33,7 +37,7 @@ Game::~Game() {
 void Game::init() {
 
 	// initialize the SDL singleton
-	if (!SDLUtils::Init("Practica 1", 800, 600,
+	if (!SDLUtils::Init("crazy paw pals", 800, 600,
 			"resources/config/crazypawpals.resources.json")) {
 
 		std::cerr << "Something went wrong while initializing SDLUtils"
@@ -52,8 +56,18 @@ void Game::init() {
 	// Create the manager
 	_mngr = new Manager();
 
+	auto player = _mngr->addEntity();
+	_mngr->setHandler(ecs::hdlr::PLAYER, player);
+	auto tr = _mngr->addComponent<Transform>(player); 
+	auto s = 50.0f;
+	auto x = (sdlutils().width() - s) / 2.0f;
+	auto y = (sdlutils().height() - s) / 2.0f;
+	tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 0.0f);
 
-	//modified---------------------------------------------------------------------------------------------------------------------------------
+	_mngr->addComponent<Image>(player, &sdlutils().images().at("player"));
+	_mngr->addComponent<KeyboardPlayerCtrl>(player);
+
+
 	Deck deck = Deck(std::list<Card*>{new Card("1"), new Card("2"), new Card("3"), new Card("4")});
 	//cout << deck << endl;
 	deck.add_card_to_deck(new Fireball());
@@ -69,9 +83,6 @@ void Game::init() {
 
 	//deck.addCardToDeck(new Card("5"));
 	cout << deck << endl;
-	//-------------------------------------------------------------------------------------------------------------------------------------------
-
-
 }
 
 void Game::start() {

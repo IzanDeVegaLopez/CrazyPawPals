@@ -1,6 +1,6 @@
-#include "Bullet.h"
-#include "SimpleMove.h"
-#include "ImageRenderer.h"
+/*
+* #include "Bullet.h"
+#include "../our_scripts/components/SimpleMove.h"
 
 #include "../sdlutils/SDLUtils.h"
 #include <iostream>
@@ -29,3 +29,5 @@ Bullet::update() {
 		_active = false;
 	}
 }
+
+*/

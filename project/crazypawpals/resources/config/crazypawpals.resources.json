@@ -8,7 +8,7 @@
   "images" : [
     {
       "id": "player",
-      "file": "resources/images/tennis_ball.png"
+      "file": "resources/images/gato.png"
     },
     {
       "id": "sdl_logo",

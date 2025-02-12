@@ -1,6 +1,5 @@
-#include "Container.h"
-
-class Bullet: public Container
+/*
+* class Bullet: public Container
 {
 public:
 	Bullet(Vector2D& pos, Vector2D& dir, float speed, float lifeTime = 2.0f);
@@ -19,3 +18,5 @@ inline bool
 Bullet::isActive() const {
 	return _active;
 }
+*/
+

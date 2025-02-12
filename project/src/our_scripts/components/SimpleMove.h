@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include "PhysicsComponent.h"
+#include "../../ecs/Component.h"
 
-class SimpleMove: public PhysicsComponent {
+class SimpleMove: public ecs::Component {
 public:
 	SimpleMove();
 	virtual ~SimpleMove();
-	void update(Container *o) override;
+	void update() override;
 };
 

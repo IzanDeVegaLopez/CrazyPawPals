@@ -1,14 +1,15 @@
 #pragma once
-#include "InputComponent.h"
-
+#include "../../ecs/Component.h" 
 #include <SDL.h>
 
-class KeyboardPlayerCtrl :public InputComponent
+class Transform;
+class KeyboardPlayerCtrl :public ecs::Component
 {
 public:
+	__CMPID_DECL__(ecs::cmp::KEYBOARDPLAYERCTRL);
 	KeyboardPlayerCtrl(); 
 	virtual ~KeyboardPlayerCtrl(); 
-	void handleInput(Container* o) override;
+	void update() override;
 private:
 	SDL_Scancode _left;
 	SDL_Scancode _right;
@@ -16,4 +17,6 @@ private:
 	SDL_Scancode _down;
 	SDL_Scancode _reload;
 	SDL_Scancode _collect;
+
+	Transform* _tr;
 };
