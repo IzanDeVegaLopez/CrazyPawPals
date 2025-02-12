@@ -9,6 +9,7 @@ public:
 	MovementController();
 	virtual ~MovementController();
 	void update(Container* o) override;
+	void accelerate(Container* o);
 
 private:
 	float _maxSpeed;
