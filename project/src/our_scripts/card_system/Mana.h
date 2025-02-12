@@ -2,11 +2,11 @@
 #include <algorithm>
 class Mana {
 private:
-	int _mana_count = 0; // Current amount of mana.
+	int _mana_count; // Current amount of mana.
 	int _max_mana; // Maximum amount of mana that can be stored.
 	int _mana_regen; // Mana gained per second.
 public:
-	Mana(int max = 5000, int regen = 750) : _max_mana(max), _mana_regen(regen) {}
+	Mana(int max = 5000, int regen = 750) : _max_mana(max), _mana_regen(regen), _mana_count(0) {}
 	void update(int deltaTime) { // Add override after implementing components 
 		_mana_count = std::min(_mana_count + _mana_regen*deltaTime/1000, _max_mana);
 	}
