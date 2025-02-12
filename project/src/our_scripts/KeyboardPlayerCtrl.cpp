@@ -15,7 +15,7 @@ void KeyboardPlayerCtrl::handleInput(Container* o) {
     auto& ihdlr = ih();
 
     //suponiendo que luego cambiare vel por dir probablemente
-    if (ihdlr.keyDownEvent()) {
+    if (ihdlr.keyDownEvent()) { //Si comentamos esta linea (y el cierre de llave abajo) el movimiento parece mas natural
         auto& dir = o->getDir();
 
         //send direction value
@@ -38,6 +38,8 @@ void KeyboardPlayerCtrl::handleInput(Container* o) {
         else {
             dir.setY(0); //stop y axis movement
         }
+
+        static_cast<Player*>(o)->move();
 
         //reload
         if (ihdlr.isKeyDown(_reload)) {
