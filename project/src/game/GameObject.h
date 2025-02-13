@@ -13,11 +13,11 @@
 class GameObject {
 protected:
 	ecs::entity_t _entity;
-	ecs::Manager* _mngr;
+	//ecs::Manager* _mngr;
 
 public:
 	GameObject(ecs::Manager* mngr, ecs::grpId_t gId = ecs::grp::DEFAULT) {
-		_mngr = mngr;
+		//_mngr = mngr;
 		_entity = mngr->addEntity(gId);
 		auto tr = mngr->addComponent<Transform>(_entity);
 		tr->init(Vector2D(0, 0), Vector2D(), 1.0f, 1.0f, 0.0f, 0.0f);
