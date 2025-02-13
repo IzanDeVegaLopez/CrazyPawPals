@@ -15,6 +15,7 @@ void Deck::_put_new_card_on_hand()
 	}
 }
 //For testing Purposes
+/*
 Deck::Deck() noexcept
 {
 	_draw_pile = CardList();
@@ -23,12 +24,14 @@ Deck::Deck() noexcept
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
 }
+*/
 
 Deck::Deck(std::list<Card*>& starterDeck) noexcept
 {
 	_discard_pile = CardList();
 	_hand = nullptr;
 	_draw_pile = CardList(starterDeck);
+	_draw_pile.shuffle();
 	_put_new_card_on_hand();
 }
 
@@ -37,6 +40,7 @@ Deck::Deck(CardList&& starterDeck) noexcept
 	_discard_pile = CardList();
 	_hand = nullptr;
 	_draw_pile = starterDeck;
+	_draw_pile.shuffle();
 	_put_new_card_on_hand();
 }
 
@@ -76,7 +80,7 @@ bool Deck::discard_card() noexcept
 void Deck::mill() noexcept
 {
 	if (!_draw_pile.empty()) {
-		_discard_pile.add_card(_draw_pile.pop_first()->mill());
+		_discard_pile.add_card(_draw_pile.pop_first()->on_mill());
 	}
 }
 
@@ -154,7 +158,7 @@ std::ostream& operator<<(std::ostream& os, const Deck& deck)
 	os << std::endl;
 
 	if(deck._hand!=nullptr)
-		os << "Hand: "  << std::endl << *deck._hand << std::endl;
+		os << "Hand: "  << std::endl << deck._hand->get_written_info() << std::endl;
 
 	os << "DiscardPile: " << std::endl;
 	os << deck._discard_pile;

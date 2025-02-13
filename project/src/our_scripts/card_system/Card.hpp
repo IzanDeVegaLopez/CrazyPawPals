@@ -2,14 +2,31 @@
 #include <string>
 #include <ostream>
 #include <iostream>
-class Resources; // temporary class until resource management system is decided
+#include <algorithm>
+
+class Resources {
+private:
+	int _mana = 0;
+	int _health = 0;
+public:
+	Resources() = default;
+	Resources(int m, int h = 0) : _mana(m), _health(h) {}
+	void modify_mana(int mana_mod) { set_mana(_mana + mana_mod); }
+	void set_mana(int mana) { _mana = std::max(mana, 0); }
+	int get_mana() const { return _mana; }
+	void modify_health(int health_mod) { set_health(_health + health_mod); }
+	void set_health(int health) { _health = std::max(health, 0); }
+	int get_health() const { return _health; }
+	Resources operator+(const Resources& res) const {
+		return Resources(_mana+res._mana, _health+res._health);
+	}
+
+};
+
 class Card {
 protected:
-	char* _name;
-	int _mana_cost = 0; // Deducted from the player's mana pool upon successfully playing the card. Cards cannot be played if the player's mana is insufficient.
-	int _health_cost = 0; // Deducted from the player's health pool upon successfully playing the card. If a card requires a health cost, it cannot lethally damage the player.
-
-	Resources* _resources;
+	std::string _name;
+	Resources _my_costs;
 
 	// OPTIONAL ATTRIBUTES
 	// These can be declared, modified and utilized within specific subclasses if necessary.
@@ -19,16 +36,15 @@ protected:
 	// int _boost = 0; // Unique counter for specific cards that are enhanced under certain conditions.
 	// int _boost_threshold = 0; //Represents the value at which _boost enhances the card. 
 public:
-	Card(char*);
+	//Card();
+	Card(std::string = "default", Resources = Resources(0,0));
 	virtual ~Card(); 
 
-	int mana_cost() const { return _mana_cost; }
-	int health_cost() const { return _health_cost; }
+	virtual Resources& get_costs();
 
 	//bool can_play();
 	virtual void on_play();
-	virtual Card* mill();
-	friend std::ostream& operator << (std::ostream& os, const Card& card);
+	virtual Card* on_mill();
 	//Debug purposes
-	char* getName();
+	virtual std::string get_written_info();
 };

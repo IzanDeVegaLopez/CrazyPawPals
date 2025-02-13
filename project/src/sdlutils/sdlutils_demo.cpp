@@ -9,6 +9,7 @@
 #include "SDLUtils.h"
 
 #include "../our_scripts/card_system/Deck.hpp"
+#include "../our_scripts/card_system/CardUpgrade.hpp"
 
 using namespace std;
 
@@ -73,20 +74,10 @@ void sdlutils_basic_demo() {
 	bool exit_ = false;
 
 	//modified---------------------------------------------------------------------------------------------------------------------------------
-	Deck deck = Deck(std::list<Card*>{new Card("1"), new Card("2"), new Card("3"), new Card("4")});
-	//cout << deck << endl;
-	deck.add_card_to_deck(new Fireball());
-	deck.add_card_to_deck(new Minigun());
+	Deck deck = Deck(std::list<Card*>{new CheaperBy1(new PlayItTwice(new Fireball())), new PlayItTwice(new Minigun())});
 	
 	deck.use_card();
-	deck.use_card();
-	deck.use_card();
-	deck.use_card();
-	deck.use_card();
-	deck.use_card();
-	deck.reload();
-	
-	//deck.addCardToDeck(new Card("5"));
+
 	cout << deck << endl;
 	//-------------------------------------------------------------------------------------------------------------------------------------------
 
