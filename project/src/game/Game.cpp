@@ -9,7 +9,17 @@
 #include "../utils/Vector2D.h"
 #include "../utils/Collisions.h"
 
+
 #include "../our_scripts/card_system/Deck.hpp"
+#include "../our_scripts/components/Image.h"
+#include "../our_scripts/components/Transform.h"
+#include "../our_scripts/components/KeyboardPlayerCtrl.h"
+#include "../our_scripts/components/MovementController.h"
+#include "../our_scripts//components/ShootComponent.h"
+#include "../our_scripts//components/SimpleMove.h"
+
+#include "../our_scripts/Bullet.h"
+
 
 
 //#include "Container.h"
@@ -40,7 +50,7 @@ Game::~Game() {
 void Game::init() {
 
 	// initialize the SDL singleton
-	if (!SDLUtils::Init("Practica 1", 800, 600,
+	if (!SDLUtils::Init("crazy paw pals", 800, 600,
 			"resources/config/crazypawpals.resources.json")) {
 
 		std::cerr << "Something went wrong while initializing SDLUtils"
@@ -56,11 +66,43 @@ void Game::init() {
 
 	}
 
+	// Habilitar el cursor del ratï¿½n
+	SDL_ShowCursor(SDL_ENABLE);
+
 	// Create the manager
 	_mngr = new Manager();
 
+#pragma region bullets
+	std::vector<Bullet*> b;
+	/*
+		for (int i = 0; i < 100; ++i) {
+		auto ins = _mngr->addEntity();
+		auto tr = _mngr->addComponent<Transform>(ins);
+		float s = 20.0f;
+		float x = -1.0f;
+		float y = -1.0f;
+		tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 2.0f);
+		_mngr->addComponent<SimpleMove>(ins);
+		b.push_back(ins);
+	}
+	*/
 
-	//modified---------------------------------------------------------------------------------------------------------------------------------
+#pragma endregion
+
+#pragma region player
+	auto player = _mngr->addEntity(); 
+	_mngr->setHandler(ecs::hdlr::PLAYER, player); 
+	auto tr = _mngr->addComponent<Transform>(player); 
+	float s = 100.0f; 
+	float x = (sdlutils().width() - s) / 2.0f; 
+	float y = (sdlutils().height() - s) / 2.0f; 
+	tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 2.0f); 
+	_mngr->addComponent<Image>(player, &sdlutils().images().at("player")); 
+	_mngr->addComponent<ShootComponent>(player);
+	_mngr->addComponent<KeyboardPlayerCtrl>(player); 
+	_mngr->addComponent<MovementController>(player); 
+#pragma endregion
+	
 	Deck deck = Deck(std::list<Card*>{new Card("1"), new Card("2"), new Card("3"), new Card("4")});
 	//cout << deck << endl;
 	deck.add_card_to_deck(new Fireball());
@@ -76,10 +118,11 @@ void Game::init() {
 
 	//deck.addCardToDeck(new Card("5"));
 	cout << deck << endl;
+
 	//-------------------------------------------------------------------------------------------------------------------------------------------
 
 	//modified---------------------------------------------------------------------------------------------------------------------------------
-	// ORDEN: Crear, componentes, posición, escala, rotación, añadir al vector
+	// ORDEN: Crear, componentes, posiciï¿½n, escala, rotaciï¿½n, aï¿½adir al vector
 
 	//Container* _player_ref = new Container();
 	//_player_ref->addComponent(new ImageRenderer(&sdlutils().images().at("sdl_logo")));
@@ -135,6 +178,10 @@ void Game::start() {
 		ihdlr.refresh();
 
 		if (ihdlr.isKeyDown(SDL_SCANCODE_ESCAPE)) {
+			exit = true;
+			continue;
+		}
+		if (ihdlr.closeWindowEvent()) {
 			exit = true;
 			continue;
 		}

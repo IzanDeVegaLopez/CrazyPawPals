@@ -5,56 +5,25 @@
 #include <SDL.h>
 
 #include "../utils/Vector2D.h"
+#include "../ecs/Entity.h"
+#include "../ecs/Manager.h"
+#include "../our_scripts/components/Transform.h"
+#include "../sdlutils/SDLUtils.h"
 
 class GameObject {
+protected:
+	ecs::entity_t _entity;
+	ecs::Manager* _mngr;
+
 public:
-	GameObject() :
-			_pos(), _vel(), _width(), _height(), _rot() {
+	GameObject(ecs::Manager* mngr, ecs::grpId_t gId = ecs::grp::DEFAULT) {
+		_mngr = mngr;
+		_entity = mngr->addEntity(gId);
+		auto tr = mngr->addComponent<Transform>(_entity);
+		tr->init(Vector2D(0, 0), Vector2D(), 1.0f, 1.0f, 0.0f, 0.0f);
 	}
 	virtual ~GameObject() {
 	}
 
-	virtual void handleInput() = 0;
-	virtual void update() = 0;
-	virtual void render() = 0;
-
-	inline float getHeight() const {
-		return _height;
-	}
-
-	inline void setHeight(float height) {
-		_height = height;
-	}
-
-	inline Vector2D& getPos() {
-		return _pos;
-	}
-
-	inline Vector2D& getVel() {
-		return _vel;
-	}
-
-	inline float getWidth() const {
-		return _width;
-	}
-
-	inline void setWidth(float width) {
-		_width = width;
-	}
-	float getRot() {
-		return _rot;
-	}
-
-	void setRot(float r) {
-		_rot = r;
-	}
-
-protected:
-
-	Vector2D _pos;
-	Vector2D _vel;
-	float _width;
-	float _height;
-	float _rot;
 };
 

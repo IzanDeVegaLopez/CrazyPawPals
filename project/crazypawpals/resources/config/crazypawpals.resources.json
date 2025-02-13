@@ -6,14 +6,11 @@
   ],
   
   "images" : [
-    {
-      "id": "tennis_ball",
-      "file": "resources/images/tennis_ball.png"
-    },
-    {
-      "id": "sdl_logo",
-      "file": "resources/images/SDL_logo.png"
-    }
+    { "id": "player",  "file": "resources/images/gato.png"},
+    { "id": "sarnoRata",  "file": "resources/images/pacman.png"},
+    { "id": "CatKuza",  "file": "resources/images/pacman.png"},
+    { "id": "michiMafioso ",  "file": "resources/images/pacman.png"},
+    { "id": "sdl_logo","file": "resources/images/SDL_logo.png"}
   ],
   
   "messages" : [

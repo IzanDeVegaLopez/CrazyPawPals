@@ -1,5 +1,15 @@
 // This file is part of the course TPV2@UCM - Samir Genaim
 
+
+/*
+* ELEMENTS:
+* -Position
+* -Direction
+* -Width
+* -Height
+* -Rotation
+* -Speed (float)
+*/
 #pragma once
 #include "../../ecs/Component.h"
 #include "../../utils/Vector2D.h"
@@ -11,29 +21,36 @@ public:
 	__CMPID_DECL__(ecs::cmp::TRANSFORM)
 
 	Transform() :
-			_pos(), _vel(), _width(), _height(), _rot() {
+			_pos(), _dir(), _width(), _height(), _rot(), _speed() {
 	}
 
-	Transform(Vector2D pos, Vector2D vel, float w, float h, float r) :
-			_pos(pos), _vel(vel), _width(w), _height(h), _rot(r) {
+	Transform(Vector2D pos, Vector2D dir, float w, float h, float r, float s ) :
+			_pos(pos), _dir(dir), _width(w), _height(h), _rot(r), _speed(s) {
 	}
 
 	virtual ~Transform() {
 	}
 
-	void init(Vector2D pos, Vector2D vel, float w, float h, float r) {
+	void init(Vector2D pos, Vector2D dir, float w, float h, float r, float s) {
 		_pos = pos;
-		_vel = vel;
+		_dir = dir;
 		_width = w;
 		_height = h;
 		_rot = r;
+		_speed = s;
 	}
 
 	Vector2D& getPos() {
 		return _pos;
 	}
-	Vector2D& getVel() {
-		return _vel;
+	Vector2D& getDir() {
+		return _dir;
+	}
+	void setPos(Vector2D& p) {
+		_pos=p;
+	}
+	void setDir(Vector2D& d) {
+		_dir = d;
 	}
 
 	float getWidth() {
@@ -60,15 +77,24 @@ public:
 		_rot = r;
 	}
 
+	float getSpeed() {
+		return _speed;
+	}
+
+	void setSpeed(float s) {
+		_speed = s;
+	}
+
 	void update() override {
-		_pos = _pos + _vel;
+		_pos = _pos + _dir*_speed;
 	}
 
 private:
 	Vector2D _pos;
-	Vector2D _vel;
+	Vector2D _dir;
 	float _width;
 	float _height;
 	float _rot;
+	float _speed;
 };
 

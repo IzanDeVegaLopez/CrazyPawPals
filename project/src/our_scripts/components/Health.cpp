@@ -2,11 +2,12 @@
 #include "../../ecs/Manager.h"
 #include "../../sdlutils/SDLUtils.h"
 
-Health::Health(): _lives(DEFAULT_LIVES), _heartTexture(&sdlutils().images().at("heart")) {}
+
+Health::Health() : _lives(DEFAULT_LIVES), _heartTexture(&sdlutils().images().at("heart")) {}
 
 Health::~Health() {}
 
-void 
+void
 Health::render() {
 	int x = 10;
 	int y = 10;
@@ -15,9 +16,8 @@ Health::render() {
 		_heartTexture->render(x + separation * i, y);
 	}
 }
-void 
+void
 Health::release() {
 
 }
-
 

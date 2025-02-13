@@ -8,22 +8,23 @@
 #define _CMPS_LIST_ \
 	TRANSFORM, \
 	IMAGE, \
-	PACMANCTRL, \
-	STARMOTION, \
-	GAMECTRL, \
-	STOPONBORDER, \
-    DEACCELERATION, \
-    HEALTH
+    SHOOTCOMPONENT, \
+	KEYBOARDPLAYERCTRL, \
+	MOVEMENTCONTROLLER, \
+    SIMPLEMOVE, \
+    HEALTH,\
+	LIFETIMETIMER
 
 
 // Groups list - must have at least one element
 //
 #define _GRPS_LIST_ \
+	BULLET,\
 	STARS
 
 // Handlers list - must have at least one element
 //
 #define _HDLRS_LIST_ \
-    PACMAN, \
+    PLAYER, \
 	GAMEINFO
 
