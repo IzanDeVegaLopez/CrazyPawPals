@@ -1,6 +1,7 @@
 #pragma once
 #include <algorithm>
-class Mana {
+#include "../../ecs/Component.h" 
+class Mana:public ecs::Component {
 private:
 	int _mana_count; // Current amount of mana.
 	int _max_mana; // Maximum amount of mana that can be stored.
