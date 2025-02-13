@@ -7,7 +7,7 @@ Bullet::Bullet(ecs::Manager* mngr,Vector2D& pos, Vector2D& dir, float speed, flo
 	:GameObject::GameObject(mngr,ecs::grp::BULLET)
 {
 	_tr = _mngr->getComponent<Transform>(_entity);
-	_mngr->addComponent<Image>(_entity, &sdlutils().images().at("pacman"));
+	_mngr->addComponent<Image>(_entity, &sdlutils().images().at("bullet_1"));
 	_mngr->addComponent<SimpleMove>(_entity);
 	_mngr->addComponent<LifetimeTimer>(_entity,lifeTime);
 
