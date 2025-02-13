@@ -18,6 +18,7 @@
 #include "../our_scripts//components/SimpleMove.h"
 
 #include "../our_scripts/Bullet.h"
+#include "../our_scripts/Player.h"
 
 
 using namespace std;
@@ -83,7 +84,10 @@ void Game::init() {
 #pragma endregion
 
 #pragma region player
-	auto player = _mngr->addEntity(); 
+
+	auto player = new Player(_mngr);
+	/*
+		auto player = _mngr->addEntity(); 
 	_mngr->setHandler(ecs::hdlr::PLAYER, player); 
 	auto tr = _mngr->addComponent<Transform>(player); 
 	float s = 100.0f; 
@@ -94,6 +98,8 @@ void Game::init() {
 	_mngr->addComponent<ShootComponent>(player);
 	_mngr->addComponent<KeyboardPlayerCtrl>(player); 
 	_mngr->addComponent<MovementController>(player); 
+	*/
+
 #pragma endregion
 	
 	Deck deck = Deck(std::list<Card*>{new Card("1"), new Card("2"), new Card("3"), new Card("4")});

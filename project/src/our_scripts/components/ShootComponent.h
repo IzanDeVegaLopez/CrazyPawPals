@@ -12,7 +12,6 @@ class ShootComponent : public ecs::Component {
 protected:
 	float _shootCooldown;
 	float _lastShoot;
-	float _maxSpeed;
 
 	Transform* _tr;
 	

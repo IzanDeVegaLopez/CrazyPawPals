@@ -20,6 +20,8 @@
 //
 #define _GRPS_LIST_ \
 	BULLET,\
+	PLAYER,\
+	ENEMY,\
 	STARS
 
 // Handlers list - must have at least one element

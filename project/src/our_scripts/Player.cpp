@@ -1,4 +1,3 @@
-/*
 #include "Player.h"
 #include "../sdlutils/SDLUtils.h"
 #include "../ecs/Manager.h"
@@ -6,15 +5,21 @@
 #include "../our_scripts/components/Image.h"
 #include "../our_scripts/components/KeyboardPlayerCtrl.h"
 #include "../our_scripts/components/MovementController.h"
+#include "../our_scripts/components/ShootComponent.h"
+#include "../sdlutils/SDLUtils.h"
 
 using namespace ecs;
 
-Player::Player(grpId_t gId, Manager* mngr, std::vector<ecs::Entity*>* b) : ecs::Entity(gId, mngr), _shootCooldown(0.5f), _lastShoot(0.0f), _maxSpeed(10.0f), _prevDir({0.0f, 0.0f}), _b(b) {
-	//auto* mngr = getMngr();
+Player::Player(ecs::Manager* mngr) 
+	:GameObject::GameObject(mngr, ecs::grp::PLAYER),_shootCooldown(0.5f), _maxSpeed(10.0f){
 
-	//_tr = mngr->getComponent<Transform>(_ent);
-	//assert(_tr != nullptr);
-
+	_tr = _entity->getMngr()->getComponent<Transform>(_entity);
+	float s = 100.0f;
+	_tr->init({ sdlutils().width() / 2.0f, sdlutils().height() / 2.0f }, { 0.0f,0.0f }, s, s, 0.0f, 2.0f);
+	_entity->getMngr()->addComponent<Image>(_entity, &sdlutils().images().at("player"));
+	_entity->getMngr()->addComponent<ShootComponent>(_entity);
+	_entity->getMngr()->addComponent<KeyboardPlayerCtrl>(_entity);
+	_entity->getMngr()->addComponent<MovementController>(_entity);
 }
 
 /*
