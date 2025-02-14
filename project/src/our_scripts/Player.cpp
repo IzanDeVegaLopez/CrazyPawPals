@@ -6,6 +6,7 @@
 #include "../our_scripts/components/KeyboardPlayerCtrl.h"
 #include "../our_scripts/components/MovementController.h"
 #include "../our_scripts/components/ShootComponent.h"
+#include "../our_scripts/components/Health.h"
 #include "../sdlutils/SDLUtils.h"
 
 using namespace ecs;
@@ -20,6 +21,7 @@ Player::Player(ecs::Manager* mngr)
 	_entity->getMngr()->addComponent<ShootComponent>(_entity);
 	_entity->getMngr()->addComponent<KeyboardPlayerCtrl>(_entity);
 	_entity->getMngr()->addComponent<MovementController>(_entity);
+	_entity->getMngr()->addComponent<Health>(_entity);
 }
 
 /*
