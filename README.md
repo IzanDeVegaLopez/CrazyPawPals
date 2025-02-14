@@ -95,7 +95,7 @@ El maná se regenera pasivamente con el tiempo a un ritmo fijo, aunque algunas c
 El jugador tiene un maná máximo, la cantidad de maná del jugador nunca puede exceder esta cantidad.
 
 **Representación interna:**  
-- El maná se representa como un entero. Cada 100 puntos de maná en la representación equivalen a 1 punto de maná en el juego. El número y la barrita de progreso no son más que el resultado de las operaciones “%100”  “/100” a la representación del maná. 
+- El maná se representa como un entero. Cada 1000 puntos de maná en la representación equivalen a 1 punto de maná en el juego. El número y la barrita de progreso no son más que el resultado de las operaciones “%1000”  “/1000” a la representación del maná. 
 
 **Parámetros:**  
 - Obtención de maná en puntos por segundo (generalmente entre 0.5 y 1).  
