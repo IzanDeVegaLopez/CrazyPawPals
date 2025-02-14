@@ -11,7 +11,7 @@ public:
 	MovementController();
 	virtual ~MovementController();
 	void initComponent() override;
-	void update() override;
+	void update(int delta_time) override;
 	void accelerate();
 
 private:

@@ -49,7 +49,7 @@ public:
 	// does nothing -- some components will not override this
 	// method.
 	//
-	virtual void update() {
+	virtual void update(int delta_time) {
 	}
 
 	// A component has a render method, and by default it

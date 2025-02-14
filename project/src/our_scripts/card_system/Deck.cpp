@@ -59,7 +59,7 @@ bool Deck::use_card() noexcept
 {
 	if (_can_play_hand_card()) {
 		//Se pudo usar la carta
-		_mana->change_mana(_hand->mana_cost());
+		_mana->change_mana(_hand->get_costs().get_mana());
 		_hand->on_play();
 		_put_new_card_on_hand();
 		return true;
@@ -123,7 +123,7 @@ bool Deck::_can_finish_reloading()
 
 bool Deck::_can_play_hand_card()
 {
-	return (!_is_reloading && _mana->mana_count() >= _hand->mana_cost());
+	return (!_is_reloading && _mana->mana_count() >= _hand->get_costs().get_mana());
 	//TODO: card checks mana and life costs
 	
 }

@@ -23,8 +23,8 @@ KeyboardPlayerCtrl::initComponent() {
     assert(_sc != nullptr);
 }
 
-void KeyboardPlayerCtrl::update() {
-    
+void KeyboardPlayerCtrl::update(int delta_time) {
+
     auto& ihdlr = ih();
     auto& dir = _tr->getDir();
 

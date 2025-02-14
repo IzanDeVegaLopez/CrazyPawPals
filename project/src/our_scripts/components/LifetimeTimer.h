@@ -8,5 +8,5 @@ public:
 	__CMPID_DECL__(ecs::cmp::LIFETIMETIMER);
 	LifetimeTimer(float lifetime);
 	virtual ~LifetimeTimer();
-	void update() override;
+	void update(int delta_time) override;
 };
