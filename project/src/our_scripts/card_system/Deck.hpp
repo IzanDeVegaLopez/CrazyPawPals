@@ -2,7 +2,7 @@
 #include "CardList.h"
 #include "Card.hpp"
 #include "PlayableCards.hpp"
-#include "Mana.h"
+#include "../components/Mana.h"
 #include <list>
 #include <cassert>
 

@@ -68,7 +68,7 @@ project(CrazyPawPals)
         ${PROJECT_NAME}
         ${CrazyPawPals_SRC_DIRECTORY}/main.cpp
         ${CrazyPawPals_SOURCES}
-     "project/src/our_scripts/card_system/CardList.h" "project/src/our_scripts/card_system/Deck.cpp" "project/src/our_scripts/card_system/Card.cpp" "project/src/our_scripts/card_system/PlayableCards.cpp"  "project/src/our_scripts/card_system/Mana.h")
+     "project/src/our_scripts/card_system/CardList.h" "project/src/our_scripts/card_system/Deck.cpp" "project/src/our_scripts/card_system/Card.cpp" "project/src/our_scripts/card_system/PlayableCards.cpp"  "project/src/our_scripts/components/Mana.h")
     
     target_include_directories(
         ${PROJECT_NAME}
