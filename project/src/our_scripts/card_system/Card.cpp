@@ -1,22 +1,18 @@
 #include "Card.hpp"
-class Resources {
-private:
-	int _mana = 0;
-	int _health = 0;
-public:
-	Resources() = default;
-	void set_mana(int mana) { _mana = mana; }
-	int mana() const { return _mana; }
-	void set_health(int health) { _health = health; }
-	int health() const { return _health; }
-};
 
-Card::Card(char* card_name)
-	:_name(card_name)
+
+Card::Card(std::string card_name, Resources r)
+	:_name(card_name), _my_costs(r)
 {
 }
 
-Card::~Card() { delete _name; }
+
+Card::~Card() { }
+
+Resources& Card::get_costs()
+{
+	return _my_costs;
+}
 
 
 Card* Card::on_mill()
@@ -27,20 +23,13 @@ Card* Card::on_mill()
 
 void Card::on_play() {
 	// Deploy effect
-	std::cout << _name << " deployed" << std::endl;
+	std::cout << _name << " Played" << std::endl;
 }
 
-char* Card::getName()
+std::string Card::get_written_info()
 {
-	return _name;
+	return std::to_string(_my_costs.get_mana()) + '-' + _name;
 }
-
-std::ostream& operator<<(std::ostream& os, const Card& card)
-{
-	os << card._name;
-	return os;
-}
-
 /*bool Card::can_play()
 {
 	// Returns if it could be used

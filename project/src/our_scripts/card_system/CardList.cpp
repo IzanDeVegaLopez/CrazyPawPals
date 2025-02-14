@@ -59,7 +59,7 @@ void CardList::shuffle()
 std::ostream& operator<<(std::ostream& os, const CardList& card_list)
 {
 	for (Card* c : card_list._my_card_list) {
-		os << c->getName() << " -> ";
+		os << c->get_written_info() << " -> ";
 	}
 	return os;
 }

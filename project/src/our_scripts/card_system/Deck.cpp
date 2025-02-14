@@ -15,6 +15,7 @@ void Deck::_put_new_card_on_hand()
 	}
 }
 //For testing Purposes
+/*
 Deck::Deck() noexcept
 {
 	_draw_pile = CardList();
@@ -24,6 +25,7 @@ Deck::Deck() noexcept
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
 }
+*/
 
 Deck::Deck(std::list<Card*>& starterDeck) noexcept
 {
@@ -31,6 +33,7 @@ Deck::Deck(std::list<Card*>& starterDeck) noexcept
 	_hand = nullptr;
 	_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
 	_draw_pile = CardList(starterDeck);
+	_draw_pile.shuffle();
 	_put_new_card_on_hand();
 }
 
@@ -40,6 +43,7 @@ Deck::Deck(CardList&& starterDeck) noexcept
 	_hand = nullptr;
 	_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
 	_draw_pile = starterDeck;
+	_draw_pile.shuffle();
 	_put_new_card_on_hand();
 }
 
@@ -159,7 +163,7 @@ std::ostream& operator<<(std::ostream& os, const Deck& deck)
 	os << std::endl;
 
 	if(deck._hand!=nullptr)
-		os << "Hand: "  << std::endl << *deck._hand << std::endl;
+		os << "Hand: "  << std::endl << deck._hand->get_written_info() << std::endl;
 
 	os << "DiscardPile: " << std::endl;
 	os << deck._discard_pile;
