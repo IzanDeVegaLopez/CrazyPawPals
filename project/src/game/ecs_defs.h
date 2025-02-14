@@ -13,7 +13,8 @@
 	MOVEMENTCONTROLLER, \
     SIMPLEMOVE, \
     HEALTH,\
-	LIFETIMETIMER
+	LIFETIMETIMER, \
+	MANA
 
 
 // Groups list - must have at least one element

@@ -14,7 +14,7 @@ EnemyPoolManager::EnemyPoolManager() :
 EnemyPoolManager::~EnemyPoolManager() {
 }
 
-void EnemyPoolManager::update() {
+void EnemyPoolManager::update(int delta_time) {
 	
 	/*for (auto o : _pool) {
 		if (_pool.is_used(o)) {

@@ -11,7 +11,7 @@ public:
 	KeyboardPlayerCtrl(); 
 	virtual ~KeyboardPlayerCtrl(); 
 	void initComponent() override;
-	void update() override;
+	void update(int delta_time) override;
 private:
 	SDL_Scancode _left;
 	SDL_Scancode _right;

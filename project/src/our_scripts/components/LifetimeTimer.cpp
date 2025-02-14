@@ -9,7 +9,7 @@ LifetimeTimer::LifetimeTimer(float lifetime)
 
 LifetimeTimer::~LifetimeTimer() {
 }
-void LifetimeTimer::update() {
+void LifetimeTimer::update(int delta_time) {
 
 	if (sdlutils().currRealTime() > _lifetime) {
 		_ent->getMngr()->setAlive(_ent, false);
