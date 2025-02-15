@@ -23,8 +23,6 @@ KeyboardPlayerCtrl::initComponent() {
     _sc = mngr->getComponent<ShootComponent>(_ent);
     assert(_sc != nullptr);
 
-    _h = mngr->getComponent<Health>(_ent);
-    assert(_h != nullptr);
 }
 
 void KeyboardPlayerCtrl::update() {
