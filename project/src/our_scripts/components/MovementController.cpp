@@ -15,7 +15,7 @@ MovementController::initComponent() {
 	_tr = mngr->getComponent<Transform>(_ent);
 	assert(_tr != nullptr);
 }
-void MovementController::update()
+void MovementController::update(int delta_time)
 {
 	//Aceleración por tiempo, en 2 segundos, se pone a _maxSpeed
 	//o->setSpeed( _maxSpeed);

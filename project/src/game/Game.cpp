@@ -17,6 +17,7 @@
 #include "../our_scripts/components/MovementController.h"
 #include "../our_scripts//components/ShootComponent.h"
 #include "../our_scripts//components/SimpleMove.h"
+#include "../our_scripts/components/Mana.h"
 
 #include "../our_scripts/Bullet.h"
 
@@ -101,6 +102,7 @@ void Game::init() {
 	_mngr->addComponent<ShootComponent>(player);
 	_mngr->addComponent<KeyboardPlayerCtrl>(player); 
 	_mngr->addComponent<MovementController>(player); 
+	_mngr->addComponent<Mana>(player);
 #pragma endregion
 	
 	Deck deck = Deck(std::list<Card*>{new Card("1"), new Card("2"), new Card("3"), new Card("4")});

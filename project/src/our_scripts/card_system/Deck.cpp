@@ -15,20 +15,25 @@ void Deck::_put_new_card_on_hand()
 	}
 }
 //For testing Purposes
+/*
 Deck::Deck() noexcept
 {
 	_draw_pile = CardList();
 	_hand = nullptr;
+	_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
 	_discard_pile = CardList();
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
 }
+*/
 
 Deck::Deck(std::list<Card*>& starterDeck) noexcept
 {
 	_discard_pile = CardList();
 	_hand = nullptr;
+	_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
 	_draw_pile = CardList(starterDeck);
+	_draw_pile.shuffle();
 	_put_new_card_on_hand();
 }
 
@@ -36,7 +41,9 @@ Deck::Deck(CardList&& starterDeck) noexcept
 {
 	_discard_pile = CardList();
 	_hand = nullptr;
+	_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
 	_draw_pile = starterDeck;
+	_draw_pile.shuffle();
 	_put_new_card_on_hand();
 }
 
@@ -52,6 +59,7 @@ bool Deck::use_card() noexcept
 {
 	if (_can_play_hand_card()) {
 		//Se pudo usar la carta
+		_mana->change_mana(_hand->get_costs().get_mana());
 		_hand->on_play();
 		_put_new_card_on_hand();
 		return true;
@@ -76,7 +84,7 @@ bool Deck::discard_card() noexcept
 void Deck::mill() noexcept
 {
 	if (!_draw_pile.empty()) {
-		_discard_pile.add_card(_draw_pile.pop_first()->mill());
+		_discard_pile.add_card(_draw_pile.pop_first()->on_mill());
 	}
 }
 
@@ -115,8 +123,9 @@ bool Deck::_can_finish_reloading()
 
 bool Deck::_can_play_hand_card()
 {
+	return (!_is_reloading && _mana->mana_count() >= _hand->get_costs().get_mana());
 	//TODO: card checks mana and life costs
-	return !_is_reloading;
+	
 }
 
 void Deck::update(float deltaTime) noexcept
@@ -154,7 +163,7 @@ std::ostream& operator<<(std::ostream& os, const Deck& deck)
 	os << std::endl;
 
 	if(deck._hand!=nullptr)
-		os << "Hand: "  << std::endl << *deck._hand << std::endl;
+		os << "Hand: "  << std::endl << deck._hand->get_written_info() << std::endl;
 
 	os << "DiscardPile: " << std::endl;
 	os << deck._discard_pile;

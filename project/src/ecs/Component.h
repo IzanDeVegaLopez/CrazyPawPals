@@ -48,8 +48,10 @@ public:
 	// A component has an update method, and by default it
 	// does nothing -- some components will not override this
 	// method.
-	//
-	virtual void update() {
+	// delta_time represents the milliseconds elapsed since
+	// the last frame. To be used in time-sensitive calculations.
+	// 
+	virtual void update(int delta_time) {
 	}
 
 	// A component has a render method, and by default it
