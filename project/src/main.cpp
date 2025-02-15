@@ -2,7 +2,6 @@
 
 #include <iostream>
 
-#include "sdlutils/sdlutils_demo.h"
 #include "game/Game.h"
 
 int main(int, char**) {
