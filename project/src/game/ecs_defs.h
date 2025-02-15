@@ -14,6 +14,7 @@
     SIMPLEMOVE, \
     HEALTH,\
 	LIFETIMETIMER, \
+	ENEMYMOVENT, \
 	MANA
 
 
@@ -27,5 +28,6 @@
 //
 #define _HDLRS_LIST_ \
     PLAYER, \
+    ENEMY, \
 	GAMEINFO
 
