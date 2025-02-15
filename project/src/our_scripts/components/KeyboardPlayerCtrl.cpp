@@ -5,6 +5,7 @@
 #include "../../ecs/Manager.h"
 #include "Transform.h"
 #include "ShootComponent.h"
+#include "Health.h"
 
 KeyboardPlayerCtrl::KeyboardPlayerCtrl()
     : _left(SDL_SCANCODE_A), _right(SDL_SCANCODE_D), _up(SDL_SCANCODE_W), _down(SDL_SCANCODE_S), 
@@ -21,29 +22,34 @@ KeyboardPlayerCtrl::initComponent() {
 
     _sc = mngr->getComponent<ShootComponent>(_ent);
     assert(_sc != nullptr);
+
+    _h = mngr->getComponent<Health>(_ent);
+    assert(_h != nullptr);
 }
 
 void KeyboardPlayerCtrl::update() {
     
     auto& ihdlr = ih();
-    auto& dir = _tr->getDir();
+    if (ihdlr.keyDownEvent()) {
+        auto& dir = _tr->getDir();
 
-    //New input
-    //Horizontal axis
-    dir.setX((ihdlr.isKeyDown(_left) ? -1 : 0) + (ihdlr.isKeyDown(_right) ? 1 : 0));
+        //New input
+        //Horizontal axis
+        dir.setX((ihdlr.isKeyDown(_left) ? -1 : 0) + (ihdlr.isKeyDown(_right) ? 1 : 0));
 
-    //Vertical axis
-    dir.setY((ihdlr.isKeyDown(_up) ? -1 : 0) + (ihdlr.isKeyDown(_down) ? 1 : 0));
+        //Vertical axis
+        dir.setY((ihdlr.isKeyDown(_up) ? -1 : 0) + (ihdlr.isKeyDown(_down) ? 1 : 0));
 
-    //reload
-    if (ihdlr.isKeyDown(_reload)) {
-        std::cout << "recarga" << std::endl;
-    }
+        //reload
+        if (ihdlr.isKeyDown(_reload)) {
+            std::cout << "recarga" << std::endl;
+        }
 
-    //collect
-    if (ihdlr.isKeyDown(_collect)) {
-        //if we are not close enought to a reward, do nothing
-        std::cout << "colecta" << std::endl;
+        //collect
+        if (ihdlr.isKeyDown(_collect)) {
+            //if we are not close enought to a reward, do nothing
+            std::cout << "colecta" << std::endl;
+        }
     }
 
     //Old input
