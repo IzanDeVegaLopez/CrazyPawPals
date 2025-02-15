@@ -3,7 +3,7 @@
 #include "../../ecs/Manager.h"
 #include "../../sdlutils/SDLUtils.h"
 
-MovementController::MovementController() : _maxSpeed(5.0f), _reduceSpeed(0.5f), _addSpeed(1.01f) {
+MovementController::MovementController() : _maxSpeed(5.0f), _reduceSpeed(0.75f), _addSpeed(1.01f) {
 }
 
 MovementController::~MovementController() {
@@ -27,19 +27,22 @@ void MovementController::update()
 	auto speed = _tr->getSpeed();
 
 	//Acceleration
-	speed *= _addSpeed;
-	if (speed > _maxSpeed) {
-		speed =  _maxSpeed;
+	if (dir != Vector2D(0, 0) && dir == prevDir){
+		speed *= _addSpeed;
+		if (speed > _maxSpeed) {
+			speed = _maxSpeed;
+		}
+		_tr->setSpeed(speed);
+		std::cout << dir;
 	}
-	_tr->setSpeed(speed);
 
 	//We change the position accoding to the inputs we've recieved from keyboard control
 	if (dir.getX() != 0 && dir.getY() != 0) {
 		dir = dir.normalize(); //If its a diagonal movement, normalize dir
 	}
 
-	//Deacceleration on change direction
-	if (dir != prevDir) {
+	//Deacceleration on change direction or stop movement
+	if ((dir == Vector2D(0, 0) && dir != prevDir) || dir != prevDir) {
 		speed *= _reduceSpeed;
 	}
 	_tr->setSpeed(speed);

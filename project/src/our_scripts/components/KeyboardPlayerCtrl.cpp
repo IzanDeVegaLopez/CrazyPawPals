@@ -28,7 +28,7 @@ KeyboardPlayerCtrl::initComponent() {
 void KeyboardPlayerCtrl::update() {
     
     auto& ihdlr = ih();
-    if (ihdlr.keyDownEvent()) {
+   // if (ihdlr.keyDownEvent()) {
         auto& dir = _tr->getDir();
 
         //New input
@@ -48,7 +48,8 @@ void KeyboardPlayerCtrl::update() {
             //if we are not close enought to a reward, do nothing
             std::cout << "colecta" << std::endl;
         }
-    }
+    //}
+ 
 
     //Old input
     /*if (ihdlr.keyDownEvent()) { //Si comentamos esta linea (y el cierre de llave abajo) el movimiento parece mas natural
