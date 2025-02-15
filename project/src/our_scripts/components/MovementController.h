@@ -12,11 +12,11 @@ public:
 	virtual ~MovementController();
 	void initComponent() override;
 	void update() override;
-	void accelerate();
 
 private:
 	float _maxSpeed;
 	float _reduceSpeed;
+	float _addSpeed;
 	Transform* _tr;
 
 };
