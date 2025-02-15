@@ -18,7 +18,6 @@ void
 EnemyMovement::initComponent() {
 	auto* mngr = _ent->getMngr();
 	_tr = mngr->getComponent<Transform>(_ent);
-	_tr->setSpeed(0.5f);
 	_playerTr = mngr->getComponent<Transform>(mngr->getEntities(ecs::hdlr::PLAYER)[0]);
 	assert(_tr != nullptr);
 	assert(_playerTr != nullptr);
