@@ -2,6 +2,10 @@
 #include "../sdlutils/SDLUtils.h"
 #include "../ecs/Manager.h"
 
+#include "Transform.h"
+#include "KeyboardPlayerCtrl.h"
+#include "MovementController.h"
+
 Camera::Camera(ecs::Manager* mngr) : GameObject::GameObject(mngr, ecs::grp::CAMERA), _maxSpeed(5.0f)
 {
 	_tr = _entity->getMngr()->getComponent<Transform>(_entity);
@@ -13,8 +17,4 @@ Camera::Camera(ecs::Manager* mngr) : GameObject::GameObject(mngr, ecs::grp::CAME
 
 Camera::~Camera() {}
 
-Camera::update()
-{
-
-}
 

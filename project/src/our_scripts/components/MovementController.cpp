@@ -26,6 +26,12 @@ void MovementController::update()
 	auto& pos = _tr->getPos();
 	auto speed = _tr->getSpeed();
 
+	/*
+	//We change the position accoding to the inputs we've recieved from keyboard control
+	if (dir.getX() != 0 && dir.getY() != 0) {
+		dir = dir.normalize(); //If its a diagonal movement, normalize dir
+	}*/
+
 	//Acceleration
 	if (dir != Vector2D(0, 0) && dir == prevDir){
 		speed *= _addSpeed;
@@ -35,16 +41,11 @@ void MovementController::update()
 		_tr->setSpeed(speed);
 	}
 
-	/*//We change the position accoding to the inputs we've recieved from keyboard control
-	if (dir.getX() != 0 && dir.getY() != 0) {
-		dir = dir.normalize(); //If its a diagonal movement, normalize dir
-	}*/
-
 	//Deacceleration on change direction or stop movement
 	if ((dir == Vector2D(0, 0) && dir != prevDir) || dir != prevDir) {
 		speed *= _reduceSpeed;
+		_tr->setSpeed(speed);
 	}
-	_tr->setSpeed(speed);
 
 	//New position for movement
 	pos = pos + (dir * speed);

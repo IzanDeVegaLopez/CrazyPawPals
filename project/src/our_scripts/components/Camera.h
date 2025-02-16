@@ -1,5 +1,5 @@
 #pragma once
-#include "../game/GameObject.h"
+#include "../../game/GameObject.h"
 
 class Camera : public GameObject {
 
@@ -9,5 +9,4 @@ protected:
 public:
 	Camera(ecs::Manager* mngr);
 	virtual ~Camera() {};
-	update();
 };
