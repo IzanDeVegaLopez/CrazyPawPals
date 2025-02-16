@@ -33,13 +33,12 @@ void MovementController::update()
 			speed = _maxSpeed;
 		}
 		_tr->setSpeed(speed);
-		std::cout << dir;
 	}
 
-	//We change the position accoding to the inputs we've recieved from keyboard control
+	/*//We change the position accoding to the inputs we've recieved from keyboard control
 	if (dir.getX() != 0 && dir.getY() != 0) {
 		dir = dir.normalize(); //If its a diagonal movement, normalize dir
-	}
+	}*/
 
 	//Deacceleration on change direction or stop movement
 	if ((dir == Vector2D(0, 0) && dir != prevDir) || dir != prevDir) {

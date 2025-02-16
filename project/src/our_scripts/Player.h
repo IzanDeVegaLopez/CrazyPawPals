@@ -5,8 +5,6 @@
 class Player : public GameObject {
 protected:
 	float _shootCooldown;
-	float _maxSpeed;
-	Vector2D _prevDir;
 	Transform* _tr;
 
 public:
