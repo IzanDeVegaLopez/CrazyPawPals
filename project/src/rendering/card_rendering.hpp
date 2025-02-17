@@ -4,6 +4,7 @@
 #include <string>
 #include <SDL.h>
 #include <cstdint>
+#include "camera.hpp"
 
 struct card_rendering_descriptor {
     std::string_view card_image_key;
@@ -18,27 +19,30 @@ enum card_rendering_descriptor_options {
 typedef uint8_t card_rendering_descriptor_options_flags;
 extern const card_rendering_descriptor_options_flags flip_flags;
 
-void card_rendering_descriptor_render(
+SDL_Rect card_rendering_descriptor_render(
     const card_rendering_descriptor &descriptor,
-    const SDL_Rect destination_rect,
-    const SDL_Rect source_subrect,
+    const camera_screen &camera_screen,
+    const rect_f32 destination_rect,
+    const rect_f32 source_subrect,
     const float angle,
     const card_rendering_descriptor_options_flags flags
 );
 
 
 struct card_description_rendering_descriptor {
-    SDL_Rect name_subrect;
-    SDL_Rect description_subrect;
+    rect_f32 name_subrect;
+    rect_f32 description_subrect;
     std::string_view background_key;
     std::string_view font_key;
     std::string_view name;
     std::string_view description;
 };
 
-void card_description_rendering_descriptor_render(
+SDL_Rect card_description_rendering_descriptor_render(
     const card_description_rendering_descriptor &descriptor,
-    const SDL_Rect destination_rect,
+    const camera_screen &camera_screen,
+    SDL_Renderer &renderer,
+    const rect_f32 destination_rect,
     const SDL_Color text_color,
     const SDL_Color background_color
 );

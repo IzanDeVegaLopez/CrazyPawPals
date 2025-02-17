@@ -105,17 +105,10 @@ project(CrazyPawPals)
         SDL2_mixer
     )
 
-    if (V_VSCOMMUNITY_BUILD)
-        set(
-            CrazyPawPals_EXE_DIRECTORY
-            ${CMAKE_CURRENT_LIST_DIR}/out/build/x64-$<CONFIGURATION>
-        )
-    else()
-        set(
-            CrazyPawPals_EXE_DIRECTORY
-            ${CMAKE_CURRENT_LIST_DIR}/build/$<CONFIGURATION>
-        )
-    endif()
+    set(
+        CrazyPawPals_EXE_DIRECTORY
+        ${CMAKE_CURRENT_LIST_DIR}/build/x64-$<CONFIGURATION>
+    )
     
     add_custom_target(
         copy_resources_bin

@@ -8,6 +8,8 @@
 #include "macros.h"
 #include "SDLUtils.h"
 
+#include "rendering/card_rendering.hpp"
+
 using namespace std;
 
 void sdlutils_basic_demo() {
@@ -67,9 +69,9 @@ void sdlutils_basic_demo() {
 	// you can also use the inline method ih() that is defined in InputHandler.h
 	auto &ih = *InputHandler::Instance();
 
+	card_rendering_descriptor
 	// a boolean to exit the loop
 	bool exit_ = false;
-
 	while (!exit_) {
 		Uint32 startTime = sdl.currRealTime();
 
