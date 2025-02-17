@@ -3,10 +3,12 @@
 #include "Card.hpp"
 #include "PlayableCards.hpp"
 #include "../components/Mana.h"
+#include "ecs/Component.h"
+#include "ecs/Entity.h"
 #include <list>
 #include <cassert>
 
-class Deck {
+class Deck: public ecs::Component {
 protected:
 	int reload_time = 100;
 	CardList _draw_pile;
@@ -20,6 +22,7 @@ protected:
 	bool _can_finish_reloading();
 	bool _can_play_hand_card();
 public:
+	__CMPID_DECL__(ecs::cmp::DECK)
 	Deck() noexcept;
 	//Creates a starter with a list of cards
 	Deck(CardList&& starterDeck) noexcept;
@@ -48,6 +51,8 @@ public:
 	//belong to _draw_pile (during rewards menu all cards are exclusively in
 	//the draw pile)
 	void remove_card(std::list<Card*>::iterator);
+
+	void initComponent() override;
 	/*
 	class const_iterator {
 	private:

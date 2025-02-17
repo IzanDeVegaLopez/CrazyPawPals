@@ -14,7 +14,8 @@
     SIMPLEMOVE, \
     HEALTH,\
 	LIFETIMETIMER, \
-	MANA
+	MANA, \
+	DECK
 
 
 // Groups list - must have at least one element
