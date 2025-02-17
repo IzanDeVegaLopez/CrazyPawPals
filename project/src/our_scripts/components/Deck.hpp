@@ -1,8 +1,8 @@
 #pragma once
-#include "CardList.h"
-#include "Card.hpp"
-#include "PlayableCards.hpp"
-#include "../components/Mana.h"
+#include "../card_system/CardList.h"
+#include "../card_system/Card.hpp"
+#include "../card_system/PlayableCards.hpp"
+#include "Mana.h"
 #include "ecs/Component.h"
 #include "ecs/Entity.h"
 #include <list>
