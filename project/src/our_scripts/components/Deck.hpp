@@ -3,8 +3,8 @@
 #include "../card_system/Card.hpp"
 #include "../card_system/PlayableCards.hpp"
 #include "Mana.h"
+#include "../../utils/Vector2D.h"
 #include "ecs/Component.h"
-#include "ecs/Entity.h"
 #include <list>
 #include <cassert>
 
@@ -30,7 +30,7 @@ public:
 	~Deck();
 	//returns true if the card can be used, calls the useCard function of the card
 	//and puts the top card of deck on hand, if there's non left it reloads
-	bool use_card() noexcept;
+	bool use_card(Vector2D target_pos = {0,0}) noexcept;
 	//puts the card on hand on discard pile
 	//and puts the top card of deck on hand, if there's non left it reloads
 	//returns true, if a card could be discarded

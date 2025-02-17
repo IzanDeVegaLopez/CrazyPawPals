@@ -1,5 +1,4 @@
 #include "Deck.hpp"
-#include "ecs/Entity.h"
 #include "ecs/Manager.h"
 #include <iostream>
 
@@ -57,7 +56,7 @@ Deck::~Deck()
 	//_draw_pile y _discard_pile llamarán a su destructor cuando esto se destruya al salir de ámbito
 }
 
-bool Deck::use_card() noexcept
+bool Deck::use_card(Vector2D target_pos) noexcept
 {
 	if (_can_play_hand_card()) {
 		//Se pudo usar la carta

@@ -5,6 +5,7 @@
 #include "../../ecs/Manager.h"
 #include "Transform.h"
 #include "ShootComponent.h"
+#include "Deck.hpp"
 
 KeyboardPlayerCtrl::KeyboardPlayerCtrl()
     : _left(SDL_SCANCODE_A), _right(SDL_SCANCODE_D), _up(SDL_SCANCODE_W), _down(SDL_SCANCODE_S), 
@@ -20,6 +21,9 @@ KeyboardPlayerCtrl::initComponent() {
     assert(_tr != nullptr);
 
     _sc = mngr->getComponent<ShootComponent>(_ent);
+    assert(_sc != nullptr);
+
+    _dc = mngr->getComponent<Deck>(_ent);
     assert(_sc != nullptr);
 }
 
@@ -92,5 +96,11 @@ void KeyboardPlayerCtrl::update(int delta_time) {
         Vector2D mousePos = { (float)ihdlr.getMousePos().first, (float)ihdlr.getMousePos().second };
         _sc->shoot(mousePos);
     } 
+    //use card
+    if (ihdlr.mouseButtonEvent() && ihdlr.getMouseButtonState(InputHandler::RIGHT)) {
+        //send message to shoot
+        Vector2D mousePos = { (float)ihdlr.getMousePos().first, (float)ihdlr.getMousePos().second };
+        _dc->use_card(mousePos);
+    }
     
 }

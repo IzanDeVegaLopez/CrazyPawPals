@@ -9,7 +9,7 @@
 #include "../utils/Collisions.h"
 
 
-#include "../our_scripts/card_system/Deck.hpp"
+#include "../our_scripts/components/Deck.hpp"
 #include "../our_scripts/components/Image.h"
 #include "../our_scripts/components/Transform.h"
 #include "../our_scripts/components/KeyboardPlayerCtrl.h"
@@ -93,14 +93,14 @@ void Game::init() {
 	tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 2.0f);
 	_mngr->addComponent<Image>(player, &sdlutils().images().at("player"));
 	_mngr->addComponent<ShootComponent>(player);
-	_mngr->addComponent<KeyboardPlayerCtrl>(player);
 	_mngr->addComponent<MovementController>(player);
 	_mngr->addComponent<Mana>(player);
 #pragma endregion
 
 	Deck* deck = _mngr->addComponent<Deck>(player, std::list<Card*>{new Card("1"), new Card("2"), new Card("3"), new Card("4")});
+	_mngr->addComponent<KeyboardPlayerCtrl>(player);
 	//cout << deck << endl;
-	deck->add_card_to_deck(new Fireball());
+	/*deck->add_card_to_deck(new Fireball());
 	deck->add_card_to_deck(new Minigun());
 
 	deck->use_card();
@@ -109,7 +109,7 @@ void Game::init() {
 	deck->use_card();
 	deck->use_card();
 	deck->use_card();
-	deck->reload();
+	deck->reload();*/
 
 	//deck.addCardToDeck(new Card("5"));
 	cout << *deck << endl;
