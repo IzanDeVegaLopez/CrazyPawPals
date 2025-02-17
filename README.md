@@ -214,6 +214,12 @@ Algunos ejemplos de objetos míticos podrían ser:
 - Reduce el cd de tu artefacto a la mitad. Cada vez que salga de enfriamiento se recargará manualmente de inmediato usandolo en el proceso
 - Reduce tu vida a la mitad. Cada vez que elimines a un enemigo ganas el 20% de su vida como escudo.
 
+### 3.10. Vida
+El jugador tiene una cantidad finita y determinada de vida. Hay vida máxima y la vida no puede exceder este valor, pero la vida máxima puede cambiar al coger objetos míticos.
+Hay 2 parametros distintos que componen la vida del jugador: El escudo y la salud.
+- *Escudo:* El jugador no tiene escudo de base, pero lo puede obtener con objetos, cartas o armas. El escudo se reduce en 1, 2 veces por segundo. Al recibir daño primero se sustrae el daño de este, y el daño excesivo pasa a hacer daño a la vida.
+- *Salud:* La salud es el principal recurso del jugador, al llegar a 0 el jugador morirá. La regeneración de salud es rara, y solo suele se obtiene como recompensa de oleada al estar bajo de vida.
+
 ## 4. Interfaz  
 
 ### 4.1. Controles  
