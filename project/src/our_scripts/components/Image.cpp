@@ -19,7 +19,7 @@ Image::Image(Texture *tex) :
 Image::~Image() {
 }
 
-void Image::initComponent() {
+void Image::init_component() {
 	auto *mngr = _ent->getMngr();
 	_tr = mngr->getComponent<Transform>(_ent);
 	assert(_tr != nullptr);

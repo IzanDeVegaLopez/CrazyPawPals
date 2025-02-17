@@ -86,7 +86,7 @@ public:
 		//
 		Component *c = new T(std::forward<Ts>(args)...);
 		c->setContext(e);
-		c->initComponent();
+		c->init_component();
 		e->_cmps[cId] = c;
 		e->_currCmps.push_back(c);
 

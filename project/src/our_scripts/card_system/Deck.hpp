@@ -52,7 +52,7 @@ public:
 	//the draw pile)
 	void remove_card(std::list<Card*>::iterator);
 
-	void initComponent() override;
+	void init_component() override;
 	/*
 	class const_iterator {
 	private:
