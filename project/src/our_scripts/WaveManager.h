@@ -1,10 +1,13 @@
 #pragma once
 #include "../ecs/Manager.h"
 
-
+#pragma once
 class EnemyPoolManager;
 
 class WaveManager {
+
+    std::vector<std::vector<int>> _waves;
+
 public:
     WaveManager(ecs::Manager* mngr, EnemyPoolManager* enemyPool);
 
@@ -26,6 +29,7 @@ private:
     Uint32 _waveTime; // cuánto dura la oleada (CONSTRUCTOR)
     Uint32 _endWaveTime; // cuándo termina la oleada (post calculo)
 
+    int _currentWave = 0;
 
     bool _waveActive = false;
     bool _fogActive = false;
