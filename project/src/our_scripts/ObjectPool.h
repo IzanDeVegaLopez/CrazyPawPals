@@ -72,10 +72,10 @@ public:
 	};
 
 	ObjectPool(std::size_t size) noexcept :
-			_size(size), //
-			_pool(new T[size]), //
-			_used(size), //
-			_lastUsed(size - 1) {
+		_size(size), //
+		_pool(new T[size]), //
+		_used(size), //
+		_lastUsed(size - 1) {
 	}
 
 	virtual ~ObjectPool() {
@@ -131,6 +131,16 @@ public:
 
 	inline bool is_used(const T *p) const {
 		return is_used(p - _pool);
+	}
+
+	std::vector<T*> getActiveObjects() const {
+		std::vector<T*> activeObjects;
+		for (std::size_t i = 0; i < _size; ++i) {
+			if (_used[i]) {
+				activeObjects.push_back(&_pool[i]);
+			}
+		}
+		return activeObjects;
 	}
 
 private:

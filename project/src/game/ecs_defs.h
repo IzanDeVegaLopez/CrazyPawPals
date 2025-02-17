@@ -30,5 +30,6 @@
 #define _HDLRS_LIST_ \
     PLAYER, \
     ENEMY, \
+    POOL, \
 	GAMEINFO
 

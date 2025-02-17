@@ -1,25 +1,27 @@
 // This file is part of the course TPV2@UCM - Samir Genaim
 
 #pragma once
-#include "../ecs/Component.h"
 #include "ObjectPool.h"
 
-class Texture;
-class Enemy;
 
-class EnemyPoolManager : public ecs::Component {
-	
-
+class EnemyPoolManager {
+	struct Enemy {
+		float _width;
+		float _height;
+	};
 public:
-	EnemyPoolManager();
-	virtual ~EnemyPoolManager();
-	void update(int delta_time) override;
-	void render() override;
-private:
 
+	EnemyPoolManager();
+
+	virtual ~EnemyPoolManager();
+
+	void update();
+	void render();
+
+	std::vector<Enemy*> getActiveObjects() const;
 	void addEnemies(uint16_t);
 
-	//ObjectPool<Enemy> _pool;
-	Texture *_img;
+private:
+	ObjectPool<Enemy> _pool;
 };
 

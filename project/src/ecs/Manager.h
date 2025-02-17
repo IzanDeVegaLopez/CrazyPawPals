@@ -11,6 +11,7 @@
 #include "Entity.h"
 #include "sdlutils/SDLUtils.h"
 
+
 namespace ecs {
 
 /*
@@ -211,6 +212,7 @@ public:
 	// render all entities
 	//
 	void render() {
+	
 		for (auto &ents : _entsByGroup) {
 			auto n = ents.size();
 			for (auto i = 0u; i < n; i++)
@@ -222,6 +224,7 @@ public:
 	// is in Manager.cpp, but we could also defined it here).
 	//
 	void refresh();
+
 
 private:
 

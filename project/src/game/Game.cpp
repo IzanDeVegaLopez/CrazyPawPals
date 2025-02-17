@@ -22,13 +22,8 @@
 
 #include "../our_scripts/Bullet.h"
 #include "../our_scripts/Enemy.h"
+#include "../our_scripts/EnemyPoolManager.h"
 
-
-
-//#include "Container.h"
-//#include "ImageRenderer.h"
-//#include "SimpleMove.h"
-//#include "EnemyMovement.h"
 
 using namespace std;
 
@@ -131,14 +126,6 @@ void Game::init() {
 #pragma region enemy
 
 	auto enemy = new Enemy(_mngr);
-
-	//_mngr->setHandler(ecs::hdlr::ENEMY, enemy);
-	//auto trE = _mngr->addComponent<Transform>(enemy);
-	//trE->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 2.0f);
-	//_mngr->addComponent<Image>(enemy, &sdlutils().images().at("player"));
-	//_mngr->addComponent<MovementController>(enemy);
-	//_mngr->addComponent<EnemyMovement>(enemy);
-	//_mngr->addComponent<SimpleMove>(enemy);
 
 #pragma endregion
 
