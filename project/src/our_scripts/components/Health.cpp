@@ -25,3 +25,10 @@ Health::takeDamage(int damage) {
 		//muerto
 	}
 }
+
+void
+Health::setMaxHeatlh(int h) {
+	if (h > 0) {
+		_maxHealth = h;
+	}
+}

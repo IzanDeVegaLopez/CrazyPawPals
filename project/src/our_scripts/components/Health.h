@@ -11,6 +11,8 @@ public:
 	void takeDamage(int damage);
 	void heal(int health);
 
+	void setMaxHeatlh(int h);
+
 protected:
 	int _currentHealth;
 	int _maxHealth;
