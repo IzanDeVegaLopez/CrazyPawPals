@@ -14,7 +14,9 @@
     SIMPLEMOVE, \
     HEALTH,\
 	LIFETIMETIMER, \
-	CAMERA
+	CAMERA, \
+    WEAPON, \
+    REVOLVER
 
 
 // Groups list - must have at least one element

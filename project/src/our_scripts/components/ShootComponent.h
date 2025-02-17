@@ -6,16 +6,14 @@
 
 
 class Transform;
-class Bullet;
-
+class Weapon;
 class ShootComponent : public ecs::Component {
 protected:
 	float _shootCooldown;
 	float _lastShoot;
 
 	Transform* _tr;
-	
-	std::vector<Bullet*> _bulletPool;
+	Weapon* _w;
 
 public:
 	__CMPID_DECL__(ecs::cmp::SHOOTCOMPONENT);
