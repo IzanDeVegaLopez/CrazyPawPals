@@ -18,7 +18,9 @@ Player::Player(ecs::Manager* mngr) : GameObject::GameObject(mngr, ecs::grp::PLAY
 	float s = 100.0f;
 	_tr->init({ sdlutils().width() / 2.0f, sdlutils().height() / 2.0f }, { 0.0f,0.0f }, { 0.0f,0.0f }, s, s, 0.0f, 2.0f);
 	_entity->getMngr()->addComponent<Image>(_entity, &sdlutils().images().at("player"));
-	_entity->getMngr()->addComponent<Revolver>(_entity);
+	auto re = _entity->getMngr()->addComponent<Revolver>(_entity);
+	re->init(4, 0.5f, 20.0f, 5.0f);
+	_entity->getMngr()->addComponent<ShootComponent>(_entity);
 	_entity->getMngr()->addComponent<Health>(_entity, 20);
 	_entity->getMngr()->addComponent<KeyboardPlayerCtrl>(_entity);
 	_entity->getMngr()->addComponent<MovementController>(_entity);

@@ -14,8 +14,9 @@ protected:
 	std::vector<Bullet*> _pool; //attacks pool
 public:
 	__CMPID_DECL__(ecs::cmp::WEAPON);
-	Weapon(int d, float cd, float dis, float speed);
+	Weapon();
 	virtual ~Weapon();
+	void init(int d, float cd, float dis, float s);
 	virtual void callback(Vector2D shootPos, Vector2D shootDir) = 0; //when you attacks, this callback will be called
 	inline int damage() { return _damage; };
 	inline float cooldown() { return _cooldown; };
