@@ -7,7 +7,10 @@
 #include "camera.hpp"
 
 struct card_rendering_descriptor {
+    rect_f32 mana_cost_subrect;
     std::string_view card_image_key;
+    std::string_view mana_cost_font_key;
+    SDL_Color mana_cost_color;
     uint16_t mana_cost;
 };
 enum card_rendering_descriptor_options {
@@ -22,6 +25,7 @@ extern const card_rendering_descriptor_options_flags flip_flags;
 SDL_Rect card_rendering_descriptor_render(
     const card_rendering_descriptor &descriptor,
     const camera_screen &camera_screen,
+    SDL_Renderer &renderer,
     const rect_f32 destination_rect,
     const rect_f32 source_subrect,
     const float angle,

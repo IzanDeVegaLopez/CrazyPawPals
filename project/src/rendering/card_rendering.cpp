@@ -4,9 +4,11 @@
 const card_rendering_descriptor_options_flags flip_flags =
     (card_rendering_descriptor_options_flip_horizontal | card_rendering_descriptor_options_flip_vertical);
 
+extern inline SDL_Rect SDL_Rect_screen_rect_from_global(rect_f32 global, camera_screen const &camera_screen, bool flip_y);
 SDL_Rect card_rendering_descriptor_render(
     const card_rendering_descriptor &descriptor,
     const camera_screen &camera_screen,
+    SDL_Renderer &renderer,
     const rect_f32 destination_rect,
     const rect_f32 source_subrect,
     const float angle,
@@ -22,13 +24,24 @@ SDL_Rect card_rendering_descriptor_render(
         card_texture.render(source, destination, angle, nullptr, flip);
     } else {
         const SDL_Rect subsource = {
-            source_subrect.position.x,
-            source_subrect.position.y,
-            source_subrect.size.x * source.w,
-            source_subrect.size.y * source.x
+            int(source_subrect.position.x * source.w),
+            int(source_subrect.position.y * source.h),
+            int(source_subrect.size.x * source.w),
+            int(source_subrect.size.y * source.h)
         };
         card_texture.render(subsource, destination, angle, nullptr, flip);
     }
+
+    const SDL_Rect mana_cost_destination = {
+        int(destination.x + destination.w * descriptor.mana_cost_subrect.position.x),
+        int(destination.y + destination.h * descriptor.mana_cost_subrect.position.y),
+        int(destination.w * descriptor.mana_cost_subrect.size.x),
+        int(destination.h * descriptor.mana_cost_subrect.size.y)
+    };
+    
+    Font &font = sdlutils().fonts().at(descriptor.mana_cost_font_key.data());
+    Texture mana_cost{&renderer, std::to_string(descriptor.mana_cost).c_str(), font, descriptor.mana_cost_color};
+    mana_cost.render(mana_cost_destination);
 
     return destination;
 }

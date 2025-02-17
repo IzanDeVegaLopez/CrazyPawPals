@@ -69,7 +69,21 @@ void sdlutils_basic_demo() {
 	// you can also use the inline method ih() that is defined in InputHandler.h
 	auto &ih = *InputHandler::Instance();
 
-	card_rendering_descriptor
+	const card_rendering_descriptor descriptors[4] = {
+		card_rendering_descriptor{{{0.0f, 0.0f,}, {0.2f, 0.2f}}, "test_card_sheet", "ARIAL16", SDL_Color{255, 255, 255, 255}, 1},
+		card_rendering_descriptor{{{0.0f, 0.0f,}, {0.2f, 0.2f}}, "test_card_sheet", "ARIAL16", SDL_Color{255, 255, 255, 255}, 2},
+		card_rendering_descriptor{{{0.0f, 0.0f,}, {0.2f, 0.2f}}, "test_card_sheet", "ARIAL16", SDL_Color{255, 255, 255, 255}, 3},
+		card_rendering_descriptor{{{0.0f, 0.0f,}, {0.2f, 0.2f}}, "test_card_sheet", "ARIAL16", SDL_Color{255, 255, 255, 255}, 4}
+	};
+	camera_screen camera = {
+		.camera = {
+			.position = {0, 0},
+			.half_size = {16, 9}
+		},
+		.screen = {
+			.pixel_size = {winWidth, winHeight}
+		}
+	};
 	// a boolean to exit the loop
 	bool exit_ = false;
 	while (!exit_) {
@@ -91,12 +105,33 @@ void sdlutils_basic_demo() {
 			helloSDL.render(x1 - winWidth, y1);
 		x1 = (x1 + 5) % winWidth;
 
+		
+		
 		// render Press Any Key
 		pressAnyKey.render(x0, y0);
-
+		
 		// render the SDLogo
 		sdlLogo.render(x2, y2);
+		for (size_t i = 0; i < 4; ++i) {
+			const SDL_Rect destination = card_rendering_descriptor_render(
+				descriptors[i],
+				camera,
+				*renderer,
+				rect_f32{
+					.position = { float(i) * 2.0f, 0.0f },
+					.size = { 2.0f, 2.0f },
+				},
+				rect_f32{
+					.position = { float(i) / 4.0f, 0.0f },
+					.size = { 1.0f / 4.0f, 1.0f },
+				},
+				0.0f,
+				card_rendering_descriptor_options_none
+			);
 
+			std::cout << "destination: " << destination.x << ", " << destination.y << ", " << destination.w << ", " << destination.h << std::endl;
+		}
+		
 		// present new frame
 		sdl.presentRenderer();
 

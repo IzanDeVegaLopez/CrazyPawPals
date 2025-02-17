@@ -2,21 +2,7 @@
 #define CAMERA_HPP
 
 #include <SDL.h>
-
-struct position2_f32 {
-    float x;
-    float y;
-};
-
-struct size2_f32 {
-    float x;
-    float y;
-};
-
-struct rect_f32 {
-    position2_f32 position;
-    size2_f32 size;
-};
+#include "rect.hpp"
 
 struct camera {
     position2_f32 position;
@@ -24,7 +10,7 @@ struct camera {
 };
 
 struct screen_rect {
-    size2_f32 pixel_size;
+    size2_i32 pixel_size;
 };
 
 struct camera_screen {
@@ -105,7 +91,7 @@ inline rect_f32 rect_f32_viewport_from_ndc_flipped_y(rect_f32 ndc) {
     return rect_f32(
         position2_f32(
             ndc.position.x * 0.5f + 0.5f,
-            (1.0f - ndc.position.y) * 0.5f + 0.5f
+            1.0f - (ndc.position.y * 0.5f + 0.5f)
         ),
         size2_f32(
             ndc.size.x * 0.5f,

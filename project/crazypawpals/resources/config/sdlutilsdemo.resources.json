@@ -5,9 +5,12 @@
     { "id" : "ARIAL24", "file" : "resources/fonts/ARIAL.ttf", "size": 24 },
     { "id" : "ARIAL48", "file" : "resources/fonts/ARIAL.ttf", "size": 48 }
   ],
-  
-  "images" : [
-    { "id" : "sdl_logo", "file" : "resources/images/SDL_logo.png" }
+
+  "images": [
+    { "id": "sdl_logo", "file": "resources/images/SDL_logo.png"},
+    { "id": "pacman","file": "resources/images/pacman.png" },
+    { "id": "gato","file": "resources/images/gato.png" },
+    { "id": "test_card_sheet","file": "resources/images/test-card-sheet.png" }
   ],
   
   "messages" : [
