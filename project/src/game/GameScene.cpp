@@ -33,4 +33,5 @@ void GameScene::update()
 
 		if (frameTime < 10)
 			SDL_Delay(10 - frameTime);
+	}
 }

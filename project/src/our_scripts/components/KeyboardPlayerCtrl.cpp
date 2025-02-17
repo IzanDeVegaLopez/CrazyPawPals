@@ -97,5 +97,12 @@ void KeyboardPlayerCtrl::update() {
         Vector2D mousePos = { (float)ihdlr.getMousePos().first, (float)ihdlr.getMousePos().second };
         _sc->shoot(mousePos);
     } 
+    //use card
+    else if (ihdlr.mouseButtonDownEvent() && ihdlr.getMouseButtonState(InputHandler::RIGHT)) {
+        //send message to use card
+        //Vector2D mousePos = { (float)ihdlr.getMousePos().first, (float)ihdlr.getMousePos().second };
+        //_dc->use_card(mousePos);
+        std::cout << "using card" << std::endl;
+    }
     
 }

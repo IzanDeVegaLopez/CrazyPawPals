@@ -1,7 +1,7 @@
 #include "Revolver.h"
 #include "../../our_scripts/Bullet.h"
-#include "../../utils/Vector2D.h"
-Revolver::Revolver(int d, float cd, float dis, float speed) : Weapon(d, cd, dis, speed) {}
+
+Revolver::Revolver() : Weapon(4, 0.5f, 20.0f, 5.0f) {}
 
 Revolver::~Revolver() {}
 

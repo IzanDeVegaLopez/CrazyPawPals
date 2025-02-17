@@ -129,7 +129,7 @@ public:
 	// the book 'SDL Game Development'
 
 private:
-	InputHandler() {
+	InputHandler() : _mbState{} {
 		_kbState = nullptr;
 		clearState();
 	}
