@@ -15,7 +15,7 @@ SimpleMove::~SimpleMove() {
 }
 
 void
-SimpleMove::init_component() {
+SimpleMove::initComponent() {
 	auto* mngr = _ent->getMngr();
 	_tr = mngr->getComponent<Transform>(_ent);
 	assert(_tr != nullptr);

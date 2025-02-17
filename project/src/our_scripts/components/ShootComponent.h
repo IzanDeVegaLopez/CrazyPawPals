@@ -25,7 +25,7 @@ public:
 	//ShootComponent(std::vector<Bullet*>* b);
 
 	virtual ~ShootComponent();
-	void init_component() override;
+	void initComponent() override;
 	void shoot(const Vector2D& target); 
 	
 };

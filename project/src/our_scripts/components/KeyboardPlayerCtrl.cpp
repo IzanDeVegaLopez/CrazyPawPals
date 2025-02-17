@@ -14,7 +14,7 @@ KeyboardPlayerCtrl::~KeyboardPlayerCtrl() {
 }
 
 void 
-KeyboardPlayerCtrl::init_component() {
+KeyboardPlayerCtrl::initComponent() {
     auto* mngr = _ent->getMngr();
     _tr = mngr->getComponent<Transform>(_ent);
     assert(_tr != nullptr);

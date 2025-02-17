@@ -39,10 +39,10 @@ public:
 		_ent = ent;
 	}
 
-	// We assume that init_component will be called when adding a
+	// We assume that initComponent will be called when adding a
 	// component to an entity, immediately after setContext.
 	//
-	virtual void init_component() {
+	virtual void initComponent() {
 	}
 
 	// A component has an update method, and by default it

@@ -19,7 +19,7 @@ public:
 		_tex = tex;
 	}
 
-	void init_component() override;
+	void initComponent() override;
 	void render() override;
 
 private:

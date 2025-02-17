@@ -10,7 +10,7 @@ MovementController::~MovementController() {
 }
 
 void
-MovementController::init_component() {
+MovementController::initComponent() {
 	auto* mngr = _ent->getMngr();
 	_tr = mngr->getComponent<Transform>(_ent);
 	assert(_tr != nullptr);

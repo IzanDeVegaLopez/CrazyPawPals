@@ -10,7 +10,7 @@ public:
 	__CMPID_DECL__(ecs::cmp::MOVEMENTCONTROLLER);
 	MovementController();
 	virtual ~MovementController();
-	void init_component() override;
+	void initComponent() override;
 	void update(int delta_time) override;
 	void accelerate();
 

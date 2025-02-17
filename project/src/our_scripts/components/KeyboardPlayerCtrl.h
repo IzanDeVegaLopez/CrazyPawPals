@@ -10,7 +10,7 @@ public:
 	__CMPID_DECL__(ecs::cmp::KEYBOARDPLAYERCTRL);
 	KeyboardPlayerCtrl(); 
 	virtual ~KeyboardPlayerCtrl(); 
-	void init_component() override;
+	void initComponent() override;
 	void update(int delta_time) override;
 private:
 	SDL_Scancode _left;

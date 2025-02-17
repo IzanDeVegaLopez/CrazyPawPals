@@ -158,7 +158,7 @@ void Deck::remove_card(std::list<Card*>::iterator)
 {
 }
 
-void Deck::init_component()
+void Deck::initComponent()
 {
 	_mana = _ent->getMngr()->getComponent<Mana>(_ent);
 }

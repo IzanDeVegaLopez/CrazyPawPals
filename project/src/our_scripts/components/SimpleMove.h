@@ -11,7 +11,7 @@ public:
 	__CMPID_DECL__(ecs::cmp::SIMPLEMOVE);
 	SimpleMove();
 	virtual ~SimpleMove();
-	void init_component() override;
+	void initComponent() override;
 	void update(int delta_time) override;
 };
 
