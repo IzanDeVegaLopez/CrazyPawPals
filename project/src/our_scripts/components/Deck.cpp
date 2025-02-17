@@ -60,7 +60,7 @@ bool Deck::use_card(Vector2D target_pos) noexcept
 {
 	if (_can_play_hand_card()) {
 		//Se pudo usar la carta
-		_mana->change_mana(_hand->get_costs().get_mana());
+		_mana->change_mana(-_hand->get_costs().get_mana());
 		_hand->on_play();
 		_put_new_card_on_hand();
 		return true;

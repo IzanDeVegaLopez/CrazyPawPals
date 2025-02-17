@@ -97,12 +97,12 @@ void Game::init() {
 	_mngr->addComponent<Mana>(player);
 #pragma endregion
 
-	Deck* deck = _mngr->addComponent<Deck>(player, std::list<Card*>{new Card("1"), new Card("2"), new Card("3"), new Card("4")});
+	Deck* deck = _mngr->addComponent<Deck>(player, std::list<Card*>{new Fireball()});
 	_mngr->addComponent<KeyboardPlayerCtrl>(player);
 	//cout << deck << endl;
-	/*deck->add_card_to_deck(new Fireball());
+	deck->add_card_to_deck(new Fireball());
 	deck->add_card_to_deck(new Minigun());
-
+	/*
 	deck->use_card();
 	deck->use_card();
 	deck->use_card();
