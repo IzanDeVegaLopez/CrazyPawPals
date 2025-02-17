@@ -170,3 +170,5 @@ void Game::checkCollisions() {
 
 	
 }
+
+

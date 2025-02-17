@@ -7,12 +7,11 @@
 #include "../our_scripts/components/MovementController.h"
 #include "../our_scripts/components/ShootComponent.h"
 #include "../our_scripts/components/Health.h"
-//#include "../our_scripts/components/Camera.h"
+
 
 using namespace ecs;
 
-Player::Player(ecs::Manager* mngr) 
-	:GameObject::GameObject(mngr, ecs::grp::PLAYER),_shootCooldown(0.5f){
+Player::Player(ecs::Manager* mngr) : GameObject::GameObject(mngr, ecs::grp::PLAYER),_shootCooldown(0.5f){
 
 	_tr = _entity->getMngr()->getComponent<Transform>(_entity);
 	float s = 100.0f;
@@ -22,7 +21,6 @@ Player::Player(ecs::Manager* mngr)
 	_entity->getMngr()->addComponent<Health>(_entity, 20);
 	_entity->getMngr()->addComponent<KeyboardPlayerCtrl>(_entity);
 	_entity->getMngr()->addComponent<MovementController>(_entity);
-	//_entity->getMngr()->addComponent<Camera>(_entity);
 }
 
 /*
