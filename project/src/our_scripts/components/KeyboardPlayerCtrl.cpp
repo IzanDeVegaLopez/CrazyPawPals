@@ -5,6 +5,7 @@
 #include "../../ecs/Manager.h"
 #include "Transform.h"
 #include "ShootComponent.h"
+#include "../../game/Game.h"
 
 KeyboardPlayerCtrl::KeyboardPlayerCtrl()
     : _left(SDL_SCANCODE_A), _right(SDL_SCANCODE_D), _up(SDL_SCANCODE_W), _down(SDL_SCANCODE_S), 
@@ -15,11 +16,11 @@ KeyboardPlayerCtrl::~KeyboardPlayerCtrl() {
 
 void 
 KeyboardPlayerCtrl::initComponent() {
-    auto* mngr = _ent->getMngr();
-    _tr = mngr->getComponent<Transform>(_ent);
+
+    _tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
     assert(_tr != nullptr);
 
-    _sc = mngr->getComponent<ShootComponent>(_ent);
+    _sc = Game::Instance()->get_mngr()->getComponent<ShootComponent>(_ent);
     assert(_sc != nullptr);
 }
 

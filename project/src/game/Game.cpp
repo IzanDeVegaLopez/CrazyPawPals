@@ -23,7 +23,6 @@
 
 using namespace std;
 
-using ecs::Manager;
 
 Game::Game() :
 		_mngr(nullptr) {
@@ -41,7 +40,7 @@ Game::~Game() {
 		SDLUtils::Release();
 }
 
-void Game::init() {
+bool Game::init() {
 
 	// initialize the SDL singleton
 	if (!SDLUtils::Init("crazy paw pals", 800, 600,
@@ -49,14 +48,14 @@ void Game::init() {
 
 		std::cerr << "Something went wrong while initializing SDLUtils"
 				<< std::endl;
-		return;
+		return false;
 	}
 
 	// initialize the InputHandler singleton
 	if (!InputHandler::Init()) {
 		std::cerr << "Something went wrong while initializing SDLHandler"
 				<< std::endl;
-		return;
+		return false;
 
 	}
 
@@ -64,7 +63,7 @@ void Game::init() {
 	SDL_ShowCursor(SDL_ENABLE);
 
 	// Create the manager
-	_mngr = new Manager();
+	_mngr = new ecs::Manager();
 
 #pragma region bullets
 	std::vector<Bullet*> b;
@@ -97,7 +96,7 @@ void Game::init() {
 	_mngr->addComponent<MovementController>(player); 
 	_mngr->addComponent<Mana>(player);
 #pragma endregion
-	
+	/*
 	Deck deck = Deck(std::list<Card*>{new Card("1"), new Card("2"), new Card("3"), new Card("4")});
 	//cout << deck << endl;
 	deck.add_card_to_deck(new Fireball());
@@ -113,6 +112,8 @@ void Game::init() {
 
 	//deck.addCardToDeck(new Card("5"));
 	cout << deck << endl;
+	*/
+	return true;
 }
 
 void Game::start() {
@@ -160,6 +161,10 @@ void Game::start() {
 			SDL_Delay(10 - frameTime);
 	}
 
+}
+
+ecs::Manager* Game::get_mngr() {
+	return _mngr;
 }
 
 void Game::checkCollisions() {

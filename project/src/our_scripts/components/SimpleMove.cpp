@@ -5,7 +5,7 @@
 #include "../../sdlutils/SDLUtils.h"
 #include "Transform.h"
 #include "../../ecs/Manager.h"
-
+#include "../../game/Game.h"
 
 SimpleMove::SimpleMove() {
 
@@ -16,8 +16,8 @@ SimpleMove::~SimpleMove() {
 
 void
 SimpleMove::initComponent() {
-	auto* mngr = _ent->getMngr();
-	_tr = mngr->getComponent<Transform>(_ent);
+
+	_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
 	assert(_tr != nullptr);
 }
 
