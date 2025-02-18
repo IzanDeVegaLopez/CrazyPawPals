@@ -1,5 +1,7 @@
 #include "Deck.hpp"
+#include "ecs/Manager.h"
 #include <iostream>
+#include "game/Game.h"
 
 void Deck::_put_new_card_on_hand()
 {
@@ -31,17 +33,21 @@ Deck::Deck(std::list<Card*>& starterDeck) noexcept
 {
 	_discard_pile = CardList();
 	_hand = nullptr;
-	_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
+	//_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
 	_draw_pile = CardList(starterDeck);
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
+}
+
+Deck::Deck() noexcept
+{
 }
 
 Deck::Deck(CardList&& starterDeck) noexcept
 {
 	_discard_pile = CardList();
 	_hand = nullptr;
-	_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
+	//_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
 	_draw_pile = starterDeck;
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
@@ -55,12 +61,12 @@ Deck::~Deck()
 	//_draw_pile y _discard_pile llamarán a su destructor cuando esto se destruya al salir de ámbito
 }
 
-bool Deck::use_card() noexcept
+bool Deck::use_card(Vector2D target_pos) noexcept
 {
 	if (_can_play_hand_card()) {
 		//Se pudo usar la carta
-		_mana->change_mana(_hand->get_costs().get_mana());
-		_hand->on_play();
+		_mana->change_mana(-_hand->get_costs().get_mana());
+		_hand->on_play(_tr->getPos(), target_pos);
 		_put_new_card_on_hand();
 		return true;
 	}
@@ -113,7 +119,7 @@ void Deck::_finish_realoading()
 	_is_reloading = false;
 	_discard_pile.move_from_this_to(_draw_pile);
 	_draw_pile.shuffle();
-
+	_hand = _draw_pile.pop_first();
 	std::cout << *this;
 }
 bool Deck::_can_finish_reloading()
@@ -128,11 +134,13 @@ bool Deck::_can_play_hand_card()
 	
 }
 
-void Deck::update(float deltaTime) noexcept
+void Deck::update(Uint32 deltaTime)
 {
 	//TODO
 	//Counts time down for reload time and do the rest of things needed for finishing reload
 	_time_till_reload_finishes -= deltaTime;
+	if(_is_reloading)
+		std::cout << _time_till_reload_finishes << std::endl;
 	//std::cout << _time_till_reload_finishes << std::endl;
 	if (_can_finish_reloading()) {
 		_finish_realoading();
@@ -154,6 +162,14 @@ void Deck::add_card_to_deck(Card* c)
 
 void Deck::remove_card(std::list<Card*>::iterator)
 {
+}
+
+void Deck::initComponent()
+{
+	_mana = Game::Instance()->get_mngr()->getComponent<Mana>(_ent);
+	assert(_mana!=nullptr);
+	_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
+	assert(_tr!=nullptr);
 }
 
 std::ostream& operator<<(std::ostream& os, const Deck& deck)

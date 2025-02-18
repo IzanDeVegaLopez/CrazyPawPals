@@ -180,13 +180,10 @@ public:
 	// Updating  an entity simply calls the update of all
 	// components
 	//
-	inline void update(entity_t e) {
-		Uint32 current_frame = SDL_GetTicks();
+	inline void update(entity_t e, Uint32 dt) {
 		auto n = e->_currCmps.size();
 		for (auto i = 0u; i < n; i++)
-			e->_currCmps[i]->update(current_frame - _last_frame);
-		//std::cout << current_frame - _last_frame << std::endl;
-		_last_frame = current_frame;
+			e->_currCmps[i]->update(dt);
 	}
 
 	// Rendering an entity simply calls the render of all
@@ -200,11 +197,11 @@ public:
 
 	// update all entities
 	//
-	void update() {
+	void update(Uint32 dt) {
 		for (auto &ents : _entsByGroup) {
 			auto n = ents.size();
 			for (auto i = 0u; i < n; i++)
-				update(ents[i]);
+				update(ents[i],dt);
 		}
 	}
 

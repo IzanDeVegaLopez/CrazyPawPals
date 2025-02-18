@@ -51,7 +51,7 @@ public:
 	// delta_time represents the milliseconds elapsed since
 	// the last frame. To be used in time-sensitive calculations.
 	// 
-	virtual void update(int delta_time) {
+	virtual void update(uint32_t delta_time) {
 	}
 
 	// A component has a render method, and by default it

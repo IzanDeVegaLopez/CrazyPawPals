@@ -85,7 +85,7 @@ public:
 		_speed = s;
 	}
 
-	void update(int delta_time) override {
+	void update(uint32_t delta_time) override {
 		_pos = _pos + _dir*_speed;
 	}
 
