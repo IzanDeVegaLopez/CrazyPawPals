@@ -106,10 +106,17 @@ project(CrazyPawPals)
         SDL2_net
         SDL2_mixer
     )
-
+    
     set(
         CrazyPawPals_EXE_DIRECTORY
-        ${CMAKE_CURRENT_LIST_DIR}/build/x64-$<CONFIGURATION>/$<CONFIGURATION>
+        ${CMAKE_CURRENT_BINARY_DIR}/bin
+    )
+    set_target_properties(
+        ${PROJECT_NAME}
+        PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CrazyPawPals_EXE_DIRECTORY}/$<0:>
+        ARCHIVE_OUTPUT_DIRECTORY ${CrazyPawPals_EXE_DIRECTORY}/$<0:>
+        LIBRARY_OUTPUT_DIRECTORY ${CrazyPawPals_EXE_DIRECTORY}/$<0:>
     )
     
     add_custom_target(
