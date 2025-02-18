@@ -17,13 +17,12 @@
 #include "../our_scripts//components/ShootComponent.h"
 #include "../our_scripts//components/SimpleMove.h"
 #include "../our_scripts/components/Mana.h"
-
+#include "../our_scripts/components/Deck.hpp"
 #include "../our_scripts/Bullet.h"
 
 
 using namespace std;
 
-using ecs::Manager;
 
 Game::Game() :
 	_mngr(nullptr) {
@@ -41,30 +40,30 @@ Game::~Game() {
 		SDLUtils::Release();
 }
 
-void Game::init() {
+bool Game::init() {
 
 	// initialize the SDL singleton
 	if (!SDLUtils::Init("crazy paw pals", 800, 600,
 		"resources/config/crazypawpals.resources.json")) {
 
 		std::cerr << "Something went wrong while initializing SDLUtils"
-			<< std::endl;
-		return;
+				<< std::endl;
+		return false;
+
 	}
 
 	// initialize the InputHandler singleton
 	if (!InputHandler::Init()) {
 		std::cerr << "Something went wrong while initializing SDLHandler"
-			<< std::endl;
-		return;
-
+				<< std::endl;
+		return false;
 	}
 
 	// Habilitar el cursor del rat�n
 	SDL_ShowCursor(SDL_ENABLE);
 
 	// Create the manager
-	_mngr = new Manager();
+	_mngr = new ecs::Manager();
 
 #pragma region bullets
 	std::vector<Bullet*> b;
@@ -95,24 +94,10 @@ void Game::init() {
 	_mngr->addComponent<ShootComponent>(player);
 	_mngr->addComponent<MovementController>(player);
 	_mngr->addComponent<Mana>(player);
-#pragma endregion
-
-	Deck* deck = _mngr->addComponent<Deck>(player, std::list<Card*>{new Fireball()});
+	std::list<Card*> my_card_list = std::list<Card*>{ new Fireball(), new Fireball(), new Minigun(), new Minigun() };
+	_mngr->addComponent<Deck>(player, my_card_list);
 	_mngr->addComponent<KeyboardPlayerCtrl>(player);
-	//cout << deck << endl;
-	deck->add_card_to_deck(new Fireball());
-	deck->add_card_to_deck(new Minigun());
-	/*
-	deck->use_card();
-	deck->use_card();
-	deck->use_card();
-	deck->use_card();
-	deck->use_card();
-	deck->use_card();
-	deck->reload();*/
-
-	//deck.addCardToDeck(new Card("5"));
-	cout << *deck << endl;
+#pragma endregion
 }
 
 void Game::start() {
@@ -121,6 +106,8 @@ void Game::start() {
 	bool exit = false;
 
 	auto& ihdlr = ih();
+	//delta time
+	Uint32 dt = 10;
 
 	// reset the time before starting - so we calculate correct
 	// delta-time in the first iteration
@@ -145,7 +132,7 @@ void Game::start() {
 			continue;
 		}
 
-		_mngr->update();
+		_mngr->update(dt);
 		_mngr->refresh();
 
 		checkCollisions();
@@ -154,12 +141,15 @@ void Game::start() {
 		_mngr->render();
 		sdlutils().presentRenderer();
 
-		Uint32 frameTime = sdlutils().currRealTime() - startTime;
-
-		if (frameTime < 10)
-			SDL_Delay(10 - frameTime);
+		dt = sdlutils().currRealTime() - startTime;
+		if (dt < 10)
+			SDL_Delay(10 - dt);
 	}
 
+}
+
+ecs::Manager* Game::get_mngr() {
+	return _mngr;
 }
 
 void Game::checkCollisions() {

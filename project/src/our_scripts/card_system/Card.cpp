@@ -21,7 +21,7 @@ Card* Card::on_mill()
 	return this;
 }
 
-void Card::on_play() {
+void Card::on_play(Vector2D& player_position, Vector2D& target_position) {
 	// Deploy effect
 	std::cout << _name << " Played" << std::endl;
 }
@@ -30,13 +30,3 @@ std::string Card::get_written_info()
 {
 	return std::to_string(_my_costs.get_mana()) + '-' + _name;
 }
-/*bool Card::can_play()
-{
-	// Returns if it could be used
-	int mana_bank = _resources->mana();
-	if (_mana_cost >= mana_bank) {
-		_resources->set_mana(mana_bank-_mana_cost);
-		return true;
-	}
-	return false;
-}*/

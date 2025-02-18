@@ -10,13 +10,14 @@
 
 class Deck: public ecs::Component {
 protected:
-	int reload_time = 100;
+	int reload_time = 1000;
 	CardList _draw_pile;
 	CardList _discard_pile;
 	Card* _hand;
 	Mana* _mana;
+	Transform* _tr;
 	bool _is_reloading = false;
-	float _time_till_reload_finishes;
+	int _time_till_reload_finishes;
 	void _put_new_card_on_hand();
 	void _finish_realoading();
 	bool _can_finish_reloading();
@@ -41,7 +42,7 @@ public:
 	//Puts all cards on discard pile and sets player unable to use any action outside moving
 	//Then puts all cards on drawPile and shuffles
 	void reload() noexcept;
-	void update(float deltaTime) noexcept;
+	void update(Uint32 deltaTime) override;
 	void render() noexcept;
 	friend std::ostream& operator << (std::ostream& os, const Deck& deck);
 
