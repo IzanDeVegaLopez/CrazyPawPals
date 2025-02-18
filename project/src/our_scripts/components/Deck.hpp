@@ -1,12 +1,14 @@
 #pragma once
-#include "CardList.h"
-#include "Card.hpp"
-#include "PlayableCards.hpp"
-#include "../components/Mana.h"
+#include "../card_system/CardList.h"
+#include "../card_system/Card.hpp"
+#include "../card_system/PlayableCards.hpp"
+#include "Mana.h"
+#include "../../utils/Vector2D.h"
+#include "ecs/Component.h"
 #include <list>
 #include <cassert>
 
-class Deck {
+class Deck: public ecs::Component {
 protected:
 	int reload_time = 100;
 	CardList _draw_pile;
@@ -20,6 +22,7 @@ protected:
 	bool _can_finish_reloading();
 	bool _can_play_hand_card();
 public:
+	__CMPID_DECL__(ecs::cmp::DECK)
 	Deck() noexcept;
 	//Creates a starter with a list of cards
 	Deck(CardList&& starterDeck) noexcept;
@@ -27,7 +30,7 @@ public:
 	~Deck();
 	//returns true if the card can be used, calls the useCard function of the card
 	//and puts the top card of deck on hand, if there's non left it reloads
-	bool use_card() noexcept;
+	bool use_card(Vector2D target_pos = {0,0}) noexcept;
 	//puts the card on hand on discard pile
 	//and puts the top card of deck on hand, if there's non left it reloads
 	//returns true, if a card could be discarded
@@ -48,6 +51,8 @@ public:
 	//belong to _draw_pile (during rewards menu all cards are exclusively in
 	//the draw pile)
 	void remove_card(std::list<Card*>::iterator);
+
+	void initComponent() override;
 	/*
 	class const_iterator {
 	private:

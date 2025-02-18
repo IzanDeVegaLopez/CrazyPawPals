@@ -4,6 +4,7 @@
 
 class Transform;
 class ShootComponent;
+class Deck;
 class KeyboardPlayerCtrl :public ecs::Component
 {
 public:
@@ -22,4 +23,5 @@ private:
 
 	Transform* _tr;
 	ShootComponent* _sc;
+	Deck* _dc;
 };

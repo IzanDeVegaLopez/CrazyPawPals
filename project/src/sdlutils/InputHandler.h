@@ -129,7 +129,8 @@ public:
 	// the book 'SDL Game Development'
 
 private:
-	InputHandler() {
+	// Set all the mouse button state to false (each button turns true when it is pressed)
+	InputHandler() : _mbState{} {
 		_kbState = nullptr;
 		clearState();
 	}
