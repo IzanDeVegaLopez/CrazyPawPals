@@ -1,4 +1,5 @@
 #include "Deck.hpp"
+#include "ecs/Manager.h"
 #include <iostream>
 
 void Deck::_put_new_card_on_hand()
@@ -31,7 +32,7 @@ Deck::Deck(std::list<Card*>& starterDeck) noexcept
 {
 	_discard_pile = CardList();
 	_hand = nullptr;
-	_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
+	//_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
 	_draw_pile = CardList(starterDeck);
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
@@ -41,7 +42,7 @@ Deck::Deck(CardList&& starterDeck) noexcept
 {
 	_discard_pile = CardList();
 	_hand = nullptr;
-	_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
+	//_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
 	_draw_pile = starterDeck;
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
@@ -55,11 +56,11 @@ Deck::~Deck()
 	//_draw_pile y _discard_pile llamarán a su destructor cuando esto se destruya al salir de ámbito
 }
 
-bool Deck::use_card() noexcept
+bool Deck::use_card(Vector2D target_pos) noexcept
 {
 	if (_can_play_hand_card()) {
 		//Se pudo usar la carta
-		_mana->change_mana(_hand->get_costs().get_mana());
+		_mana->change_mana(-_hand->get_costs().get_mana());
 		_hand->on_play();
 		_put_new_card_on_hand();
 		return true;
@@ -154,6 +155,11 @@ void Deck::add_card_to_deck(Card* c)
 
 void Deck::remove_card(std::list<Card*>::iterator)
 {
+}
+
+void Deck::initComponent()
+{
+	_mana = _ent->getMngr()->getComponent<Mana>(_ent);
 }
 
 std::ostream& operator<<(std::ostream& os, const Deck& deck)

@@ -1,4 +1,4 @@
-// This file is part of the course TPV2@UCM - Samir Genaim
+ï»¿// This file is part of the course TPV2@UCM - Samir Genaim
 
 #include "Game.h"
 
@@ -9,7 +9,7 @@
 #include "../utils/Collisions.h"
 
 
-#include "../our_scripts/card_system/Deck.hpp"
+#include "../our_scripts/components/Deck.hpp"
 #include "../our_scripts/components/Image.h"
 #include "../our_scripts/components/Transform.h"
 #include "../our_scripts/components/KeyboardPlayerCtrl.h"
@@ -26,7 +26,7 @@ using namespace std;
 using ecs::Manager;
 
 Game::Game() :
-		_mngr(nullptr) {
+	_mngr(nullptr) {
 }
 
 Game::~Game() {
@@ -45,22 +45,22 @@ void Game::init() {
 
 	// initialize the SDL singleton
 	if (!SDLUtils::Init("crazy paw pals", 800, 600,
-			"resources/config/crazypawpals.resources.json")) {
+		"resources/config/crazypawpals.resources.json")) {
 
 		std::cerr << "Something went wrong while initializing SDLUtils"
-				<< std::endl;
+			<< std::endl;
 		return;
 	}
 
 	// initialize the InputHandler singleton
 	if (!InputHandler::Init()) {
 		std::cerr << "Something went wrong while initializing SDLHandler"
-				<< std::endl;
+			<< std::endl;
 		return;
 
 	}
 
-	// Habilitar el cursor del ratón
+	// Habilitar el cursor del ratï¿½n
 	SDL_ShowCursor(SDL_ENABLE);
 
 	// Create the manager
@@ -84,35 +84,35 @@ void Game::init() {
 #pragma endregion
 
 #pragma region player
-	auto player = _mngr->addEntity(); 
-	_mngr->setHandler(ecs::hdlr::PLAYER, player); 
-	auto tr = _mngr->addComponent<Transform>(player); 
-	float s = 100.0f; 
-	float x = (sdlutils().width() - s) / 2.0f; 
-	float y = (sdlutils().height() - s) / 2.0f; 
-	tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 2.0f); 
-	_mngr->addComponent<Image>(player, &sdlutils().images().at("player")); 
+	auto player = _mngr->addEntity();
+	_mngr->setHandler(ecs::hdlr::PLAYER, player);
+	auto tr = _mngr->addComponent<Transform>(player);
+	float s = 100.0f;
+	float x = (sdlutils().width() - s) / 2.0f;
+	float y = (sdlutils().height() - s) / 2.0f;
+	tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 2.0f);
+	_mngr->addComponent<Image>(player, &sdlutils().images().at("player"));
 	_mngr->addComponent<ShootComponent>(player);
-	_mngr->addComponent<KeyboardPlayerCtrl>(player); 
-	_mngr->addComponent<MovementController>(player); 
+	_mngr->addComponent<MovementController>(player);
 	_mngr->addComponent<Mana>(player);
 #pragma endregion
-	
-	Deck deck = Deck(std::list<Card*>{new Card("1"), new Card("2"), new Card("3"), new Card("4")});
-	//cout << deck << endl;
-	deck.add_card_to_deck(new Fireball());
-	deck.add_card_to_deck(new Minigun());
 
-	deck.use_card();
-	deck.use_card();
-	deck.use_card();
-	deck.use_card();
-	deck.use_card();
-	deck.use_card();
-	deck.reload();
+	Deck* deck = _mngr->addComponent<Deck>(player, std::list<Card*>{new Fireball()});
+	_mngr->addComponent<KeyboardPlayerCtrl>(player);
+	//cout << deck << endl;
+	deck->add_card_to_deck(new Fireball());
+	deck->add_card_to_deck(new Minigun());
+	/*
+	deck->use_card();
+	deck->use_card();
+	deck->use_card();
+	deck->use_card();
+	deck->use_card();
+	deck->use_card();
+	deck->reload();*/
 
 	//deck.addCardToDeck(new Card("5"));
-	cout << deck << endl;
+	cout << *deck << endl;
 }
 
 void Game::start() {
@@ -120,7 +120,7 @@ void Game::start() {
 	// a boolean to exit the loop
 	bool exit = false;
 
-	auto &ihdlr = ih();
+	auto& ihdlr = ih();
 
 	// reset the time before starting - so we calculate correct
 	// delta-time in the first iteration
@@ -164,5 +164,6 @@ void Game::start() {
 
 void Game::checkCollisions() {
 
-	
+
 }
+

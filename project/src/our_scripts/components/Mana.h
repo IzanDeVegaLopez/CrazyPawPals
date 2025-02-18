@@ -16,12 +16,12 @@ public:
 	}
 	
 	// Changes current mana by a given amount. Can be positive or negative, and cannot be lower than 0 or greater than _max_mana.
-	void change_mana(int delta) { _mana_count = std::max(0, std::min(_mana_count + delta, _max_mana)); }
+	void change_mana(int delta) { _mana_count = std::max(0, std::min(_mana_count + delta*1000, _max_mana)); }
 	// Changes mana regeneration by a given amount. Can be positive or negative.
 	void change_mana_regen(int delta) { _mana_regen += delta; }
 	// Changes maximum mana by a given amount. Can be positive or negative.
 	void change_max_mana(int delta) { _max_mana += delta * 1000; }
 	// Returns your current mana.
-	int mana_count() const { return _mana_count; }
+	int mana_count() const { return _mana_count/1000; }
 
 };
