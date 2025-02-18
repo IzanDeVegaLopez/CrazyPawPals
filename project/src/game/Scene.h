@@ -4,7 +4,7 @@ class Scene {
 public:
 	Scene();
 	virtual ~Scene();
-	void init();
+	virtual void init();
 
 private:
 
