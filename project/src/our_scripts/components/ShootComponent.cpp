@@ -28,8 +28,8 @@ ShootComponent::shoot(const Vector2D& target) {
 	auto* weapon = _ent->getMngr()->getComponent<Weapon>(_ent);
 
 	if (sdlutils().currRealTime() >= _lastShoot + weapon->cooldown()) { 
-		Vector2D shootDir = (target - pos).normalize(); 
 		Vector2D shootPos = { pos.getX() + (_tr->getWidth() / 2), pos.getY() + (_tr->getHeight() / 2) };
+		Vector2D shootDir = (target - shootPos).normalize();
 		weapon->callback(shootPos, shootDir);
 		_lastShoot = sdlutils().currRealTime(); 
 	}
