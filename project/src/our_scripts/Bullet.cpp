@@ -34,9 +34,4 @@ void Bullet::generate_proyectile(BulletProperties& bp, ecs::grpId_t gId)
 	Game::Instance()->get_mngr()->addComponent<LifetimeTimer>(new_bullet, bp.life_time);
 }
 
-Vector2D Bullet::get_direction(Vector2D& start_pos, Vector2D& target_pos)
-{
-	return Vector2D(target_pos-start_pos).normalize();
-}
-
 //void 

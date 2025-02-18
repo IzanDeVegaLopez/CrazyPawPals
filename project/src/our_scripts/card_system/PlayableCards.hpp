@@ -7,5 +7,6 @@ public:
 class Minigun : public Card {
 public:
 	Minigun();
+	void on_play(Vector2D& player_position, Vector2D& target_position) override;
 	//void on_play() override;
 };

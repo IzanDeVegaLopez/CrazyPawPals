@@ -10,9 +10,9 @@ LifetimeTimer::LifetimeTimer(float lifetime)
 
 LifetimeTimer::~LifetimeTimer() {
 }
-void LifetimeTimer::update(int delta_time) {
+void LifetimeTimer::update(Uint32 delta_time) {
 	//TODO: cambiar esto para que vaya con el timer virtual del profe para que cuando se pause el juego no explote
-	std::cout << sdlutils().currRealTime() << " > " << _lifetime << std::endl;
+	//std::cout << sdlutils().currRealTime() << " > " << _lifetime << std::endl;
 	if (sdlutils().currRealTime() > _lifetime) {
 		Game::Instance()->get_mngr()->setAlive(_ent, false);
 	}

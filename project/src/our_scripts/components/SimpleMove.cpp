@@ -21,7 +21,7 @@ SimpleMove::initComponent() {
 	assert(_tr != nullptr);
 }
 
-void SimpleMove::update(int delta_time) {
+void SimpleMove::update(uint32_t delta_time) {
 	auto &pos = _tr->getPos();
 	auto &dir = _tr->getDir();
 	auto speed = _tr->getSpeed();

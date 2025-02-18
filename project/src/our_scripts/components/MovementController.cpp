@@ -15,7 +15,7 @@ MovementController::initComponent() {
 	_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
 	assert(_tr != nullptr);
 }
-void MovementController::update(int delta_time)
+void MovementController::update(uint32_t delta_time)
 {
 	//Aceleración por tiempo, en 2 segundos, se pone a _maxSpeed
 	//o->setSpeed( _maxSpeed);

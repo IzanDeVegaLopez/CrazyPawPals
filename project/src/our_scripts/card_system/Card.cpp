@@ -30,13 +30,3 @@ std::string Card::get_written_info()
 {
 	return std::to_string(_my_costs.get_mana()) + '-' + _name;
 }
-/*bool Card::can_play()
-{
-	// Returns if it could be used
-	int mana_bank = _resources->mana();
-	if (_mana_cost >= mana_bank) {
-		_resources->set_mana(mana_bank-_mana_cost);
-		return true;
-	}
-	return false;
-}*/

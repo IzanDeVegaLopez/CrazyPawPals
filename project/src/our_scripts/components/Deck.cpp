@@ -39,6 +39,10 @@ Deck::Deck(std::list<Card*>& starterDeck) noexcept
 	_put_new_card_on_hand();
 }
 
+Deck::Deck() noexcept
+{
+}
+
 Deck::Deck(CardList&& starterDeck) noexcept
 {
 	_discard_pile = CardList();
@@ -115,7 +119,7 @@ void Deck::_finish_realoading()
 	_is_reloading = false;
 	_discard_pile.move_from_this_to(_draw_pile);
 	_draw_pile.shuffle();
-
+	_hand = _draw_pile.pop_first();
 	std::cout << *this;
 }
 bool Deck::_can_finish_reloading()
@@ -130,11 +134,13 @@ bool Deck::_can_play_hand_card()
 	
 }
 
-void Deck::update(float deltaTime) noexcept
+void Deck::update(Uint32 deltaTime)
 {
 	//TODO
 	//Counts time down for reload time and do the rest of things needed for finishing reload
 	_time_till_reload_finishes -= deltaTime;
+	if(_is_reloading)
+		std::cout << _time_till_reload_finishes << std::endl;
 	//std::cout << _time_till_reload_finishes << std::endl;
 	if (_can_finish_reloading()) {
 		_finish_realoading();

@@ -13,7 +13,7 @@ class EnemyPoolManager : public ecs::Component {
 public:
 	EnemyPoolManager();
 	virtual ~EnemyPoolManager();
-	void update(int delta_time) override;
+	void update(uint32_t delta_time) override;
 	void render() override;
 private:
 

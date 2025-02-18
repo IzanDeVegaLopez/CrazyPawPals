@@ -17,7 +17,7 @@
 #include "../our_scripts//components/ShootComponent.h"
 #include "../our_scripts//components/SimpleMove.h"
 #include "../our_scripts/components/Mana.h"
-
+#include "../our_scripts/components/Deck.hpp"
 #include "../our_scripts/Bullet.h"
 
 
@@ -94,6 +94,9 @@ bool Game::init() {
 	_mngr->addComponent<ShootComponent>(player);
 	_mngr->addComponent<MovementController>(player);
 	_mngr->addComponent<Mana>(player);
+	std::list<Card*> my_card_list = std::list<Card*>{ new Fireball(), new Fireball(), new Minigun(), new Minigun() };
+	_mngr->addComponent<Deck>(player, my_card_list);
+	_mngr->addComponent<KeyboardPlayerCtrl>(player);
 #pragma endregion
 }
 
@@ -103,6 +106,8 @@ void Game::start() {
 	bool exit = false;
 
 	auto& ihdlr = ih();
+	//delta time
+	Uint32 dt = 10;
 
 	// reset the time before starting - so we calculate correct
 	// delta-time in the first iteration
@@ -127,7 +132,7 @@ void Game::start() {
 			continue;
 		}
 
-		_mngr->update();
+		_mngr->update(dt);
 		_mngr->refresh();
 
 		checkCollisions();
@@ -136,10 +141,9 @@ void Game::start() {
 		_mngr->render();
 		sdlutils().presentRenderer();
 
-		Uint32 frameTime = sdlutils().currRealTime() - startTime;
-
-		if (frameTime < 10)
-			SDL_Delay(10 - frameTime);
+		dt = sdlutils().currRealTime() - startTime;
+		if (dt < 10)
+			SDL_Delay(10 - dt);
 	}
 
 }
