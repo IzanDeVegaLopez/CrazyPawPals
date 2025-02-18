@@ -61,12 +61,12 @@ Deck::~Deck()
 	//_draw_pile y _discard_pile llamarán a su destructor cuando esto se destruya al salir de ámbito
 }
 
-bool Deck::use_card(Vector2D target_pos) noexcept
+bool Deck::use_card(const Vector2D* target_pos) noexcept
 {
 	if (_can_play_hand_card()) {
 		//Se pudo usar la carta
 		_mana->change_mana(-_hand->get_costs().get_mana());
-		_hand->on_play(_tr->getPos(), target_pos);
+		_hand->on_play(&_tr->getPos(), target_pos);
 		_put_new_card_on_hand();
 		return true;
 	}
@@ -138,6 +138,12 @@ void Deck::update(Uint32 deltaTime)
 {
 	//TODO
 	//Counts time down for reload time and do the rest of things needed for finishing reload
+
+	_draw_pile.update(deltaTime);
+	if(_hand != nullptr)
+		_hand->update(deltaTime);
+	_discard_pile.update(deltaTime);
+
 	_time_till_reload_finishes -= deltaTime;
 	if(_is_reloading)
 		std::cout << _time_till_reload_finishes << std::endl;

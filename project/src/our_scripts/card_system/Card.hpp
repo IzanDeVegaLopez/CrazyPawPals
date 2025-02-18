@@ -45,10 +45,11 @@ public:
 	virtual Resources& get_costs();
 
 	//bool can_play();
-	virtual void on_play(Vector2D& player_position, Vector2D& target_position) = 0;
+	virtual void on_play( const Vector2D* player_position, const Vector2D* target_position) = 0;
 	virtual Card* on_mill();
 
 	//friend std::ostream& operator << (std::ostream& os, const Card& card);
 	//Debug purposes
 	virtual std::string get_written_info();
+	virtual void update(Uint32) {};
 };

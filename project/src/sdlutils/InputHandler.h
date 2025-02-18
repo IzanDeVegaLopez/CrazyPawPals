@@ -6,7 +6,7 @@
 #include <SDL.h>
 #include <array>
 #include <cassert>
-
+#include "../utils/Vector2D.h"
 #include "../utils/Singleton.h"
 
 // Instead of a Singleton class, we could make it part of
@@ -116,7 +116,7 @@ public:
 		return _isMouseButtonDownEvent;
 	}
 
-	inline const std::pair<Sint32, Sint32>& getMousePos() {
+	inline const Vector2D& getMousePos() {
 		return _mousePos;
 	}
 
@@ -154,9 +154,7 @@ private:
 
 	inline void onMouseMotion(const SDL_Event &event) {
 		_isMouseMotionEvent = true;
-		_mousePos.first = event.motion.x;
-		_mousePos.second = event.motion.y;
-
+		_mousePos.set( event.motion.x, event.motion.y);
 	}
 
 	inline void onMouseButtonDown(const SDL_Event &event) {
@@ -209,7 +207,7 @@ private:
 	bool _isMouseMotionEvent;
 	bool _isMouseButtonUpEvent;
 	bool _isMouseButtonDownEvent;
-	std::pair<Sint32, Sint32> _mousePos;
+	Vector2D _mousePos;
 	std::array<bool, 3> _mbState;
 	const Uint8 *_kbState;
 }
