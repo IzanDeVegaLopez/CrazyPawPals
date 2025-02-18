@@ -98,21 +98,22 @@ void Game::init() {
 	_mngr->addComponent<Mana>(player);
 #pragma endregion
 	
-	Deck deck = Deck(std::list<Card*>{new Card("1"), new Card("2"), new Card("3"), new Card("4")});
+	// HACK: Chicho commented this bit thinking it was just some testing to make some other things compile
+	//Deck deck = Deck(std::list<Card*>{new Card("1"), new Card("2"), new Card("3"), new Card("4")});
+	////cout << deck << endl;
+	//deck.add_card_to_deck(new Fireball());
+	//deck.add_card_to_deck(new Minigun());
+
+	//deck.use_card();
+	//deck.use_card();
+	//deck.use_card();
+	//deck.use_card();
+	//deck.use_card();
+	//deck.use_card();
+	//deck.reload();
+
+	////deck.addCardToDeck(new Card("5"));
 	//cout << deck << endl;
-	deck.add_card_to_deck(new Fireball());
-	deck.add_card_to_deck(new Minigun());
-
-	deck.use_card();
-	deck.use_card();
-	deck.use_card();
-	deck.use_card();
-	deck.use_card();
-	deck.use_card();
-	deck.reload();
-
-	//deck.addCardToDeck(new Card("5"));
-	cout << deck << endl;
 }
 
 void Game::start() {
