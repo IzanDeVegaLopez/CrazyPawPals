@@ -21,8 +21,6 @@
 #include "../our_scripts/components/EnemyMovement.h"
 
 #include "../our_scripts/Bullet.h"
-#include "../our_scripts/Enemy.h"
-#include "../our_scripts/EnemyPoolManager.h"
 
 
 using namespace std;
@@ -43,6 +41,74 @@ Game::~Game() {
 	// release SLDUtil if the instance was created correctly.
 	if (SDLUtils::HasInstance())
 		SDLUtils::Release();
+}
+
+ecs::entity_t 
+Game::createSarnoRata() {
+	auto e = _mngr->addEntity();
+	_mngr->setHandler(ecs::hdlr::ENEMY, e);
+	auto tr = _mngr->addComponent<Transform>(e);
+	_mngr->addComponent<Image>(e, &sdlutils().images().at("enemy"));
+	_mngr->addComponent<MovementController>(e);
+	_mngr->addComponent<EnemyMovement>(e);
+
+	float s = 100.0f;
+	float x = (sdlutils().width() - s) / 2.0f;
+	float y = (sdlutils().height() - s) / 2.0f;
+	tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 1.0f);
+
+	return e;
+}
+
+ecs::entity_t
+Game::createMichiMafioso() {
+	auto e = _mngr->addEntity();
+	_mngr->setHandler(ecs::hdlr::ENEMY, e);
+	auto tr = _mngr->addComponent<Transform>(e);
+	_mngr->addComponent<Image>(e, &sdlutils().images().at("enemy"));
+	_mngr->addComponent<MovementController>(e);
+	_mngr->addComponent<EnemyMovement>(e);
+
+	float s = 100.0f;
+	float x = (sdlutils().width() - s) / 2.0f;
+	float y = (sdlutils().height() - s) / 2.0f;
+	tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 1.0f);
+
+	return e;
+}
+
+ecs::entity_t
+Game::createBoom() {
+	auto e = _mngr->addEntity();
+	_mngr->setHandler(ecs::hdlr::ENEMY, e);
+	auto tr = _mngr->addComponent<Transform>(e);
+	_mngr->addComponent<Image>(e, &sdlutils().images().at("enemy"));
+	_mngr->addComponent<MovementController>(e);
+	_mngr->addComponent<EnemyMovement>(e);
+
+	float s = 100.0f;
+	float x = (sdlutils().width() - s) / 2.0f;
+	float y = (sdlutils().height() - s) / 2.0f;
+	tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 1.0f);
+
+	return e;
+}
+
+ecs::entity_t
+Game::createPlimPlim() {
+	auto e = _mngr->addEntity();
+	_mngr->setHandler(ecs::hdlr::ENEMY, e);
+	auto tr = _mngr->addComponent<Transform>(e);
+	_mngr->addComponent<Image>(e, &sdlutils().images().at("enemy"));
+	_mngr->addComponent<MovementController>(e);
+	_mngr->addComponent<EnemyMovement>(e);
+
+	float s = 100.0f;
+	float x = (sdlutils().width() - s) / 2.0f;
+	float y = (sdlutils().height() - s) / 2.0f;
+	tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 1.0f);
+
+	return e;
 }
 
 void Game::init() {
@@ -125,7 +191,7 @@ void Game::init() {
 
 #pragma region enemy
 
-	auto enemy = new Enemy(_mngr);
+	auto enemy = createSarnoRata();
 
 #pragma endregion
 
