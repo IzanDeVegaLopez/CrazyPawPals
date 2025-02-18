@@ -21,7 +21,7 @@ Card* Card::on_mill()
 	return this;
 }
 
-void Card::on_play() {
+void Card::on_play(Vector2D& player_position, Vector2D& target_position) {
 	// Deploy effect
 	std::cout << _name << " Played" << std::endl;
 }

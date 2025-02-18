@@ -1,6 +1,7 @@
 #include "Deck.hpp"
 #include "ecs/Manager.h"
 #include <iostream>
+#include "game/Game.h"
 
 void Deck::_put_new_card_on_hand()
 {
@@ -61,7 +62,7 @@ bool Deck::use_card(Vector2D target_pos) noexcept
 	if (_can_play_hand_card()) {
 		//Se pudo usar la carta
 		_mana->change_mana(-_hand->get_costs().get_mana());
-		_hand->on_play();
+		_hand->on_play(_tr->getPos(), target_pos);
 		_put_new_card_on_hand();
 		return true;
 	}
@@ -159,7 +160,10 @@ void Deck::remove_card(std::list<Card*>::iterator)
 
 void Deck::initComponent()
 {
-	_mana = _ent->getMngr()->getComponent<Mana>(_ent);
+	_mana = Game::Instance()->get_mngr()->getComponent<Mana>(_ent);
+	assert(_mana!=nullptr);
+	_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
+	assert(_tr!=nullptr);
 }
 
 std::ostream& operator<<(std::ostream& os, const Deck& deck)

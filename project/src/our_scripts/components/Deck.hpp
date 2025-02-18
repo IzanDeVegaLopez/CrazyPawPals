@@ -15,6 +15,7 @@ protected:
 	CardList _discard_pile;
 	Card* _hand;
 	Mana* _mana;
+	Transform* _tr;
 	bool _is_reloading = false;
 	float _time_till_reload_finishes;
 	void _put_new_card_on_hand();

@@ -24,7 +24,7 @@ KeyboardPlayerCtrl::initComponent() {
     _sc = Game::Instance()->get_mngr()->getComponent<ShootComponent>(_ent);
     assert(_sc != nullptr);
 
-    _dc = mngr->getComponent<Deck>(_ent);
+    _dc = Game::Instance()->get_mngr()->getComponent<Deck>(_ent);
     assert(_sc != nullptr);
 }
 
