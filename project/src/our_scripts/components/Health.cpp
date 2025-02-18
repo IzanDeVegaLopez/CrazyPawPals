@@ -4,7 +4,7 @@
 #include <iostream>
 
 Health::Health(int maxHealth) 
-	: _currentHealth(maxHealth), _maxHealth(maxHealth) {};
+	: _currentHealth(maxHealth), _maxHealth(maxHealth),_shield(0) {};
 Health::~Health() {};
 
 void
@@ -19,16 +19,32 @@ Health::heal(int health) {
 void
 Health::takeDamage(int damage) {
 	std::cout << "da" << std::endl;
-	_currentHealth -= damage;
-	if (_currentHealth <= 0) {
-		std::cout << "muerto" << std::endl;
-		//muerto
+	if (_shield <= 0) {
+		_currentHealth -= damage;
+		if (_currentHealth <= 0) {
+			std::cout << "muerto" << std::endl;
+			//muerto
+		}
 	}
+	else _shield -= damage;
+
 }
 
 void
 Health::setMaxHeatlh(int h) {
 	if (h > 0) {
-		_maxHealth = h;
+		_maxHealth = h; 
+	}
+}
+void 
+Health::takeShield(int s) {
+	_shield = s;
+}
+void
+Health::update() {
+
+	if (_shield > 0 && sdlutils().virtualTimer().currRealTime() >= _shieldTime) {
+		_shieldTime = sdlutils().virtualTimer().currRealTime() + FRAME_DURATION;
+		_shield--;
 	}
 }
