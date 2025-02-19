@@ -142,8 +142,10 @@ void Game::start() {
 		sdlutils().presentRenderer();
 
 		dt = sdlutils().currRealTime() - startTime;
-		if (dt < 10)
+		if (dt < 10) {
 			SDL_Delay(10 - dt);
+			//dt = 10;
+		}
 	}
 
 }
