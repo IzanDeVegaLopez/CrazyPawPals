@@ -184,7 +184,6 @@ public:
 		for (auto i = 0u; i < n; i++)
 			e->_currCmps[i]->update();
 	}
-
 	// Rendering an entity simply calls the render of all
 	// components
 	//

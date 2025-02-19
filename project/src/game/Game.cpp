@@ -14,23 +14,25 @@
 #include "../our_scripts/components/Transform.h"
 #include "../our_scripts/components/KeyboardPlayerCtrl.h"
 #include "../our_scripts/components/MovementController.h"
-#include "../our_scripts//components/ShootComponent.h"
-#include "../our_scripts//components/SimpleMove.h"
+#include "../our_scripts/components/ShootComponent.h"
+#include "../our_scripts/components/SimpleMove.h"
 
 #include "../our_scripts/Bullet.h"
 #include "../our_scripts/Player.h"
 
+//Scenes for SceneManager
+#include "MainMenuScene.h"
+#include "SelectionMenuScene.h"
+#include "GameScene.h"
 
 using namespace std;
 
 using ecs::Manager;
 
-Game::Game() :
-		_mngr(nullptr) {
+Game::Game() {
 }
 
 Game::~Game() {
-	delete _mngr;
 
 	// release InputHandler if the instance was created correctly.
 	if (InputHandler::HasInstance())
@@ -63,60 +65,6 @@ void Game::init() {
 	// enable the cursor visibility
 	SDL_ShowCursor(SDL_ENABLE);
 
-	// Create the manager
-	_mngr = new Manager();
-
-#pragma region bullets
-	std::vector<Bullet*> b;
-	/*
-		for (int i = 0; i < 100; ++i) {
-		auto ins = _mngr->addEntity();
-		auto tr = _mngr->addComponent<Transform>(ins);
-		float s = 20.0f;
-		float x = -1.0f;
-		float y = -1.0f;
-		tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 2.0f);
-		_mngr->addComponent<SimpleMove>(ins);
-		b.push_back(ins);
-	}
-	*/
-
-#pragma endregion
-
-#pragma region player
-
-	auto player = new Player(_mngr);
-	/*
-		auto player = _mngr->addEntity(); 
-	_mngr->setHandler(ecs::hdlr::PLAYER, player); 
-	auto tr = _mngr->addComponent<Transform>(player); 
-	float s = 100.0f; 
-	float x = (sdlutils().width() - s) / 2.0f; 
-	float y = (sdlutils().height() - s) / 2.0f; 
-	tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 2.0f); 
-	_mngr->addComponent<Image>(player, &sdlutils().images().at("player")); 
-	_mngr->addComponent<ShootComponent>(player);
-	_mngr->addComponent<KeyboardPlayerCtrl>(player); 
-	_mngr->addComponent<MovementController>(player); 
-	*/
-
-#pragma endregion
-	
-	Deck deck = Deck(std::list<Card*>{new Card("1"), new Card("2"), new Card("3"), new Card("4")});
-	//cout << deck << endl;
-	deck.add_card_to_deck(new Fireball());
-	deck.add_card_to_deck(new Minigun());
-
-	deck.use_card();
-	deck.use_card();
-	deck.use_card();
-	deck.use_card();
-	deck.use_card();
-	deck.use_card();
-	deck.reload();
-
-	//deck.addCardToDeck(new Card("5"));
-	cout << deck << endl;
 }
 
 void Game::start() {
@@ -152,7 +100,6 @@ void Game::start() {
 		_mngr->update();
 		_mngr->refresh();
 
-		checkCollisions();
 
 		sdlutils().clearRenderer();
 		_mngr->render();
@@ -164,11 +111,19 @@ void Game::start() {
 			SDL_Delay(10 - frameTime);
 	}
 
+
 }
 
-void Game::checkCollisions() {
+void Game::change_Scene(State nextScene){
+	switch (nextScene) {
+	case Game::MAINMENU:
+		break;	
+	case Game::GAMESCENE:
+		break;
+	case Game::SELECTIONMENU:
+		break;
+	}
 
-	
 }
 
 

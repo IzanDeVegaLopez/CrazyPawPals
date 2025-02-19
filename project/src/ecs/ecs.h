@@ -62,6 +62,7 @@ enum grpId : cmpId_t {
 };
 }
 
+
 namespace hdlr {
 // list of handler identifiers - note that we rely on that the
 // first number is 0 in C/C++ standard
