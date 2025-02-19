@@ -9,6 +9,7 @@ int main(int, char**) {
 	try {
 		Game::Init();
 		Game::Instance()->start();
+		if (Game::HasInstance()) Game::Release();
 	}
 	catch (const std::string& e) { // catch exceptions thrown as strings
 		std::cerr << e << std::endl;
