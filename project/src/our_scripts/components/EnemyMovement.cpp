@@ -28,7 +28,7 @@ EnemyMovement::update(uint32_t delta_time) {
 
 	newDir = newDir.normalize();
 
-	if (newDir.magnitude() > 0) {
+	if (true) {
 		newDir = newDir.normalize();
 
 		Vector2D tempDir = newDir * _tr->getSpeed();
