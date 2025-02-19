@@ -81,11 +81,11 @@ void GameScene::spawnPlayer()
 	float s = 100.0f;
 	_tr->init({ sdlutils().width() / 2.0f, sdlutils().height() / 2.0f }, { 0.0f,0.0f }, s, s, 0.0f, 2.0f);
 
-	Game::Instance()->get_mngr()->addComponent<Image>(_entity, &sdlutils().images().at("player"));
-	Game::Instance()->get_mngr()->addComponent<Revolver>(_entity);
-	Game::Instance()->get_mngr()->addComponent<ShootComponent>(_entity);
-	Game::Instance()->get_mngr()->addComponent<KeyboardPlayerCtrl>(_entity);
-	Game::Instance()->get_mngr()->addComponent<MovementController>(_entity);
+	Game::Instance()->get_mngr()->addExistingComponent<Image>(_entity,new Image(& sdlutils().images().at("player")));
+	Game::Instance()->get_mngr()->addExistingComponent<Revolver>(_entity, new Revolver());
+	Game::Instance()->get_mngr()->addExistingComponent<ShootComponent>(_entity, new ShootComponent());
+	Game::Instance()->get_mngr()->addExistingComponent<KeyboardPlayerCtrl>(_entity, new KeyboardPlayerCtrl());
+	Game::Instance()->get_mngr()->addExistingComponent<MovementController>(_entity, new MovementController());
 }
 
 void GameScene::spawnEnemies()
