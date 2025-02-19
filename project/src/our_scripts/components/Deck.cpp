@@ -3,6 +3,7 @@
 #include <iostream>
 #include "game/Game.h"
 #include "../components/Transform.h"
+#include "../../rendering/card_rendering.hpp"
 
 void Deck::_put_new_card_on_hand()
 {
@@ -59,20 +60,20 @@ Deck::~Deck()
 	//Hand es un puntero a una carta
 	if(_hand!=nullptr)
 		delete _hand;
-	//_draw_pile y _discard_pile llamarán a su destructor cuando esto se destruya al salir de ámbito
+	//_draw_pile y _discard_pile llamarï¿½n a su destructor cuando esto se destruya al salir de ï¿½mbito
 }
 
-bool Deck::use_card(Vector2D target_pos) noexcept
+bool Deck::use_card(const Vector2D* target_pos) noexcept
 {
 	if (_can_play_hand_card()) {
 		//Se pudo usar la carta
 		_mana->change_mana(-_hand->get_costs().get_mana());
-		_hand->on_play(_tr->getPos(), target_pos);
+		_hand->on_play(&_tr->getPos(), target_pos);
 		_put_new_card_on_hand();
 		return true;
 	}
 	else {
-		//No se pudo usar la carta, dar indicación visual y auditiva al player
+		//No se pudo usar la carta, dar indicaciï¿½n visual y auditiva al player
 		return false;
 	}
 }
@@ -121,7 +122,7 @@ void Deck::_finish_realoading()
 	_discard_pile.move_from_this_to(_draw_pile);
 	_draw_pile.shuffle();
 	_hand = _draw_pile.pop_first();
-	std::cout << *this;
+	//std::cout << *this;
 }
 bool Deck::_can_finish_reloading()
 {
@@ -139,9 +140,15 @@ void Deck::update(Uint32 deltaTime)
 {
 	//TODO
 	//Counts time down for reload time and do the rest of things needed for finishing reload
+
+	_draw_pile.update(deltaTime);
+	if(_hand != nullptr)
+		_hand->update(deltaTime);
+	_discard_pile.update(deltaTime);
+
 	_time_till_reload_finishes -= deltaTime;
-	if(_is_reloading)
-		std::cout << _time_till_reload_finishes << std::endl;
+	//if(_is_reloading)
+		//std::cout << _time_till_reload_finishes << std::endl;
 	//std::cout << _time_till_reload_finishes << std::endl;
 	if (_can_finish_reloading()) {
 		_finish_realoading();
@@ -150,9 +157,51 @@ void Deck::update(Uint32 deltaTime)
 
 void Deck::render() noexcept
 {
-	//TODO
-	//Mostrar carta en la mano
-	//n?cartas draw_pile and discard_pile
+		//TODO
+		//Mostrar carta en la mano
+		//Mostrar nï¿½ cartas draw_pile and discard_pile
+		card_rendering_descriptor crd = card_rendering_descriptor();
+		//Position and scale for the cost --> both values from 0 to 1
+		crd.mana_cost_font_key = "ARIAL16";
+		crd.mana_cost_color = { 255,0,0,255 };
+		if (_hand == nullptr) {
+			crd.card_image_key = "reloading";
+			crd.mana_cost_subrect = { {0,0.2},{0,0} };
+		}
+		else {
+			crd.mana_cost_subrect = { {0,0.2},{0.4,0.4} };
+			crd.card_image_key = _hand->get_name().data();
+			crd.mana_cost = _hand->get_costs().get_mana();
+		}
+
+		camera_screen cam_screen = camera_screen();
+		std::pair<int, int> position = Game::Instance()->get_screen_size();
+		//camera position, similar to aspect ratio but in world units (suppose player is 1 world unit, how many players will fit on camera kinda)
+		cam_screen.camera = { {0,0},{8,6} };
+		//camera screen on pixels size
+		cam_screen.screen = { position.first, position.second };
+
+		//Function for rendering a card
+		card_rendering_descriptor_render(
+			crd,
+			cam_screen,
+			//take renderer
+			*sdlutils().renderer(),
+			//destination rect --> where will the card be placed (position, size in world units)
+			{ {-8,-4},{2,2} },
+			//src subrect --> if our image is only 1 take this parameters
+			//if we have a map of 5x6 cards and we wanted to render card (3,2) being first card(0,0), and last (4,5)
+			//values would be --> { {3/5, 2/6}, {1/5,1/6} }
+			{ {0,0},{1,1} },
+			//rotation
+			0,
+			//adittional options
+			//card_rendering_descriptor_options_none,
+			//card_rendering_descriptor_options_flip_horizontal,
+			//card_rendering_descriptor_options_flip_vertical,
+			//card_rendering_descriptor_options_full_subrect
+			card_rendering_descriptor_options_none
+		);
 }
 
 void Deck::add_card_to_deck(Card* c)

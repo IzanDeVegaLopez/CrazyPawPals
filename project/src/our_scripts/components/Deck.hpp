@@ -31,7 +31,7 @@ public:
 	~Deck();
 	//returns true if the card can be used, calls the useCard function of the card
 	//and puts the top card of deck on hand, if there's non left it reloads
-	bool use_card(Vector2D target_pos = {0,0}) noexcept;
+	bool use_card(const Vector2D* target_pos) noexcept;
 	//puts the card on hand on discard pile
 	//and puts the top card of deck on hand, if there's non left it reloads
 	//returns true, if a card could be discarded

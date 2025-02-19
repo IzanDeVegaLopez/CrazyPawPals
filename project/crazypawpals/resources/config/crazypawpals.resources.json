@@ -14,7 +14,30 @@
     { "id": "revolver",  "file": "resources/images/revolver.png"},
     { "id": "sdl_logo","file": "resources/images/SDL_logo.png"},
     { "id": "enemy","file": "resources/images/enemy.png"},
-    { "id": "card","file": "resources/images/card.png"}
+    {
+      "id": "card",
+      "file": "resources/images/card.png"
+    },
+    {
+      "id": "fireball",
+      "file": "resources/images/fireball.png"
+    },
+    {
+      "id": "minigun",
+      "file": "resources/images/minigun.png"
+    },
+    {
+      "id": "reloading",
+      "file": "resources/images/reloading.png"
+    },
+    { 
+      "id": "manaorb",
+      "file": "resources/images/manaorb.png"
+    },
+    { 
+      "id": "manaorbempty",
+      "file": "resources/images/manaorbempty.png"
+    }
   ],
   
   "messages" : [
