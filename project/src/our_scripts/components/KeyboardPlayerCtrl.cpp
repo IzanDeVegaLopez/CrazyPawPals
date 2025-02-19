@@ -32,14 +32,12 @@ KeyboardPlayerCtrl::initComponent() {
 void KeyboardPlayerCtrl::update(Uint32 delta_time) {
 
     auto& ihdlr = ih();
-   if (ihdlr.keyDownEvent()) {
-        auto& dir = _tr->getDir();
-        //New input
-        //Horizontal axis
-        dir.setX((ihdlr.isKeyDown(_left) ? -1 : 0) + (ihdlr.isKeyDown(_right) ? 1 : 0));
+    auto& dir = _tr->getDir();
+    //Horizontal axis
+    dir.setX((ihdlr.isKeyDown(_left) ? -1 : 0) + (ihdlr.isKeyDown(_right) ? 1 : 0));
 
-        //Vertical axis
-        dir.setY((ihdlr.isKeyDown(_up) ? -1 : 0) + (ihdlr.isKeyDown(_down) ? 1 : 0));
+    //Vertical axis
+    dir.setY((ihdlr.isKeyDown(_up) ? -1 : 0) + (ihdlr.isKeyDown(_down) ? 1 : 0));
 
     //reload
     if (ihdlr.isKeyDown(_reload)) {
@@ -47,12 +45,12 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
         _dc->reload();
     }
 
-        //collect
-        if (ihdlr.isKeyDown(_collect)) {
-            //if we are not close enought to a reward, do nothing
-            std::cout << "colecta" << std::endl;
-        }
+    //collect
+    if (ihdlr.isKeyDown(_collect)) {
+        //if we are not close enought to a reward, do nothing
+        std::cout << "colecta" << std::endl;
     }
+
 
     if (ihdlr.mouseButtonDownEvent()) {
         //bool leftPressed = ihdlr.getMouseButtonState(InputHandler::LEFT);

@@ -86,7 +86,7 @@ void Game::start() {
 	// reset the time before starting - so we calculate correct
 	// delta-time in the first iteration
 	//
-	sdlutils().resetTime();
+	sdlutils().virtualTimer().resetTime();
 
 	while (!exit) {
 		// store the current time -- all game objects should use this time when

@@ -77,6 +77,7 @@ void GameScene::render()
 void GameScene::spawnPlayer()
 {
 	auto* revolver = new Revolver();
+	revolver->init(4, 0.5f, 20.0f, 3.0f, "revolver");
 	create_entity(
 		new Transform({ sdlutils().width() / 2.0f, sdlutils().height() / 2.0f }, {0.0f,0.0f}, 100.0f,100.0f, 0.0f, 2.0f),
 		new Image(&sdlutils().images().at("player")),
@@ -85,7 +86,7 @@ void GameScene::spawnPlayer()
 		new KeyboardPlayerCtrl(),
 		new MovementController()
 		);
-	revolver->init(4, 0.5f, 20.0f, 3.0f, "revolver");
+
 }
 
 void GameScene::spawnEnemies()
