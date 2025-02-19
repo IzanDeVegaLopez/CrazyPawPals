@@ -30,6 +30,10 @@ public:
 	virtual std::string get_written_info() override {
 		return _card->get_written_info();
 	}
+
+	virtual std::string get_name() override {
+		return _card->get_name();
+	}
 };
 
 

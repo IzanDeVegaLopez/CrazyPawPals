@@ -156,45 +156,47 @@ void Deck::update(Uint32 deltaTime)
 
 void Deck::render() noexcept
 {
-	//TODO
-	//Mostrar carta en la mano
-	//Mostrar nº cartas draw_pile and discard_pile
-	card_rendering_descriptor crd = card_rendering_descriptor();
-	//Position and scale for the cost --> both values from 0 to 1
-	crd.mana_cost_subrect = { {0,0},{0.5,0.5} };
-	crd.card_image_key = "card";
-	crd.mana_cost_font_key = "ARIAL16";
-	crd.mana_cost_color = {255,0,0,255};
-	crd.mana_cost = _hand->get_costs().get_mana();
+	if (_hand != nullptr) {
+		//TODO
+		//Mostrar carta en la mano
+		//Mostrar nº cartas draw_pile and discard_pile
+		card_rendering_descriptor crd = card_rendering_descriptor();
+		//Position and scale for the cost --> both values from 0 to 1
+		crd.mana_cost_subrect = { {0,0.2},{0.4,0.4} };
+		crd.card_image_key = _hand->get_name().data();
+		crd.mana_cost_font_key = "ARIAL16";
+		crd.mana_cost_color = { 255,0,0,255 };
+		crd.mana_cost = _hand->get_costs().get_mana();
 
-	camera_screen cam_screen = camera_screen();
-	std::pair<int, int> position = Game::Instance()->get_screen_size();
-	//camera position, similar to aspect ratio but in world units (suppose player is 1 world unit, how many players will fit on camera kinda)
-	cam_screen.camera = { {0,0},{8,6} };
-	//camera screen on pixels size
-	cam_screen.screen = {position.first, position.second};
-	
-	//Function for rendering a card
-	card_rendering_descriptor_render(
-		crd,
-		cam_screen,
-		//take renderer
-		*sdlutils().renderer(),
-		//destination rect --> where will the card be placed (position, size in world units)
-		{ {-8,-4},{2,2} },
-		//src subrect --> if our image is only 1 take this parameters
-		//if we have a map of 5x6 cards and we wanted to render card (3,2) being first card(0,0), and last (4,5)
-		//values would be --> { {3/5, 2/6}, {1/5,1/6} }
-		{ {0,0},{1,1} },
-		//rotation
-		0,
-		//adittional options
-		//card_rendering_descriptor_options_none,
-		//card_rendering_descriptor_options_flip_horizontal,
-		//card_rendering_descriptor_options_flip_vertical,
-		//card_rendering_descriptor_options_full_subrect
-		card_rendering_descriptor_options_none
-	);
+		camera_screen cam_screen = camera_screen();
+		std::pair<int, int> position = Game::Instance()->get_screen_size();
+		//camera position, similar to aspect ratio but in world units (suppose player is 1 world unit, how many players will fit on camera kinda)
+		cam_screen.camera = { {0,0},{8,6} };
+		//camera screen on pixels size
+		cam_screen.screen = { position.first, position.second };
+
+		//Function for rendering a card
+		card_rendering_descriptor_render(
+			crd,
+			cam_screen,
+			//take renderer
+			*sdlutils().renderer(),
+			//destination rect --> where will the card be placed (position, size in world units)
+			{ {-8,-4},{2,2} },
+			//src subrect --> if our image is only 1 take this parameters
+			//if we have a map of 5x6 cards and we wanted to render card (3,2) being first card(0,0), and last (4,5)
+			//values would be --> { {3/5, 2/6}, {1/5,1/6} }
+			{ {0,0},{1,1} },
+			//rotation
+			0,
+			//adittional options
+			//card_rendering_descriptor_options_none,
+			//card_rendering_descriptor_options_flip_horizontal,
+			//card_rendering_descriptor_options_flip_vertical,
+			//card_rendering_descriptor_options_full_subrect
+			card_rendering_descriptor_options_none
+		);
+	}
 }
 
 void Deck::add_card_to_deck(Card* c)

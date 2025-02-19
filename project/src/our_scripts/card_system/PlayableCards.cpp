@@ -1,6 +1,6 @@
 #include "PlayableCards.hpp"
 
-Fireball::Fireball():Card("Fireball", Resources(1))
+Fireball::Fireball():Card("fireball", Resources(1))
 {
 }
 void Fireball::on_play(const Vector2D* player_position,const Vector2D* target_position) {
@@ -16,7 +16,7 @@ void Fireball::on_play(const Vector2D* player_position,const Vector2D* target_po
 }
 
 Minigun::Minigun()
-	: Card("Minigun", Resources(2)), _playing(false), _time_since_played(0), _pl_vec()
+	: Card("minigun", Resources(2)), _playing(false), _time_since_played(0), _pl_vec()
 {
 	_bullets_properties = BulletProperties();
 	_bullets_properties.speed = 5;

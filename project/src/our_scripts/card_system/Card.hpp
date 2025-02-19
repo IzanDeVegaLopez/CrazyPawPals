@@ -52,4 +52,8 @@ public:
 	//Debug purposes
 	virtual std::string get_written_info();
 	virtual void update(Uint32) {};
+
+	virtual std::string& get_name() {
+		return _name;
+	}
 };
