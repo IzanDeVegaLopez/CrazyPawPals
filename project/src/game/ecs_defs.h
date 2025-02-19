@@ -16,7 +16,6 @@
 	LIFETIMETIMER, \
 	CAMERA, \
     WEAPON, \
-	REVOLVER,\
 	MANA, \
 	DECK
 
