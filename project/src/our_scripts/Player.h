@@ -1,22 +1,19 @@
-/*
 #pragma once
-#include "../ecs/Entity.h"
+#include "../game/GameObject.h"
 
 
-class Player : public ecs::Entity {
+class Player : public GameObject {
 protected:
 	float _shootCooldown;
-	float _lastShoot;
-	float _maxSpeed;
-	Vector2D _prevDir;
-	std::vector<ecs::Entity*>*  _b;
+	Transform* _tr;
+
 public:
-	Player(ecs::grpId_t gId, ecs::Manager* mngr, std::vector<ecs::Entity*>* b);
-	virtual ~Player();
-	void shoot(const Vector2D& target);
-	void move();
+	Player(ecs::Manager* mngr);
+	virtual ~Player() {};
+	//void shoot(const Vector2D& target);
+	//void move();
 };
-*/
+
 
 
 

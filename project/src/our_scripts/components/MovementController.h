@@ -10,12 +10,13 @@ public:
 	MovementController();
 	virtual ~MovementController();
 	void initComponent() override;
-	void update(uint32_t delta_time) override;
-	void accelerate();
+
+	void update() override;
 
 private:
 	float _maxSpeed;
 	float _reduceSpeed;
+	float _addSpeed;
 	Transform* _tr;
 
 };

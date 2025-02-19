@@ -4,7 +4,8 @@
 #include "../../sdlutils/SDLUtils.h"
 #include "../../game/Game.h"
 
-MovementController::MovementController() : _maxSpeed(10.0f), _reduceSpeed(0.995f) {
+
+MovementController::MovementController() : _maxSpeed(5.0f), _reduceSpeed(0.5f), _addSpeed(1.025f) {
 
 }
 
@@ -18,14 +19,8 @@ MovementController::initComponent() {
 }
 void MovementController::update(uint32_t delta_time)
 {
-	//Aceleración por tiempo, en 2 segundos, se pone a _maxSpeed
-	//o->setSpeed( _maxSpeed);
-
-	//Deceleración (si la actual es distinta a la anterior)
-	//if (o->getDir() != contraria) {}
-	//float deceleration = o->getSpeed() * _reduceSpeed;
-	//o->setSpeed(deceleration);
 	auto& dir = _tr->getDir();
+	auto& prevDir = _tr->getPrevDir();
 	auto& pos = _tr->getPos();
 	auto speed = _tr->getSpeed();
 
@@ -33,11 +28,21 @@ void MovementController::update(uint32_t delta_time)
 	if (dir.getX() != 0 && dir.getY() != 0) {
 		dir = dir.normalize(); //If its a diagonal movement, normalize dir
 	}
-	pos = pos + (dir * speed);
-}
 
-void MovementController::accelerate()
-{
+	//Acceleration (only if dir != 0,0 and same direction)
+	if (dir != Vector2D(0, 0) && dir == prevDir){
+		speed *= _addSpeed;
+		if (speed > _maxSpeed) {
+			speed = _maxSpeed;
+		}
+		_tr->setSpeed(speed);
+	}
+
+	//Deacceleration (on change direction or stop movement)
+	if ((dir == Vector2D(0, 0) && dir != prevDir) || dir != prevDir) {
+		speed *= _reduceSpeed;
+		_tr->setSpeed(speed);
+	}
 
 }
 

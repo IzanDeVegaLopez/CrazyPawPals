@@ -4,7 +4,7 @@
 
 class Transform;
 class ShootComponent;
-class Deck;
+
 class KeyboardPlayerCtrl :public ecs::Component
 {
 public:

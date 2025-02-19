@@ -5,8 +5,8 @@
 #include "../../ecs/Manager.h"
 #include "Transform.h"
 #include "ShootComponent.h"
-#include "../../game/Game.h"
-#include "Deck.hpp"
+
+#include "Health.h"
 
 KeyboardPlayerCtrl::KeyboardPlayerCtrl()
     : _left(SDL_SCANCODE_A), _right(SDL_SCANCODE_D), _up(SDL_SCANCODE_W), _down(SDL_SCANCODE_S), 
@@ -26,31 +26,36 @@ KeyboardPlayerCtrl::initComponent() {
 
     _dc = Game::Instance()->get_mngr()->getComponent<Deck>(_ent);
     assert(_sc != nullptr);
+
 }
 
 void KeyboardPlayerCtrl::update(Uint32 delta_time) {
 
     auto& ihdlr = ih();
-    auto& dir = _tr->getDir();
+   // if (ihdlr.keyDownEvent()) {
+        auto& dir = _tr->getDir();
 
-    //New input
-    //Horizontal axis
-    dir.setX((ihdlr.isKeyDown(_left) ? -1 : 0) + (ihdlr.isKeyDown(_right) ? 1 : 0));
+        //New input
+        //Horizontal axis
+        dir.setX((ihdlr.isKeyDown(_left) ? -1 : 0) + (ihdlr.isKeyDown(_right) ? 1 : 0));
 
-    //Vertical axis
-    dir.setY((ihdlr.isKeyDown(_up) ? -1 : 0) + (ihdlr.isKeyDown(_down) ? 1 : 0));
+        //Vertical axis
+        dir.setY((ihdlr.isKeyDown(_up) ? -1 : 0) + (ihdlr.isKeyDown(_down) ? 1 : 0));
 
-    //reload
-    if (ihdlr.isKeyDown(_reload)) {
-        std::cout << "recarga" << std::endl;
-        _dc->reload();
-    }
 
-    //collect
-    if (ihdlr.isKeyDown(_collect)) {
-        //if we are not close enought to a reward, do nothing
-        std::cout << "colecta" << std::endl;
-    }
+        //reload
+        if (ihdlr.isKeyDown(_reload)) {
+            std::cout << "recarga" << std::endl;
+        }
+
+
+        //collect
+        if (ihdlr.isKeyDown(_collect)) {
+            //if we are not close enought to a reward, do nothing
+            std::cout << "colecta" << std::endl;
+        }
+    //}
+ 
 
     //Old input
     /*if (ihdlr.keyDownEvent()) { //Si comentamos esta linea (y el cierre de llave abajo) el movimiento parece mas natural
@@ -92,22 +97,19 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
         }
     } */
 
-    if (ihdlr.mouseButtonDownEvent()) {
-        //bool leftPressed = ihdlr.getMouseButtonState(InputHandler::LEFT);
-        //bool rightPressed = ihdlr.getMouseButtonState(InputHandler::RIGHT);
-        //shoot
-        if (ihdlr.getMouseButtonState(InputHandler::LEFT)) {
-            //send message to shoot
-            Vector2D mousePos = { (float)ihdlr.getMousePos().first, (float)ihdlr.getMousePos().second };
-            _sc->shoot(mousePos);
-        }
-        //use card
-        else if (ihdlr.getMouseButtonState(InputHandler::RIGHT)) {
-            //send message to use a card
-            Vector2D mousePos = { (float)ihdlr.getMousePos().first, (float)ihdlr.getMousePos().second };
-            _dc->use_card(mousePos);
-        }
-        
-    }
+
+    //shoot
+    if (ihdlr.mouseButtonEvent() && ihdlr.getMouseButtonState(InputHandler::LEFT)) {
+        //send message to shoot
+        Vector2D mousePos = { (float)ihdlr.getMousePos().first, (float)ihdlr.getMousePos().second };
+        _sc->shoot(mousePos);
+    } 
+    //use card
+    else if (ihdlr.mouseButtonDownEvent() && ihdlr.getMouseButtonState(InputHandler::RIGHT)) {
+        //send message to use card
+        //Vector2D mousePos = { (float)ihdlr.getMousePos().first, (float)ihdlr.getMousePos().second };
+        //_dc->use_card(mousePos);
+        std::cout << "using card" << std::endl;
+   }
     
 }

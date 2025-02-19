@@ -18,7 +18,10 @@
 #include "../our_scripts/components/EnemyMovement.h"
 #include "../our_scripts/components/Deck.hpp"
 #include "../our_scripts/Bullet.h"
+
 #include "../our_scripts/WaveManager.h"
+#include "../our_scripts/Player.h"
+
 
 
 using namespace std;
@@ -132,7 +135,6 @@ bool Game::init() {
 		return false;
 	}
 
-	// Habilitar el cursor del rat�n
 	SDL_ShowCursor(SDL_ENABLE);
 
 	// Create the manager
@@ -156,6 +158,7 @@ bool Game::init() {
 #pragma endregion
 
 #pragma region player
+
 	auto player = _mngr->addEntity();
 	_mngr->setHandler(ecs::hdlr::PLAYER, player);
 	auto tr = _mngr->addComponent<Transform>(player);
@@ -170,6 +173,23 @@ bool Game::init() {
 	std::list<Card*> my_card_list = std::list<Card*>{ new Fireball(), new Fireball(), new Minigun(), new Minigun() };
 	_mngr->addComponent<Deck>(player, my_card_list);
 	_mngr->addComponent<KeyboardPlayerCtrl>(player);
+
+
+	auto player = new Player(_mngr);
+	/*
+		auto player = _mngr->addEntity(); 
+	_mngr->setHandler(ecs::hdlr::PLAYER, player); 
+	auto tr = _mngr->addComponent<Transform>(player); 
+	float s = 100.0f; 
+	float x = (sdlutils().width() - s) / 2.0f; 
+	float y = (sdlutils().height() - s) / 2.0f; 
+	tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 2.0f); 
+	_mngr->addComponent<Image>(player, &sdlutils().images().at("player")); 
+	_mngr->addComponent<ShootComponent>(player);
+	_mngr->addComponent<KeyboardPlayerCtrl>(player); 
+	_mngr->addComponent<MovementController>(player); 
+	*/
+
 #pragma endregion
 
 #pragma region enemy
@@ -238,4 +258,3 @@ void Game::checkCollisions() {
 
 
 }
-

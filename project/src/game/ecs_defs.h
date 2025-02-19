@@ -18,14 +18,17 @@
 	MANA, \
 	WAVEMANAGER, \
 	DECK
+	CAMERA, \
+    WEAPON, \
+    REVOLVER
 
 
 // Groups list - must have at least one element
 //
 #define _GRPS_LIST_ \
 	BULLET,\
-	ENEMY,\
-	STARS
+	PLAYER,\
+	ENEMY
 
 // Handlers list - must have at least one element
 //
