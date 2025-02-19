@@ -94,8 +94,10 @@ public:
 		// return it to the user so i can be initialised if needed
 		return static_cast<T*>(c);
 	}
+
+	//For one component only
 	template<typename T>
-	inline T* addExistingComponent(entity_t e, T* c) {
+	inline void addExistingComponent(entity_t e, T* c) {
 		constexpr cmpId_t cId = cmpId<T>;
 		static_assert(cId < ecs::maxComponentId);
 		removeComponent<T>(e);
@@ -105,7 +107,21 @@ public:
 		e->_cmps[cId] = c;
 		e->_currCmps.push_back(c);
 
-		return c;
+		//return c;
+	}
+	//recursive for more than one argument
+	template<typename T, typename... Args>
+	inline void addExistingComponent(entity_t e, T* c, Args*... args) {
+		constexpr cmpId_t cId = cmpId<T>;
+		static_assert(cId < ecs::maxComponentId);
+		removeComponent<T>(e);
+
+		c->setContext(e);
+		c->initComponent();
+		e->_cmps[cId] = c;
+		e->_currCmps.push_back(c);
+
+		addExistingComponent(e,args...);
 	}
 
 	// Removes the component T, from the entity.

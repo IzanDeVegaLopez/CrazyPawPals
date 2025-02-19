@@ -4,6 +4,8 @@
 #include "../ecs/Entity.h"
 #include "../ecs/Component.h"
 #include "GameStructs.h"
+#include "../ecs/ecs.h"
+#include "../game/Game.h"
 
 class Scene {
 public:
@@ -16,7 +18,13 @@ public:
 
 	virtual void update(uint32_t delta_time) = 0;
 	virtual void render() = 0;
+
+	template <typename ... Cmps>
+	ecs::entity_t create_entity(Cmps ... components) {
+		ecs::entity_t ent = Game::Instance()->get_mngr()->addEntity(ecs::scene::GAMESCENE);
+		Game::Instance()->get_mngr()->addExistingComponent(ent, components...);
+		return ent;
+	}
 	//Por ahora, hacemos spawnEntity (la que sea) en cada escena
 	//ecs::Entity* spawn(std::vector<ecs::Component> components);
-
 };
