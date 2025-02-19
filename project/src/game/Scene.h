@@ -12,10 +12,10 @@ public:
 	virtual void initScene() = 0;
 	virtual void enterScene() = 0;
 	virtual void exitScene() = 0;
+
+	virtual void update() = 0;
+	virtual void render() = 0;
 	//Por ahora, hacemos spawnEntity (la que sea) en cada escena
 	//ecs::Entity* spawn(std::vector<ecs::Component> components);
-
-protected:
-	ecs::Manager* _mngrGame;
 
 };

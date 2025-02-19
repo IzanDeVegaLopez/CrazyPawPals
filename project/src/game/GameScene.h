@@ -10,6 +10,10 @@ public:
 	void initScene() override;
 	void enterScene() override;
 	void exitScene() override;
+
+	void update() override;
+	void render() override;
+
 	//Methods of entities to spawn
 	void spawnPlayer();
 	void spawnEnemies();

@@ -26,7 +26,9 @@
 	BULLET,\
 	PLAYER,\
 	ENEMY,\
-	STARS
+	GAMESCENE,\
+	MAINMENUSCENE,\
+	SELECTIONMENUSCENE
 
 // Handlers list - must have at least one element
 //

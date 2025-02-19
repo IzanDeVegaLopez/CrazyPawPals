@@ -25,7 +25,6 @@ private:
 	Scene* _mainmenu_scene;
 	Scene* _selectionmenu_scene;
 	Game();
-	void checkCollisions();
-
+	ecs::Manager* _mngr;
 };
 

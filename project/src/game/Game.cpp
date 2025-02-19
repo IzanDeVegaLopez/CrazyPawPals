@@ -30,7 +30,7 @@
 
 using namespace std;
 
-Game::Game() {}
+Game::Game() : _mngr(nullptr){}
 
 Game::~Game() {
 
@@ -65,6 +65,8 @@ bool Game::init() {
 	// enable the cursor visibility
 	SDL_ShowCursor(SDL_ENABLE);
 
+	_game_scene = new GameScene();
+	_current_scene = _game_scene;
 }
 
 void Game::start() {
@@ -99,12 +101,12 @@ void Game::start() {
 			continue;
 		}
 
-		_mngr->update(dt);
+		_current_scene->update(dt);
 		_mngr->refresh();
 
 
 		sdlutils().clearRenderer();
-		_mngr->render();
+		_current_scene->render();
 		sdlutils().presentRenderer();
 
 		dt = sdlutils().currRealTime() - startTime;

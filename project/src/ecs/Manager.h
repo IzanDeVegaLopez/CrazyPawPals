@@ -185,6 +185,7 @@ public:
 		for (auto i = 0u; i < n; i++)
 			e->_currCmps[i]->update(dt);
 	}
+
 	// Rendering an entity simply calls the render of all
 	// components
 	//
@@ -194,13 +195,20 @@ public:
 			e->_currCmps[i]->render();
 	}
 
-	// update all entities
+	// update all entities in a certain Scene (Group)
 	//
-	void update(Uint32 dt) {
-		for (auto &ents : _entsByGroup) {
-			auto n = ents.size();
-			for (auto i = 0u; i < n; i++)
-				update(ents[i],dt);
+	void update(grpId_t gId,Uint32 dt) {
+		auto& _entity = getEntities(gId);
+		for (auto &ents : _entity) {
+			update(ents, dt);
+		}
+	}
+	// render all entities in a certain Scene (Group)
+	//
+	void render(grpId_t gId) {
+		auto& _entity = getEntities(gId);
+		for (auto& ents : _entity) {
+			render(ents);
 		}
 	}
 
@@ -211,6 +219,15 @@ public:
 			auto n = ents.size();
 			for (auto i = 0u; i < n; i++)
 				render(ents[i]);
+		}
+	}
+	// update all entities
+	//
+	void update(Uint32 dt) {
+		for (auto& ents : _entsByGroup) {
+			auto n = ents.size();
+			for (auto i = 0u; i < n; i++)
+				update(ents[i], dt);
 		}
 	}
 
