@@ -38,7 +38,7 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
     dir.setX((ihdlr.isKeyDown(_left) ? -1 : 0) + (ihdlr.isKeyDown(_right) ? 1 : 0));
 
     //Vertical axis
-    dir.setY((ihdlr.isKeyDown(_up) ? -1 : 0) + (ihdlr.isKeyDown(_down) ? 1 : 0));
+    dir.setY((ihdlr.isKeyDown(_up) ? 1 : 0) + (ihdlr.isKeyDown(_down) ? -1 : 0));
 
     //reload
     if (ihdlr.isKeyDown(_reload)) {

@@ -1,3 +1,4 @@
+#include <cassert>
 #include "camera_follow.hpp"
 
 camera camera_update_from_follow(
@@ -6,6 +7,7 @@ camera camera_update_from_follow(
     const position2_f32 target,
     const seconds_f32 delta_time
 ) {
+    assert(delta_time > 0.0f);
     const velocity2_f32 target_velocity = {
         (target.x - in_out_descriptor.previous_position.x) / delta_time,
         (target.y - in_out_descriptor.previous_position.y) / delta_time
@@ -20,15 +22,17 @@ camera camera_update_from_follow(
         target_position.y - cam.position.y
     };
     const float distance = sqrtf(direction.dx * direction.dx + direction.dy * direction.dy);
-    direction.dx /= distance;
-    direction.dy /= distance;
+    if (distance != 0.0) {
+        direction.dx /= distance;
+        direction.dy /= distance;
+    }
 
     float displacement = in_out_descriptor.max_follow_speed * delta_time;
     if (displacement > distance) {
         displacement = distance;
     }
 
-    in_out_descriptor.previous_position = target_position;
+    in_out_descriptor.previous_position = target;
     return camera{
         .position = {
             cam.position.x + direction.dx * displacement,

@@ -15,7 +15,10 @@
     HEALTH,\
 	LIFETIMETIMER, \
 	MANA, \
-	DECK
+	DECK, \
+	CAMERA, \
+	CAMERA_FOLLOW, \
+	CAMERA_CLAMP \
 
 
 // Groups list - must have at least one element

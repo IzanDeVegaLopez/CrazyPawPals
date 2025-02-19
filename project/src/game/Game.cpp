@@ -19,6 +19,8 @@
 #include "../our_scripts/components/Mana.h"
 #include "../our_scripts/components/Deck.hpp"
 #include "../our_scripts/Bullet.h"
+#include "../our_scripts/components/dyn_image.hpp"
+#include "../our_scripts/components/camera_component.hpp"
 
 
 using namespace std;
@@ -81,6 +83,18 @@ bool Game::init() {
 	*/
 
 #pragma endregion
+	auto cam = _mngr->addEntity();
+	//_mngr->setHandler(ecs::hdlr::CAMERA, cam);
+	// auto cam_tr = _mngr->addComponent<Transform>(cam);
+	auto &&cam_screen = *_mngr->addComponent<camera_component>(cam, camera_screen{
+		.camera = {
+			.position = {0.0, 0.0},
+			.half_size = {8.0, 4.5},
+		},
+		.screen = {
+			.pixel_size = {sdlutils().width(), sdlutils().height()},
+		},
+	});
 
 #pragma region player
 	auto player = _mngr->addEntity();
@@ -89,8 +103,17 @@ bool Game::init() {
 	float s = 100.0f;
 	float x = (sdlutils().width() - s) / 2.0f;
 	float y = (sdlutils().height() - s) / 2.0f;
-	tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 2.0f);
-	_mngr->addComponent<Image>(player, &sdlutils().images().at("player"));
+	tr->init(Vector2D(0, 0), Vector2D(0.0, 0.0), s, s, 0.0f, 0.05);
+	//_mngr->addComponent<Image>(player, &sdlutils().images().at("player"));
+	_mngr->addComponent<dyn_image>(player, rect_f32{
+		{0.0, 0.0},
+		{1.0, 1.0}
+	}, size2_f32{1.0, 1.0}, cam_screen.cam, sdlutils().images().at("player"));
+	_mngr->addComponent<camera_follow>(cam, camera_follow_descriptor{
+		.previous_position = cam_screen.cam.camera.position,
+		.lookahead_time = 3000.0,
+		.max_follow_speed = 1.0
+	}, *tr);
 	_mngr->addComponent<ShootComponent>(player);
 	_mngr->addComponent<MovementController>(player);
 	_mngr->addComponent<Mana>(player);

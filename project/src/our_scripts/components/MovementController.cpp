@@ -17,10 +17,10 @@ MovementController::initComponent() {
 }
 void MovementController::update(uint32_t delta_time)
 {
-	//Aceleración por tiempo, en 2 segundos, se pone a _maxSpeed
+	//Aceleraciï¿½n por tiempo, en 2 segundos, se pone a _maxSpeed
 	//o->setSpeed( _maxSpeed);
 
-	//Deceleración (si la actual es distinta a la anterior)
+	//Deceleraciï¿½n (si la actual es distinta a la anterior)
 	//if (o->getDir() != contraria) {}
 	//float deceleration = o->getSpeed() * _reduceSpeed;
 	//o->setSpeed(deceleration);
@@ -32,7 +32,7 @@ void MovementController::update(uint32_t delta_time)
 	if (dir.getX() != 0 && dir.getY() != 0) {
 		dir = dir.normalize(); //If its a diagonal movement, normalize dir
 	}
-	pos = pos + (dir * speed);
+	pos = pos + (dir * speed) * delta_time / 1000;
 }
 
 void MovementController::accelerate()
