@@ -25,6 +25,7 @@ WaveManager::update(uint32_t delta_time) {
     if (_waveActive) {
         // Verificar si ha pasado un minuto desde el �ltimo spawn
         if (currentTime > _endWaveTime) {
+            std::cout << "Se acabo el tiempo"<< std::endl;
             if (!areAllEnemiesDead()) {
                 activateFog(); // Activar la niebla si no se han eliminado todos los enemigos
             }
@@ -59,6 +60,7 @@ WaveManager::spawnWave() {
 
             Game::Instance()->createSarnoRata(posVec);
             Game::Instance()->createMichiMafioso(posVec);
+
             _enemiesSpawned++;
 
             // Tiempo

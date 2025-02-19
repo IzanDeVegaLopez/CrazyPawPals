@@ -53,7 +53,7 @@ Game::createSarnoRata(Vector2D _pos) {
 	float s = 100.0f;
 	float x = (sdlutils().width() - s) / 2.0f;
 	float y = (sdlutils().height() - s) / 2.0f;
-	tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 1.0f);
+	tr->init(_pos, Vector2D(), s, s, 0.0f, 1.0f);
 
 	cout << "Se ha creado createSarnoRata" << endl;
 	return e;

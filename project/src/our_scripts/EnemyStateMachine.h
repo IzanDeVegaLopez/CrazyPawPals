@@ -10,13 +10,16 @@
 #include "InactiveState.h"
 
 class Texture;
-class BasicEnemy : public GameObject {
+class EnemyStateMachine : public ecs::Component {
 public:
+
 	enum State {
 		WALKING, ATTACKING, DYING, INACTIVE
 	};
-	BasicEnemy();
-	virtual ~BasicEnemy();
+
+	EnemyStateMachine();
+
+	virtual ~EnemyStateMachine();
 	void update() { _state->update(*this); };
 	void render() override;
 	void handleInput() { _state->handleInput(*this); } ;
@@ -47,7 +50,6 @@ public:
 	}
 private:
 	Texture *_img;
-
 
 	BasicEnemyState* _state;
 	static WalkingState* _walking_state;
