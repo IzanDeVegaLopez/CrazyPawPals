@@ -1,11 +1,11 @@
 // This file is part of the course TPV2@UCM - Samir Genaim
 
 #pragma once
-#include "Component.h"
+#include "../ecs/Component.h"
 
 class Container;
 
-class PhysicsComponent: public Component {
+class PhysicsComponent: ecs::Component {
 public:
 	PhysicsComponent() {
 	}
