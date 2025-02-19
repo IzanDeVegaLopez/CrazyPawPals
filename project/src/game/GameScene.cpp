@@ -1,37 +1,53 @@
 #include "GameScene.h"
 
-void GameScene::update()
+GameScene::GameScene()
 {
-	while (!exit) {
-		// store the current time -- all game objects should use this time when
-		// then need to the current time. They also have accessed to the time elapsed
-		// between the last two calls to regCurrTime().
-		Uint32 startTime = sdlutils().regCurrTime();
 
-		// refresh the input handler
-		ihdlr.refresh();
+}
 
-		if (ihdlr.isKeyDown(SDL_SCANCODE_ESCAPE)) {
-			exit = true;
-			continue;
-		}
-		if (ihdlr.closeWindowEvent()) {
-			exit = true;
-			continue;
-		}
+void GameScene::initScene()
+{
+	_mngrGame = new ecs::Manager();
+#pragma region Bullets
+	//std::vector<Bullet*> b;
 
-		_mngr->update();
-		_mngr->refresh();
+#pragma endregion
 
-		checkCollisions();
+#pragma region Player
 
-		sdlutils().clearRenderer();
-		_mngr->render();
-		sdlutils().presentRenderer();
+	//auto player = new Player(_mngr);
 
-		Uint32 frameTime = sdlutils().currRealTime() - startTime;
+#pragma endregion Deck
 
-		if (frameTime < 10)
-			SDL_Delay(10 - frameTime);
-	}
+	/*Deck deck = Deck(std::list<Card*>{new Card("1"), new Card("2"), new Card("3"), new Card("4")});
+	//cout << deck << endl;
+	deck.add_card_to_deck(new Fireball());
+	deck.add_card_to_deck(new Minigun());
+
+	deck.use_card();
+	deck.use_card();
+	deck.use_card();
+	deck.use_card();
+	deck.use_card();
+	deck.use_card();
+	deck.reload();
+
+	//deck.addCardToDeck(new Card("5"));
+	cout << deck << endl;*/
+}
+
+void GameScene::enterScene()
+{
+}
+
+void GameScene::exitScene()
+{
+}
+
+void GameScene::spawnPlayer()
+{
+}
+
+void GameScene::spawnEnemies()
+{
 }

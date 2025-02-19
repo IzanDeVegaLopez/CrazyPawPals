@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../utils/Vector2D.h"
-#include "GameObject.h"
+#include "../../game/GameObject.h"
 #include <functional>
 
 class Transform;
@@ -18,7 +18,7 @@ public:
 	void initComponent() override;
 	void update() override;
 
-	int getButtonState() { return currentState; }
+	int getButtonState() { return _currentState; }
 
 	//Clicks and actions
 	void actionsOfButton(SDLEventCallback _callback);

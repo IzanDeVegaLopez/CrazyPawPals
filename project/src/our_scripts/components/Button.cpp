@@ -10,20 +10,18 @@ using namespace ecs;
 
 Button::Button()
 {
-	//There is no collider defined
-	buttonCollider = nullptr;
 	//Is not being pressed or hovered
 	_currentState = EMPTY;
 
 	//InputHandler
-	ih().insertFunction(ih().MOUSE_LEFT_CLICK_DOWN, [this] { leftClickDown(); });
-	ih().insertFunction(ih().MOUSE_LEFT_CLICK_UP, [this] { leftClickUp(); });
+	//ih().insertFunction(ih().MOUSE_LEFT_CLICK_DOWN, [this] { leftClickDown(); });
+	//ih().insertFunction(ih().MOUSE_LEFT_CLICK_UP, [this] { leftClickUp(); });
 }
 
 Button::~Button()
 {
-	ih().clearFunction(InputHandler::MOUSE_LEFT_CLICK_DOWN, [this] {leftClickDown();});
-	ih().clearFunction(InputHandler::MOUSE_LEFT_CLICK_UP, [this] {leftClickUp();  });
+	//ih().clearFunction(InputHandler::MOUSE_LEFT_CLICK_DOWN, [this] {leftClickDown();});
+	//ih().clearFunction(InputHandler::MOUSE_LEFT_CLICK_UP, [this] {leftClickUp();});
 }
 
 void Button::initComponent()

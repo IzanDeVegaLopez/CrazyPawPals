@@ -1,13 +1,17 @@
 #pragma once
 
-class GameScene {
+#include "Scene.h"
+
+class GameScene : public Scene
+{
 public:
 	GameScene();
-	virtual ~GameScene();
-	void init();
-	void update();
-
-
-private:
-
+	~GameScene() {};
+	void initScene() override;
+	void enterScene() override;
+	void exitScene() override;
+	//Methods of entities to spawn
+	void spawnPlayer();
+	void spawnEnemies();
+	
 };

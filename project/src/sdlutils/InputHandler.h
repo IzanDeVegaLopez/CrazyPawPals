@@ -21,6 +21,11 @@ public:
 		LEFT = 0, MIDDLE, RIGHT, _LAST_MOUSEBUTTON_VALUE
 	};
 
+	//Events in Callbacjs
+	enum INPUT_EVENTES : uint8_t {
+		MOUSE_LEFT_CLICK_DOWN,
+		MOUSE_LEFT_CLICK_UP
+	};
 
 	// clear the state
 	inline void clearState() {
@@ -58,6 +63,18 @@ public:
 		default:
 			break;
 		}
+
+		//Callback managing
+		//Obtenemos el indice de nuestro enumerado, segun el evento actual
+		//si el evento no está registrado esto devuelve -1s
+		//int mapIndex = getInputEvent(event);
+
+		//si el evento está registrado
+		/*if (inputMap.find(mapIndex) != inputMap.end()) {
+			// llama a todas las funciones registradas en un evento especifico
+			for (SDLEventCallback callback : inputMap.at(mapIndex)) {
+				callback();
+		}*/
 	}
 
 	// refresh
