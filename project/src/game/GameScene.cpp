@@ -76,20 +76,6 @@ void GameScene::render()
 
 void GameScene::spawnPlayer()
 {
-	/*
-	auto _entity = Game::Instance()->get_mngr()->addEntity(ecs::scene::GAMESCENE);
-	auto _tr = Game::Instance()->get_mngr()->addComponent<Transform>(_entity);
-	float s = 100.0f;
-	_tr->init({ sdlutils().width() / 2.0f, sdlutils().height() / 2.0f }, { 0.0f,0.0f }, s, s, 0.0f, 2.0f);
-	
-
-	Game::Instance()->get_mngr()->addExistingComponent<Image>(_entity,new Image(& sdlutils().images().at("player")));
-	Game::Instance()->get_mngr()->addExistingComponent<Revolver>(_entity, new Revolver());
-	Game::Instance()->get_mngr()->addExistingComponent<ShootComponent>(_entity, new ShootComponent());
-	Game::Instance()->get_mngr()->addExistingComponent<KeyboardPlayerCtrl>(_entity, new KeyboardPlayerCtrl());
-	Game::Instance()->get_mngr()->addExistingComponent<MovementController>(_entity, new MovementController());
-	*/
-
 	create_entity(
 		new Transform({ sdlutils().width() / 2.0f, sdlutils().height() / 2.0f }, {0.0f,0.0f}, 100.0f,100.0f, 0.0f, 2.0f),
 		new Image(&sdlutils().images().at("player")),
@@ -106,11 +92,10 @@ void GameScene::spawnEnemies()
 
 void GameScene::generate_proyectile(GameStructs::BulletProperties& bp, ecs::grpId_t gid)
 {
-	ecs::entity_t new_bullet = Game::Instance()->get_mngr()->addEntity(gid);
-
-	Game::Instance()->get_mngr()->addComponent<Transform>(new_bullet, bp.init_pos, (bp.dir - bp.init_pos).normalize(), bp.width, bp.height, bp.dir.angle(bp.init_pos), bp.speed);
-	Game::Instance()->get_mngr()->addComponent<Image>(new_bullet, &sdlutils().images().at("bullet_1"));
-	Game::Instance()->get_mngr()->addComponent<SimpleMove>(new_bullet);
-	Game::Instance()->get_mngr()->addComponent<LifetimeTimer>(new_bullet, bp.life_time);
-
+	create_entity(
+		new Transform(bp.init_pos, bp.dir, bp.width, bp.height, bp.dir.angle(bp.init_pos), bp.speed),
+		new Image(&sdlutils().images().at("bullet_1")),
+		new SimpleMove(),
+		new LifetimeTimer(bp.life_time)
+	);
 }
