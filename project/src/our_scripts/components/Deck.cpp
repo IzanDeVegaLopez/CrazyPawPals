@@ -161,16 +161,16 @@ void Deck::render() noexcept
 		//Mostrar nº cartas draw_pile and discard_pile
 		card_rendering_descriptor crd = card_rendering_descriptor();
 		//Position and scale for the cost --> both values from 0 to 1
-		crd.mana_cost_subrect = { {0,0.2},{0.4,0.4} };
 		crd.mana_cost_font_key = "ARIAL16";
 		crd.mana_cost_color = { 255,0,0,255 };
 		if (_hand == nullptr) {
 			crd.card_image_key = "reloading";
+			crd.mana_cost_subrect = { {0,0.2},{0,0} };
 		}
 		else {
+			crd.mana_cost_subrect = { {0,0.2},{0.4,0.4} };
 			crd.card_image_key = _hand->get_name().data();
 			crd.mana_cost = _hand->get_costs().get_mana();
-			crd.mana_cost_color = { 255,0,0,255 };
 		}
 
 		camera_screen cam_screen = camera_screen();
