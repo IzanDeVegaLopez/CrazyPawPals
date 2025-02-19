@@ -51,5 +51,11 @@ void Manager::refresh() {
 						}), groupEntities.end());
 	}
 
+	for (auto e : _pendingEntities) {
+		_entsByGroup[e->_gId].push_back(e);
+		_entsByScene[e->_sId].push_back(e);
+	}
+	_pendingEntities.clear();
+
 }
 } // end of namespace

@@ -92,7 +92,7 @@ void Game::start() {
 		// store the current time -- all game objects should use this time when
 		// then need to the current time. They also have accessed to the time elapsed
 		// between the last two calls to regCurrTime().
-		Uint32 startTime = sdlutils().regCurrTime();
+		Uint32 startTime = sdlutils().virtualTimer().regCurrTime();
 
 		// refresh the input handler
 		ihdlr.refresh();
@@ -114,7 +114,7 @@ void Game::start() {
 		_current_scene->render();
 		sdlutils().presentRenderer();
 
-		dt = sdlutils().currRealTime() - startTime;
+		dt = sdlutils().virtualTimer().currRealTime() - startTime;
 		if (dt < 10)
 			SDL_Delay(10 - dt);
 	}

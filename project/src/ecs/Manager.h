@@ -49,9 +49,8 @@ public:
 		// 'frame' they will appear only in the next 'frame' -- I leave it as an
 		// exercise for you ... it could be incorporated in 'refresh' as well.
 		//
-		_entsByGroup[gId].push_back(e);
-		_entsByScene[sId].push_back(e);
 
+		_pendingEntities.push_back(e);
 		// return it to the caller
 		//
 		return e;
@@ -276,6 +275,8 @@ private:
 	std::array<entity_t, maxHandlerId> _hdlrs;
 	std::array<std::vector<entity_t>, maxSceneId> _entsByScene;
 	std::array<std::vector<entity_t>, maxGroupId> _entsByGroup;
+
+	std::vector<entity_t> _pendingEntities;
 	Uint32 _last_frame = 0;
 };
 
