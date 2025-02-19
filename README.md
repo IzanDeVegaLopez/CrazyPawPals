@@ -95,7 +95,7 @@ El maná se regenera pasivamente con el tiempo a un ritmo fijo, aunque algunas c
 El jugador tiene un maná máximo, la cantidad de maná del jugador nunca puede exceder esta cantidad.
 
 **Representación interna:**  
-- El maná se representa como un entero. Cada 100 puntos de maná en la representación equivalen a 1 punto de maná en el juego. El número y la barrita de progreso no son más que el resultado de las operaciones “%100”  “/100” a la representación del maná. 
+- El maná se representa como un entero. Cada 1000 puntos de maná en la representación equivalen a 1 punto de maná en el juego. El número y la barrita de progreso no son más que el resultado de las operaciones “%1000”  “/1000” a la representación del maná. 
 
 **Parámetros:**  
 - Obtención de maná en puntos por segundo (generalmente entre 0.5 y 1).  
@@ -145,9 +145,15 @@ Si el arma tiene objetivo este será la retícula del jugador.
 - Número de disparos.  
 - Duración del ataque.  
 - Dispersión (en grados).  
-- Efectos adicionales (explosión, veneno, etc.).  
+- Efectos adicionales (explosión, veneno, etc.).
+- 
+### 3.6. Artefactos
+Cada vez que el jugador recargue manualmente usará su artefacto. Los artefactos tienen cooldown y solo harán su efecto si al recargar no están en cooldown.
+El jugador empieza sin artefactos y podrá conseguirlos a lo largo de la partida. Solo puede llevar un único artefacto en todo momento.
+Los artefactos podrán tener efectos diversos desde lanzar proyectiles, hasta curación pasando por recargar inmediatamente al usarlos.
+Si un artefacto tiene objetivo este será la retícula del jugador.
 
-### 3.6. Oleadas  
+### 3.7. Oleadas  
 El juego dispondrá en total de 10 oleadas. La duración aproximada de cada una es de 1 minuto, y se terminan al eliminar a todos los enemigos aparecidos con esta. 
 
 **Desarrollo de las oleadas**
@@ -167,7 +173,7 @@ Durante esta fase el cooldown del disparo del jugador se vuelve 0 y la recarga d
 En algunas ocasiones las oleadas mostrarán antes de comenzar un sprite con un texto y una imagen que evoquen a un evento de oleadas. Esto hace que las recompensas de esta oleada sean de mayor rareza o calidad, y esta oleada además dispondrá de un modificador en el campo de batalla, el jugador y/o los enemigos.
 
 
-### 3.7. Recompensas  
+### 3.8. Recompensas  
 
 Al completar una oleada, aparecerá un menú de recompensas. Este menú mostrará varias opciones, cada una con una descripción que se revelará al pasar sobre ella. El jugador podrá elegir solo una de las recompensas disponibles. Al elegir cualquiera de las recompensas el resto desaparecerán. 
 Si al comenzar una nueva oleada no se ha escogido recompensa, empezarán a parpadear y 5 segundos después desaparecerán.
@@ -196,14 +202,23 @@ Aparecerán 3 recompensas de Boss adicionales con otro color. En este caso podem
   - Número Proyectiles: aumenta el número de proyectiles. Si lo hace en gran medida puede modificar la dispersión.
   - Dispersión: en grados.
   - Lanzamiento Doble: Aumenta el coste en 1 para lanzarlo 2 veces.
-- *Mejora de Boss:* Mejora de estadísticas del jugador.
-  - Mejora de recarga de maná
-  - Mejora de maná máximo
-  - Mejora de velocidad de movimiento
-  - Gana 1-2 de daño de ataque permanente
-  - Mejora del tiempo de recarga
+- *Objetos Míticos:* Otorga estadísticas o pasivas que modifican en gran medida como funcionará la build del jugador. Se consiguen como recompensas al eliminar a un Boss.
 
 
+### 3.9. Objetos Míticos
+Los objetos míticos pueden modificar el playstyle del jugador en gran medida
+Los objetos míticos se consiguen como recompensa al eliminar a un Boss en la 5ª oleada [y antes de la decima oleada].
+Siempre tienen un efecto positivo y uno perjudicial similar a los objetos lunares del RoR 2.
+Algunos ejemplos de objetos míticos podrían ser:
+- Cada vez que millees gana como maná el coste de la carta, a cambio reduce tu regeneración de maná a 1/2 o 1/4
+- Reduce el cd de tu artefacto a la mitad. Cada vez que salga de enfriamiento se recargará manualmente de inmediato usandolo en el proceso
+- Reduce tu vida a la mitad. Cada vez que elimines a un enemigo ganas el 20% de su vida como escudo.
+
+### 3.10. Vida
+El jugador tiene una cantidad finita y determinada de vida. Hay vida máxima y la vida no puede exceder este valor, pero la vida máxima puede cambiar al coger objetos míticos.
+Hay 2 parametros distintos que componen la vida del jugador: El escudo y la salud.
+- *Escudo:* El jugador no tiene escudo de base, pero lo puede obtener con objetos, cartas o armas. El escudo se reduce en 1, 2 veces por segundo. Al recibir daño primero se sustrae el daño de este, y el daño excesivo pasa a hacer daño a la vida.
+- *Salud:* La salud es el principal recurso del jugador, al llegar a 0 el jugador morirá. La regeneración de salud es rara, y solo suele se obtiene como recompensa de oleada al estar bajo de vida.
 
 ## 4. Interfaz  
 
@@ -289,6 +304,7 @@ La música cambia a un tono más intenso, señalando el inicio de la acción. Lo
 
 - **Disparar con clic izquierdo**: Usa el arma equipada para atacar a los enemigos. Cada disparo consume un breve tiempo de enfriamiento.
 - **Usar cartas con clic derecho**: Activa la carta actual en la mano, consumiendo maná. Si no hay suficiente maná, la carta se muestra en colores apagados y se reproduce un sonido de error.
+- **Recargar manualmente**: Activa el artefacto que posee el jugador si no está en cooldown.
 
 Después de usar o descartar una carta, el mazo avanza, mostrando una nueva carta en la mano. El maná se regenera pasivamente con el tiempo, permitiendo al jugador usar cartas más poderosas más adelante.
 
@@ -332,6 +348,6 @@ El jugador puede elegir entre:
 
 # 8. Referencias  
 - **RoR 2:** Tipos de enemigos y patrones de ataque.  
-- **One Step From Eden:** Cartas como hechizos + ataque básico y recompensas.Recargar el mazo.
+- **One Step From Eden:** Cartas como hechizos + ataque básico y recompensas. Recargar el mazo.
 - **MtG:** Mecánica Mill.  
 - **PvZ GW 2:** Eventos de oleadas.  
