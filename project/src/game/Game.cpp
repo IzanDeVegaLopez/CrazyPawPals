@@ -1,4 +1,4 @@
-// This file is part of the course TPV2@UCM - Samir Genaim
+﻿// This file is part of the course TPV2@UCM - Samir Genaim
 
 #include "Game.h"
 
@@ -8,15 +8,14 @@
 #include "../utils/Vector2D.h"
 #include "../utils/Collisions.h"
 
-
-#include "../our_scripts/card_system/Deck.hpp"
 #include "../our_scripts/components/Image.h"
 #include "../our_scripts/components/Transform.h"
 #include "../our_scripts/components/KeyboardPlayerCtrl.h"
 #include "../our_scripts/components/MovementController.h"
-#include "../our_scripts/components/ShootComponent.h"
-#include "../our_scripts/components/SimpleMove.h"
-
+#include "../our_scripts//components/ShootComponent.h"
+#include "../our_scripts//components/SimpleMove.h"
+#include "../our_scripts/components/Mana.h"
+#include "../our_scripts/components/Deck.hpp"
 #include "../our_scripts/Bullet.h"
 #include "../our_scripts/Player.h"
 
@@ -27,9 +26,8 @@
 
 using namespace std;
 
-using ecs::Manager;
-
-Game::Game() {
+Game::Game() :
+	_mngr(nullptr) {
 }
 
 Game::~Game() {
@@ -43,28 +41,64 @@ Game::~Game() {
 		SDLUtils::Release();
 }
 
-void Game::init() {
+bool Game::init() {
 
 	// initialize the SDL singleton
 	if (!SDLUtils::Init("crazy paw pals", 800, 600,
-			"resources/config/crazypawpals.resources.json")) {
+		"resources/config/crazypawpals.resources.json")) {
 
 		std::cerr << "Something went wrong while initializing SDLUtils"
 				<< std::endl;
-		return;
+		return false;
+
 	}
 
 	// initialize the InputHandler singleton
 	if (!InputHandler::Init()) {
 		std::cerr << "Something went wrong while initializing SDLHandler"
 				<< std::endl;
-		return;
-
+		return false;
 	}
 
 	// enable the cursor visibility
 	SDL_ShowCursor(SDL_ENABLE);
 
+	// Create the manager
+	_mngr = new ecs::Manager();
+
+#pragma region bullets
+	std::vector<Bullet*> b;
+	/*
+		for (int i = 0; i < 100; ++i) {
+		auto ins = _mngr->addEntity();
+		auto tr = _mngr->addComponent<Transform>(ins);
+		float s = 20.0f;
+		float x = -1.0f;
+		float y = -1.0f;
+		tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 2.0f);
+		_mngr->addComponent<SimpleMove>(ins);
+		b.push_back(ins);
+	}
+	*/
+
+#pragma endregion
+
+#pragma region player
+	auto player = _mngr->addEntity();
+	_mngr->setHandler(ecs::hdlr::PLAYER, player);
+	auto tr = _mngr->addComponent<Transform>(player);
+	float s = 100.0f;
+	float x = (sdlutils().width() - s) / 2.0f;
+	float y = (sdlutils().height() - s) / 2.0f;
+	tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 2.0f);
+	_mngr->addComponent<Image>(player, &sdlutils().images().at("player"));
+	_mngr->addComponent<ShootComponent>(player);
+	_mngr->addComponent<MovementController>(player);
+	_mngr->addComponent<Mana>(player);
+	std::list<Card*> my_card_list = std::list<Card*>{ new Fireball(), new Fireball(), new Minigun(), new Minigun() };
+	_mngr->addComponent<Deck>(player, my_card_list);
+	_mngr->addComponent<KeyboardPlayerCtrl>(player);
+#pragma endregion
 }
 
 void Game::start() {
@@ -72,7 +106,9 @@ void Game::start() {
 	// a boolean to exit the loop
 	bool exit = false;
 
-	auto &ihdlr = ih();
+	auto& ihdlr = ih();
+	//delta time
+	Uint32 dt = 10;
 
 	// reset the time before starting - so we calculate correct
 	// delta-time in the first iteration
@@ -97,7 +133,7 @@ void Game::start() {
 			continue;
 		}
 
-		_mngr->update();
+		_mngr->update(dt);
 		_mngr->refresh();
 
 
@@ -105,25 +141,19 @@ void Game::start() {
 		_mngr->render();
 		sdlutils().presentRenderer();
 
-		Uint32 frameTime = sdlutils().currRealTime() - startTime;
-
-		if (frameTime < 10)
-			SDL_Delay(10 - frameTime);
+		dt = sdlutils().currRealTime() - startTime;
+		if (dt < 10)
+			SDL_Delay(10 - dt);
 	}
 
 
 }
 
-void Game::change_Scene(State nextScene){
-	switch (nextScene) {
-	case Game::MAINMENU:
-		break;	
-	case Game::GAMESCENE:
-		break;
-	case Game::SELECTIONMENU:
-		break;
-	}
-
+ecs::Manager* Game::get_mngr() {
+	return _mngr;
 }
 
+void Game::checkCollisions() {
 
+
+}

@@ -4,28 +4,14 @@
     { "id" : "ARIAL16", "file" : "resources/fonts/ARIAL.ttf", "size": 16 },
     { "id" : "ARIAL24", "file" : "resources/fonts/ARIAL.ttf", "size": 24 }
   ],
-
-  "images": [
-    {
-      "id": "player",
-      "file": "resources/images/gato.png"
-    },
-    {
-      "id": "pacman",
-      "file": "resources/images/pacman.png"
-    },
-    {
-      "id": "heart",
-      "file": "resources/images/heart.png"
-    },
-    {
-      "id": "sdl_logo",
-      "file": "resources/images/SDL_logo.png"
-    },
-    {
-      "id": "revolver",
-      "file": "resources/images/revolver.png"
-    }
+  
+  "images" : [
+    { "id": "player",  "file": "resources/images/gato.png"},
+    { "id": "bullet_1",  "file": "resources/images/bullet_1.png"},
+    { "id": "sdl_logo","file": "resources/images/SDL_logo.png"},
+    { "id": "enemy","file": "resources/images/enemy.png"},
+    { "id": "card","file": "resources/images/card.png"},
+    { "id": "revolver","file": "resources/images/revolver.png"}
 
   ],
   

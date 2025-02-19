@@ -90,6 +90,10 @@ public:
 		render(src, dest, rotation);
 	}
 
+	inline auto &&get_texture() {
+		return *_texture;
+	}
+
 private:
 
 	// Construct from text

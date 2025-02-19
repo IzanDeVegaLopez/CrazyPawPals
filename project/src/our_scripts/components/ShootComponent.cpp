@@ -3,9 +3,8 @@
 #include "../../sdlutils/SDLUtils.h"
 #include "../../sdlutils/InputHandler.h"
 #include "../../ecs/Manager.h"
-#include "../../sdlutils/VirtualTimer.h"
-
-#include "Weapon.h"
+#include "../../our_scripts/Bullet.h"
+#include "../../game/Game.h"
 #include "Transform.h"
 
 using namespace ecs;
@@ -18,21 +17,26 @@ ShootComponent::~ShootComponent() {}
 
 void 
 ShootComponent::initComponent() {
-	auto* mngr = _ent->getMngr();
-	_tr = mngr->getComponent<Transform>(_ent);
+	_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
 	assert(_tr != nullptr);
 }
 void
 ShootComponent::shoot(const Vector2D& target) {
-
 	auto& pos = _tr->getPos();
 	auto* weapon = _ent->getMngr()->getComponent<Weapon>(_ent);
-
+	
 	if (sdlutils().virtualTimer().currRealTime() >= _lastShoot + weapon->cooldown()) {
+		Vector2D pos = _tr->getPos() + Vector2D(_tr->getWidth()/2.0f -25.0f,_tr->getHeight()/2.0f);
 		Vector2D shootDir = (target - pos).normalize();
-		//we'll ajust shoot position after we have some sprite to test;
-		Vector2D shootPos = { pos.getX() + (_tr->getWidth() / 2.0f -25.0f), pos.getY() + (_tr->getHeight() / 2.0f) };
+
 		weapon->callback(shootPos, shootDir);
 		_lastShoot = sdlutils().virtualTimer().currRealTime(); 
+
+		//_bulletPool.push_back(new Bullet(shootPos , shootDir, 5.0f));
+		// BulletProperties bp = BulletProperties();
+		// bp.init_pos = pos;
+		// bp.dir = target;
+		// bp.speed = 5.0f;
+		// Bullet::generate_proyectile(bp);
 	}
 }

@@ -1,28 +1,19 @@
-// This file is part of the course TPV2@UCM - Samir Genaim
-
 #pragma once
-
+#include "../utils/Singleton.h";
 namespace ecs {
 class Manager;
 }
-class Game {
-public:
-	enum State{
-		MAINMENU,
-		GAMESCENE,
-		SELECTIONMENU,
-		NUM_SCENE,
-	};
 
-	Game();
+class Game : public Singleton<Game> {
+public:
+	friend Singleton<Game>;
 	virtual ~Game();
-	void init();
+	bool init();
 	void start();
+	ecs::Manager* get_mngr();
 private:
-	void change_Scene(State);
-	Scene* _current_scene;
-	Scene* _game_scene;
-	Scene* _mainmenu_scene;
-	Scene* _selectionmenu_scene;
+	Game();
+	void checkCollisions();
+	ecs::Manager *_mngr;
 };
 

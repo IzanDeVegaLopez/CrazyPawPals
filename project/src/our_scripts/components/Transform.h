@@ -1,6 +1,3 @@
-// This file is part of the course TPV2@UCM - Samir Genaim
-
-
 /*
 * ELEMENTS:
 * -Position
@@ -57,7 +54,7 @@ public:
 	void setDir(Vector2D& d) {
 		_dir = d;
 	}
-	//I wouldn´t let this one as public.. but opinions?
+	//I wouldnï¿½t let this one as public.. but opinions?
 	void SetPrevDir(Vector2D& pD) {
 		_prevDir = pD;
 	} 
@@ -94,9 +91,8 @@ public:
 		_speed = s;
 	}
 
-	void update() override {
-		//Movement
-		_pos = _pos + _dir * _speed;
+	void update(uint32_t delta_time) override {
+		_pos = _pos + _dir*_speed;
 		SetPrevDir(_dir);
 	}
 

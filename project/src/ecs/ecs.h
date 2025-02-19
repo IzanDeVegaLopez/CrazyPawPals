@@ -55,6 +55,7 @@ namespace grp {
 // first number is 0 in C/C++ standard
 enum grpId : cmpId_t {
 	DEFAULT,
+	PLAYERBULLETS,
 	_GRPS_LIST_, /* taken from ../game/ecs_defs */
 
 	// do not remove this
