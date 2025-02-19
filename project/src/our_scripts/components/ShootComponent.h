@@ -16,7 +16,7 @@ protected:
 
 	Transform* _tr;
 	
-	std::vector<Bullet*> _bulletPool;
+	//std::vector<Bullet*> _bulletPool;
 
 public:
 	__CMPID_DECL__(ecs::cmp::SHOOTCOMPONENT);

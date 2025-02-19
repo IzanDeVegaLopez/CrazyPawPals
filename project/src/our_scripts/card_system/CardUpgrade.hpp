@@ -1,20 +1,21 @@
 #include "Card.hpp"
 
+
 //Decorator Patron --> https://refactoring.guru/design-patterns/decorator/cpp/example
 class BaseCardUpgrade : public Card {
 protected:
 	//reference to the card it upgrades
-	Card* _card;
+	std::unique_ptr<Card> _card;
 public:
-	BaseCardUpgrade(Card*& my_card, Resources& res_mod = Resources(0,0))
-		:_card(my_card) {
+	BaseCardUpgrade(std::unique_ptr<Card>&& my_card, Resources& res_mod = Resources(0,0))
+		:_card(std::move(my_card)) {
 		Resources& res = get_costs();
 		res = res + res_mod;
 		//my_card = this;
 	}
 
-	void on_play() override{
-		_card->on_play();
+	void on_play(Vector2D& player_position, Vector2D& target_position) override{
+		_card->on_play(player_position, target_position);
 		//call CardUpgrade::on_play and then 
 		//add to the function whatever you need
 	}
@@ -35,13 +36,13 @@ public:
 //Upgrades-----------------------------------------------------------
 class PlayItTwice : public BaseCardUpgrade {
 public:
-	PlayItTwice(Card* c) :BaseCardUpgrade(c, Resources(1,0)) {}
-	void on_play() override {
-		BaseCardUpgrade::on_play();
-		_card->on_play();
+	PlayItTwice(std::unique_ptr<Card>&& c) :BaseCardUpgrade(c, Resources(1,0)) {}
+	void on_play(Vector2D& player_position, Vector2D& target_position) override {
+		BaseCardUpgrade::on_play(player_position, target_position);
+		_card->on_play(player_position, target_position);
 	}
 };
 class CheaperBy1 : public BaseCardUpgrade {
 public:
-	CheaperBy1(Card* c) :BaseCardUpgrade(c, Resources(-1, 0)) {}
+	CheaperBy1(std::unique_ptr<Card>&& c) :BaseCardUpgrade(c, Resources(-1, 0)) {}
 };

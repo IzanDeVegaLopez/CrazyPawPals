@@ -15,7 +15,8 @@
     HEALTH,\
 	LIFETIMETIMER, \
 	ENEMYMOVENT, \
-	MANA
+	MANA, \
+	DECK
 
 
 // Groups list - must have at least one element

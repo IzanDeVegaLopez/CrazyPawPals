@@ -9,7 +9,8 @@
     { "id": "player",  "file": "resources/images/gato.png"},
     { "id": "bullet_1",  "file": "resources/images/bullet_1.png"},
     { "id": "sdl_logo","file": "resources/images/SDL_logo.png"},
-    { "id": "enemy","file": "resources/images/enemy.png"}
+    { "id": "enemy","file": "resources/images/enemy.png"},
+    { "id": "card","file": "resources/images/card.png"}
   ],
   
   "messages" : [

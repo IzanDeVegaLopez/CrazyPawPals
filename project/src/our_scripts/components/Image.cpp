@@ -6,6 +6,7 @@
 #include "../../sdlutils/macros.h"
 #include "../../sdlutils/Texture.h"
 #include "Transform.h"
+#include "../../game/Game.h"
 
 
 Image::Image() :
@@ -20,8 +21,7 @@ Image::~Image() {
 }
 
 void Image::initComponent() {
-	auto *mngr = _ent->getMngr();
-	_tr = mngr->getComponent<Transform>(_ent);
+	_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
 	assert(_tr != nullptr);
 }
 
