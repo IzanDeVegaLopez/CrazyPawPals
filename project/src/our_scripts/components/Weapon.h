@@ -15,7 +15,6 @@ protected:
 	std::string _tex;
 	int _attack_width;
 	int _attack_height;
-	std::vector<Bullet*> _pool; //attacks pool
 public:
 	__CMPID_DECL__(ecs::cmp::WEAPON);
 	Weapon();

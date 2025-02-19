@@ -76,21 +76,23 @@ void GameScene::render()
 
 void GameScene::spawnPlayer()
 {
+	auto* revolver = new Revolver();
 	create_entity(
 		new Transform({ sdlutils().width() / 2.0f, sdlutils().height() / 2.0f }, {0.0f,0.0f}, 100.0f,100.0f, 0.0f, 2.0f),
 		new Image(&sdlutils().images().at("player")),
-		new Revolver(),
+		revolver,
 		new ShootComponent(),
 		new KeyboardPlayerCtrl(),
 		new MovementController()
 		);
+	revolver->init(4, 0.5f, 20.0f, 3.0f, "revolver");
 }
 
 void GameScene::spawnEnemies()
 {
 }
 
-void GameScene::generate_proyectile(GameStructs::BulletProperties& bp, ecs::grpId_t gid)
+void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid)
 {
 	create_entity(
 		new Transform(bp.init_pos, bp.dir, bp.width, bp.height, bp.dir.angle(bp.init_pos), bp.speed),

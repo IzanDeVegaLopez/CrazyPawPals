@@ -18,6 +18,6 @@ public:
 	void spawnPlayer();
 	void spawnEnemies();
 
-	void generate_proyectile(GameStructs::BulletProperties& bp, ecs::grpId_t gid);
+	void generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid);
 	
 };

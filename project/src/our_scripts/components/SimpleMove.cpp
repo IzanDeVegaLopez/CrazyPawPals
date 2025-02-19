@@ -7,9 +7,7 @@
 #include "../../ecs/Manager.h"
 #include "../../game/Game.h"
 
-SimpleMove::SimpleMove() {
-
-}
+SimpleMove::SimpleMove(): _tr(nullptr) {}
 
 SimpleMove::~SimpleMove() {
 }
