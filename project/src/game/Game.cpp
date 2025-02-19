@@ -113,7 +113,7 @@ void Game::start() {
 	// delta-time in the first iteration
 	//
 	sdlutils().resetTime();
-
+	
 	while (!exit) {
 		// store the current time -- all game objects should use this time when
 		// then need to the current time. They also have accessed to the time elapsed
