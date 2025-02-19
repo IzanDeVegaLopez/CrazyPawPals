@@ -31,5 +31,6 @@
 //
 #define _HDLRS_LIST_ \
     PLAYER, \
-	GAMEINFO
+	GAMEINFO, \
+	CAMERA
 

@@ -36,9 +36,6 @@ void camera_follow::update(uint32_t delta_time) {
         }
     }, cam->cam).position;
 
-    if (isnan(mouse_world_position.x) || isnan(mouse_world_position.y)) {
-        assert(false);
-    }
     auto &&self_target = const_cast<Transform &>(target);
     const position2_f32 target_position = {
         .x = self_target.getPos().getX(),
@@ -48,11 +45,11 @@ void camera_follow::update(uint32_t delta_time) {
     camera_follow_target targets[] = {
         camera_follow_target{
             .position = target_position,
-            .weight = 0.75f
+            .weight = 0.9f
         },
         {
             .position = mouse_world_position,
-            .weight = 0.25f
+            .weight = 0.1f
         }
     };
     cam->cam.camera = camera_update_from_follow_multiple(
@@ -62,8 +59,4 @@ void camera_follow::update(uint32_t delta_time) {
         2,
         float(delta_time) / 1000.0f
     );
-    if (isnan(cam->cam.camera.position.x) || isnan(cam->cam.camera.position.y)) {
-        assert(false);
-    }
-    std::cout << "Camera position: " << cam->cam.camera.position.x << ", " << cam->cam.camera.position.y << std::endl;
 }

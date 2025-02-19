@@ -29,7 +29,7 @@ void MovementController::update(uint32_t delta_time)
 	auto speed = _tr->getSpeed();
 
 	//We change the position accoding to the inputs we've recieved from keyboard control
-	if (dir.getX() != 0 && dir.getY() != 0) {
+	if (dir.getX() != 0 || dir.getY() != 0) {
 		dir = dir.normalize(); //If its a diagonal movement, normalize dir
 	}
 	pos = pos + (dir * speed) * delta_time / 1000;

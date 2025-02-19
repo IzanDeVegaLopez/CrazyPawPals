@@ -27,7 +27,9 @@ camera camera_update_from_follow(
         direction.dy /= distance;
     }
 
-    float displacement = in_out_descriptor.max_follow_speed * delta_time;
+    constexpr static const float ln2 = 0.693147180559945309417232121458176568075500134360255254120680009493393621969694715605863326996418687;
+    const float closing_coefficient = ln2 / in_out_descriptor.semi_reach_time;
+    float displacement = expf(-closing_coefficient * delta_time) * distance * delta_time;
     if (displacement > distance) {
         displacement = distance;
     }

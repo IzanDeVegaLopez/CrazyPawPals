@@ -6,7 +6,7 @@
 struct camera_follow_descriptor {
     position2_f32 previous_position;
     float lookahead_time;
-    float max_follow_speed;
+    float semi_reach_time;
 };
 
 using seconds_f32 = float;
