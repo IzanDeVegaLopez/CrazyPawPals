@@ -1,8 +1,6 @@
 #include "Revolver.h"
-#include "../../our_scripts/Bullet.h"
-#include "../../sdlutils/SDLUtils.h"
-#include "../../sdlutils/Texture.h"
-#include "../Bullet.h" 
+#include "../../game/Game.h"
+#include "../../game/GameScene.h"
 
 Revolver::Revolver() : Weapon() { }
 
@@ -10,6 +8,11 @@ Revolver::~Revolver() {}
 
 void 
 Revolver::callback(Vector2D shootPos, Vector2D shootDir) {
-
-	_pool.push_back(new Bullet(_ent->getMngr(), shootPos, shootDir, Vector2D(0, 0), _speed, _distance, _tex, _attack_width, _attack_height));
+	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
+	bp.dir = shootDir;
+	bp.init_pos = shootPos;
+	bp.speed =_speed;
+	bp.damage = _damage;
+	bp.life_time = 2;
+	Game::Instance()->get_gameScene()->generate_proyectile(bp, ecs::grp::BULLET);
 }

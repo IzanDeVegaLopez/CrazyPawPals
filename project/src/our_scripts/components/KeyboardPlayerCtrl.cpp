@@ -1,12 +1,12 @@
 #include "KeyboardPlayerCtrl.h"
-
 #include "../../sdlutils/InputHandler.h"
-#include "../Player.h"
-#include "../../ecs/Manager.h"
+#include "../../game/Game.h"
+
+#include "Deck.hpp"
 #include "Transform.h"
 #include "ShootComponent.h"
-#include "../../game/Game.h"
-#include "Deck.hpp"
+#include "../../ecs/Manager.h"
+#include "Health.h"
 
 KeyboardPlayerCtrl::KeyboardPlayerCtrl()
     : _left(SDL_SCANCODE_A), _right(SDL_SCANCODE_D), _up(SDL_SCANCODE_W), _down(SDL_SCANCODE_S), 
@@ -32,9 +32,8 @@ KeyboardPlayerCtrl::initComponent() {
 void KeyboardPlayerCtrl::update(Uint32 delta_time) {
 
     auto& ihdlr = ih();
-   // if (ihdlr.keyDownEvent()) {
+   if (ihdlr.keyDownEvent()) {
         auto& dir = _tr->getDir();
-
         //New input
         //Horizontal axis
         dir.setX((ihdlr.isKeyDown(_left) ? -1 : 0) + (ihdlr.isKeyDown(_right) ? 1 : 0));
@@ -53,48 +52,7 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
             //if we are not close enought to a reward, do nothing
             std::cout << "colecta" << std::endl;
         }
-    //}
- 
-
-    //Old input
-    /*if (ihdlr.keyDownEvent()) { //Si comentamos esta linea (y el cierre de llave abajo) el movimiento parece mas natural
-        auto& dir = o->getDir();
-
-
-        //send direction value
-        if (ihdlr.isKeyDown(_left)) {
-            dir.setX(-1);
-        }
-        else if (ihdlr.isKeyDown(_right)) {
-            dir.setX(1);
-        }
-        else {
-            dir.setX(0); //stop x axis movement
-        }
-
-        if (ihdlr.isKeyDown(_up)) {
-            dir.setY(-1);
-        }
-        else if (ihdlr.isKeyDown(_down)) {
-            dir.setY(1);
-        }
-        else {
-            dir.setY(0); //stop y axis movement
-        }
-
-        static_cast<Player*>(o)->move();
-
-        //reload
-        if (ihdlr.isKeyDown(_reload)) {
-            std::cout << "recarga" << std::endl;
-        }
-
-        //collect
-        if (ihdlr.isKeyDown(_collect)) {
-            //if we are not close enought to a reward, do nothing
-            std::cout << "colecta" << std::endl;
-        }
-    } */
+    }
 
     if (ihdlr.mouseButtonDownEvent()) {
         //bool leftPressed = ihdlr.getMouseButtonState(InputHandler::LEFT);

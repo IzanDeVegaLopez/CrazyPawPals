@@ -26,7 +26,15 @@
 	BULLET,\
 	PLAYER,\
 	ENEMY,\
-	STARS
+	PLAYERBULLETS
+
+
+// Scene list
+//
+#define _SCENE_LIST_ \
+	GAMESCENE,\
+	MAINMENUSCENE,\
+	SELECTIONMENUSCENE
 
 // Handlers list - must have at least one element
 //

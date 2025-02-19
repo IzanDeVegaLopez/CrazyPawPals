@@ -2,6 +2,7 @@
 #include "ecs/Manager.h"
 #include <iostream>
 #include "game/Game.h"
+#include "../components/Transform.h"
 
 void Deck::_put_new_card_on_hand()
 {
@@ -151,7 +152,7 @@ void Deck::render() noexcept
 {
 	//TODO
 	//Mostrar carta en la mano
-	//nº cartas draw_pile and discard_pile
+	//n?cartas draw_pile and discard_pile
 }
 
 void Deck::add_card_to_deck(Card* c)

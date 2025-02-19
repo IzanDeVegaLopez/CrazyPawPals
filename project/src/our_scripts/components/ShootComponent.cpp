@@ -3,8 +3,10 @@
 #include "../../sdlutils/SDLUtils.h"
 #include "../../sdlutils/InputHandler.h"
 #include "../../ecs/Manager.h"
-#include "../../our_scripts/Bullet.h"
+
+#include "Weapon.h"
 #include "../../game/Game.h"
+
 #include "Transform.h"
 
 using namespace ecs;
@@ -22,21 +24,11 @@ ShootComponent::initComponent() {
 }
 void
 ShootComponent::shoot(const Vector2D& target) {
+
 	auto& pos = _tr->getPos();
-	auto* weapon = _ent->getMngr()->getComponent<Weapon>(_ent);
-	
-	if (sdlutils().virtualTimer().currRealTime() >= _lastShoot + weapon->cooldown()) {
-		Vector2D pos = _tr->getPos() + Vector2D(_tr->getWidth()/2.0f -25.0f,_tr->getHeight()/2.0f);
-		Vector2D shootDir = (target - pos).normalize();
+	auto* weapon =Game::Instance()->get_mngr()->getComponent<Weapon>(_ent);
 
 		weapon->callback(shootPos, shootDir);
-		_lastShoot = sdlutils().virtualTimer().currRealTime(); 
-
-		//_bulletPool.push_back(new Bullet(shootPos , shootDir, 5.0f));
-		// BulletProperties bp = BulletProperties();
-		// bp.init_pos = pos;
-		// bp.dir = target;
-		// bp.speed = 5.0f;
-		// Bullet::generate_proyectile(bp);
+		_lastShoot = sdlutils().currRealTime(); 
 	}
 }

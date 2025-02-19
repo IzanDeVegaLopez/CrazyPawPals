@@ -1,13 +1,11 @@
 #include "Scene.h"
 
-Scene::Scene() : _mngrGame(nullptr)
-{
+Scene::Scene(){
 
 }
 
 Scene::~Scene()
 {
-	delete _mngrGame;
 }
 /*
 Scene::spawn(std::vector<ecs::Component> components)
