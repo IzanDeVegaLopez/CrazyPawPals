@@ -161,7 +161,7 @@ void Deck::render() noexcept
 	//Mostrar nº cartas draw_pile and discard_pile
 	card_rendering_descriptor crd = card_rendering_descriptor();
 	//Position and scale for the cost --> both values from 0 to 1
-	crd.mana_cost_subrect = { {0,0},{0.5,0.2} };
+	crd.mana_cost_subrect = { {0,0},{0.5,0.5} };
 	crd.card_image_key = "card";
 	crd.mana_cost_font_key = "ARIAL16";
 	crd.mana_cost_color = {255,0,0,255};
@@ -169,8 +169,8 @@ void Deck::render() noexcept
 
 	camera_screen cam_screen = camera_screen();
 	std::pair<int, int> position = Game::Instance()->get_screen_size();
-	//camera position, size on world units (suppose player is 1 world unit, how many players will fit on camera)
-	cam_screen.camera = { {0,0},{16,16} };
+	//camera position, similar to aspect ratio but in world units (suppose player is 1 world unit, how many players will fit on camera kinda)
+	cam_screen.camera = { {0,0},{8,6} };
 	//camera screen on pixels size
 	cam_screen.screen = {position.first, position.second};
 	
@@ -180,8 +180,8 @@ void Deck::render() noexcept
 		cam_screen,
 		//take renderer
 		*sdlutils().renderer(),
-		//destination rect --> where will the camera be placed (position, size in world units)
-		{ {0,0},{10,10} },
+		//destination rect --> where will the card be placed (position, size in world units)
+		{ {-8,-4},{2,2} },
 		//src subrect --> if our image is only 1 take this parameters
 		//if we have a map of 5x6 cards and we wanted to render card (3,2) being first card(0,0), and last (4,5)
 		//values would be --> { {3/5, 2/6}, {1/5,1/6} }
