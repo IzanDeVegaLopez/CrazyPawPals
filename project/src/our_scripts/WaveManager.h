@@ -4,19 +4,38 @@
 #include "../sdlUtils/SDLUtils.h"
 
 class WaveManager : public ecs::Component {
-
-	std::vector<std::vector<int>> _waves = {
-		{ 0, 0, 0, 0, 1, 1, 0, 0, 1, 1 },
-		{ 0, 1, 1, 2, 0, 0, 2, 1, 2, 2 },
-		{ 1, 1, 1, 1, 1, 0, 0, 2, 2, 2 },
-		{ 2, 1, 1, 3, 2, 3, 1, 0, 3, 3 },
-		{  },
-		{  },
-		{  },
-		{  },
-		{  },
-		{  }
-	};
+    // Los 0 son espacios extra
+    std::vector<std::vector<int>> _waves = {
+        { 
+            1, 0, 
+            1, 1, 0, 
+            1, 2, 0, 0, 
+            2, 1, 1, 0, 0, 
+            2, 2 },
+        { 
+            1, 2, 0,
+            2, 3, 0,
+            1, 1, 3, 0, 0,
+            2, 3, 3 },
+        { 
+            2, 2, 2, 2, 2, 0, 0, 0,
+            1, 1, 3, 0, 0, 
+            3, 3 },
+        { 
+            3, 2, 2, 0,
+            4, 3, 0,
+            4, 2, 1, 0, 0,
+            4, 4 },
+        {  
+            4, 4, 4, 0,
+            4, 4, 4, 4, 0, 0, 0,
+            4, 4, 4, 1, 1, 1, 1 },
+        {  },
+        {  },
+        {  },
+        {  },
+        {  }
+    };
 public:
     __CMPID_DECL__(ecs::cmp::WAVEMANAGER)
     WaveManager();

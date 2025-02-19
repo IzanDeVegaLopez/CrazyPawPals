@@ -7,7 +7,7 @@
 #include "sdlutils/SDLUtils.h"
 
 WaveManager::WaveManager() : 
-    _totalSpawnTime(10000.f),
+    _totalSpawnTime(25000.f),
     _waveActive(false), _fogActive(false),
     _currentWave(0), _enemiesSpawned(0)
 {
@@ -70,26 +70,26 @@ WaveManager::spawnWave() {
 
             // Medio de la pantalla + angulo * distancia
             Vector2D posVec = Vector2D(sdlutils().width() / 2 + cos(rAng) * (_min_distance + _op_dist), sdlutils().height() / 2 + sin(rAng) * (_min_distance + _op_dist));
-			std::cout << "Spawned enemy at: " << posVec.getX() << ", " << posVec.getY() << std::endl;
-            std::cout << "Spawned enemy with: " << rAng << " + " << (_min_distance + _op_dist) << ", rn = " << rn << std::endl;
+			
             switch (_waves[_currentWave][_enemiesSpawned])
             {
-			case 0:
+			case 1:
 				Game::Instance()->createSarnoRata(posVec);
 				break;
-            case 1:
+            case 2:
 				Game::Instance()->createMichiMafioso(posVec);
 				break;
-			case 2:
-				Game::Instance()->createSarnoRata(posVec);
+			case 3:
+				Game::Instance()->createSarnoRata(posVec); // plim plim
                 break;
-            case 3:
-				Game::Instance()->createMichiMafioso(posVec);
+            case 4:
+				Game::Instance()->createMichiMafioso(posVec); // boom
 				break;
             default:
 				std::cout << "Enemigo no existe" << std::endl;
                 break;
             }
+            std::cout << "Enemy " << _waves[_currentWave][_enemiesSpawned] << " spawned at: " << posVec.getX() << ", " << posVec.getY() << " with " << rAng << "º + " << (_min_distance + _op_dist) << "m, rn = " << rn << std::endl;
 			std::cout << std::endl;
             _enemiesSpawned++;
 
