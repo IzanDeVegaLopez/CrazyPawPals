@@ -21,6 +21,10 @@
     {
       "id": "minigun",
       "file": "resources/images/minigun.png"
+    },
+    {
+      "id": "reloading",
+      "file": "resources/images/reloading.png"
     }
   ],
   
