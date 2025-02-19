@@ -9,6 +9,7 @@
 #include "Component.h"
 #include "ecs.h"
 #include "Entity.h"
+#include "sdlutils/SDLUtils.h"
 
 namespace ecs {
 
@@ -179,10 +180,10 @@ public:
 	// Updating  an entity simply calls the update of all
 	// components
 	//
-	inline void update(entity_t e) {
+	inline void update(entity_t e, Uint32 dt) {
 		auto n = e->_currCmps.size();
 		for (auto i = 0u; i < n; i++)
-			e->_currCmps[i]->update();
+			e->_currCmps[i]->update(dt);
 	}
 	// Rendering an entity simply calls the render of all
 	// components
@@ -195,11 +196,11 @@ public:
 
 	// update all entities
 	//
-	void update() {
+	void update(Uint32 dt) {
 		for (auto &ents : _entsByGroup) {
 			auto n = ents.size();
 			for (auto i = 0u; i < n; i++)
-				update(ents[i]);
+				update(ents[i],dt);
 		}
 	}
 
@@ -222,6 +223,7 @@ private:
 
 	std::array<entity_t, maxHandlerId> _hdlrs;
 	std::array<std::vector<entity_t>, maxGroupId> _entsByGroup;
+	Uint32 _last_frame = 0;
 };
 
 } // end of namespace

@@ -12,6 +12,6 @@ public:
 	SimpleMove();
 	virtual ~SimpleMove();
 	void initComponent() override;
-	void update() override;
+	void update(uint32_t delta_time) override;
 };
 

@@ -66,10 +66,10 @@ public:
 
 		//Callback managing
 		//Obtenemos el indice de nuestro enumerado, segun el evento actual
-		//si el evento no está registrado esto devuelve -1s
+		//si el evento no estï¿½ registrado esto devuelve -1s
 		//int mapIndex = getInputEvent(event);
 
-		//si el evento está registrado
+		//si el evento estï¿½ registrado
 		/*if (inputMap.find(mapIndex) != inputMap.end()) {
 			// llama a todas las funciones registradas en un evento especifico
 			for (SDLEventCallback callback : inputMap.at(mapIndex)) {
@@ -146,6 +146,7 @@ public:
 	// the book 'SDL Game Development'
 
 private:
+	// Set all the mouse button state to false (each button turns true when it is pressed)
 	InputHandler() : _mbState{} {
 		_kbState = nullptr;
 		clearState();

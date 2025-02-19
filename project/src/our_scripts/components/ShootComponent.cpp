@@ -5,6 +5,9 @@
 #include "../../ecs/Manager.h"
 
 #include "Weapon.h"
+#include "../../our_scripts/Bullet.h"
+#include "../../game/Game.h"
+
 #include "Transform.h"
 
 using namespace ecs;
@@ -17,8 +20,7 @@ ShootComponent::~ShootComponent() {}
 
 void 
 ShootComponent::initComponent() {
-	auto* mngr = _ent->getMngr();
-	_tr = mngr->getComponent<Transform>(_ent);
+	_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
 	assert(_tr != nullptr);
 }
 void

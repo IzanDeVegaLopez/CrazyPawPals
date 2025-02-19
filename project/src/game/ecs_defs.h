@@ -16,7 +16,8 @@
 	LIFETIMETIMER, \
 	CAMERA, \
     WEAPON, \
-    REVOLVER
+	MANA, \
+	DECK
 
 
 // Groups list - must have at least one element

@@ -2,6 +2,7 @@
 #include "Transform.h"
 #include "../../ecs/Manager.h"
 #include "../../sdlutils/SDLUtils.h"
+#include "../../game/Game.h"
 
 MovementController::MovementController() : _maxSpeed(5.0f), _reduceSpeed(0.5f), _addSpeed(1.025f) {
 }
@@ -11,11 +12,10 @@ MovementController::~MovementController() {
 
 void
 MovementController::initComponent() {
-	auto* mngr = _ent->getMngr();
-	_tr = mngr->getComponent<Transform>(_ent);
+	_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
 	assert(_tr != nullptr);
 }
-void MovementController::update()
+void MovementController::update(uint32_t delta_time)
 {
 	auto& dir = _tr->getDir();
 	auto& prevDir = _tr->getPrevDir();

@@ -57,7 +57,7 @@ public:
 	void setDir(Vector2D& d) {
 		_dir = d;
 	}
-	//I wouldn´t let this one as public.. but opinions?
+	//I wouldnï¿½t let this one as public.. but opinions?
 	void SetPrevDir(Vector2D& pD) {
 		_prevDir = pD;
 	} 

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15..3.30)
 
 enable_language(CXX)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if (MSVC)
@@ -19,6 +19,8 @@ else()
         #-Werror
     )
 endif()
+
+
 
 
 project(CrazyPawPals)
@@ -68,7 +70,7 @@ project(CrazyPawPals)
         ${PROJECT_NAME}
         ${CrazyPawPals_SRC_DIRECTORY}/main.cpp
         ${CrazyPawPals_SOURCES}
-     "project/src/our_scripts/card_system/CardList.h" "project/src/our_scripts/card_system/Deck.cpp" "project/src/our_scripts/card_system/Card.cpp" "project/src/our_scripts/card_system/PlayableCards.cpp")
+    )
     
     target_include_directories(
         ${PROJECT_NAME}
@@ -104,18 +106,18 @@ project(CrazyPawPals)
         SDL2_net
         SDL2_mixer
     )
-
-    if (V_VSCOMMUNITY_BUILD)
-        set(
-            CrazyPawPals_EXE_DIRECTORY
-            ${CMAKE_CURRENT_LIST_DIR}/out/build/x64-$<CONFIGURATION>
-        )
-    else()
-        set(
-            CrazyPawPals_EXE_DIRECTORY
-            ${CMAKE_CURRENT_LIST_DIR}/build/$<CONFIGURATION>
-        )
-    endif()
+    
+    set(
+        CrazyPawPals_EXE_DIRECTORY
+        ${CMAKE_CURRENT_BINARY_DIR}/bin
+    )
+    set_target_properties(
+        ${PROJECT_NAME}
+        PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CrazyPawPals_EXE_DIRECTORY}/$<0:>
+        ARCHIVE_OUTPUT_DIRECTORY ${CrazyPawPals_EXE_DIRECTORY}/$<0:>
+        LIBRARY_OUTPUT_DIRECTORY ${CrazyPawPals_EXE_DIRECTORY}/$<0:>
+    )
     
     add_custom_target(
         copy_resources_bin

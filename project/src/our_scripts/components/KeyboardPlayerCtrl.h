@@ -4,7 +4,7 @@
 
 class Transform;
 class ShootComponent;
-
+class Deck;
 class KeyboardPlayerCtrl :public ecs::Component
 {
 public:
@@ -12,7 +12,7 @@ public:
 	KeyboardPlayerCtrl(); 
 	virtual ~KeyboardPlayerCtrl(); 
 	void initComponent() override;
-	void update() override;
+	void update(Uint32 delta_time) override;
 private:
 	SDL_Scancode _left;
 	SDL_Scancode _right;
@@ -23,4 +23,5 @@ private:
 
 	Transform* _tr;
 	ShootComponent* _sc;
+	Deck* _dc;
 };
