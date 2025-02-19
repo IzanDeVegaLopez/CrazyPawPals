@@ -25,6 +25,14 @@
     {
       "id": "reloading",
       "file": "resources/images/reloading.png"
+    },
+    { 
+      "id": "manaorb",
+      "file": "resources/images/manaorb.png"
+    },
+    { 
+      "id": "manaorbempty",
+      "file": "resources/images/manaorbempty.png"
     }
   ],
   
