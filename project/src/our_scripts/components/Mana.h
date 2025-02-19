@@ -19,7 +19,7 @@ public:
 	void initComponent() override { _mana_count = 0; }
 	void update(Uint32 delta_time) override {
 		_mana_count = std::min(_mana_count + int(_mana_regen*delta_time)/1000, _max_mana);
-		std::cout << delta_time << std::endl;
+		//std::cout << delta_time << std::endl;
 	}
 	void render() override {
 		// mana buildup
