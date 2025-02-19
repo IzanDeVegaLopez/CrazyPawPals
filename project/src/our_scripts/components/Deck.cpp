@@ -165,7 +165,7 @@ void Deck::render() noexcept
 	crd.card_image_key = "card";
 	crd.mana_cost_font_key = "ARIAL16";
 	crd.mana_cost_color = {255,0,0,255};
-	crd.mana_cost = 2;
+	crd.mana_cost = _hand->get_costs().get_mana();
 
 	camera_screen cam_screen = camera_screen();
 	std::pair<int, int> position = Game::Instance()->get_screen_size();
