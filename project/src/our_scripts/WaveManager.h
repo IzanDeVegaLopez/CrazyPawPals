@@ -5,7 +5,18 @@
 
 class WaveManager : public ecs::Component {
 
-    std::vector<std::vector<int>> _waves;
+	std::vector<std::vector<int>> _waves = {
+		{ 0, 0, 0, 0, 1, 1, 0, 0, 1, 1 },
+		{ 0, 1, 1, 2, 0, 0, 2, 1, 2, 2 },
+		{ 1, 1, 1, 1, 1, 0, 0, 2, 2, 2 },
+		{ 2, 1, 1, 3, 2, 3, 1, 0, 3, 3 },
+		{  },
+		{  },
+		{  },
+		{  },
+		{  },
+		{  }
+	};
 public:
     __CMPID_DECL__(ecs::cmp::WAVEMANAGER)
     WaveManager();
@@ -28,7 +39,7 @@ private:
     bool _waveActive = false;
     bool _fogActive = false;
 
-    int _numEnemies; // enemigos total en la oleada (CONSTRUCTOR)
+    int _numEnemies; // enemigos total en la oleada (post calculo)
     int _enemiesSpawned; // número de enemigos spawneados (post calculo)
 
     float _totalSpawnTime; // tiempo spawn total al prinicipio de la oleada (CONSTRUCTOR)
