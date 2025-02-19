@@ -30,8 +30,8 @@ ShootComponent::shoot(const Vector2D& target) {
 
 	if (sdlutils().virtualTimer().currRealTime() >= _lastShoot + weapon->cooldown()) {
 		Vector2D shootDir = (target - pos).normalize();
-		float offset = _tr->getWidth() * 0.5f;
-		Vector2D shootPos = pos + shootDir * offset;
+		//we'll ajust shoot position after we have some sprite to test;
+		Vector2D shootPos = { pos.getX() + (_tr->getWidth() / 2.0f -25.0f), pos.getY() + (_tr->getHeight() / 2.0f) };
 		weapon->callback(shootPos, shootDir);
 		_lastShoot = sdlutils().virtualTimer().currRealTime(); 
 	}
