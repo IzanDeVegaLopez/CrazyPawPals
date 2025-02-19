@@ -3,6 +3,7 @@
 #include "../ecs/Manager.h"
 #include "../ecs/Entity.h"
 #include "../ecs/Component.h"
+#include "GameStructs.h"
 
 class Scene {
 public:
@@ -13,7 +14,7 @@ public:
 	virtual void enterScene() = 0;
 	virtual void exitScene() = 0;
 
-	virtual void update() = 0;
+	virtual void update(uint32_t delta_time) = 0;
 	virtual void render() = 0;
 	//Por ahora, hacemos spawnEntity (la que sea) en cada escena
 	//ecs::Entity* spawn(std::vector<ecs::Component> components);

@@ -12,7 +12,6 @@
 */
 #pragma once
 #include "../../ecs/Component.h"
-#include "../../utils/Vector2D.h"
 #include <cassert>
 
 class Transform: public ecs::Component {
@@ -24,14 +23,14 @@ public:
 			_pos(), _dir(), _width(), _height(), _rot(), _speed() {
 	}
 
-	Transform(Vector2D pos, Vector2D dir, Vector2D prevDir, float w, float h, float r, float s ) :
+	Transform(Vector2D pos, Vector2D dir, float w, float h, float r, float s, Vector2D prevDir = { 0,0 }) :
 			_pos(pos), _dir(dir), _prevDir(prevDir), _width(w), _height(h), _rot(r), _speed(s) {
 	}
 
 	virtual ~Transform() {
 	}
 
-	void init(Vector2D pos, Vector2D dir, Vector2D prevDir, float w, float h, float r, float s) {
+	void init(Vector2D pos, Vector2D dir, float w, float h, float r, float s, Vector2D prevDir = { 0,0 }) {
 		_pos = pos;
 		_dir = dir;
 		_prevDir = prevDir;
@@ -94,7 +93,7 @@ public:
 		_speed = s;
 	}
 
-	void update() override {
+	void update(uint32_t delta_time) override {
 		//Movement
 		_pos = _pos + _dir * _speed;
 		SetPrevDir(_dir);

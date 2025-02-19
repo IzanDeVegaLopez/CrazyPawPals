@@ -1,13 +1,15 @@
 // This file is part of the course TPV2@UCM - Samir Genaim
 #pragma once
 #include "../utils/Singleton.h";
+
 namespace ecs {
 class Manager;
 }
-
+class Scene;
+class GameScene;
 class Game: public Singleton<Game>  {
 public:
-	enum State{
+	enum State {
 		MAINMENU,
 		GAMESCENE,
 		SELECTIONMENU,
@@ -18,6 +20,7 @@ public:
 	bool init();
 	void start();
 	ecs::Manager* get_mngr();
+	GameScene* get_gameScene();
 private:
 	void change_Scene(State);
 	Scene* _current_scene;

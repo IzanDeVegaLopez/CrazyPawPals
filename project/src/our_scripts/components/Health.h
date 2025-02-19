@@ -12,13 +12,13 @@ public:
 	void heal(int health);
 	void setMaxHeatlh(int h);
 	void takeShield(int s);
-	void update() override;
+	void update(uint32_t delta_time) override;
 
 protected:
 	int _currentHealth;
 	int _maxHealth;
 	int _shield;
-	Uint32 _shieldTime;
+	uint32_t _shieldTime;
 
 	const int FRAME_DURATION = 1000;
 };

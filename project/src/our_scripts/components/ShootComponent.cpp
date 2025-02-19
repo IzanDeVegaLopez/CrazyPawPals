@@ -27,7 +27,7 @@ void
 ShootComponent::shoot(const Vector2D& target) {
 
 	auto& pos = _tr->getPos();
-	auto* weapon = _ent->getMngr()->getComponent<Weapon>(_ent);
+	auto* weapon =Game::Instance()->get_mngr()->getComponent<Weapon>(_ent);
 
 	if (sdlutils().currRealTime() >= _lastShoot + weapon->cooldown()) { 
 		Vector2D shootDir = (target - pos).normalize(); 

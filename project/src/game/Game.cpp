@@ -24,6 +24,7 @@
 #include "../our_scripts/Player.h"
 
 //Scenes for SceneManager
+#include "Scene.h"
 #include "MainMenuScene.h"
 #include "SelectionMenuScene.h"
 #include "GameScene.h"
@@ -65,8 +66,19 @@ bool Game::init() {
 	// enable the cursor visibility
 	SDL_ShowCursor(SDL_ENABLE);
 
+	_mngr = new ecs::Manager();
+
 	_game_scene = new GameScene();
+	_game_scene->initScene();
 	_current_scene = _game_scene;
+
+}
+
+ecs::Manager* Game::get_mngr() {
+	return _mngr;
+}
+GameScene* Game::get_gameScene() {
+	return static_cast<GameScene*>(_game_scene);
 }
 
 void Game::start() {

@@ -10,7 +10,7 @@ public:
 	__CMPID_DECL__(ecs::cmp::MANA);
 	Mana(int max = 5000, int regen = 750) : _max_mana(max), _mana_regen(regen), _mana_count(0) {}
 	void initComponent() override { _mana_count = 0; }
-	void update(Uint32 delta_time) override { // Add override after implementing components 
+	void update(uint32_t delta_time) override { // Add override after implementing components 
 		_mana_count = std::min(_mana_count + int(_mana_regen*delta_time)/1000, _max_mana);
 		//std::cout << _mana_count << std::endl;
 	}

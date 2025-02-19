@@ -7,7 +7,7 @@
 #include "ecs/Component.h"
 #include <list>
 #include <cassert>
-
+class Transform;
 class Deck: public ecs::Component {
 protected:
 	int reload_time = 1000;
@@ -42,7 +42,7 @@ public:
 	//Puts all cards on discard pile and sets player unable to use any action outside moving
 	//Then puts all cards on drawPile and shuffles
 	void reload() noexcept;
-	void update(Uint32 deltaTime) override;
+	void update(uint32_t deltaTime) override;
 	void render() noexcept;
 	friend std::ostream& operator << (std::ostream& os, const Deck& deck);
 

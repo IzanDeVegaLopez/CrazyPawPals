@@ -26,10 +26,10 @@ public:
 	// Adding an entity simply creates an instance of Entity, adds
 	// it to the list of entities and returns it to the caller.
 	//
-	inline entity_t addEntity(ecs::grpId_t gId = ecs::grp::DEFAULT) {
+	inline entity_t addEntity(ecs::sceneId_t sId = ecs::scene::GAMESCENE,ecs::grpId_t gId = ecs::grp::DEFAULT) {
 
 		// create and initialise the entity
-		auto e = new Entity(gId, this);
+		auto e = new Entity(gId, this, sId);
 		e->_alive = true;
 
 		// add the entity 'e' to list of entities of the given group
@@ -50,6 +50,7 @@ public:
 		// exercise for you ... it could be incorporated in 'refresh' as well.
 		//
 		_entsByGroup[gId].push_back(e);
+		_entsByScene[sId].push_back(e);
 
 		// return it to the caller
 		//
@@ -163,12 +164,17 @@ public:
 		return _entsByGroup[gId];;
 	}
 
+	inline const auto& getEntitiesByScene(sceneId_t sId = ecs::scene::GAMESCENE) {
+		return _entsByScene[sId];;
+	}
+
 	// associates the entity 'e' to the handler 'hId'
 	//
 	inline void setHandler(hdlrId_t hId, entity_t e) {
 		assert(hId < ecs::maxHandlerId);
 		_hdlrs[hId] = e;
 	}
+
 
 	// returns the entity associated to the handler 'hId'
 	//
@@ -197,16 +203,16 @@ public:
 
 	// update all entities in a certain Scene (Group)
 	//
-	void update(grpId_t gId,Uint32 dt) {
-		auto& _entity = getEntities(gId);
+	void update(sceneId_t sId,Uint32 dt) {
+		auto& _entity = getEntitiesByScene(sId);
 		for (auto &ents : _entity) {
 			update(ents, dt);
 		}
 	}
 	// render all entities in a certain Scene (Group)
 	//
-	void render(grpId_t gId) {
-		auto& _entity = getEntities(gId);
+	void render(sceneId_t sId) {
+		auto& _entity = getEntitiesByScene(sId);
 		for (auto& ents : _entity) {
 			render(ents);
 		}
@@ -239,6 +245,7 @@ public:
 private:
 
 	std::array<entity_t, maxHandlerId> _hdlrs;
+	std::array<std::vector<entity_t>, maxSceneId> _entsByScene;
 	std::array<std::vector<entity_t>, maxGroupId> _entsByGroup;
 	Uint32 _last_frame = 0;
 };
