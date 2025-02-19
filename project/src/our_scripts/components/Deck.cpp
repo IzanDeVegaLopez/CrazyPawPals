@@ -2,6 +2,7 @@
 #include "ecs/Manager.h"
 #include <iostream>
 #include "game/Game.h"
+#include "../../rendering/card_rendering.hpp"
 
 void Deck::_put_new_card_on_hand()
 {
@@ -120,7 +121,7 @@ void Deck::_finish_realoading()
 	_discard_pile.move_from_this_to(_draw_pile);
 	_draw_pile.shuffle();
 	_hand = _draw_pile.pop_first();
-	std::cout << *this;
+	//std::cout << *this;
 }
 bool Deck::_can_finish_reloading()
 {
@@ -145,8 +146,8 @@ void Deck::update(Uint32 deltaTime)
 	_discard_pile.update(deltaTime);
 
 	_time_till_reload_finishes -= deltaTime;
-	if(_is_reloading)
-		std::cout << _time_till_reload_finishes << std::endl;
+	//if(_is_reloading)
+		//std::cout << _time_till_reload_finishes << std::endl;
 	//std::cout << _time_till_reload_finishes << std::endl;
 	if (_can_finish_reloading()) {
 		_finish_realoading();
@@ -157,7 +158,43 @@ void Deck::render() noexcept
 {
 	//TODO
 	//Mostrar carta en la mano
-	//nº cartas draw_pile and discard_pile
+	//Mostrar nº cartas draw_pile and discard_pile
+	card_rendering_descriptor crd = card_rendering_descriptor();
+	//Position and scale for the cost --> both values from 0 to 1
+	crd.mana_cost_subrect = { {0,0},{0.5,0.2} };
+	crd.card_image_key = "card";
+	crd.mana_cost_font_key = "ARIAL16";
+	crd.mana_cost_color = {255,0,0,255};
+	crd.mana_cost = 2;
+
+	camera_screen cam_screen = camera_screen();
+	std::pair<int, int> position = Game::Instance()->get_screen_size();
+	//camera position, size on world units (suppose player is 1 world unit, how many players will fit on camera)
+	cam_screen.camera = { {0,0},{16,16} };
+	//camera screen on pixels size
+	cam_screen.screen = {position.first, position.second};
+	
+	//Function for rendering a card
+	card_rendering_descriptor_render(
+		crd,
+		cam_screen,
+		//take renderer
+		*sdlutils().renderer(),
+		//destination rect --> where will the camera be placed (position, size in world units)
+		{ {0,0},{10,10} },
+		//src subrect --> if our image is only 1 take this parameters
+		//if we have a map of 5x6 cards and we wanted to render card (3,2) being first card(0,0), and last (4,5)
+		//values would be --> { {3/5, 2/6}, {1/5,1/6} }
+		{ {0,0},{1,1} },
+		//rotation
+		0,
+		//adittional options
+		//card_rendering_descriptor_options_none,
+		//card_rendering_descriptor_options_flip_horizontal,
+		//card_rendering_descriptor_options_flip_vertical,
+		//card_rendering_descriptor_options_full_subrect
+		card_rendering_descriptor_options_none
+	);
 }
 
 void Deck::add_card_to_deck(Card* c)

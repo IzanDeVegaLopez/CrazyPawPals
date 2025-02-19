@@ -43,7 +43,7 @@ Game::~Game() {
 bool Game::init() {
 
 	// initialize the SDL singleton
-	if (!SDLUtils::Init("crazy paw pals", 800, 600,
+	if (!SDLUtils::Init("crazy paw pals", _screen_size.first, _screen_size.second,
 		"resources/config/crazypawpals.resources.json")) {
 
 		std::cerr << "Something went wrong while initializing SDLUtils"
@@ -150,6 +150,11 @@ void Game::start() {
 
 ecs::Manager* Game::get_mngr() {
 	return _mngr;
+}
+
+pair<int, int> Game::get_screen_size() const
+{
+	return _screen_size;
 }
 
 void Game::checkCollisions() {

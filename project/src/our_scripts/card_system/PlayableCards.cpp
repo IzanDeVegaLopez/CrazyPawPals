@@ -41,7 +41,7 @@ void Minigun::update(Uint32 dt)
 		if (_time_since_played >= _number_of_bullets_shot * (_shooting_duration / (_number_of_shots-1))) {
 			_bullets_properties.dir = *_aim_vec;
 			_bullets_properties.init_pos = *_pl_vec;
-			std::cout << *_aim_vec << std::endl;
+			//std::cout << *_aim_vec << std::endl;
 			Bullet::generate_proyectile(_bullets_properties);
 			++_number_of_bullets_shot;
 			if (_number_of_bullets_shot == _number_of_shots)
