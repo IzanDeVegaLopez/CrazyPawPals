@@ -1,8 +1,8 @@
 #include "EnemyMovement.h"
 
 #include "../../sdlutils/SDLUtils.h"
-#include "../../sdlutils/InputHandler.h"
 #include "../../ecs/Manager.h"
+#include "../../game/Game.h"
 
 #include "Transform.h"
 
@@ -16,26 +16,28 @@ EnemyMovement::~EnemyMovement() {
 
 void
 EnemyMovement::initComponent() {
-	auto* mngr = _ent->getMngr();
-	_tr = mngr->getComponent<Transform>(_ent);
-	_playerTr = mngr->getComponent<Transform>(mngr->getEntities(ecs::hdlr::PLAYER)[0]);
+	_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
+	_playerTr = Game::Instance()->get_mngr()->getComponent<Transform>(Game::Instance()->get_mngr()->getEntities(ecs::hdlr::PLAYER)[0]);
 	assert(_tr != nullptr);
 	assert(_playerTr != nullptr);
 }
 
 void 
-EnemyMovement::update(int delta_time) {
-
-	Vector2D newDir = _playerTr->getPos() - _tr->getPos();
+EnemyMovement::update(uint32_t delta_time) {
+	auto newDir = _playerTr->getPos() - _tr->getPos();
 
 	newDir = newDir.normalize();
 
 	if (newDir.magnitude() > 0) {
 		newDir = newDir.normalize();
 
-		_tr->setDir(newDir * _tr->getSpeed());
+		Vector2D tempDir = newDir * _tr->getSpeed();
+		_tr->setDir(tempDir);
+
 	}
 	else {
-		_tr->setDir(Vector2D(0,0));
+		Vector2D tempDir(0,0);
+		_tr->setDir(tempDir);
+
 	}
 }

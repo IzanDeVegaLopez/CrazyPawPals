@@ -3,7 +3,6 @@
 
 class Transform;
 
-
 class EnemyMovement: public ecs::Component
 {
 public: 
@@ -12,7 +11,7 @@ public:
 	EnemyMovement();
 	virtual ~EnemyMovement();
 	void initComponent() override;
-	void update(int delta_time) override;
+	void update(uint32_t delta_time) override;
 
 
 private:

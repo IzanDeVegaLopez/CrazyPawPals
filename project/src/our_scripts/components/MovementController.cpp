@@ -5,6 +5,7 @@
 #include "../../game/Game.h"
 
 MovementController::MovementController() : _maxSpeed(10.0f), _reduceSpeed(0.995f) {
+
 }
 
 MovementController::~MovementController() {

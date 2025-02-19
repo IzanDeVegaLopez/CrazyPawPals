@@ -1,8 +1,4 @@
 // This file is part of the course TPV2@UCM - Samir Genaim
-#include <ctime>
-﻿// This file is part of the course TPV2@UCM - Samir Genaim
-
-
 #include "Game.h"
 
 #include "../ecs/Manager.h"
@@ -10,7 +6,6 @@
 #include "../sdlutils/SDLUtils.h"
 #include "../utils/Vector2D.h"
 #include "../utils/Collisions.h"
-
 
 #include "../our_scripts/components/Deck.hpp"
 #include "../our_scripts/components/Image.h"
@@ -23,6 +18,7 @@
 #include "../our_scripts/components/EnemyMovement.h"
 #include "../our_scripts/components/Deck.hpp"
 #include "../our_scripts/Bullet.h"
+#include "../our_scripts/WaveManager.h"
 
 
 using namespace std;
@@ -46,7 +42,7 @@ Game::~Game() {
 
 
 ecs::entity_t 
-Game::createSarnoRata() {
+Game::createSarnoRata(Vector2D _pos) {
 	auto e = _mngr->addEntity();
 	_mngr->setHandler(ecs::hdlr::ENEMY, e);
 	auto tr = _mngr->addComponent<Transform>(e);
@@ -58,12 +54,29 @@ Game::createSarnoRata() {
 	float x = (sdlutils().width() - s) / 2.0f;
 	float y = (sdlutils().height() - s) / 2.0f;
 	tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 1.0f);
+
+	cout << "Se ha creado createSarnoRata" << endl;
+	return e;
+}
+
+ecs::entity_t
+Game::createMichiMafioso(Vector2D _pos) {
+	auto e = _mngr->addEntity();
+	_mngr->setHandler(ecs::hdlr::ENEMY, e);
+	auto tr = _mngr->addComponent<Transform>(e);
+	_mngr->addComponent<Image>(e, &sdlutils().images().at("enemy"));
+	_mngr->addComponent<MovementController>(e);
+	_mngr->addComponent<EnemyMovement>(e);
+
+	float s = 100.0f;
+	tr->init(_pos, Vector2D(), s, s, 0.0f, 1.0f);
+	cout << "Se ha creado createMichiMafioso" << endl;
 
 	return e;
 }
 
 ecs::entity_t
-Game::createMichiMafioso() {
+Game::createBoom(Vector2D _pos) {
 	auto e = _mngr->addEntity();
 	_mngr->setHandler(ecs::hdlr::ENEMY, e);
 	auto tr = _mngr->addComponent<Transform>(e);
@@ -74,13 +87,14 @@ Game::createMichiMafioso() {
 	float s = 100.0f;
 	float x = (sdlutils().width() - s) / 2.0f;
 	float y = (sdlutils().height() - s) / 2.0f;
-	tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 1.0f);
+	tr->init(_pos, Vector2D(), s, s, 0.0f, 1.0f);
+	cout << "Se ha creado createBoom" << endl;
 
 	return e;
 }
 
 ecs::entity_t
-Game::createBoom() {
+Game::createPlimPlim(Vector2D _pos) {
 	auto e = _mngr->addEntity();
 	_mngr->setHandler(ecs::hdlr::ENEMY, e);
 	auto tr = _mngr->addComponent<Transform>(e);
@@ -91,24 +105,8 @@ Game::createBoom() {
 	float s = 100.0f;
 	float x = (sdlutils().width() - s) / 2.0f;
 	float y = (sdlutils().height() - s) / 2.0f;
-	tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 1.0f);
-
-	return e;
-}
-
-ecs::entity_t
-Game::createPlimPlim() {
-	auto e = _mngr->addEntity();
-	_mngr->setHandler(ecs::hdlr::ENEMY, e);
-	auto tr = _mngr->addComponent<Transform>(e);
-	_mngr->addComponent<Image>(e, &sdlutils().images().at("enemy"));
-	_mngr->addComponent<MovementController>(e);
-	_mngr->addComponent<EnemyMovement>(e);
-
-	float s = 100.0f;
-	float x = (sdlutils().width() - s) / 2.0f;
-	float y = (sdlutils().height() - s) / 2.0f;
-	tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 1.0f);
+	tr->init(_pos, Vector2D(), s, s, 0.0f, 1.0f);
+	cout << "Se ha creado createPlimPlim" << endl;
 
 	return e;
 }
@@ -176,7 +174,9 @@ bool Game::init() {
 
 #pragma region enemy
 
-	auto enemy = createSarnoRata();
+	//auto enemy = createSarnoRata();
+	auto waves = _mngr->addEntity();
+	_mngr->addComponent<WaveManager>(waves);
 
 #pragma endregion
 

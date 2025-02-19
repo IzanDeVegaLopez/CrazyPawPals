@@ -2,18 +2,24 @@
 #include "WaveManager.h"
 #include "EnemyPoolManager.h"
 #include "ecs/Manager.h"
+#include "game/Game.h"
 #include "sdlutils/SDLUtils.h"
 
-WaveManager::WaveManager(ecs::Manager* mngr, EnemyPoolManager* enemyPool)
-    : _mngr(mngr), _enemyPool(enemyPool),
-    _totalSpawnTime(10000.f), _waveTime(60000 - _totalSpawnTime),
+WaveManager::WaveManager() : 
+    _totalSpawnTime(10000.f),
     _numEnemies(10), 
     _waveActive(false), _fogActive(false),
-    _currentWave(0)
-{}
+    _currentWave(0), _enemiesSpawned(0)
+{
+    _waveTime = 60000 - _totalSpawnTime;
+}
+
+WaveManager::~WaveManager() {
+
+}
 
 void 
-WaveManager::update() {
+WaveManager::update(uint32_t delta_time) {
     Uint32 currentTime = SDL_GetTicks();
 
     if (_waveActive) {
@@ -51,9 +57,8 @@ WaveManager::spawnWave() {
             // Medio de la pantalla + angulo * distancia
             Vector2D posVec = Vector2D(sdlutils().width() / 2 + cos(rAng) * (_min_distance + _op_dist), sdlutils().height() / 2 + sin(rAng) * (_min_distance + _op_dist));
 
-            // spawnEnemy(posVec); //!!!!!!!!!!
-            // añadir enemifo al manager
-            //_enemyPool->addEnemies(x, y); //!!!!!!!!!!
+            Game::Instance()->createSarnoRata(posVec);
+            Game::Instance()->createMichiMafioso(posVec);
             _enemiesSpawned++;
 
             // Tiempo

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../../ecs/Component.h"
-#include "../../utils/Vector2D.h"
 
 class Transform;
 class MovementController : public ecs::Component

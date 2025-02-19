@@ -1,7 +1,8 @@
 // This file is part of the course TPV2@UCM - Samir Genaim
-#include "../ecs/ecs.h"
-
 #pragma once
+
+#include "../utils/Vector2D.h"
+#include "../ecs/ecs.h"
 #include "../utils/Singleton.h";
 namespace ecs {
 class Manager;
@@ -15,10 +16,10 @@ public:
 	void start();
 
 
-	ecs::entity_t createSarnoRata();
-	ecs::entity_t createPlimPlim();
-	ecs::entity_t createBoom();
-	ecs::entity_t createMichiMafioso();
+	ecs::entity_t createSarnoRata(Vector2D);
+	ecs::entity_t createPlimPlim(Vector2D);
+	ecs::entity_t createBoom(Vector2D);
+	ecs::entity_t createMichiMafioso(Vector2D);
 
 	ecs::Manager* get_mngr();
 

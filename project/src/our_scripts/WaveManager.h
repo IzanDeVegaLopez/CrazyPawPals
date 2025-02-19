@@ -1,29 +1,23 @@
 #pragma once
-#include "../ecs/Manager.h"
 
-#pragma once
-class EnemyPoolManager;
+#include "../ecs/Component.h"
+#include "../sdlUtils/SDLUtils.h"
 
-class WaveManager {
+class WaveManager : public ecs::Component {
 
     std::vector<std::vector<int>> _waves;
-
 public:
-    WaveManager(ecs::Manager* mngr, EnemyPoolManager* enemyPool);
+    __CMPID_DECL__(ecs::cmp::WAVEMANAGER)
+    WaveManager();
+    virtual ~WaveManager();
 
-    void update();
-
+    void update(uint32_t delta_time) override;
     void spawnWave();
-
     bool areAllEnemiesDead();
-
     void activateFog();
-
     void enterRewardsMenu();
 
 private:
-    ecs::Manager* _mngr;
-    EnemyPoolManager* _enemyPool;
 
     Uint32 currentTime; //tiempo actual (post calculo)
     Uint32 _waveTime; // cuánto dura la oleada (CONSTRUCTOR)
