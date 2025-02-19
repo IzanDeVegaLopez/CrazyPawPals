@@ -1,7 +1,6 @@
 #include "KeyboardPlayerCtrl.h"
 
 #include "../../sdlutils/InputHandler.h"
-#include "../Player.h"
 #include "../../ecs/Manager.h"
 #include "Transform.h"
 #include "ShootComponent.h"

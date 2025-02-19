@@ -4,7 +4,6 @@
 #include <iostream>
 #include <algorithm>
 #include "../../utils/Vector2D.h"
-#include "../Bullet.h"
 
 class Resources {
 private:

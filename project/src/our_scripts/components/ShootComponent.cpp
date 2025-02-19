@@ -5,7 +5,6 @@
 #include "../../ecs/Manager.h"
 
 #include "Weapon.h"
-#include "../../our_scripts/Bullet.h"
 #include "../../game/Game.h"
 
 #include "Transform.h"
@@ -13,8 +12,6 @@
 using namespace ecs;
 
 ShootComponent::ShootComponent(): _shootCooldown(0.5f), _lastShoot(0.0f) {}
-
-//ShootComponent::ShootComponent(std::vector<Bullet*>* b):_bulletPool(b), _shootCooldown(0.5f), _lastShoot(0.0f), _maxSpeed(10.0f) {}
 
 ShootComponent::~ShootComponent() {}
 

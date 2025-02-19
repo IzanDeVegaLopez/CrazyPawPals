@@ -20,8 +20,6 @@
 #include "../our_scripts//components/SimpleMove.h"
 #include "../our_scripts/components/Mana.h"
 #include "../our_scripts/components/Deck.hpp"
-#include "../our_scripts/Bullet.h"
-#include "../our_scripts/Player.h"
 
 //Scenes for SceneManager
 #include "Scene.h"
