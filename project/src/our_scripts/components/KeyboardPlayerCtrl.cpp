@@ -25,7 +25,7 @@ KeyboardPlayerCtrl::initComponent() {
     assert(_sc != nullptr);
 
     _dc = Game::Instance()->get_mngr()->getComponent<Deck>(_ent);
-    assert(_sc != nullptr);
+    assert(_dc != nullptr);
 
 }
 
@@ -57,11 +57,11 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
         //shoot
         if (ihdlr.getMouseButtonState(InputHandler::LEFT)) {
             //send message to shoot
-            _sc->shoot(mousePos);
-           /*
-                       if(_dc->discard_card())
+            //_sc->shoot(mousePos);
+           
+            if(_dc->discard_card())
                 _sc->shoot(ihdlr.getMousePos());
-           */
+           
 
         }
         //use card

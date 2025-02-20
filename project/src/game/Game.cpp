@@ -99,7 +99,7 @@ void Game::start() {
 			continue;
 		}
 
-		_current_scene->update(dt);
+		_current_scene->update(sdlutils().virtualTimer().deltaTime());
 		_mngr->refresh();
 
 
@@ -107,7 +107,8 @@ void Game::start() {
 		_current_scene->render();
 		sdlutils().presentRenderer();
 
-		dt = sdlutils().currRealTime() - startTime;
+		//dt = sdlutils().currTime() - startTime;
+		//std::cout << sdlutils().currTime() <<" - " <<startTime;
 		if (dt < 10) {
 			SDL_Delay(10 - dt);
 			//dt = 10;

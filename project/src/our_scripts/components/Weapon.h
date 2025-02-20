@@ -17,11 +17,11 @@ protected:
 	int _attack_height;
 public:
 	__CMPID_DECL__(ecs::cmp::WEAPON);
-	Weapon();
+	Weapon(int d, float cd, float dis, float s, const std::string& t);
 	virtual ~Weapon();
 
 	//NECCESARY, ALL TYPE OF WEAPON NEED TO CALL THIS METHOD TO INITIALIZE ATTRIBUTES
-	void init(int d, float cd, float dis, float s, const std::string& t);
+	//void init(int d, float cd, float dis, float s, const std::string& t);
 	//not neccesary (50x50 as default value)
 	void set_attack_size(int w, int h);
 	virtual void callback(Vector2D shootPos, Vector2D shootDir) = 0; //when you attacks, this callback will be called
