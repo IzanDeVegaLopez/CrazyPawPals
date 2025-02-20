@@ -22,7 +22,7 @@ private:
 	SDL_Scancode _reload;
 	SDL_Scancode _collect;
 
-	Transform* _tr;
+	MovementController* _mc;
 	Weapon* _w;
 	Deck* _dc;
 };
