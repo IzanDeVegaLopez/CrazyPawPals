@@ -4,7 +4,7 @@
 #include "../../sdlutils/SDLUtils.h"
 #include "../../game/Game.h"
 
-MovementController::MovementController() : _maxSpeed(5.0f), _reduceSpeed(0.5f), _addSpeed(1.025f) {
+MovementController::MovementController() : _maxSpeed(5.0f), _reduceSpeed(0.5f), _addSpeed(1.025f), _tr(nullptr) {
 }
 
 MovementController::~MovementController() {
@@ -15,33 +15,40 @@ MovementController::initComponent() {
 	_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
 	assert(_tr != nullptr);
 }
+
+void MovementController::set_input(Vector2D vec) {
+	_input = vec.normalize();
+}
+
 void MovementController::update(uint32_t delta_time)
 {
-	auto& dir = _tr->getDir();
-	auto& prevDir = _tr->getPrevDir();
-	auto& pos = _tr->getPos();
-	auto speed = _tr->getSpeed();
+	Vector2D expected_speed = _input * _maxSpeed;
 
-	//We change the position accoding to the inputs we've recieved from keyboard control
-	if (dir.getX() != 0 || dir.getY() != 0) {
-		dir = dir.normalize(); //If its a diagonal movement, normalize dir
+	Vector2D speed_dif = expected_speed - _tr->getDir();
+	//calculamos si usar aceleraci�n o deceleraci�n
+	float accelRate = (expected_speed.magnitude() - _tr->getDir().magnitude() < 0 || abs(expected_speed.angle(_tr->getDir())) > 15) ? _decceleration : _acceleration;
+
+	accelRate *= delta_time /100.0f ;
+	std::cout << _tr->getSpeed() << std::endl;
+	_tr->add_directional_speed(speed_dif * accelRate);
+
+	/*
+	Vector2D my_new_speed = _tr->getDir() * (1 - _decceleration) + expected_speed * _decceleration;
+	float accelerate = _acceleration * delta_time/1000;
+	std::cout << "acc  "<< accelerate << std::endl;
+	if (my_new_speed.magnitude() > _tr->getSpeed()) {
+		//accelerate
+		_tr->setDir(_tr->getDir() * (1 - accelerate) + expected_speed * accelerate);
 	}
+	else {
 
-	//Acceleration (only if dir != 0,0 and same direction)
-	if (dir != Vector2D(0, 0) && dir == prevDir){
-		speed *= _addSpeed;
-		if (speed > _maxSpeed) {
-			speed = _maxSpeed;
-		}
-		_tr->setSpeed(speed);
+		float deccelerate = _decceleration * delta_time/1000;
+		std::cout << "dec  " << deccelerate << std::endl;
+		//deccelerate
+		_tr->setDir(_tr->getDir() * (1 - deccelerate) + expected_speed * deccelerate);
 	}
-
-	//Deacceleration (on change direction or stop movement)
-	if ((dir == Vector2D(0, 0) && dir != prevDir) || dir != prevDir) {
-		speed *= _reduceSpeed;
-		_tr->setSpeed(speed);
-	}
-
+	*/
 }
+
 
 

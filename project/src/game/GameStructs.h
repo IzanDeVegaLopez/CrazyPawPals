@@ -10,5 +10,6 @@ namespace GameStructs {
 		float life_time = 1.0f;
 		float width = 40;
 		float height = 40;
+		float rot = 0.0f;
 	};
 }

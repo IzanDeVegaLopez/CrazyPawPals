@@ -13,11 +13,13 @@ public:
 	void initComponent() override;
 	void update(uint32_t delta_time) override;
 	void accelerate();
+	void set_input(Vector2D);
 
 private:
-	float _maxSpeed;
-	float _reduceSpeed;
-	float _addSpeed;
+	float _maxSpeed = 6.0f;
+	float _acceleration = 3.5f;
+	float _decceleration = 1.0f;
+	Vector2D _input;
 	Transform* _tr;
 
 };

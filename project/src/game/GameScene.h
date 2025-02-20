@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Scene.h"
-
 class GameScene : public Scene
 {
 public:
@@ -18,6 +17,6 @@ public:
 	void spawnPlayer();
 	void spawnEnemies();
 
-	void generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid);
+	void generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid, const std::string& texName);
 	
 };

@@ -13,13 +13,13 @@
 #include "../our_scripts/components/MovementController.h"
 #include "../our_scripts/components/LifetimeTimer.h"
 
-#include "../our_scripts/components/ShootComponent.h"
 #include "../our_scripts/components/Revolver.h"
 #include "../our_scripts/components/SimpleMove.h"
 #include "../our_scripts/components/Mana.h"
 #include "../our_scripts/components/Deck.hpp"
 
 #include <iostream>
+#include <string>
 
 GameScene::GameScene()
 {
@@ -76,33 +76,31 @@ void GameScene::render()
 
 void GameScene::spawnPlayer()
 {
-	//auto* revolver = new Revolver();
-	//revolver->init(4, 0.5f, 20.0f, 3.0f, "revolver");
+	auto* revolver = new Revolver();
 	std::list<Card*> c = { new Fireball(), new Minigun(), new Fireball(), new Minigun() };
-
 	create_entity(
-		new Transform({ sdlutils().width() / 2.0f, sdlutils().height() / 2.0f }, {0.0f,0.0f}, 100.0f,100.0f, 0.0f, 2.0f),
+		new Transform({ sdlutils().width() / 2.0f, sdlutils().height() / 2.0f }, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
 		new Image(&sdlutils().images().at("player")),
-		new Revolver(),
-		new ShootComponent(),
+		revolver,
 		new Mana(),
 		new Deck(c),
-		new KeyboardPlayerCtrl(),
-		new MovementController()
+		new MovementController(),
+		new KeyboardPlayerCtrl()
 		);
-
+	revolver->initComponent();
+	revolver->set_attack_size(50, 20);
 }
 
 void GameScene::spawnEnemies()
 {
 }
 
-void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid)
+void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs::aaagrpId_t gid, const std::string& texName)
 {
-	std::cout << bp.speed << std::endl;
+	//std::cout << bp.speed << std::endl;
 	create_entity(
-		new Transform(bp.init_pos, bp.dir, bp.width, bp.height, bp.dir.angle(bp.init_pos), bp.speed),
-		new Image(&sdlutils().images().at("bullet_1")),
+		new Transform(bp.init_pos, bp.dir, bp.width, bp.height, bp.rot, bp.speed),
+		new Image(&sdlutils().images().at(texName)),
 		//new SimpleMove(),
 		new LifetimeTimer(bp.life_time)
 	);
