@@ -14,7 +14,7 @@ void Fireball::on_play(const Vector2D* player_position,const Vector2D* target_po
 	bp.height = 30;
 	bp.width = 80;
 	bp.life_time = 2;
-	Game::Instance()->get_gameScene()->generate_proyectile(bp, ecs::grp::BULLET);
+	Game::Instance()->get_gameScene()->generate_proyectile(bp, ecs::grp::BULLET, "fireball");
 }
 
 Minigun::Minigun()
@@ -44,7 +44,7 @@ void Minigun::update(Uint32 dt)
 			_bullets_properties.dir = *_aim_vec;
 			_bullets_properties.init_pos = *_pl_vec;
 			//std::cout << *_aim_vec << std::endl;
-			Game::Instance()->get_gameScene()->generate_proyectile(_bullets_properties, ecs::grp::BULLET);
+			Game::Instance()->get_gameScene()->generate_proyectile(_bullets_properties, ecs::grp::BULLET, "minigun");
 			++_number_of_bullets_shot;
 			if (_number_of_bullets_shot == _number_of_shots)
 				_playing = false;

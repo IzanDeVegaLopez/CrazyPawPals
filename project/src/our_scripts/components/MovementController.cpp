@@ -4,7 +4,7 @@
 #include "../../sdlutils/SDLUtils.h"
 #include "../../game/Game.h"
 
-MovementController::MovementController() : _maxSpeed(5.0f), _reduceSpeed(0.5f), _addSpeed(1.025f) {
+MovementController::MovementController() : _maxSpeed(5.0f), _reduceSpeed(0.5f), _addSpeed(1.025f), _tr(nullptr) {
 }
 
 MovementController::~MovementController() {

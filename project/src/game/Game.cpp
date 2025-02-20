@@ -8,14 +8,6 @@
 #include "../utils/Vector2D.h"
 #include "../utils/Collisions.h"
 
-#include "../our_scripts/components/Image.h"
-#include "../our_scripts/components/Transform.h"
-#include "../our_scripts/components/KeyboardPlayerCtrl.h"
-#include "../our_scripts/components/MovementController.h"
-#include "../our_scripts//components/ShootComponent.h"
-#include "../our_scripts/components/Mana.h"
-#include "../our_scripts/components/Deck.hpp"
-
 //Scenes for SceneManager
 #include "Scene.h"
 #include "MainMenuScene.h"

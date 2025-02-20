@@ -3,7 +3,7 @@
 #include <SDL.h>
 
 class Transform;
-class ShootComponent;
+class Weapon;
 class Deck;
 class KeyboardPlayerCtrl :public ecs::Component
 {
@@ -22,6 +22,6 @@ private:
 	SDL_Scancode _collect;
 
 	Transform* _tr;
-	ShootComponent* _sc;
+	Weapon* _w;
 	Deck* _dc;
 };
