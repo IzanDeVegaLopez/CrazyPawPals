@@ -59,10 +59,9 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
         if (ihdlr.getMouseButtonState(InputHandler::LEFT)) {
             //send message to shoot
             _w->shoot(mousePos);
-           /*
-                       if(_dc->discard_card())
+            if(_dc->discard_card())
                 _w->shoot(ihdlr.getMousePos());
-           */
+           
 
         }
         //use card

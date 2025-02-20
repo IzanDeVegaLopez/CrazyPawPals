@@ -21,11 +21,11 @@ protected:
 	Transform* _tr; //transform component
 public:
 	__CMPID_DECL__(ecs::cmp::WEAPON);
-	Weapon();
+	Weapon(int d, float cd, float dis, float s, const std::string& t);
 	virtual ~Weapon();
 	void initComponent() override;
 	//NECCESARY, ALL TYPE OF WEAPON NEED TO CALL THIS METHOD TO INITIALIZE ATTRIBUTES
-	void init(int d, float cd, float dis, float s, const std::string& t);
+	//void init(int d, float cd, float dis, float s, const std::string& t);
 	//not neccesary (50x50 as default value)
 	void set_attack_size(int w, int h);
 	void shoot(const Vector2D& target);
