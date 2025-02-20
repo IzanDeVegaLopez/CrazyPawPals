@@ -87,8 +87,8 @@ void GameScene::spawnPlayer()
 		new ShootComponent(),
 		new Mana(),
 		new Deck(c),
-		new KeyboardPlayerCtrl(),
-		new MovementController()
+		new MovementController(),
+		new KeyboardPlayerCtrl()
 		);
 
 }
@@ -99,7 +99,7 @@ void GameScene::spawnEnemies()
 
 void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid)
 {
-	std::cout << bp.speed << std::endl;
+	//std::cout << bp.speed << std::endl;
 	create_entity(
 		new Transform(bp.init_pos, bp.dir, bp.width, bp.height, bp.dir.angle(bp.init_pos), bp.speed),
 		new Image(&sdlutils().images().at("bullet_1")),

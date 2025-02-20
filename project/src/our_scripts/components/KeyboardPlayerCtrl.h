@@ -5,6 +5,7 @@
 class Transform;
 class ShootComponent;
 class Deck;
+class MovementController;
 class KeyboardPlayerCtrl :public ecs::Component
 {
 public:
@@ -21,7 +22,8 @@ private:
 	SDL_Scancode _reload;
 	SDL_Scancode _collect;
 
-	Transform* _tr;
+	//Transform* _tr;
+	MovementController* _mc;
 	ShootComponent* _sc;
 	Deck* _dc;
 };
