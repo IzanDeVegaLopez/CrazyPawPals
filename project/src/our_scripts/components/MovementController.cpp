@@ -26,7 +26,7 @@ void MovementController::update(uint32_t delta_time)
 
 	Vector2D speed_dif = expected_speed - _tr->getDir();
 	//calculamos si usar aceleración o deceleración
-	float accelRate = (expected_speed.magnitude() - _tr->getDir().magnitude() < 0 || abs(expected_speed.angle(_tr->getDir())) > 30) ? _decceleration : _acceleration;
+	float accelRate = (expected_speed.magnitude() - _tr->getDir().magnitude() < 0 || abs(expected_speed.angle(_tr->getDir())) > 15) ? _decceleration : _acceleration;
 
 	accelRate *= delta_time /100.0f ;
 	std::cout << _tr->getSpeed() << std::endl;
