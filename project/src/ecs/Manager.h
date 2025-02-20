@@ -26,10 +26,10 @@ public:
 	// Adding an entity simply creates an instance of Entity, adds
 	// it to the list of entities and returns it to the caller.
 	//
-	inline entity_t addEntity(ecs::grpId_t gId = ecs::grp::DEFAULT) {
+	inline entity_t addEntity(ecs::sceneId_t sId = ecs::scene::GAMESCENE,ecs::grpId_t gId = ecs::grp::DEFAULT) {
 
 		// create and initialise the entity
-		auto e = new Entity(gId, this);
+		auto e = new Entity(gId, this, sId);
 		e->_alive = true;
 
 		// add the entity 'e' to list of entities of the given group
@@ -49,8 +49,8 @@ public:
 		// 'frame' they will appear only in the next 'frame' -- I leave it as an
 		// exercise for you ... it could be incorporated in 'refresh' as well.
 		//
-		_entsByGroup[gId].push_back(e);
 
+		_pendingEntities.push_back(e);
 		// return it to the caller
 		//
 		return e;
@@ -92,6 +92,35 @@ public:
 
 		// return it to the user so i can be initialised if needed
 		return static_cast<T*>(c);
+	}
+
+	//For one component only
+	template<typename T>
+	inline void addExistingComponent(entity_t e, T* c) {
+		constexpr cmpId_t cId = cmpId<T>;
+		static_assert(cId < ecs::maxComponentId);
+		removeComponent<T>(e);
+
+		c->setContext(e);
+		c->initComponent();
+		e->_cmps[cId] = c;
+		e->_currCmps.push_back(c);
+
+		//return c;
+	}
+	//recursive for more than one argument
+	template<typename T, typename... Args>
+	inline void addExistingComponent(entity_t e, T* c, Args*... args) {
+		constexpr cmpId_t cId = cmpId<T>;
+		static_assert(cId < ecs::maxComponentId);
+		removeComponent<T>(e);
+
+		c->setContext(e);
+		c->initComponent();
+		e->_cmps[cId] = c;
+		e->_currCmps.push_back(c);
+
+		addExistingComponent(e,args...);
 	}
 
 	// Removes the component T, from the entity.
@@ -163,12 +192,17 @@ public:
 		return _entsByGroup[gId];;
 	}
 
+	inline const auto& getEntitiesByScene(sceneId_t sId = ecs::scene::GAMESCENE) {
+		return _entsByScene[sId];;
+	}
+
 	// associates the entity 'e' to the handler 'hId'
 	//
 	inline void setHandler(hdlrId_t hId, entity_t e) {
 		assert(hId < ecs::maxHandlerId);
 		_hdlrs[hId] = e;
 	}
+
 
 	// returns the entity associated to the handler 'hId'
 	//
@@ -195,13 +229,20 @@ public:
 			e->_currCmps[i]->render();
 	}
 
-	// update all entities
+	// update all entities in a certain Scene (Group)
 	//
-	void update(Uint32 dt) {
-		for (auto &ents : _entsByGroup) {
-			auto n = ents.size();
-			for (auto i = 0u; i < n; i++)
-				update(ents[i],dt);
+	void update(sceneId_t sId,Uint32 dt) {
+		auto& _entity = getEntitiesByScene(sId);
+		for (auto &ents : _entity) {
+			update(ents, dt);
+		}
+	}
+	// render all entities in a certain Scene (Group)
+	//
+	void render(sceneId_t sId) {
+		auto& _entity = getEntitiesByScene(sId);
+		for (auto& ents : _entity) {
+			render(ents);
 		}
 	}
 
@@ -214,6 +255,15 @@ public:
 				render(ents[i]);
 		}
 	}
+	// update all entities
+	//
+	void update(Uint32 dt) {
+		for (auto& ents : _entsByGroup) {
+			auto n = ents.size();
+			for (auto i = 0u; i < n; i++)
+				update(ents[i], dt);
+		}
+	}
 
 	// eliminate dead entities (the implementation of this method
 	// is in Manager.cpp, but we could also defined it here).
@@ -223,7 +273,10 @@ public:
 private:
 
 	std::array<entity_t, maxHandlerId> _hdlrs;
+	std::array<std::vector<entity_t>, maxSceneId> _entsByScene;
 	std::array<std::vector<entity_t>, maxGroupId> _entsByGroup;
+
+	std::vector<entity_t> _pendingEntities;
 	Uint32 _last_frame = 0;
 };
 

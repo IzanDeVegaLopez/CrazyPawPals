@@ -83,7 +83,14 @@ public:
 		return i == 0 ? _x : _y;
 	}
 
+	inline bool operator==(const Vector2D& v) const {
+		return _x == v._x && _y == v._y;
+	}
 
+	inline bool operator!=(const Vector2D& v) const {
+		return !(_x == v._x && _y == v._y);
+		
+	}
 	// ** various operations
 
 	// length of the vector

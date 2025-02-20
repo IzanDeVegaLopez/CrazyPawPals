@@ -3,6 +3,7 @@
 #pragma once
 
 #include "ecs.h"
+#include "../game/GameStructs.h"
 
 namespace ecs {
 

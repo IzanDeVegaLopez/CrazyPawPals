@@ -17,6 +17,7 @@ public:
 private:
 	float _maxSpeed;
 	float _reduceSpeed;
+	float _addSpeed;
 	Transform* _tr;
 
 };

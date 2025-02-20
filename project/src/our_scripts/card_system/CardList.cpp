@@ -56,6 +56,12 @@ void CardList::shuffle()
 	_my_card_list = {vec.begin(),vec.end()};
 }
 
+void CardList::update(uint32_t dt)
+{
+	for (Card* c : _my_card_list)
+		c->update(dt);
+}
+
 std::ostream& operator<<(std::ostream& os, const CardList& card_list)
 {
 	for (Card* c : card_list._my_card_list) {

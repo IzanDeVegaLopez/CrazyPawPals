@@ -14,6 +14,8 @@
     SIMPLEMOVE, \
     HEALTH,\
 	LIFETIMETIMER, \
+	CAMERA, \
+    WEAPON, \
 	MANA, \
 	DECK, \
 	CAMERA, \
@@ -25,7 +27,17 @@
 //
 #define _GRPS_LIST_ \
 	BULLET,\
-	STARS
+	PLAYER,\
+	ENEMY,\
+	PLAYERBULLETS
+
+
+// Scene list
+//
+#define _SCENE_LIST_ \
+	GAMESCENE,\
+	MAINMENUSCENE,\
+	SELECTIONMENUSCENE
 
 // Handlers list - must have at least one element
 //

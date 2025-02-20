@@ -8,30 +8,27 @@
 #include "../utils/Vector2D.h"
 #include "../utils/Collisions.h"
 
-
-#include "../our_scripts/components/Deck.hpp"
 #include "../our_scripts/components/Image.h"
 #include "../our_scripts/components/Transform.h"
 #include "../our_scripts/components/KeyboardPlayerCtrl.h"
 #include "../our_scripts/components/MovementController.h"
 #include "../our_scripts//components/ShootComponent.h"
-#include "../our_scripts//components/SimpleMove.h"
 #include "../our_scripts/components/Mana.h"
 #include "../our_scripts/components/Deck.hpp"
-#include "../our_scripts/Bullet.h"
 #include "../our_scripts/components/dyn_image.hpp"
 #include "../our_scripts/components/camera_component.hpp"
 
+//Scenes for SceneManager
+#include "Scene.h"
+#include "MainMenuScene.h"
+#include "SelectionMenuScene.h"
+#include "GameScene.h"
 
 using namespace std;
 
-
-Game::Game() :
-	_mngr(nullptr) {
-}
+Game::Game() : _mngr(nullptr){}
 
 Game::~Game() {
-	delete _mngr;
 
 	// release InputHandler if the instance was created correctly.
 	if (InputHandler::HasInstance())
@@ -67,7 +64,7 @@ ecs::entity_t create_test_player_at(Vector2D position) {
 bool Game::init() {
 
 	// initialize the SDL singleton
-	if (!SDLUtils::Init("crazy paw pals", 800, 600,
+	if (!SDLUtils::Init("crazy paw pals", _screen_size.first, _screen_size.second,
 		"resources/config/crazypawpals.resources.json")) {
 
 		std::cerr << "Something went wrong while initializing SDLUtils"
@@ -83,26 +80,14 @@ bool Game::init() {
 		return false;
 	}
 
-	// Habilitar el cursor del rat�n
+	// enable the cursor visibility
 	SDL_ShowCursor(SDL_ENABLE);
 
-	// Create the manager
 	_mngr = new ecs::Manager();
 
-#pragma region bullets
-	std::vector<Bullet*> b;
-	/*
-		for (int i = 0; i < 100; ++i) {
-		auto ins = _mngr->addEntity();
-		auto tr = _mngr->addComponent<Transform>(ins);
-		float s = 20.0f;
-		float x = -1.0f;
-		float y = -1.0f;
-		tr->init(Vector2D(x, y), Vector2D(), s, s, 0.0f, 2.0f);
-		_mngr->addComponent<SimpleMove>(ins);
-		b.push_back(ins);
-	}
-	*/
+	_game_scene = new GameScene();
+	_game_scene->initScene();
+	_current_scene = _game_scene;
 
 #pragma endregion
 	auto cam = _mngr->addEntity();
@@ -151,13 +136,13 @@ void Game::start() {
 	// reset the time before starting - so we calculate correct
 	// delta-time in the first iteration
 	//
-	sdlutils().resetTime();
-	
+	sdlutils().virtualTimer().resetTime();
+
 	while (!exit) {
 		// store the current time -- all game objects should use this time when
 		// then need to the current time. They also have accessed to the time elapsed
 		// between the last two calls to regCurrTime().
-		Uint32 startTime = sdlutils().regCurrTime();
+		Uint32 startTime = sdlutils().virtualTimer().regCurrTime();
 
 		// refresh the input handler
 		ihdlr.refresh();
@@ -171,18 +156,20 @@ void Game::start() {
 			continue;
 		}
 
-		_mngr->update(dt);
+		_current_scene->update(sdlutils().virtualTimer().deltaTime());
 		_mngr->refresh();
 
-		checkCollisions();
 
 		sdlutils().clearRenderer();
-		_mngr->render();
+		_current_scene->render();
 		sdlutils().presentRenderer();
 
-		dt = sdlutils().currRealTime() - startTime;
-		if (dt < 10)
+		//dt = sdlutils().currTime() - startTime;
+		//std::cout << sdlutils().currTime() <<" - " <<startTime;
+		if (dt < 10) {
 			SDL_Delay(10 - dt);
+			//dt = 10;
+		}
 	}
 
 }
@@ -191,8 +178,25 @@ ecs::Manager* Game::get_mngr() {
 	return _mngr;
 }
 
-void Game::checkCollisions() {
+GameScene* Game::get_gameScene() {
+	return static_cast<GameScene*>(_game_scene);
+}
 
+pair<int, int> Game::get_screen_size() const
+{
+	return _screen_size;
+}
+
+void Game::change_Scene(State nextScene){
+	switch (nextScene) {
+	case Game::MAINMENU:
+		break;	
+	case Game::GAMESCENE:
+		break;
+	case Game::SELECTIONMENU:
+		break;
+	}
 
 }
+
 

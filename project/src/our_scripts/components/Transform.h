@@ -1,6 +1,3 @@
-// This file is part of the course TPV2@UCM - Samir Genaim
-
-
 /*
 * ELEMENTS:
 * -Position
@@ -12,7 +9,6 @@
 */
 #pragma once
 #include "../../ecs/Component.h"
-#include "../../utils/Vector2D.h"
 #include <cassert>
 
 class Transform: public ecs::Component {
@@ -24,16 +20,17 @@ public:
 			_pos(), _dir(), _width(), _height(), _rot(), _speed() {
 	}
 
-	Transform(Vector2D pos, Vector2D dir, float w, float h, float r, float s ) :
-			_pos(pos), _dir(dir), _width(w), _height(h), _rot(r), _speed(s) {
+	Transform(Vector2D pos, Vector2D dir, float w, float h, float r, float s, Vector2D prevDir = { 0,0 }) :
+			_pos(pos), _dir(dir), _prevDir(prevDir), _width(w), _height(h), _rot(r), _speed(s) {
 	}
 
 	virtual ~Transform() {
 	}
 
-	void init(Vector2D pos, Vector2D dir, float w, float h, float r, float s) {
+	void init(Vector2D pos, Vector2D dir, float w, float h, float r, float s, Vector2D prevDir = { 0,0 }) {
 		_pos = pos;
 		_dir = dir;
+		_prevDir = prevDir;
 		_width = w;
 		_height = h;
 		_rot = r;
@@ -46,12 +43,20 @@ public:
 	Vector2D& getDir() {
 		return _dir;
 	}
+	Vector2D& getPrevDir()
+	{
+		return _prevDir;
+	}
 	void setPos(Vector2D& p) {
 		_pos=p;
 	}
 	void setDir(Vector2D& d) {
 		_dir = d;
 	}
+	//I wouldn�t let this one as public.. but opinions?
+	void SetPrevDir(Vector2D& pD) {
+		_prevDir = pD;
+	} 
 
 	float getWidth() {
 		return _width;
@@ -86,12 +91,15 @@ public:
 	}
 
 	void update(uint32_t delta_time) override {
-		_pos = _pos + _dir*_speed;
+		//Movement
+		_pos = _pos + _dir * _speed;
+		SetPrevDir(_dir);
 	}
 
 private:
 	Vector2D _pos;
 	Vector2D _dir;
+	Vector2D _prevDir;
 	float _width;
 	float _height;
 	float _rot;

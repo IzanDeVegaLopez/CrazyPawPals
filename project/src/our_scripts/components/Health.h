@@ -1,29 +1,24 @@
 #pragma once
 #include "../../ecs/Component.h"
 
-const int DEFAULT_LIVES = 3;
-
-class Texture;
 class Health :public ecs::Component
 {
 public:
 	__CMPID_DECL__(ecs::cmp::HEALTH);
-	Health();
+
+	Health(int maxHealth);
 	virtual ~Health();
-	void render() override;
-	void release();
-	int Lives()const;
-	void reset();
+	void takeDamage(int damage);
+	void heal(int health);
+	void setMaxHeatlh(int h);
+	void takeShield(int s);
+	void update(uint32_t delta_time) override;
 
 protected:
-	int _lives;
-	Texture* _heartTexture;
+	int _currentHealth;
+	int _maxHealth;
+	int _shield;
+	uint32_t _shieldTime;
+
+	const int FRAME_DURATION = 1000;
 };
-inline int
-Health::Lives()const {
-	return _lives;
-}
-inline void
-Health::reset() {
-	_lives = DEFAULT_LIVES;
-}
