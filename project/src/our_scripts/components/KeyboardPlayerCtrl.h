@@ -5,6 +5,7 @@
 class Transform;
 class Weapon;
 class Deck;
+class MovementController;
 class KeyboardPlayerCtrl :public ecs::Component
 {
 public:

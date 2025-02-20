@@ -10,6 +10,7 @@
 #pragma once
 #include "../../ecs/Component.h"
 #include <cassert>
+#include <iostream>
 
 class Transform: public ecs::Component {
 public:
@@ -17,24 +18,15 @@ public:
 	__CMPID_DECL__(ecs::cmp::TRANSFORM)
 
 	Transform() :
-			_pos(), _dir(), _width(), _height(), _rot(), _speed() {
+			_pos(), _dir(), _width(), _height(), _rot() {
 	}
 
-	Transform(Vector2D pos, Vector2D dir, float w, float h, float r, float s, Vector2D prevDir = { 0,0 }) :
-			_pos(pos), _dir(dir), _prevDir(prevDir), _width(w), _height(h), _rot(r), _speed(s) {
+	Transform(Vector2D pos, Vector2D dir, float w, float h, float r, float s) :
+			_pos(pos), _dir(dir), _width(w), _height(h), _rot(r) {
+		setSpeed(s);
 	}
 
 	virtual ~Transform() {
-	}
-
-	void init(Vector2D pos, Vector2D dir, float w, float h, float r, float s, Vector2D prevDir = { 0,0 }) {
-		_pos = pos;
-		_dir = dir;
-		_prevDir = prevDir;
-		_width = w;
-		_height = h;
-		_rot = r;
-		_speed = s;
 	}
 
 	Vector2D& getPos() {
@@ -43,20 +35,23 @@ public:
 	Vector2D& getDir() {
 		return _dir;
 	}
-	Vector2D& getPrevDir()
-	{
-		return _prevDir;
+
+	void add_directional_speed(Vector2D extra_speed) {
+		_dir = _dir + extra_speed;
 	}
+
 	void setPos(Vector2D& p) {
 		_pos=p;
 	}
 	void setDir(Vector2D& d) {
 		_dir = d;
 	}
-	//I wouldn�t let this one as public.. but opinions?
-	void SetPrevDir(Vector2D& pD) {
-		_prevDir = pD;
-	} 
+	void setPos(Vector2D&& p) {
+		_pos = p;
+	}
+	void setDir(Vector2D&& d) {
+		_dir = d;
+	}
 
 	float getWidth() {
 		return _width;
@@ -81,28 +76,27 @@ public:
 	void setRot(float r) {
 		_rot = r;
 	}
-
+	
 	float getSpeed() {
-		return _speed;
+		return _dir.magnitude();
 	}
 
 	void setSpeed(float s) {
-		_speed = s;
+		_dir = _dir.normalize() * s;
 	}
 
 	void update(uint32_t delta_time) override {
 		//Movement
-		_pos = _pos + _dir * _speed;
-		SetPrevDir(_dir);
+		//std::cout << _pos << " + " << _dir << std::endl;
+		_pos = _pos + _dir;
+		//std::cout << "=>" << _pos << std::endl;
 	}
 
 private:
 	Vector2D _pos;
 	Vector2D _dir;
-	Vector2D _prevDir;
 	float _width;
 	float _height;
 	float _rot;
-	float _speed;
 };
 

@@ -100,7 +100,10 @@ public:
 
 	// vector in the same direction of length 1
 	inline Vector2D normalize() const {
-		return *this / magnitude();
+		if (this->_x == 0 && this->_y == 0)
+			return *this;
+		else
+			return *this / magnitude();
 	}
 
 	// counter clockwise rotation in a normal coordinate system, and

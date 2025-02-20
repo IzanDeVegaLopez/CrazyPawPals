@@ -84,8 +84,8 @@ void GameScene::spawnPlayer()
 		revolver,
 		new Mana(),
 		new Deck(c),
-		new KeyboardPlayerCtrl(),
-		new MovementController()
+		new MovementController(),
+		new KeyboardPlayerCtrl()
 		);
 	revolver->initComponent();
 	revolver->set_attack_size(50, 20);
@@ -97,7 +97,7 @@ void GameScene::spawnEnemies()
 
 void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs::aaagrpId_t gid, const std::string& texName)
 {
-	std::cout << bp.speed << std::endl;
+	//std::cout << bp.speed << std::endl;
 	create_entity(
 		new Transform(bp.init_pos, bp.dir, bp.width, bp.height, bp.rot, bp.speed),
 		new Image(&sdlutils().images().at(texName)),
