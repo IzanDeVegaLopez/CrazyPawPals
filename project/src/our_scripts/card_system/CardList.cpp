@@ -56,7 +56,7 @@ void CardList::shuffle()
 	_my_card_list = {vec.begin(),vec.end()};
 }
 
-void CardList::update(Uint32 dt)
+void CardList::update(uint32_t dt)
 {
 	for (Card* c : _my_card_list)
 		c->update(dt);

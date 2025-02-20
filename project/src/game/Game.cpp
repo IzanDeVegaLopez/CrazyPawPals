@@ -67,13 +67,6 @@ bool Game::init() {
 
 }
 
-ecs::Manager* Game::get_mngr() {
-	return _mngr;
-}
-GameScene* Game::get_gameScene() {
-	return static_cast<GameScene*>(_game_scene);
-}
-
 void Game::start() {
 
 	// a boolean to exit the loop
@@ -125,6 +118,10 @@ void Game::start() {
 
 ecs::Manager* Game::get_mngr() {
 	return _mngr;
+}
+
+GameScene* Game::get_gameScene() {
+	return static_cast<GameScene*>(_game_scene);
 }
 
 pair<int, int> Game::get_screen_size() const

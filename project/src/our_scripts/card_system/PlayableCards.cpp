@@ -1,6 +1,7 @@
 #include "PlayableCards.hpp"
 #include "../../game/Game.h"
 #include "../../game/GameScene.h"
+
 Fireball::Fireball():Card("Fireball", Resources(1))
 {
 }
@@ -19,7 +20,7 @@ void Fireball::on_play(const Vector2D* player_position,const Vector2D* target_po
 Minigun::Minigun()
 	: Card("minigun", Resources(2)), _playing(false), _time_since_played(0), _pl_vec()
 {
-	_bullets_properties = BulletProperties();
+	_bullets_properties = GameStructs::BulletProperties();
 	_bullets_properties.speed = 5;
 	_bullets_properties.height = 20;
 	_bullets_properties.width = 20;
@@ -43,7 +44,7 @@ void Minigun::update(Uint32 dt)
 			_bullets_properties.dir = *_aim_vec;
 			_bullets_properties.init_pos = *_pl_vec;
 			//std::cout << *_aim_vec << std::endl;
-			Bullet::generate_proyectile(_bullets_properties);
+			Game::Instance()->get_gameScene()->generate_proyectile(_bullets_properties, ecs::grp::BULLET);
 			++_number_of_bullets_shot;
 			if (_number_of_bullets_shot == _number_of_shots)
 				_playing = false;

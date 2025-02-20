@@ -20,7 +20,7 @@ public:
 	int number_of_cards();
 	bool empty();
 	void shuffle();
-	void update(Uint32);
+	void update(uint32_t);
 
 	friend std::ostream& operator << (std::ostream& os, const CardList& card_list);
 

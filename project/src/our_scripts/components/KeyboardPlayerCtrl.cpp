@@ -53,15 +53,16 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
 
 
     if (ihdlr.mouseButtonDownEvent()) {
-        //bool leftPressed = ihdlr.getMouseButtonState(InputHandler::LEFT);
-        //bool rightPressed = ihdlr.getMouseButtonState(InputHandler::RIGHT);
-        Vector2D mousePos = { (float)ihdlr.getMousePos().first, (float)ihdlr.getMousePos().second };
+        Vector2D mousePos = { (float)ihdlr.getMousePos().getX(), (float)ihdlr.getMousePos().getY()};
         //shoot
         if (ihdlr.getMouseButtonState(InputHandler::LEFT)) {
             //send message to shoot
-            //Vector2D mousePos = { (float)ihdlr.getMousePos().first, (float)ihdlr.getMousePos().second };
-            if(_dc->discard_card())
+            _sc->shoot(mousePos);
+           /*
+                       if(_dc->discard_card())
                 _sc->shoot(ihdlr.getMousePos());
+           */
+
         }
         //use card
         else if (ihdlr.getMouseButtonState(InputHandler::RIGHT)) {

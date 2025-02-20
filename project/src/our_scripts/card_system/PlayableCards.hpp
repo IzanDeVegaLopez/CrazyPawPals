@@ -1,4 +1,6 @@
 #include "Card.hpp"
+#include "../../game/GameStructs.h"
+
 class Fireball : public Card {
 public:
 	Fireball();
@@ -8,9 +10,9 @@ class Minigun : public Card {
 public:
 	Minigun();
 	void on_play( const Vector2D* player_position, const Vector2D* target_position) override;
-	void update(Uint32) override;
+	void update(uint32_t) override;
 private:
-	BulletProperties _bullets_properties;
+	GameStructs::BulletProperties _bullets_properties;
 	const Vector2D* _aim_vec;
 	const Vector2D* _pl_vec;
 	bool _playing;
