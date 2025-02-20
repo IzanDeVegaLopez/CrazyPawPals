@@ -19,6 +19,8 @@ protected:
 	int _attack_height;
 	float _lastShoot;
 	Transform* _tr; //transform component
+
+	virtual void callback(Vector2D shootPos, Vector2D shootDir) = 0; //when you attacks, this callback will be called
 public:
 	__CMPID_DECL__(ecs::cmp::WEAPON);
 	Weapon(int d, float cd, float dis, float s, const std::string& t);
@@ -29,7 +31,6 @@ public:
 	//not neccesary (50x50 as default value)
 	void set_attack_size(int w, int h);
 	void shoot(const Vector2D& target);
-	virtual void callback(Vector2D shootPos, Vector2D shootDir) = 0; //when you attacks, this callback will be called
 	inline int damage() { return _damage; };
 	inline float cooldown() { return _cooldown; };
 	inline float distance() { return _distance; };

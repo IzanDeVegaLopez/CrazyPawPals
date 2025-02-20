@@ -3,7 +3,7 @@
 #include "../../game/GameScene.h"
 
 
-Rampage::Rampage() : Weapon() { }
+Rampage::Rampage() : Weapon(5, 0.55f, 15.0f, 2.0f, "rampage") { }
 
 Rampage::~Rampage() {}
 

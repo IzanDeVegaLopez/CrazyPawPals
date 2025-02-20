@@ -24,10 +24,8 @@ KeyboardPlayerCtrl::initComponent() {
     _w = Game::Instance()->get_mngr()->getComponent<Weapon>(_ent);
     assert(_w != nullptr);
 
-    /*
     _dc = Game::Instance()->get_mngr()->getComponent<Deck>(_ent);
     assert(_dc != nullptr);
-    */
 }
 
 void KeyboardPlayerCtrl::update(Uint32 delta_time) {
