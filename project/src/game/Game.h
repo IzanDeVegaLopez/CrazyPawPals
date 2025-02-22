@@ -19,7 +19,7 @@ public:
 	bool init();
 	void start();
 	ecs::Manager* get_mngr();
-	GameScene* get_gameScene();
+	Scene* get_currentScene();
 	std::pair<int, int> get_screen_size() const;
 
 private:
