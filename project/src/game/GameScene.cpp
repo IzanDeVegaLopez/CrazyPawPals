@@ -17,8 +17,10 @@
 #include "../our_scripts/components/SimpleMove.h"
 #include "../our_scripts/components/Mana.h"
 #include "../our_scripts/components/Deck.hpp"
+#include "../our_scripts/components/Health.h" 
 
-#include <iostream>
+#include "../utils/Collisions.h" 
+
 #include <string>
 
 GameScene::GameScene()
@@ -82,6 +84,7 @@ void GameScene::spawnPlayer()
 		new Transform({ sdlutils().width() / 2.0f, sdlutils().height() / 2.0f }, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
 		new Image(&sdlutils().images().at("player")),
 		revolver,
+		new Health(100),
 		new Mana(),
 		new Deck(c),
 		new MovementController(),
@@ -105,4 +108,39 @@ void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs
 		//new SimpleMove(),
 		new LifetimeTimer(bp.life_time)
 	);
+}
+void GameScene::check_collision() {
+	auto* mngr = Game::Instance()->get_mngr();
+	auto player = mngr->getHandler(ecs::hdlr::PLAYER);
+	if (player != nullptr) {
+		auto pTR = mngr->getComponent<Transform>(player);
+
+		auto& enemies = mngr->getEntities(ecs::grp::ENEMY);
+		auto& pBullets = mngr->getEntities(ecs::grp::PLAYERBULLETS);
+		
+		// Enemy-Player collision
+		for (auto e : enemies){
+			//check if the actual enemy is alive
+			if (mngr->isAlive(e)) {
+				auto eTR = mngr->getComponent<Transform>(e);
+
+				if (Collisions::collides(pTR->getPos(), pTR->getWidth(), pTR->getHeight(), //
+					eTR->getPos(), eTR->getWidth(), eTR->getHeight())) {
+					auto pHealth = mngr->getComponent<Health>(player);
+					//pHealth->takeDamage(//enemy's damage);
+				}
+
+				//Enemy-Playerbullet collision
+				for (auto b : pBullets) {
+					auto bTR = mngr->getComponent<Transform>(b);
+					if (Collisions::collides(eTR->getPos(), eTR->getWidth(), eTR->getHeight(), //
+						bTR->getPos(), bTR->getWidth(), bTR->getHeight())) {
+						int bDamage = mngr->getComponent<Weapon>(player)->damage();
+						auto eHealth = mngr->getComponent<Health>(e);
+						//eHealth->takeDamage(bDamage);
+					}
+				}
+			}
+		}
+	}
 }
