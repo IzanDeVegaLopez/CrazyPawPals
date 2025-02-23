@@ -40,7 +40,7 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
     //Horizontal axis
     _mc->set_input(Vector2D(
         (ihdlr.isKeyDown(_left) ? -1 : 0) + (ihdlr.isKeyDown(_right) ? 1 : 0),
-        (ihdlr.isKeyDown(_up) ? -1 : 0) + (ihdlr.isKeyDown(_down) ? 1 : 0)
+        (ihdlr.isKeyDown(_up) ? 1 : 0) + (ihdlr.isKeyDown(_down) ? -1 : 0)
     ));
 
     //Vertical axis

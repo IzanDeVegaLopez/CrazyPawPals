@@ -113,6 +113,18 @@ inline rect_f32 rect_f32_ndc_from_viewport(rect_f32 viewport) {
         )
     );
 }
+inline rect_f32 rect_f32_ndc_from_viewport_flipped_y(rect_f32 viewport) {
+    return rect_f32(
+        position2_f32(
+            (viewport.position.x - 0.5f) * 2.0f,
+            (0.5f - viewport.position.y) * 2.0f
+        ),
+        size2_f32(
+            viewport.size.x * 2.0f,
+            viewport.size.y * 2.0f
+        )
+    );
+}
 
 
 inline rect_f32 rect_f32_screen_rect_from_viewport(rect_f32 viewport, screen_rect const &screen) {
@@ -141,6 +153,17 @@ inline rect_f32 rect_f32_viewport_from_screen_rect(rect_f32 in_screen_rect, scre
     );
 }
 
+inline rect_f32 rect_f32_global_from_screen_rect_flipped_y(rect_f32 screen_rect, camera_screen const &camera_screen) {
+    return rect_f32_global_from_view(
+        rect_f32_view_from_ndc(
+            rect_f32_ndc_from_viewport_flipped_y(
+                rect_f32_viewport_from_screen_rect(screen_rect, camera_screen.screen)
+            ),
+            camera_screen.camera
+        ),
+        camera_screen.camera
+    );
+}
 inline rect_f32 rect_f32_global_from_screen_rect(rect_f32 screen_rect, camera_screen const &camera_screen) {
     return rect_f32_global_from_view(
         rect_f32_view_from_ndc(

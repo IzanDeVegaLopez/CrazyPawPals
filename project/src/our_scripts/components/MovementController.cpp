@@ -28,7 +28,7 @@ void MovementController::update(uint32_t delta_time)
 	//calculamos si usar aceleraci�n o deceleraci�n
 	float accelRate = (expected_speed.magnitude() - _tr->getDir().magnitude() < 0 || abs(expected_speed.angle(_tr->getDir())) > 15) ? _decceleration : _acceleration;
 
-	accelRate *= delta_time /100.0f ;
+	accelRate *= delta_time /1000.0f ;
 	//std::cout << _tr->getSpeed() << std::endl;
 	_tr->add_directional_speed(speed_dif * accelRate);
 

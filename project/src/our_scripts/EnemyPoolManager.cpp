@@ -40,7 +40,7 @@ void EnemyPoolManager::render() {
 
 
 void EnemyPoolManager::addEnemies(uint16_t n) {
-	
+	(void)n;
 	/*
 	for (auto i = 0u; i < n; i++) {
 		Star *s = _pool.alloc();

@@ -35,7 +35,7 @@ void GameScene::initScene()
 
 #pragma region Player
 
-	spawnPlayer();
+	//spawnPlayer();
 
 #pragma endregion Deck
 

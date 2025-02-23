@@ -25,7 +25,7 @@ void camera_follow::update(uint32_t delta_time) {
         int32_t(ih().getMousePos().getX()),
         int32_t(ih().getMousePos().getY()),
     };
-    const position2_f32 mouse_world_position = rect_f32_global_from_screen_rect({
+    const position2_f32 mouse_world_position = rect_f32_global_from_screen_rect_flipped_y({
         .position = {
             .x = float(mouse_position.x),
             .y = float(mouse_position.y),

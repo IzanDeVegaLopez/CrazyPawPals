@@ -16,6 +16,7 @@
 #include "../our_scripts/components/Deck.hpp"
 #include "../our_scripts/components/dyn_image.hpp"
 #include "../our_scripts/components/camera_component.hpp"
+#include "../our_scripts/components/Revolver.h"
 
 //Scenes for SceneManager
 #include "Scene.h"
@@ -42,7 +43,7 @@ ecs::entity_t create_test_player_at(Vector2D position) {
 	auto &&manager = *Game::Instance()->get_mngr();
 	auto player = manager.addEntity();
 
-	auto tr = manager.addComponent<Transform>(player, position, Vector2D(0.0, 0.0), 100.0f, 100.0f, 0.0f, 1.0);
+	auto tr = manager.addComponent<Transform>(player, position, Vector2D(0.0, 0.0), 100.0f, 100.0f, 0.0f, 0.05f);
 	(void)tr;
 	manager.addComponent<dyn_image>(player, rect_f32{
 		{0.0, 0.0},
@@ -53,40 +54,40 @@ ecs::entity_t create_test_player_at(Vector2D position) {
 	manager.addComponent<Mana>(player);
 	std::list<Card*> my_card_list = std::list<Card*>{ new Fireball(), new Fireball(), new Minigun(), new Minigun() };
 	manager.addComponent<Deck>(player, my_card_list);
-
+	
 	return player;
 }
 
 bool Game::init() {
-
+	
 	// initialize the SDL singleton
 	if (!SDLUtils::Init("crazy paw pals", _screen_size.first, _screen_size.second,
 		"resources/config/crazypawpals.resources.json")) {
-
-		std::cerr << "Something went wrong while initializing SDLUtils"
-				<< std::endl;
-		return false;
-
-	}
-
-	// initialize the InputHandler singleton
-	if (!InputHandler::Init()) {
-		std::cerr << "Something went wrong while initializing SDLHandler"
-				<< std::endl;
-		return false;
-	}
-
-	// enable the cursor visibility
-	SDL_ShowCursor(SDL_ENABLE);
-
-	_mngr = new ecs::Manager();
-
-	_game_scene = new GameScene();
-	_game_scene->initScene();
-	_current_scene = _game_scene;
-
-#pragma endregion
-	auto cam = _mngr->addEntity();
+			
+			std::cerr << "Something went wrong while initializing SDLUtils"
+			<< std::endl;
+			return false;
+			
+		}
+		
+		// initialize the InputHandler singleton
+		if (!InputHandler::Init()) {
+			std::cerr << "Something went wrong while initializing SDLHandler"
+			<< std::endl;
+			return false;
+		}
+		
+		// enable the cursor visibility
+		SDL_ShowCursor(SDL_ENABLE);
+		
+		_mngr = new ecs::Manager();
+		
+		_game_scene = new GameScene();
+		_game_scene->initScene();
+		_current_scene = _game_scene;
+		
+		#pragma endregion
+		auto cam = _mngr->addEntity();
 	//_mngr->setHandler(ecs::hdlr::CAMERA, cam);
 	// auto cam_tr = _mngr->addComponent<Transform>(cam);
 	auto &&cam_screen = *_mngr->addComponent<camera_component>(cam, camera_screen{
@@ -99,10 +100,12 @@ bool Game::init() {
 		},
 	});
 	_mngr->setHandler(ecs::hdlr::CAMERA, cam);
-
-#pragma region player
+	
+	#pragma region player
 	auto &&manager = *_mngr;
 	auto player = create_test_player_at(Vector2D(0.0, 0.0));
+	manager.addComponent<Revolver>(player);
+
 	manager.addComponent<camera_follow>(cam, camera_follow_descriptor{
 		.previous_position = cam_screen.cam.camera.position,
 		.lookahead_time = 1.0,
@@ -110,13 +113,13 @@ bool Game::init() {
 	}, *manager.getComponent<Transform>(player));
 	manager.addComponent<MovementController>(player);
 	manager.addComponent<KeyboardPlayerCtrl>(player);
-
+	
 	create_test_player_at(Vector2D(4.0f, 0.0f));
 	create_test_player_at(Vector2D(-4.0f, 0.0f));
 	create_test_player_at(Vector2D(0.0f, 4.0f));
 	create_test_player_at(Vector2D(0.0f, -4.0f));
-
-#pragma endregion
+	
+	#pragma endregion
 	return true;
 }
 

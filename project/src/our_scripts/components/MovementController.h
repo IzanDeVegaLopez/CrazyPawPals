@@ -16,7 +16,7 @@ public:
 	void set_input(Vector2D);
 
 private:
-	float _maxSpeed = 6.0f;
+	float _maxSpeed = 0.1f;
 	float _acceleration = 3.5f;
 	float _decceleration = 1.0f;
 	Vector2D _input;
