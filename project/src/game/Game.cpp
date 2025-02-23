@@ -12,7 +12,6 @@
 #include "../our_scripts/components/Transform.h"
 #include "../our_scripts/components/KeyboardPlayerCtrl.h"
 #include "../our_scripts/components/MovementController.h"
-#include "../our_scripts//components/ShootComponent.h"
 #include "../our_scripts/components/Mana.h"
 #include "../our_scripts/components/Deck.hpp"
 #include "../our_scripts/components/dyn_image.hpp"
@@ -43,20 +42,16 @@ ecs::entity_t create_test_player_at(Vector2D position) {
 	auto &&manager = *Game::Instance()->get_mngr();
 	auto player = manager.addEntity();
 
-	auto tr = manager.addComponent<Transform>(player);
-	float s = 100.0f;
-	tr->init(position, Vector2D(0.0, 0.0), s, s, 0.0f, 1.0);
+	auto tr = manager.addComponent<Transform>(player, position, Vector2D(0.0, 0.0), 100.0f, 100.0f, 0.0f, 1.0);
 	manager.addComponent<dyn_image>(player, rect_f32{
 		{0.0, 0.0},
 		{1.0, 1.0}
 	}, size2_f32{1.0, 1.0}, manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam, sdlutils().images().at("player"));
 
-	manager.addComponent<ShootComponent>(player);
 	//manager.addComponent<MovementController>(player);
 	manager.addComponent<Mana>(player);
 	std::list<Card*> my_card_list = std::list<Card*>{ new Fireball(), new Fireball(), new Minigun(), new Minigun() };
 	manager.addComponent<Deck>(player, my_card_list);
-	manager.addComponent<KeyboardPlayerCtrl>(player);
 
 	return player;
 }
@@ -113,6 +108,7 @@ bool Game::init() {
 		.semi_reach_time = 2.5
 	}, *manager.getComponent<Transform>(player));
 	manager.addComponent<MovementController>(player);
+	manager.addComponent<KeyboardPlayerCtrl>(player);
 
 	create_test_player_at(Vector2D(4.0f, 0.0f));
 	create_test_player_at(Vector2D(-4.0f, 0.0f));

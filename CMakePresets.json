@@ -19,6 +19,14 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
       }
+    },
+    {
+      "name": "x64-Debug-Clang",
+      "inherits": "x64-Debug",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "clang-cl",
+        "CMAKE_C_COMPILER": "clang-cl"
+      }
     }
   ],
   "buildPresets": [
@@ -29,6 +37,10 @@
     {
       "name": "x64-Release",
       "configurePreset": "x64-Release"
+    },
+    {
+      "name": "x64-Debug-Clang",
+      "configurePreset": "x64-Debug-Clang"
     }
   ]
 }

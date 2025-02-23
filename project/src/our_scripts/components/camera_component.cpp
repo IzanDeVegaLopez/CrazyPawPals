@@ -22,8 +22,8 @@ void camera_follow::initComponent() {
 #include <cassert>
 void camera_follow::update(uint32_t delta_time) {
     const position2_i32 mouse_position = {
-        ih().getMousePos().first,
-        ih().getMousePos().second,
+        ih().getMousePos().getX(),
+        ih().getMousePos().getY(),
     };
     const position2_f32 mouse_world_position = rect_f32_global_from_screen_rect({
         .position = {

@@ -13,7 +13,6 @@
     SIMPLEMOVE, \
     HEALTH,\
 	LIFETIMETIMER, \
-	CAMERA, \
     WEAPON, \
 	MANA, \
 	DECK, \
