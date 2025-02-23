@@ -86,6 +86,7 @@ public:
 	}
 
 	void update(uint32_t delta_time) override {
+		(void)delta_time;
 		//Movement
 		//std::cout << _pos << " + " << _dir << std::endl;
 		_pos = _pos + _dir;
