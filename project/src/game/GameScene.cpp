@@ -95,7 +95,7 @@ void GameScene::spawnEnemies()
 {
 }
 
-void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs::aaagrpId_t gid, const std::string& texName)
+void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid, const std::string& texName)
 {
 	//std::cout << bp.speed << std::endl;
 	create_entity(

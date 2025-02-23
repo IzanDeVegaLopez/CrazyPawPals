@@ -178,8 +178,8 @@ ecs::Manager* Game::get_mngr() {
 	return _mngr;
 }
 
-GameScene* Game::get_gameScene() {
-	return static_cast<GameScene*>(_game_scene);
+Scene* Game::get_currentScene() {
+	return _current_scene;
 }
 
 pair<int, int> Game::get_screen_size() const

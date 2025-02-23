@@ -4,7 +4,7 @@
 #include "../../sdlutils/SDLUtils.h"
 #include "../../game/Game.h"
 
-MovementController::MovementController() : _maxSpeed(5.0f), _reduceSpeed(0.5f), _addSpeed(1.025f), _tr(nullptr) {
+MovementController::MovementController() : _tr(nullptr) {
 }
 
 MovementController::~MovementController() {
@@ -29,7 +29,7 @@ void MovementController::update(uint32_t delta_time)
 	float accelRate = (expected_speed.magnitude() - _tr->getDir().magnitude() < 0 || abs(expected_speed.angle(_tr->getDir())) > 15) ? _decceleration : _acceleration;
 
 	accelRate *= delta_time /100.0f ;
-	std::cout << _tr->getSpeed() << std::endl;
+	//std::cout << _tr->getSpeed() << std::endl;
 	_tr->add_directional_speed(speed_dif * accelRate);
 
 	/*

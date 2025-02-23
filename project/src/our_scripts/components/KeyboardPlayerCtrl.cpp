@@ -12,7 +12,7 @@
 KeyboardPlayerCtrl::KeyboardPlayerCtrl()
     : _left(SDL_SCANCODE_A), _right(SDL_SCANCODE_D), _up(SDL_SCANCODE_W), _down(SDL_SCANCODE_S), 
       _reload(SDL_SCANCODE_SPACE), _collect(SDL_SCANCODE_F), 
-      _tr(nullptr), _w(nullptr), _dc(nullptr) {}
+      _mc(nullptr), _w(nullptr), _dc(nullptr) {}
 
 KeyboardPlayerCtrl::~KeyboardPlayerCtrl() {}
 
