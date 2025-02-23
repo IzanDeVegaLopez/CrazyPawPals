@@ -10,6 +10,7 @@ LifetimeTimer::LifetimeTimer(float lifetime)
 LifetimeTimer::~LifetimeTimer() {
 }
 void LifetimeTimer::update(Uint32 delta_time) {
+	(void)delta_time;
 	if (sdlutils().virtualTimer().currTime() > _lifetime) {
 		Game::Instance()->get_mngr()->setAlive(_ent, false);
 	}

@@ -34,7 +34,7 @@ KeyboardPlayerCtrl::initComponent() {
 }
 
 void KeyboardPlayerCtrl::update(Uint32 delta_time) {
-
+    (void)delta_time;
     auto& ihdlr = ih();
     //auto& dir = _tr->getDir();
     //Horizontal axis

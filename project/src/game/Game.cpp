@@ -43,6 +43,7 @@ ecs::entity_t create_test_player_at(Vector2D position) {
 	auto player = manager.addEntity();
 
 	auto tr = manager.addComponent<Transform>(player, position, Vector2D(0.0, 0.0), 100.0f, 100.0f, 0.0f, 1.0);
+	(void)tr;
 	manager.addComponent<dyn_image>(player, rect_f32{
 		{0.0, 0.0},
 		{1.0, 1.0}
@@ -116,6 +117,7 @@ bool Game::init() {
 	create_test_player_at(Vector2D(0.0f, -4.0f));
 
 #pragma endregion
+	return true;
 }
 
 
@@ -139,6 +141,7 @@ void Game::start() {
 		// then need to the current time. They also have accessed to the time elapsed
 		// between the last two calls to regCurrTime().
 		Uint32 startTime = sdlutils().virtualTimer().regCurrTime();
+		(void)startTime;
 
 		// refresh the input handler
 		ihdlr.refresh();
@@ -191,6 +194,14 @@ void Game::change_Scene(State nextScene){
 		break;
 	case Game::SELECTIONMENU:
 		break;
+	case Game::NUM_SCENE: {
+		assert(false && "unimplemented");
+		exit(EXIT_FAILURE);
+	}
+	default: {
+		assert(false && "unreachable");
+		exit(EXIT_FAILURE);
+	}
 	}
 
 }

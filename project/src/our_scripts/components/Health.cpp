@@ -42,7 +42,7 @@ Health::takeShield(int s) {
 }
 void
 Health::update(uint32_t delta_time) {
-
+	(void)delta_time;
 	if (_shield > 0 && sdlutils().virtualTimer().currRealTime() >= _shieldTime) {
 		_shieldTime = sdlutils().virtualTimer().currRealTime() + FRAME_DURATION;
 		_shield--;

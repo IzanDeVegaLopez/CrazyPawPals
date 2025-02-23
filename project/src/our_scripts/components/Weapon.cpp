@@ -2,7 +2,7 @@
 #include "../../game/Game.h"
 #include "../../ecs/Manager.h"
 #include "../../sdlutils/SDLUtils.h"
-#include "../../sdlutils/virtualTimer.h"
+#include "../../sdlutils/VirtualTimer.h"
 #include "Transform.h"
 
 //Weapon::Weapon() : _damage(0), _cooldown(0.0f), _distance(0.0f), _speed(0.0f), _tex(""), _attack_width(50), _attack_height(50) {}

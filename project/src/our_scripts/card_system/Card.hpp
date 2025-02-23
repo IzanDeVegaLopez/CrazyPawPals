@@ -50,7 +50,9 @@ public:
 	//friend std::ostream& operator << (std::ostream& os, const Card& card);
 	//Debug purposes
 	virtual std::string get_written_info();
-	virtual void update(uint32_t dt) {};
+	virtual void update(uint32_t dt) {
+		(void)dt;
+	};
 
 	virtual std::string& get_name() {
 		return _name;
