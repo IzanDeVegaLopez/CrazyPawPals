@@ -18,7 +18,7 @@ void Fireball::on_play(const Vector2D* player_position,const Vector2D* target_po
 }
 
 Minigun::Minigun()
-	: Card("minigun", Resources(2)), _playing(false), _pl_vec(), _time_since_played(0)
+	: Card("minigun", Resources(2)), _pl_vec(), _playing(false), _time_since_played(0)
 {
 	_bullets_properties = GameStructs::BulletProperties();
 	_bullets_properties.speed = 5.0f;
