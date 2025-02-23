@@ -136,7 +136,7 @@ bool Deck::_can_play_hand_card()
 	
 }
 
-void Deck::update(Uint32 deltaTime)
+void Deck::update(Uint32 deltaTime) noexcept
 {
 	//TODO
 	//Counts time down for reload time and do the rest of things needed for finishing reload

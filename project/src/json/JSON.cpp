@@ -206,7 +206,7 @@ bool JSON::ExtractString(const char **data, std::string &str)
 		else if (next_char == '"')
 		{
 			(*data)++;
-			str.reserve(); // Remove unused capacity
+			str.shrink_to_fit(); // Remove unused capacity
 			return true;
 		}
 		

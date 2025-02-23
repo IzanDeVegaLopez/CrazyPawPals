@@ -15,7 +15,7 @@ EnemyPoolManager::~EnemyPoolManager() {
 }
 
 void EnemyPoolManager::update(uint32_t delta_time) {
-	
+	(void)delta_time;
 	/*for (auto o : _pool) {
 		if (_pool.is_used(o)) {
 			o->_width *= 0.9f;
@@ -40,7 +40,7 @@ void EnemyPoolManager::render() {
 
 
 void EnemyPoolManager::addEnemies(uint16_t n) {
-	
+	(void)n;
 	/*
 	for (auto i = 0u; i < n; i++) {
 		Star *s = _pool.alloc();

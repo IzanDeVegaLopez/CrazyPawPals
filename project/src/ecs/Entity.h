@@ -25,6 +25,7 @@ public:
 			_gId(gId), //
 			_sId(sId)
 	{
+		(void)mngr;
 		// We reserve the a space for the maximum number of
 		// components. This way we avoid resizing the vector.
 		//

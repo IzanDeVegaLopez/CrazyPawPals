@@ -8,6 +8,16 @@
 #include "../utils/Vector2D.h"
 #include "../utils/Collisions.h"
 
+#include "../our_scripts/components/Image.h"
+#include "../our_scripts/components/Transform.h"
+#include "../our_scripts/components/KeyboardPlayerCtrl.h"
+#include "../our_scripts/components/MovementController.h"
+#include "../our_scripts/components/Mana.h"
+#include "../our_scripts/components/Deck.hpp"
+#include "../our_scripts/components/dyn_image.hpp"
+#include "../our_scripts/components/camera_component.hpp"
+#include "../our_scripts/components/Revolver.h"
+
 //Scenes for SceneManager
 #include "Scene.h"
 #include "MainMenuScene.h"
@@ -29,35 +39,97 @@ Game::~Game() {
 		SDLUtils::Release();
 }
 
-bool Game::init() {
+ecs::entity_t create_test_player_at(Vector2D position) {
+	auto &&manager = *Game::Instance()->get_mngr();
+	auto player = manager.addEntity();
 
+	auto tr = manager.addComponent<Transform>(player, position, Vector2D(0.0, 0.0), 100.0f, 100.0f, 0.0f, 0.05f);
+	(void)tr;
+	manager.addComponent<dyn_image>(player, rect_f32{
+		{0.0, 0.0},
+		{1.0, 1.0}
+	}, size2_f32{1.0, 1.0}, manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam, sdlutils().images().at("player"));
+
+	//manager.addComponent<MovementController>(player);
+	manager.addComponent<Mana>(player);
+	std::list<Card*> my_card_list = std::list<Card*>{ new Fireball(), new Fireball(), new Minigun(), new Minigun() };
+	manager.addComponent<Deck>(player, my_card_list);
+	
+	return player;
+}
+
+bool Game::init() {
+	
 	// initialize the SDL singleton
 	if (!SDLUtils::Init("crazy paw pals", _screen_size.first, _screen_size.second,
 		"resources/config/crazypawpals.resources.json")) {
+			
+			std::cerr << "Something went wrong while initializing SDLUtils"
+			<< std::endl;
+			return false;
+			
+		}
+		
+		// initialize the InputHandler singleton
+		if (!InputHandler::Init()) {
+			std::cerr << "Something went wrong while initializing SDLHandler"
+			<< std::endl;
+			return false;
+		}
+		
+		// enable the cursor visibility
+		SDL_ShowCursor(SDL_ENABLE);
+		
+		_mngr = new ecs::Manager();
+		
+		_game_scene = new GameScene();
+		_game_scene->initScene();
+		_current_scene = _game_scene;
+		
+		#pragma endregion
+		auto cam = _mngr->addEntity();
+	//_mngr->setHandler(ecs::hdlr::CAMERA, cam);
+	// auto cam_tr = _mngr->addComponent<Transform>(cam);
+	auto &&cam_screen = *_mngr->addComponent<camera_component>(cam, camera_screen{
+		.camera = {
+			.position = {0.0, 0.0},
+			.half_size = {8.0, 4.5},
+		},
+		.screen = {
+			.pixel_size = {sdlutils().width(), sdlutils().height()},
+		},
+	});
+	_mngr->setHandler(ecs::hdlr::CAMERA, cam);
+	
+	#pragma region player
+	auto &&manager = *_mngr;
+	auto player = create_test_player_at(Vector2D(0.0, 0.0));
+	manager.addComponent<Revolver>(player);
 
-		std::cerr << "Something went wrong while initializing SDLUtils"
-				<< std::endl;
-		return false;
+	manager.addComponent<MovementController>(player);
+	manager.addComponent<KeyboardPlayerCtrl>(player);
+	
+	create_test_player_at(Vector2D(4.0f, 0.0f));
+	create_test_player_at(Vector2D(-4.0f, 0.0f));
+	create_test_player_at(Vector2D(0.0f, 4.0f));
+	create_test_player_at(Vector2D(0.0f, -4.0f));
+	#pragma endregion
 
-	}
-
-	// initialize the InputHandler singleton
-	if (!InputHandler::Init()) {
-		std::cerr << "Something went wrong while initializing SDLHandler"
-				<< std::endl;
-		return false;
-	}
-
-	// enable the cursor visibility
-	SDL_ShowCursor(SDL_ENABLE);
-
-	_mngr = new ecs::Manager();
-
-	_game_scene = new GameScene();
-	_game_scene->initScene();
-	_current_scene = _game_scene;
-
+	manager.addComponent<camera_follow>(cam, camera_follow_descriptor{
+		.previous_position = cam_screen.cam.camera.position,
+		.lookahead_time = 1.0,
+		.semi_reach_time = 2.5
+	}, cam_screen, *manager.getComponent<Transform>(player));
+	manager.addComponent<camera_clamp>(cam, camera_clamp_descriptor{
+		.bounds = {
+			.position = {0.0, 0.0},
+			.size = {32.0, 18.0},
+		}
+	}, cam_screen);
+	return true;
 }
+
+
 
 void Game::start() {
 
@@ -78,6 +150,7 @@ void Game::start() {
 		// then need to the current time. They also have accessed to the time elapsed
 		// between the last two calls to regCurrTime().
 		Uint32 startTime = sdlutils().virtualTimer().regCurrTime();
+		(void)startTime;
 
 		// refresh the input handler
 		ihdlr.refresh();
@@ -130,6 +203,14 @@ void Game::change_Scene(State nextScene){
 		break;
 	case Game::SELECTIONMENU:
 		break;
+	case Game::NUM_SCENE: {
+		assert(false && "unimplemented");
+		exit(EXIT_FAILURE);
+	}
+	default: {
+		assert(false && "unreachable");
+		exit(EXIT_FAILURE);
+	}
 	}
 
 }
