@@ -12,11 +12,6 @@ void camera_component::update(uint32_t delta_time) {
     };
 }
 
-void camera_follow::initComponent() {
-    cam = Game::Instance()->get_mngr()->getComponent<camera_component>(_ent);
-    assert(cam != nullptr);
-}
-
 #include <iostream>
 #include <cmath>
 #include <cassert>
@@ -34,7 +29,7 @@ void camera_follow::update(uint32_t delta_time) {
             .x = 1.0f,
             .y = 1.0f,
         }
-    }, cam->cam).position;
+    }, cam.cam).position;
 
     auto &&self_target = const_cast<Transform &>(target);
     const position2_f32 target_position = {
@@ -52,11 +47,16 @@ void camera_follow::update(uint32_t delta_time) {
             .weight = 0.1f
         }
     };
-    cam->cam.camera = camera_update_from_follow_multiple(
-        cam->cam.camera,
+    cam.cam.camera = camera_update_from_follow_multiple(
+        cam.cam.camera,
         descriptor,
         targets,
         2,
         float(delta_time) / 1000.0f
     );
+}
+
+void camera_clamp::update(uint32_t delta_time) {
+    (void)delta_time;
+    cam.cam.camera = camera_update_from_clamp(cam.cam.camera, clamp);
 }

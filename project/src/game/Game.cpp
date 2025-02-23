@@ -106,11 +106,6 @@ bool Game::init() {
 	auto player = create_test_player_at(Vector2D(0.0, 0.0));
 	manager.addComponent<Revolver>(player);
 
-	manager.addComponent<camera_follow>(cam, camera_follow_descriptor{
-		.previous_position = cam_screen.cam.camera.position,
-		.lookahead_time = 1.0,
-		.semi_reach_time = 2.5
-	}, *manager.getComponent<Transform>(player));
 	manager.addComponent<MovementController>(player);
 	manager.addComponent<KeyboardPlayerCtrl>(player);
 	
@@ -118,8 +113,19 @@ bool Game::init() {
 	create_test_player_at(Vector2D(-4.0f, 0.0f));
 	create_test_player_at(Vector2D(0.0f, 4.0f));
 	create_test_player_at(Vector2D(0.0f, -4.0f));
-	
 	#pragma endregion
+
+	manager.addComponent<camera_follow>(cam, camera_follow_descriptor{
+		.previous_position = cam_screen.cam.camera.position,
+		.lookahead_time = 1.0,
+		.semi_reach_time = 2.5
+	}, cam_screen, *manager.getComponent<Transform>(player));
+	manager.addComponent<camera_clamp>(cam, camera_clamp_descriptor{
+		.bounds = {
+			.position = {0.0, 0.0},
+			.size = {32.0, 18.0},
+		}
+	}, cam_screen);
 	return true;
 }
 

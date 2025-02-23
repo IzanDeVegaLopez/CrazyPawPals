@@ -32,4 +32,3 @@ private:
 	Game();
 	ecs::Manager* _mngr;
 };
-
