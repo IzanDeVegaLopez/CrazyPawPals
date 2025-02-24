@@ -39,8 +39,13 @@
       "file": "resources/images/manaorbempty.png"
     },
     {
+
       "id": "floor",
       "file": "resources/images/suelo.png"
+    },
+    {
+      "id": "rampage",
+      "file": "resources/images/rampage.png"
     }
   ],
   
