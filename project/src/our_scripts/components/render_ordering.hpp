@@ -1,5 +1,5 @@
 #ifndef RENDER_ORDERING_HPP
-#define RENDER_ODERING_HPP
+#define RENDER_ORDERING_HPP
 
 #include "../../ecs/Component.h"
 
