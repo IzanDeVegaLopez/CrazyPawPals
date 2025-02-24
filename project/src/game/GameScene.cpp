@@ -22,6 +22,7 @@
 #include "../our_scripts/components/EnemyStatemachine.h"
 #include "../our_scripts/components/WeaponPlimPlim.h"
 #include "../our_scripts/components/WeaponSarnoRata.h"
+#include "../our_scripts/components/WeaponBoom.h"
 
 #include <iostream>
 #include <string>
@@ -105,51 +106,57 @@ void GameScene::spawnPlayer()
 
 void GameScene::spawnSarnoRata(Vector2D posVec)
 {
-	auto* weapon = new Revolver();
+	auto* weapon = new WeaponSarnoRata();
 
 	create_entity(
 		ecs::grp::ENEMY,
 		ecs::scene::GAMESCENE,
 		new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
 		new Image(&sdlutils().images().at("enemy")),
-		new Health(2),
-		new MovementController()
+		new Health(2), 
+		weapon
 	);
 }
 
 void GameScene::spawnMichiMafioso(Vector2D posVec)
 {
+	auto* weapon = new WeaponMichiMafioso();
+
 	create_entity(
 		ecs::grp::ENEMY,
 		ecs::scene::GAMESCENE,
 		new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
 		new Image(&sdlutils().images().at("enemy")),
 		new Health(2),
-		new MovementController()
+		weapon
 	);
 }
 
 void GameScene::spawnPlimPlim(Vector2D posVec)
 {
+	auto* weapon = new WeaponPlimPlim();
+
 	create_entity(
 		ecs::grp::ENEMY,
 		ecs::scene::GAMESCENE,
 		new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
 		new Image(&sdlutils().images().at("enemy")),
 		new Health(2),
-		new MovementController()
+		weapon
 	);
 }
 
 void GameScene::spawnBoom(Vector2D posVec)
 {
+	auto* weapon = new WeaponBoom();
+
 	create_entity(
 		ecs::grp::ENEMY,
 		ecs::scene::GAMESCENE,
 		new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
 		new Image(&sdlutils().images().at("enemy")),
 		new Health(2),
-		new MovementController()
+		weapon
 	);
 }
 

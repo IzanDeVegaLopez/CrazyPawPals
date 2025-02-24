@@ -1,13 +1,13 @@
-#include "WeaponSarnoRata.h"
+#include "WeaponBoom.h"
 #include "../../game/Game.h"
 #include "../../game/GameScene.h"
 
-WeaponSarnoRata::WeaponSarnoRata() : Weapon(4, 0.5f, 20.0f, 5.0f, "sdl_logo") { }
+WeaponBoom::WeaponBoom() : Weapon(4, 0.5f, 20.0f, 5.0f, "sdl_logo") { }
 
-WeaponSarnoRata::~WeaponSarnoRata() {}
+WeaponBoom::~WeaponBoom() {}
 
 void 
-WeaponSarnoRata::callback(Vector2D shootPos, Vector2D shootDir) {
+WeaponBoom::callback(Vector2D shootPos, Vector2D shootDir) {
 	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
 	bp.dir = shootDir;
 	bp.init_pos = shootPos;
