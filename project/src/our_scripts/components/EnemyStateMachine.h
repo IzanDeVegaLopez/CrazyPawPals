@@ -15,7 +15,7 @@ public:
 		WALKING, ATTACKING, DYING, INACTIVE
 	};
 
-	EnemyStateMachine();
+	EnemyStateMachine(float dist) : _dist(dist);
 
 	virtual ~EnemyStateMachine();
 	void update() { _state->update(*this->_ent); };
@@ -48,6 +48,7 @@ public:
 	}
 private:
 	Texture *_img;
+	float _dist;
 
 	BasicEnemyState* _state;
 	static WalkingState* _walking_state;

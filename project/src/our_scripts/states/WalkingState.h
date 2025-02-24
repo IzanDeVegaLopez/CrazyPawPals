@@ -23,11 +23,11 @@ public:
 		_tr->setDir(newDir);
 
 		if (std::abs(_tr - _playerTr) < _dist) {
-			_stateMachine->setState(BasicEnemy::ATTACKING);
+			_stateMachine->setState(EnemyStateMachine::ATTACKING);
 		}
 
-		if (_health <= 0) {
-			_stateMachine->setState(BasicEnemy::DYING);
+		if (_health->getHealth() <= 0) {
+			_stateMachine->setState(EnemyStateMachine::INACTIVE);
 		}
 	}
 };

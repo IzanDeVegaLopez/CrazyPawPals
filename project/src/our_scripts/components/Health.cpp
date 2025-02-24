@@ -36,6 +36,8 @@ Health::setMaxHeatlh(int h) {
 		_maxHealth = h; 
 	}
 }
+int
+Health::getHealth() { return _currentHealth; }
 void 
 Health::takeShield(int s) {
 	_shield = s;
