@@ -1,115 +1,81 @@
 #include "KeyboardPlayerCtrl.h"
-
 #include "../../sdlutils/InputHandler.h"
-#include "../Player.h"
+#include "../../game/Game.h"
 #include "../../ecs/Manager.h"
-#include "Transform.h"
-#include "ShootComponent.h"
 
+#include "Deck.hpp"
+#include "Transform.h"
+#include "Weapon.h"
+#include "MovementController.h"
 #include "Health.h"
 
 KeyboardPlayerCtrl::KeyboardPlayerCtrl()
     : _left(SDL_SCANCODE_A), _right(SDL_SCANCODE_D), _up(SDL_SCANCODE_W), _down(SDL_SCANCODE_S), 
-      _reload(SDL_SCANCODE_SPACE), _collect(SDL_SCANCODE_F) {}
+      _reload(SDL_SCANCODE_SPACE), _collect(SDL_SCANCODE_F), 
+      _mc(nullptr), _w(nullptr), _dc(nullptr) {}
 
-KeyboardPlayerCtrl::~KeyboardPlayerCtrl() {
-}
+KeyboardPlayerCtrl::~KeyboardPlayerCtrl() {}
 
 void 
 KeyboardPlayerCtrl::initComponent() {
 
+    /*
     _tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
     assert(_tr != nullptr);
+    */
+    _mc = Game::Instance()->get_mngr()->getComponent<MovementController>(_ent);
+    assert(_mc != nullptr);
 
-    _sc = Game::Instance()->get_mngr()->getComponent<ShootComponent>(_ent);
-    assert(_sc != nullptr);
+    _w = Game::Instance()->get_mngr()->getComponent<Weapon>(_ent);
+    assert(_w != nullptr);
 
     _dc = Game::Instance()->get_mngr()->getComponent<Deck>(_ent);
-    assert(_sc != nullptr);
-
+    assert(_dc != nullptr);
 }
 
 void KeyboardPlayerCtrl::update(Uint32 delta_time) {
-
+    (void)delta_time;
     auto& ihdlr = ih();
-   // if (ihdlr.keyDownEvent()) {
-        auto& dir = _tr->getDir();
+    //auto& dir = _tr->getDir();
+    //Horizontal axis
+    _mc->set_input(Vector2D(
+        (ihdlr.isKeyDown(_left) ? -1 : 0) + (ihdlr.isKeyDown(_right) ? 1 : 0),
+        (ihdlr.isKeyDown(_up) ? 1 : 0) + (ihdlr.isKeyDown(_down) ? -1 : 0)
+    ));
 
-        //New input
-        //Horizontal axis
-        dir.setX((ihdlr.isKeyDown(_left) ? -1 : 0) + (ihdlr.isKeyDown(_right) ? 1 : 0));
+    //Vertical axis
+    //dir.setY((ihdlr.isKeyDown(_up) ? -1 : 0) + (ihdlr.isKeyDown(_down) ? 1 : 0));
 
-        //Vertical axis
-        dir.setY((ihdlr.isKeyDown(_up) ? -1 : 0) + (ihdlr.isKeyDown(_down) ? 1 : 0));
+    //reload
+    if (ihdlr.isKeyDown(_reload)) {
+        //std::cout << "recarga" << std::endl;
+        _dc->reload();
+    }
+
+    //collect
+    if (ihdlr.isKeyDown(_collect)) {
+        //if we are not close enought to a reward, do nothing
+        std::cout << "colecta" << std::endl;
+    }
 
 
-        //reload
-        if (ihdlr.isKeyDown(_reload)) {
-            std::cout << "recarga" << std::endl;
+    if (ihdlr.mouseButtonDownEvent()) {
+        Vector2D mousePos = { (float)ihdlr.getMousePos().getX(), (float)ihdlr.getMousePos().getY()};
+        //shoot
+        if (ihdlr.getMouseButtonState(InputHandler::LEFT)) {
+            //send message to shoot
+            _w->shoot(mousePos);
+            if(_dc->discard_card())
+                _w->shoot(ihdlr.getMousePos());
+           
+
         }
-
-
-        //collect
-        if (ihdlr.isKeyDown(_collect)) {
-            //if we are not close enought to a reward, do nothing
-            std::cout << "colecta" << std::endl;
+        //use card
+        else if (ihdlr.getMouseButtonState(InputHandler::RIGHT)) {
+            //send message to use a card
+            //Vector2D mousePos = { (float)ihdlr.getMousePos().first, (float)ihdlr.getMousePos().second };
+            _dc->use_card(&(ihdlr.getMousePos()));
         }
-    //}
- 
-
-    //Old input
-    /*if (ihdlr.keyDownEvent()) { //Si comentamos esta linea (y el cierre de llave abajo) el movimiento parece mas natural
-        auto& dir = o->getDir();
-
-
-        //send direction value
-        if (ihdlr.isKeyDown(_left)) {
-            dir.setX(-1);
-        }
-        else if (ihdlr.isKeyDown(_right)) {
-            dir.setX(1);
-        }
-        else {
-            dir.setX(0); //stop x axis movement
-        }
-
-        if (ihdlr.isKeyDown(_up)) {
-            dir.setY(-1);
-        }
-        else if (ihdlr.isKeyDown(_down)) {
-            dir.setY(1);
-        }
-        else {
-            dir.setY(0); //stop y axis movement
-        }
-
-        static_cast<Player*>(o)->move();
-
-        //reload
-        if (ihdlr.isKeyDown(_reload)) {
-            std::cout << "recarga" << std::endl;
-        }
-
-        //collect
-        if (ihdlr.isKeyDown(_collect)) {
-            //if we are not close enought to a reward, do nothing
-            std::cout << "colecta" << std::endl;
-        }
-    } */
-
-
-    //shoot
-    if (ihdlr.mouseButtonEvent() && ihdlr.getMouseButtonState(InputHandler::LEFT)) {
-        //send message to shoot
-        Vector2D mousePos = { (float)ihdlr.getMousePos().first, (float)ihdlr.getMousePos().second };
-        _sc->shoot(mousePos);
-    } 
-    //use card
-    else if (ihdlr.mouseButtonDownEvent() && ihdlr.getMouseButtonState(InputHandler::RIGHT)) {
-        //send message to use card
-        //Vector2D mousePos = { (float)ihdlr.getMousePos().first, (float)ihdlr.getMousePos().second };
-        //_dc->use_card(mousePos);
-        std::cout << "using card" << std::endl;
-   }
+    }
     
 }

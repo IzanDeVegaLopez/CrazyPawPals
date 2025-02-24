@@ -6,7 +6,7 @@
 #include <SDL.h>
 #include <array>
 #include <cassert>
-
+#include "../utils/Vector2D.h"
 #include "../utils/Singleton.h"
 
 // Instead of a Singleton class, we could make it part of
@@ -21,6 +21,11 @@ public:
 		LEFT = 0, MIDDLE, RIGHT, _LAST_MOUSEBUTTON_VALUE
 	};
 
+	//Events in Callbacjs
+	enum INPUT_EVENTES : uint8_t {
+		MOUSE_LEFT_CLICK_DOWN,
+		MOUSE_LEFT_CLICK_UP
+	};
 
 	// clear the state
 	inline void clearState() {
@@ -58,6 +63,18 @@ public:
 		default:
 			break;
 		}
+
+		//Callback managing
+		//Obtenemos el indice de nuestro enumerado, segun el evento actual
+		//si el evento no est� registrado esto devuelve -1s
+		//int mapIndex = getInputEvent(event);
+
+		//si el evento est� registrado
+		/*if (inputMap.find(mapIndex) != inputMap.end()) {
+			// llama a todas las funciones registradas en un evento especifico
+			for (SDLEventCallback callback : inputMap.at(mapIndex)) {
+				callback();
+		}*/
 	}
 
 	// refresh
@@ -116,7 +133,7 @@ public:
 		return _isMouseButtonDownEvent;
 	}
 
-	inline const std::pair<Sint32, Sint32>& getMousePos() {
+	inline const Vector2D& getMousePos() {
 		return _mousePos;
 	}
 
@@ -129,7 +146,7 @@ public:
 	// the book 'SDL Game Development'
 
 private:
-
+	// Set all the mouse button state to false (each button turns true when it is pressed)
 	InputHandler() : _mbState{} {
 		_kbState = nullptr;
 		clearState();
@@ -154,9 +171,7 @@ private:
 
 	inline void onMouseMotion(const SDL_Event &event) {
 		_isMouseMotionEvent = true;
-		_mousePos.first = event.motion.x;
-		_mousePos.second = event.motion.y;
-
+		_mousePos.set( event.motion.x, event.motion.y);
 	}
 
 	inline void onMouseButtonDown(const SDL_Event &event) {
@@ -209,7 +224,7 @@ private:
 	bool _isMouseMotionEvent;
 	bool _isMouseButtonUpEvent;
 	bool _isMouseButtonDownEvent;
-	std::pair<Sint32, Sint32> _mousePos;
+	Vector2D _mousePos;
 	std::array<bool, 3> _mbState;
 	const Uint8 *_kbState;
 }

@@ -38,13 +38,24 @@ void Manager::refresh() {
 						[this](Entity *e) {
 							if (isAlive(e)) {
 								return false;
-							} else {
+							} 
+							else {
+								auto& sceneEntities = _entsByScene[e->_sId];
+								sceneEntities.erase(
+									std::remove(sceneEntities.begin(), sceneEntities.end(), e),
+									sceneEntities.end()
+								);
 								delete e;
 								return true;
 							}
 						}), groupEntities.end());
 	}
 
-}
+	for (auto e : _pendingEntities) {
+		_entsByGroup[e->_gId].push_back(e);
+		_entsByScene[e->_sId].push_back(e);
+	}
+	_pendingEntities.clear();
 
+}
 } // end of namespace

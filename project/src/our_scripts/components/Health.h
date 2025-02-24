@@ -10,10 +10,15 @@ public:
 	virtual ~Health();
 	void takeDamage(int damage);
 	void heal(int health);
-
 	void setMaxHeatlh(int h);
+	void takeShield(int s);
+	void update(uint32_t delta_time) override;
 
 protected:
 	int _currentHealth;
 	int _maxHealth;
+	int _shield;
+	uint32_t _shieldTime;
+
+	const int FRAME_DURATION = 1000;
 };

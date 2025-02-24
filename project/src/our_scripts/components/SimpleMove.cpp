@@ -7,9 +7,7 @@
 #include "../../ecs/Manager.h"
 #include "../../game/Game.h"
 
-SimpleMove::SimpleMove() {
-
-}
+SimpleMove::SimpleMove(): _tr(nullptr) {}
 
 SimpleMove::~SimpleMove() {
 }
@@ -22,6 +20,7 @@ SimpleMove::initComponent() {
 }
 
 void SimpleMove::update(uint32_t delta_time) {
+	(void)delta_time;
 	auto &pos = _tr->getPos();
 	auto &dir = _tr->getDir();
 	auto speed = _tr->getSpeed();

@@ -3,8 +3,9 @@
 #include <SDL.h>
 
 class Transform;
-class ShootComponent;
-
+class Weapon;
+class Deck;
+class MovementController;
 class KeyboardPlayerCtrl :public ecs::Component
 {
 public:
@@ -21,7 +22,7 @@ private:
 	SDL_Scancode _reload;
 	SDL_Scancode _collect;
 
-	Transform* _tr;
-	ShootComponent* _sc;
+	MovementController* _mc;
+	Weapon* _w;
 	Deck* _dc;
 };

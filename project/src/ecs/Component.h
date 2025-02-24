@@ -3,6 +3,7 @@
 #pragma once
 
 #include "ecs.h"
+#include "../game/GameStructs.h"
 
 namespace ecs {
 
@@ -52,6 +53,7 @@ public:
 	// the last frame. To be used in time-sensitive calculations.
 	// 
 	virtual void update(uint32_t delta_time) {
+		(void)delta_time;
 	}
 
 	// A component has a render method, and by default it

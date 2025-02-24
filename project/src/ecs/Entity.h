@@ -18,12 +18,14 @@ namespace ecs {
 
 struct Entity {
 public:
-	Entity(grpId_t gId, Manager *mngr) : //
+	Entity(grpId_t gId, Manager *mngr, sceneId_t sId) : //
 			_cmps(), //
 			_currCmps(), //
 			_alive(),  //
-			_gId(gId) //
+			_gId(gId), //
+			_sId(sId)
 	{
+		(void)mngr;
 		// We reserve the a space for the maximum number of
 		// components. This way we avoid resizing the vector.
 		//
@@ -66,6 +68,7 @@ private:
 	std::vector<Component*> _currCmps;
 	bool _alive;
 	grpId_t _gId;
+	sceneId_t _sId;
 };
 
 } // end of name space

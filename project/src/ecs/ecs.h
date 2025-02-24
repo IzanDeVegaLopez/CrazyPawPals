@@ -35,6 +35,7 @@ using entity_t = Entity*;
 using cmpId_t = uint8_t;
 using grpId_t = uint8_t;
 using hdlrId_t = uint8_t;
+using sceneId_t = uint8_t;
 
 
 
@@ -55,13 +56,23 @@ namespace grp {
 // first number is 0 in C/C++ standard
 enum grpId : cmpId_t {
 	DEFAULT,
-	PLAYERBULLETS,
 	_GRPS_LIST_, /* taken from ../game/ecs_defs */
 
 	// do not remove this
 	_LAST_GRP_ID
 };
 }
+namespace scene {
+	// list of scene identifiers
+enum sceneId : sceneId_t {
+	DEFAULT,
+	_SCENE_LIST_, /* taken from ../game/ecs_defs */
+
+	// do not remove this
+	_LAST_SCENE_ID
+};
+}
+
 
 namespace hdlr {
 // list of handler identifiers - note that we rely on that the
@@ -77,6 +88,7 @@ enum hdlrId : hdlrId_t {
 constexpr cmpId_t maxComponentId = cmp::cmpId::_LAST_CMP_ID;
 constexpr cmpId_t maxGroupId = grp::grpId::_LAST_GRP_ID;
 constexpr hdlrId_t maxHandlerId = hdlr::hdlrId::_LAST_HDLR_ID;
+constexpr sceneId_t maxSceneId = scene::sceneId::_LAST_SCENE_ID;
 
 // a template variable to obtain the component id.
 template<typename T>

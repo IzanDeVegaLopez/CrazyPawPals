@@ -8,19 +8,17 @@
 #define _CMPS_LIST_ \
 	TRANSFORM, \
 	IMAGE, \
-    SHOOTCOMPONENT, \
 	KEYBOARDPLAYERCTRL, \
 	MOVEMENTCONTROLLER, \
     SIMPLEMOVE, \
     HEALTH,\
 	LIFETIMETIMER, \
-	ENEMYMOVENT, \
-	MANA, \
-	WAVEMANAGER, \
-	DECK
-	CAMERA, \
     WEAPON, \
-    REVOLVER
+	MANA, \
+	DECK, \
+	CAMERA, \
+	CAMERA_FOLLOW, \
+	CAMERA_CLAMP \
 
 
 // Groups list - must have at least one element
@@ -28,13 +26,21 @@
 #define _GRPS_LIST_ \
 	BULLET,\
 	PLAYER,\
-	ENEMY
+	ENEMY,\
+	PLAYERBULLETS
+
+
+// Scene list
+//
+#define _SCENE_LIST_ \
+	GAMESCENE,\
+	MAINMENUSCENE,\
+	SELECTIONMENUSCENE
 
 // Handlers list - must have at least one element
 //
 #define _HDLRS_LIST_ \
     PLAYER, \
-    ENEMY, \
-    POOL, \
-	GAMEINFO
+	GAMEINFO, \
+	CAMERA
 
