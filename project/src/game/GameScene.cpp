@@ -116,7 +116,6 @@ void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs
 			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
 			sdlutils().images().at(texName)
 		),
-		//new SimpleMove(),
 		new LifetimeTimer(bp.life_time),
 		new BulletData(bp.damage)
 	);
