@@ -4,6 +4,7 @@
 #include "../card_system/PlayableCards.hpp"
 #include "Mana.h"
 #include "../../utils/Vector2D.h"
+#include "../components/camera_component.hpp"
 #include "ecs/Component.h"
 #include <list>
 #include <cassert>
@@ -16,6 +17,7 @@ protected:
 	Card* _hand;
 	Mana* _mana;
 	Transform* _tr;
+	const camera_component* _camera;
 	bool _is_reloading = false;
 	int _time_till_reload_finishes;
 	void _put_new_card_on_hand();
