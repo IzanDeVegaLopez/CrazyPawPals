@@ -21,7 +21,7 @@ void camera_follow::update(uint32_t delta_time) {
         int32_t(ih().getMousePos().getY()),
     };
 
-    const position2_f32 mouse_world_position = rect_f32_global_from_screen_rect_flipped_y({
+    const position2_f32 mouse_world_pos = rect_f32_global_from_screen_rect_flipped_y({
         .position = {
             .x = float(mouse_position.x),
             .y = float(mouse_position.y),
@@ -31,6 +31,9 @@ void camera_follow::update(uint32_t delta_time) {
             .y = 1.0f,
         }
     }, cam.cam).position;
+
+    cam.mouse_world_position = mouse_world_pos;
+
 
     auto &&self_target = const_cast<Transform &>(target);
     const position2_f32 target_position = {
@@ -44,7 +47,7 @@ void camera_follow::update(uint32_t delta_time) {
             .weight = 0.9f
         },
         {
-            .position = mouse_world_position,
+            .position = mouse_world_pos,
             .weight = 0.1f
         }
     };
@@ -55,11 +58,6 @@ void camera_follow::update(uint32_t delta_time) {
         2,
         float(delta_time) / 1000.0f
     );
-}
-
-position2_f32 camera_follow::mouse_world_position(const camera_screen)
-{
-    return position2_f32();
 }
 
 void camera_clamp::update(uint32_t delta_time) {

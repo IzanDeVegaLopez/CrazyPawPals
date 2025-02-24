@@ -67,7 +67,7 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
             //send message to shoot
             _w->shoot(mousePos);
             if (_dc->discard_card()) {
-                position2_f32 mouse_pos = camera_follow::mouse_world_position(Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam);
+                position2_f32 mouse_pos = Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->mouse_world_position; 
                 _w->shoot(Vector2D{ mouse_pos.x, mouse_pos.y });
             }
                 //_w->shoot(ihdlr.getMousePos());
@@ -78,9 +78,9 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
         else if (ihdlr.getMouseButtonState(InputHandler::RIGHT)) {
             //send message to use a card
             //Vector2D mousePos = { (float)ihdlr.getMousePos().first, (float)ihdlr.getMousePos().second };
-            position2_f32 mouse_pos = camera_follow::mouse_world_position(Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam);
+            position2_f32 mouse_pos = Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->mouse_world_position;
+            //TODO:: WAY BETTER
             Vector2D* vec = new Vector2D{ mouse_pos.x, mouse_pos.y };
-            //std::cout << "mouse_button" << _bullets_properties.dir;
             _dc->use_card(vec);
         }
     }

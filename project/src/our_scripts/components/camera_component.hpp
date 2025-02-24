@@ -13,7 +13,7 @@ struct camera_component : public ecs::Component {
 
 	inline camera_component(const camera_screen cam) : cam(cam) {}
 	void update(uint32_t delta_time) override;
-	rect_f32 mouse_position{0,0};
+	position2_f32 mouse_world_position{0,0};
 };
 
 struct camera_follow : public ecs::Component {
@@ -25,7 +25,6 @@ struct camera_follow : public ecs::Component {
 	inline camera_follow(const camera_follow_descriptor descriptor, camera_component &self, const Transform &target) :
 		descriptor(descriptor), cam(self), target(target) {}
 	void update(uint32_t delta_time) override;
-	static position2_f32 mouse_world_position(const camera_screen);
 };
 
 struct camera_clamp : public ecs::Component {
