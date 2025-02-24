@@ -37,6 +37,10 @@
     { 
       "id": "manaorbempty",
       "file": "resources/images/manaorbempty.png"
+    },
+    {
+      "id": "rampage",
+      "file": "resources/images/rampage.png"
     }
   ],
   
