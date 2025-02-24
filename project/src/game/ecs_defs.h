@@ -13,6 +13,7 @@
     SIMPLEMOVE, \
     HEALTH,\
 	LIFETIMETIMER, \
+    BULLETDATA, \
     WEAPON, \
 	MANA, \
 	DECK, \
@@ -28,7 +29,8 @@
 	BULLET,\
 	PLAYER,\
 	ENEMY,\
-	PLAYERBULLETS
+	PLAYERBULLETS,\
+    ENEMYBULLETS
 
 
 // Scene list

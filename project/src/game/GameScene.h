@@ -18,5 +18,5 @@ public:
 	void spawnEnemies();
 
 	void generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid, const std::string& texName);
-	
+	void check_collision();
 };
