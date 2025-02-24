@@ -5,8 +5,8 @@
 #include "../game/Game.h"
 #include "../our_scripts/components/Health.h"
 #include "../our_scripts/components/Transform.h"
-#include "../our_scripts/components/ShootComponent.h"
-#include "EnemyStateMachine.h"
+//#include "../our_scripts/components/ShootComponent.h"
+#include "../components/EnemyStateMachine.h"
 
 class State {
 public:
@@ -15,6 +15,5 @@ public:
 	virtual void enter() = 0;
 	virtual void update() = 0;
 	virtual void exit() = 0;
-
 };
 

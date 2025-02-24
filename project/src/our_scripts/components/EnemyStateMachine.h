@@ -1,13 +1,11 @@
 // This file is part of the course TPV2@UCM - Samir Genaim
 
 #pragma once
-
-#include "../game/GameObject.h"
-#include "BasicEnemyState.h"
-#include "WalkingState.h"
-#include "AttackingState.h"
-#include "DyingState.h"
-#include "InactiveState.h"
+#include "../states/State.h"
+#include "../states/WalkingState.h"
+#include "../states/AttackingState.h"
+#include "../states/DyingState.h"
+#include "../states/InactiveState.h"
 
 class Texture;
 class EnemyStateMachine : public ecs::Component {

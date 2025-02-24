@@ -18,6 +18,7 @@
 #include "../our_scripts/components/Mana.h"
 #include "../our_scripts/components/Deck.hpp"
 #include "../our_scripts/components/WaveManager.h"
+#include "../our_scripts/components/EnemyStatemachine.h"
 
 #include <iostream>
 #include <string>

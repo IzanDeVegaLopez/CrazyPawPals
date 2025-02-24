@@ -1,5 +1,5 @@
 #include "State.h"
-
+class EnemyStateMachine;
 class WalkingState : public State
 {
 protected:
