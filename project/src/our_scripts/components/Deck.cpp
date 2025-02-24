@@ -158,6 +158,17 @@ void Deck::update(Uint32 deltaTime) noexcept
 void Deck::render() noexcept
 {
 		//TODO
+		//reload bar
+		if (_is_reloading) {
+			SDL_SetRenderDrawBlendMode(sdlutils().renderer(), SDL_BLENDMODE_NONE);
+			SDL_SetRenderDrawColor(sdlutils().renderer(), 200, 200, 200, 255);
+			rect_f32 baroutput{ {_tr->getPos().getX(), _tr->getPos().getY() + 0.3}, {(reload_time - _time_till_reload_finishes) / 1000.0f, 0.2 } };
+			//SDL_Rect baroutput{ 100, 100, (reload_time - _time_till_reload_finishes) / 20, 16 };
+			SDL_Rect trueoutput = SDL_Rect_screen_rect_from_global(baroutput, _camera->cam);
+			//std::cout << trueoutput.w << std::endl;
+			SDL_RenderFillRect(sdlutils().renderer(), &trueoutput);
+		}
+
 		//Mostrar carta en la mano
 		//Mostrar n� cartas draw_pile and discard_pile
 		card_rendering_descriptor crd = card_rendering_descriptor();
@@ -220,6 +231,8 @@ void Deck::initComponent()
 	assert(_mana!=nullptr);
 	_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
 	assert(_tr!=nullptr);
+	_camera = Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA));
+	assert(_camera != nullptr);
 }
 
 std::ostream& operator<<(std::ostream& os, const Deck& deck)

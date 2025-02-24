@@ -86,6 +86,8 @@ void GameScene::spawnPlayer()
 	auto* revolver = new Revolver();
 	std::list<Card*> c = { new Fireball(), new Minigun(), new Fireball(), new Minigun() };
 	create_entity(
+		ecs::grp::PLAYER,
+		ecs::scene::GAMESCENE,
 		new Transform({ sdlutils().width() / 2.0f, sdlutils().height() / 2.0f }, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
 		new Image(&sdlutils().images().at("player")),
 		revolver,
@@ -147,6 +149,8 @@ void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs
 	(void)gid;
 	//std::cout << bp.speed << std::endl;
 	create_entity(
+		gid,
+		ecs::scene::GAMESCENE,
 		new Transform(bp.init_pos, bp.dir, bp.width, bp.height, bp.rot, bp.speed),
 		new Image(&sdlutils().images().at(texName)),
 		//new SimpleMove(),

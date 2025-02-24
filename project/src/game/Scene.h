@@ -20,8 +20,8 @@ public:
 	virtual void render() = 0;
 
 	template <typename ... Cmps>
-	ecs::entity_t create_entity(Cmps ... components) {
-		ecs::entity_t ent = Game::Instance()->get_mngr()->addEntity(ecs::scene::GAMESCENE);
+	ecs::entity_t create_entity(ecs::grpId_t gid, ecs::sceneId_t sid,Cmps ... components) {
+		ecs::entity_t ent = Game::Instance()->get_mngr()->addEntity(sid);
 		Game::Instance()->get_mngr()->addExistingComponent(ent, components...);
 		return ent;
 	}
