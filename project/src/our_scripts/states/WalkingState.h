@@ -2,12 +2,18 @@
 
 class WalkingState : public State
 {
+protected:
+	Transform* _tr;
+	Transform* _playerTr;
+	Health* _health;
+	EnemyStateMachine* _stateMachine;
 public:
 	WalkingState() {}
 
-	virtual void enter() {
-		_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_basicEnemy._ent);
-		_health = Game::Instance()->get_mngr()->getComponent<Health>(_basicEnemy._ent);
+	virtual void enter(ecs::Entity* _enemy) {
+		_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_enemy);
+		_health = Game::Instance()->get_mngr()->getComponent<Health>(_enemy);
+		_stateMachine = Game::Instance()->get_mngr()->getComponent<EnemyStateMachine>(_enemy);
 		_playerTr = Game::Instance()->get_mngr()->getComponent<Transform>(Game::Instance()->get_mngr()->getEntities(ecs::hdlr::PLAYER)[0]);
 	}
 
@@ -17,11 +23,11 @@ public:
 		_tr->setDir(newDir);
 
 		if (std::abs(_tr - _playerTr) < _dist) {
-			_basicEnemy.setState(BasicEnemy::ATTACKING);
+			_stateMachine->setState(BasicEnemy::ATTACKING);
 		}
 
 		if (_health <= 0) {
-			_basicEnemy.setState(BasicEnemy::DYING);
+			_stateMachine->setState(BasicEnemy::DYING);
 		}
 	}
 };
