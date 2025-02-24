@@ -2,59 +2,42 @@
 
 #pragma once
 #include "../states/State.h"
-#include "../states/WalkingState.h"
-#include "../states/AttackingState.h"
-#include "../states/DyingState.h"
-#include "../states/InactiveState.h"
+//#include "../states/DyingState.h"
+//#include "../states/InactiveState.h"
 
 class Texture;
+class WalkingState;
+class AttackingState;
 class EnemyStateMachine : public ecs::Component {
 public:
+	__CMPID_DECL__(ecs::cmp::ENEMYSTATEMACHINE);
 
-	enum State {
+	enum StateType {
 		WALKING, ATTACKING, DYING, INACTIVE
 	};
 
-	EnemyStateMachine(float dist) : _dist(dist);
+	EnemyStateMachine(float dist) { _dist == dist; };
 
 	virtual ~EnemyStateMachine();
-	void update() { _state->update(*this->_ent); };
+	void update() { _state->update(); };
 	void render() override;
-	void handleInput() { _state->handleInput(*this); } ;
+	void handleInput() {} ;
 
 	inline void setImg(Texture *img) {
 		_img = img;
 	}
 
-	inline void setState(State s) {
-		switch (s) {
-		case WALKING:
-			_state = _walking_state;
-			break;
-		case ATTACKING:
-			_state = _attacking_state;
-			break;
-		case DYING:
-			_state = _dying_state;
-			break;
-		case INACTIVE:
-			_state = _inactive_state;
-			break;
-		default:
-			assert(false);
-			break;
-		}
-		_state->enter(*this->_ent);
-	}
+	inline void setState(StateType s);
 private:
 	Texture *_img;
 	float _dist;
 
-	BasicEnemyState* _state;
-	static WalkingState* _walking_state;
-	static AttackingState* _attacking_state;
-	static DyingState* _dying_state;
-	static InactiveState* _inactive_state;
+	State* _state;
+	StateType _type;
+	//WalkingState* _walking_state;
+	//static AttackingState* _attacking_state;
+	//static DyingState* _dying_state;
+	//static InactiveState* _inactive_state;
 
 };
 
