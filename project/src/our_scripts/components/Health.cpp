@@ -1,29 +1,25 @@
 #include "Health.h"
 #include "../../sdlutils/SDLUtils.h"
 #include "../../sdlutils/Font.h"
-#include <iostream>
+#include "../../ecs/Manager.h"
+#include "../../game/Game.h"
 
 Health::Health(int maxHealth) 
-	: _currentHealth(maxHealth), _maxHealth(maxHealth),_shield(0) {};
+	: _currentHealth(maxHealth), _maxHealth(maxHealth),_shield(0),_shieldTime(0) {};
 Health::~Health() {};
 
 void
 Health::heal(int health) {
-	std::cout << "curar" << std::endl;
-	if (_currentHealth + health < _maxHealth) {
-		_currentHealth += health;
-	}
+	if (_currentHealth + health < _maxHealth) _currentHealth += health;
 	else _currentHealth = _maxHealth;
 }
 
 void
 Health::takeDamage(int damage) {
-	std::cout << "da" << std::endl;
 	if (_shield <= 0) {
 		_currentHealth -= damage;
 		if (_currentHealth <= 0) {
-			std::cout << "muerto" << std::endl;
-			//muerto
+			Game::Instance()->get_mngr()->setAlive(_ent, false);
 		}
 	}
 	else _shield -= damage;
