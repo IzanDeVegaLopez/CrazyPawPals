@@ -116,16 +116,18 @@ bool Game::init() {
 
 	#pragma region player
 	auto &&manager = *_mngr;
-	auto player = create_test_player_at(Vector2D(0.0, 0.0));
-	manager.addComponent<Revolver>(player);
 
-	manager.addComponent<MovementController>(player);
-	manager.addComponent<KeyboardPlayerCtrl>(player);
 
 	create_test_player_at(Vector2D(4.0f, 0.0f));
 	create_test_player_at(Vector2D(-4.0f, 0.0f));
 	create_test_player_at(Vector2D(0.0f, 4.0f));
 	create_test_player_at(Vector2D(0.0f, -4.0f));
+
+	auto player = create_test_player_at(Vector2D(0.0, 0.0));
+	manager.addComponent<Revolver>(player);
+
+	manager.addComponent<MovementController>(player);
+	manager.addComponent<KeyboardPlayerCtrl>(player);
 	#pragma endregion
 
 
