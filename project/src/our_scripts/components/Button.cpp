@@ -45,7 +45,10 @@
 //	}
 //}
 //
-//void Button::actionsOfButton(SDLEventCallback _callback)
+//void Button::actionsOfButton(SDLEvent
+// 
+// 
+//  _callback)
 //{
 //	callbacks.push_back(_callback);
 //}

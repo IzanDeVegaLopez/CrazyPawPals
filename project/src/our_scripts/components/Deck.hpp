@@ -15,7 +15,7 @@ protected:
 	CardList _draw_pile;
 	CardList _discard_pile;
 	Card* _hand;
-	Mana* _mana;
+	ManaComponent* _mana;
 	Transform* _tr;
 	const camera_component* _camera;
 	bool _is_reloading = false;
@@ -26,7 +26,6 @@ protected:
 	bool _can_play_hand_card();
 public:
 	__CMPID_DECL__(ecs::cmp::DECK)
-	Deck() noexcept;
 	//Creates a starter with a list of cards
 	Deck(CardList&& starterDeck) noexcept;
 	Deck(std::list<Card*>&) noexcept;

@@ -17,6 +17,8 @@
 #include "../our_scripts/components/SimpleMove.h"
 #include "../our_scripts/components/Mana.h"
 #include "../our_scripts/components/Deck.hpp"
+#include "../our_scripts/components/dyn_image.hpp"
+#include "../our_scripts/components/camera_component.hpp"
 
 #include <iostream>
 #include <string>
@@ -79,7 +81,7 @@ void GameScene::spawnPlayer()
 		new Transform({ sdlutils().width() / 2.0f, sdlutils().height() / 2.0f }, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
 		new Image(&sdlutils().images().at("player")),
 		revolver,
-		new Mana(),
+		new ManaComponent(),
 		new Deck(c),
 		new MovementController(),
 		new KeyboardPlayerCtrl()
@@ -94,13 +96,19 @@ void GameScene::spawnEnemies()
 
 void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid, const std::string& texName)
 {
+	auto manager = Game::Instance()->get_mngr();
 	(void)gid;
 	//std::cout << bp.speed << std::endl;
 	create_entity(
 		gid,
 		ecs::scene::GAMESCENE,
 		new Transform(bp.init_pos, bp.dir, bp.width, bp.height, bp.rot, bp.speed),
-		new Image(&sdlutils().images().at(texName)),
+		new dyn_image(
+			rect_f32{ {0,0},{1,1} },
+			size2_f32{1,1},
+			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
+			sdlutils().images().at(texName)
+		),
 		//new SimpleMove(),
 		new LifetimeTimer(bp.life_time)
 	);

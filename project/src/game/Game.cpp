@@ -50,8 +50,8 @@ ecs::entity_t create_test_player_at(Vector2D position) {
 		{1.0, 1.0}
 	}, size2_f32{1.0, 1.0}, manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam, sdlutils().images().at("player"));
 
-	//manager.addComponent<MovementController>(player);
-	manager.addComponent<Mana>(player);
+	manager.addComponent<MovementController>(player);
+	manager.addComponent<ManaComponent>(player);
 	std::list<Card*> my_card_list = std::list<Card*>{ new Fireball(), new Fireball(), new Minigun(), new Minigun() };
 	manager.addComponent<Deck>(player, my_card_list);
 	

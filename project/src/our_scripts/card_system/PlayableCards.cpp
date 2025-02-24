@@ -10,7 +10,7 @@ void Fireball::on_play(const Vector2D* player_position,const Vector2D* target_po
 	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
 	bp.dir = ((*target_position) - (*player_position)).normalize();
 	bp.init_pos = *player_position;
-	bp.speed = 2.0f;
+	bp.speed = 0.3f;
 	bp.height = 30;
 	bp.width = 80;
 	bp.life_time = 2;
@@ -21,7 +21,7 @@ Minigun::Minigun()
 	: Card("minigun", Resources(2)), _pl_vec(), _playing(false), _time_since_played(0)
 {
 	_bullets_properties = GameStructs::BulletProperties();
-	_bullets_properties.speed = 5.0f;
+	_bullets_properties.speed = 0.1f;
 	_bullets_properties.height = 20;
 	_bullets_properties.width = 20;
 	_bullets_properties.life_time = 0.5f;
