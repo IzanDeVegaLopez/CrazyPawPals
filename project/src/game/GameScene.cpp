@@ -34,6 +34,11 @@ void GameScene::initScene()
 
 #pragma endregion
 
+#pragma region Enemies
+	spawnWaveManager();
+
+#pragma endregion
+
 #pragma region Player
 
 	//spawnPlayer();
@@ -97,10 +102,37 @@ void GameScene::spawnSarnoRata(Vector2D posVec)
 	create_entity(
 		new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
 		new Image(&sdlutils().images().at("enemy")),
-		new MovementController(),
-		new KeyboardPlayerCtrl()
+		new MovementController()
 	);
 }
+
+void GameScene::spawnMichiMafioso(Vector2D posVec)
+{
+	create_entity(
+		new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
+		new Image(&sdlutils().images().at("enemy")),
+		new MovementController()
+	);
+}
+
+void GameScene::spawnPlimPlim(Vector2D posVec)
+{
+	create_entity(
+		new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
+		new Image(&sdlutils().images().at("enemy")),
+		new MovementController()
+	);
+}
+
+void GameScene::spawnBoom(Vector2D posVec)
+{
+	create_entity(
+		new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
+		new Image(&sdlutils().images().at("enemy")),
+		new MovementController()
+	);
+}
+
 
 void GameScene::spawnWaveManager()
 {
