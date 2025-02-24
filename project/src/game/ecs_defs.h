@@ -18,7 +18,8 @@
 	DECK, \
 	CAMERA, \
 	CAMERA_FOLLOW, \
-	CAMERA_CLAMP \
+	CAMERA_CLAMP, \
+	RENDER_ORDERING 
 
 
 // Groups list - must have at least one element

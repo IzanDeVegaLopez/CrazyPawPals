@@ -18,6 +18,8 @@ struct camera_screen {
     screen_rect screen;
 };
 
+extern const rect_f32 rect_f32_full_subrect;
+
 inline rect_f32 rect_f32_view_from_global(rect_f32 global, camera const &camera) {
     return rect_f32(
         position2_f32(
