@@ -18,7 +18,9 @@
 	DECK, \
 	CAMERA, \
 	CAMERA_FOLLOW, \
-	CAMERA_CLAMP \
+	CAMERA_CLAMP, \
+	WAVEMANAGER, \
+	ENEMYMOVENT \
 
 
 // Groups list - must have at least one element

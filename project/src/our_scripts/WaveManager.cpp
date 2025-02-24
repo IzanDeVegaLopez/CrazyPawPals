@@ -74,16 +74,16 @@ WaveManager::spawnWave() {
             switch (_waves[_currentWave][_enemiesSpawned])
             {
 			case 1:
-				Game::Instance()->createSarnoRata(posVec);
+				//Game::Instance()->createSarnoRata(posVec);
 				break;
             case 2:
-				Game::Instance()->createMichiMafioso(posVec);
+				//Game::Instance()->createMichiMafioso(posVec);
 				break;
 			case 3:
-				Game::Instance()->createSarnoRata(posVec); // plim plim
+				//Game::Instance()->createSarnoRata(posVec); // plim plim
                 break;
             case 4:
-				Game::Instance()->createMichiMafioso(posVec); // boom
+				//Game::Instance()->createMichiMafioso(posVec); // boom
 				break;
             default:
 				std::cout << "Enemigo no existe" << std::endl;
