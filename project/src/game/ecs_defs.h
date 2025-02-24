@@ -43,6 +43,7 @@
 //
 #define _HDLRS_LIST_ \
     PLAYER, \
+    WAVE, \
 	GAMEINFO, \
 	CAMERA
 

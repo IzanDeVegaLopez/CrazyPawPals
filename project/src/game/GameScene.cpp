@@ -18,7 +18,10 @@
 #include "../our_scripts/components/Mana.h"
 #include "../our_scripts/components/Deck.hpp"
 #include "../our_scripts/components/WaveManager.h"
+#include "../our_scripts/components/WeaponMichiMafioso.h"
 #include "../our_scripts/components/EnemyStatemachine.h"
+#include "../our_scripts/components/WeaponPlimPlim.h"
+#include "../our_scripts/components/WeaponSarnoRata.h"
 
 #include <iostream>
 #include <string>
@@ -102,9 +105,14 @@ void GameScene::spawnPlayer()
 
 void GameScene::spawnSarnoRata(Vector2D posVec)
 {
+	auto* weapon = new Revolver();
+
 	create_entity(
+		ecs::grp::ENEMY,
+		ecs::scene::GAMESCENE,
 		new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
 		new Image(&sdlutils().images().at("enemy")),
+		new Health(2),
 		new MovementController()
 	);
 }
@@ -112,8 +120,11 @@ void GameScene::spawnSarnoRata(Vector2D posVec)
 void GameScene::spawnMichiMafioso(Vector2D posVec)
 {
 	create_entity(
+		ecs::grp::ENEMY,
+		ecs::scene::GAMESCENE,
 		new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
 		new Image(&sdlutils().images().at("enemy")),
+		new Health(2),
 		new MovementController()
 	);
 }
@@ -121,8 +132,11 @@ void GameScene::spawnMichiMafioso(Vector2D posVec)
 void GameScene::spawnPlimPlim(Vector2D posVec)
 {
 	create_entity(
+		ecs::grp::ENEMY,
+		ecs::scene::GAMESCENE,
 		new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
 		new Image(&sdlutils().images().at("enemy")),
+		new Health(2),
 		new MovementController()
 	);
 }
@@ -130,8 +144,11 @@ void GameScene::spawnPlimPlim(Vector2D posVec)
 void GameScene::spawnBoom(Vector2D posVec)
 {
 	create_entity(
+		ecs::grp::ENEMY,
+		ecs::scene::GAMESCENE,
 		new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
 		new Image(&sdlutils().images().at("enemy")),
+		new Health(2),
 		new MovementController()
 	);
 }
@@ -140,6 +157,8 @@ void GameScene::spawnBoom(Vector2D posVec)
 void GameScene::spawnWaveManager()
 {
 	create_entity(
+		ecs::hdlr::WAVE,
+		ecs::scene::GAMESCENE,
 		new WaveManager()
 	);
 }

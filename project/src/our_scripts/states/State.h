@@ -7,6 +7,7 @@
 #include "../our_scripts/components/Transform.h"
 //#include "../our_scripts/components/ShootComponent.h"
 #include "../components/EnemyStateMachine.h"
+#include "../components/Weapon.h"
 
 class State {
 public:
