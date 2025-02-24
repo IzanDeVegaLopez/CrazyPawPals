@@ -1,24 +1,35 @@
-#include "BasicEnemyState.h"
+#include "../our_scripts/states/State.h"
 
-class AttackingState : public BasicEnemyState
+class AttackingState : public State
 {
+protected:
+	Transform* _tr;
+	Transform* _playerTr;
+	Health* _health;
+	ShootComponent* _shoot;
+	EnemyStateMachine* _stateMachine;
+	float _dist;
 public:
 	AttackingState() {}
 
-	virtual void enter(BasicEnemy& _basicEnemy) {
-		_basicEnemy.tr->setDir(Vector2D(0, 0));
+	virtual void enter(ecs::Entity* _enemy) {
+		_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_enemy);
+		_health = Game::Instance()->get_mngr()->getComponent<Health>(_enemy);
+		_shoot = Game::Instance()->get_mngr()->getComponent<ShootComponent>(_enemy);
+		_stateMachine = Game::Instance()->get_mngr()->getComponent<EnemyStateMachine>(_enemy);
+		_playerTr = Game::Instance()->get_mngr()->getComponent<Transform>(Game::Instance()->get_mngr()->getEntities(ecs::hdlr::PLAYER)[0]);
 	}
 
-	virtual void handleInput(){}
+	virtual void update(ecs::Entity* _enemy) {
+		Vector2D _target = _playerTr->getPos();
+		_shoot->shoot(_target);
 
-	virtual void update(BasicEnemy& _basicEnemy) {
-		if (/*Far enough to the target*/) {
-			_basicEnemy.setState(BasicEnemy::WALKING);
+		if (std::abs(_tr - _playerTr) > _dist) {
+			_stateMachine->setState(EnemyStateMachine::WALKING);
 		}
 
-		if (/*Life <= 0*/) {
-			_basicEnemy.setState(BasicEnemy::DYING);
+		if (_health <= 0) {
+			_stateMachine->setState(EnemyStateMachine::DYING);
 		}
 	}
-private:
 };

@@ -1,20 +1,17 @@
-#include "BasicEnemyState.h"
+#include "State.h"
 
-class InactiveState : public BasicEnemyState
+class DyingState : public State
 {
 public:
-	InactiveState() {}
+	DyingState() {}
 
 	virtual void enter(BasicEnemy& _basicEnemy) {
 
 	}
-
-	virtual void handleInput() {}
-
 	virtual void update(BasicEnemy& _basicEnemy) {
 
-		if (/*Out of the pool*/) {
-			_basicEnemy.setState(BasicEnemy::WALKING);
+		if (/*Animation time over*/) {
+			_basicEnemy.setState(BasicEnemy::INACTIVE);
 		}
 	}
 private:

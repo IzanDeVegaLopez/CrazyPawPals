@@ -20,7 +20,7 @@ public:
 	EnemyStateMachine();
 
 	virtual ~EnemyStateMachine();
-	void update() { _state->update(*this); };
+	void update() { _state->update(*this->_ent); };
 	void render() override;
 	void handleInput() { _state->handleInput(*this); } ;
 
@@ -46,7 +46,7 @@ public:
 			assert(false);
 			break;
 		}
-		_state->enter(*this);
+		_state->enter(*this->_ent);
 	}
 private:
 	Texture *_img;

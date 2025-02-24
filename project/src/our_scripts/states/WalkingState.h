@@ -1,25 +1,27 @@
-#include "BasicEnemyState.h"
+#include "State.h"
 
-class WalkingState : public BasicEnemyState
+class WalkingState : public State
 {
 public:
-	WalkingState(float s) : _speed(s) {}
+	WalkingState() {}
 
-	virtual void enter(BasicEnemy& _basicEnemy) {
-		
+	virtual void enter() {
+		_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_basicEnemy._ent);
+		_health = Game::Instance()->get_mngr()->getComponent<Health>(_basicEnemy._ent);
+		_playerTr = Game::Instance()->get_mngr()->getComponent<Transform>(Game::Instance()->get_mngr()->getEntities(ecs::hdlr::PLAYER)[0]);
 	}
 
-	virtual void handleInput() {}
+	virtual void update() override {
 
-	virtual void update(BasicEnemy& _basicEnemy) override {
-		if (/*Close enough to the target*/) {
+		Vector2D newDir = (_playerTr->getPos() - _tr->getPos()) * _tr->getSpeed();
+		_tr->setDir(newDir);
+
+		if (std::abs(_tr - _playerTr) < _dist) {
 			_basicEnemy.setState(BasicEnemy::ATTACKING);
 		}
 
-		if (/*Life <= 0*/) {
+		if (_health <= 0) {
 			_basicEnemy.setState(BasicEnemy::DYING);
 		}
 	}
-private:
-	float _speed;
 };
