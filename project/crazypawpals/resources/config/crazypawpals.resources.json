@@ -37,6 +37,10 @@
     { 
       "id": "manaorbempty",
       "file": "resources/images/manaorbempty.png"
+    },
+    {
+      "id": "floor",
+      "file": "resources/images/suelo.png"
     }
   ],
   
