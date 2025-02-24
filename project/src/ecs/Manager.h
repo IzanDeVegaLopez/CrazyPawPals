@@ -239,12 +239,7 @@ public:
 	}
 	// render all entities in a certain Scene (Group)
 	//
-	void render(sceneId_t sId) {
-		auto& _entity = getEntitiesByScene(sId);
-		for (auto& ents : _entity) {
-			render(ents);
-		}
-	}
+	void render(sceneId_t sId);
 
 	// render all entities
 	//

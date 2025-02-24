@@ -22,20 +22,18 @@ public:
 		//std::cout << delta_time << std::endl;
 	}
 	void render() override {
-		// mana buildup
-		//SDL_Renderer renderer = sdlutils().renderer();
-		//SDL_SetRenderDrawColor(renderer)
 		SDL_SetRenderDrawBlendMode(sdlutils().renderer(), SDL_BLENDMODE_NONE);
-		if (_mana_count < _max_mana) {
-			SDL_SetRenderDrawColor(sdlutils().renderer(), 81, 100, 222, 255);
-			SDL_Rect progress{ 10,42,(_mana_count % 1000) / 5,16 };
-			SDL_RenderFillRect(sdlutils().renderer(), &progress);
-		}
-		else {
-			SDL_SetRenderDrawColor(sdlutils().renderer(), 222, 81, 100, 255);
-			SDL_Rect progress{ 10,42,200,16 };
-			SDL_RenderFillRect(sdlutils().renderer(), &progress);
-		}
+
+		//bg
+		SDL_SetRenderDrawColor(sdlutils().renderer(), 222, 81, 100, 255);
+		SDL_Rect progress1{ 10,42,200,16 };
+		SDL_RenderFillRect(sdlutils().renderer(), &progress1);
+
+		//progress
+		SDL_SetRenderDrawColor(sdlutils().renderer(), 81, 100, 222, 255);
+		SDL_Rect progress2{ 10,42,(_mana_count % 1000) / 5,16 };
+		SDL_RenderFillRect(sdlutils().renderer(), &progress2);
+
 		// full mana orbs
 		int display = _max_mana / 1000;
 		for (int i = 1; i <= display; i++) {

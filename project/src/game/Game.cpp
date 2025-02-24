@@ -57,6 +57,17 @@ ecs::entity_t create_test_player_at(Vector2D position) {
 	
 	return player;
 }
+ecs::entity_t create_environment() {
+	auto&& manager = *Game::Instance()->get_mngr();
+	auto environment = manager.addEntity();
+	auto tr = manager.addComponent<Transform>(environment, Vector2D(-16.0, 9.0), Vector2D(0.0, 0.0), 100.0f, 100.0f, 0.0f, 0.05f);
+	manager.addComponent<dyn_image>(environment, rect_f32{
+		{0.0, 0.0},
+		{1.0, 1.0}
+		}, size2_f32{ 32.0, 18.0 }, manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam, sdlutils().images().at("floor"));
+
+	return environment;
+}
 
 bool Game::init() {
 	
@@ -101,19 +112,25 @@ bool Game::init() {
 	});
 	_mngr->setHandler(ecs::hdlr::CAMERA, cam);
 	
+	create_environment();
+
 	#pragma region player
 	auto &&manager = *_mngr;
+
+
+	create_test_player_at(Vector2D(4.0f, 0.0f));
+	create_test_player_at(Vector2D(-4.0f, 0.0f));
+	create_test_player_at(Vector2D(0.0f, 4.0f));
+	create_test_player_at(Vector2D(0.0f, -4.0f));
+
 	auto player = create_test_player_at(Vector2D(0.0, 0.0));
 	manager.addComponent<Revolver>(player);
 
 	manager.addComponent<MovementController>(player);
 	manager.addComponent<KeyboardPlayerCtrl>(player);
-	
-	create_test_player_at(Vector2D(4.0f, 0.0f));
-	create_test_player_at(Vector2D(-4.0f, 0.0f));
-	create_test_player_at(Vector2D(0.0f, 4.0f));
-	create_test_player_at(Vector2D(0.0f, -4.0f));
 	#pragma endregion
+
+
 
 	manager.addComponent<camera_follow>(cam, camera_follow_descriptor{
 		.previous_position = cam_screen.cam.camera.position,

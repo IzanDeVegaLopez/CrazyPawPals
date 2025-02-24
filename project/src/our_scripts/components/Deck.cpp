@@ -142,12 +142,19 @@ void Deck::render() noexcept
 		//reload bar
 		if (_is_reloading) {
 			SDL_SetRenderDrawBlendMode(sdlutils().renderer(), SDL_BLENDMODE_NONE);
-			SDL_SetRenderDrawColor(sdlutils().renderer(), 200, 200, 200, 255);
-			rect_f32 baroutput{ {_tr->getPos().getX(), _tr->getPos().getY() + 0.3}, {(reload_time - _time_till_reload_finishes) / 1000.0f, 0.2 } };
-			//SDL_Rect baroutput{ 100, 100, (reload_time - _time_till_reload_finishes) / 20, 16 };
-			SDL_Rect trueoutput = SDL_Rect_screen_rect_from_global(baroutput, _camera->cam);
-			//std::cout << trueoutput.w << std::endl;
-			SDL_RenderFillRect(sdlutils().renderer(), &trueoutput);
+
+			//bg
+			SDL_SetRenderDrawColor(sdlutils().renderer(), 100, 100, 100, 255);
+			rect_f32 baroutput1{ {_tr->getPos().getX(), _tr->getPos().getY() + 0.3}, {(reload_time) / 1000.0f, 0.2 } };
+			SDL_Rect trueoutput1 = SDL_Rect_screen_rect_from_global(baroutput1, _camera->cam);
+			SDL_RenderFillRect(sdlutils().renderer(), &trueoutput1);
+
+
+			//progress
+			SDL_SetRenderDrawColor(sdlutils().renderer(), 220, 220, 220, 255);
+			rect_f32 baroutput2{ {_tr->getPos().getX(), _tr->getPos().getY() + 0.3}, {(reload_time - _time_till_reload_finishes) / 1000.0f, 0.2 } };
+			SDL_Rect trueoutput2 = SDL_Rect_screen_rect_from_global(baroutput2, _camera->cam);
+			SDL_RenderFillRect(sdlutils().renderer(), &trueoutput2);
 		}
 
 		//Mostrar carta en la mano

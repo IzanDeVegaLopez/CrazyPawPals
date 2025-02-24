@@ -2,14 +2,14 @@
 #include "../../game/Game.h"
 #include "../../game/GameScene.h"
 
-Revolver::Revolver() : Weapon(4, 0.5f, 20.0f, 0.1f, "revolver") { }
+Revolver::Revolver() : Weapon(4, 0.5f, 2.0f, 0.5f, "revolver") { }
 
 Revolver::~Revolver() {}
 
 void 
 Revolver::callback(Vector2D shootPos, Vector2D shootDir) {
 	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
-	bp.dir = shootDir;
+	bp.dir = shootDir - shootPos;
 	bp.init_pos = shootPos;
 	bp.speed =_speed;
 	bp.damage = _damage;

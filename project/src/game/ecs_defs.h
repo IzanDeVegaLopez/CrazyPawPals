@@ -13,12 +13,14 @@
     SIMPLEMOVE, \
     HEALTH,\
 	LIFETIMETIMER, \
+    BULLETDATA, \
     WEAPON, \
 	MANA, \
 	DECK, \
 	CAMERA, \
 	CAMERA_FOLLOW, \
-	CAMERA_CLAMP \
+	CAMERA_CLAMP, \
+	RENDER_ORDERING 
 
 
 // Groups list - must have at least one element
@@ -27,7 +29,8 @@
 	BULLET,\
 	PLAYER,\
 	ENEMY,\
-	PLAYERBULLETS
+	PLAYERBULLETS,\
+    ENEMYBULLETS
 
 
 // Scene list
