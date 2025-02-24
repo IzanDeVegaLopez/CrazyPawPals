@@ -20,7 +20,7 @@
 	CAMERA_FOLLOW, \
 	CAMERA_CLAMP, \
 	WAVEMANAGER, \
-	ENEMYMOVENT \
+	ENEMYSTATEMACHINE \
 
 
 // Groups list - must have at least one element

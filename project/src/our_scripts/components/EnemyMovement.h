@@ -6,7 +6,7 @@ class Transform;
 class EnemyMovement: public ecs::Component
 {
 public: 
-	__CMPID_DECL__(ecs::cmp::ENEMYMOVENT);
+	/*__CMPID_DECL__(ecs::cmp::ENEMYMOVENT);*/
 
 	EnemyMovement();
 	virtual ~EnemyMovement();
