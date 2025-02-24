@@ -15,8 +15,9 @@ public:
 
 	//Methods of entities to spawn
 	void spawnPlayer();
-	void spawnEnemies();
-
+	void spawnSarnoRata(Vector2D posVec);
+	void spawnWaveManager();
+	
 	void generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid, const std::string& texName);
 	
 };

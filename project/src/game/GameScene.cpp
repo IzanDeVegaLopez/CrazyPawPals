@@ -17,6 +17,7 @@
 #include "../our_scripts/components/SimpleMove.h"
 #include "../our_scripts/components/Mana.h"
 #include "../our_scripts/components/Deck.hpp"
+#include "../our_scripts/components/WaveManager.h"
 
 #include <iostream>
 #include <string>
@@ -91,8 +92,21 @@ void GameScene::spawnPlayer()
 	revolver->set_attack_size(50, 20);
 }
 
-void GameScene::spawnEnemies()
+void GameScene::spawnSarnoRata(Vector2D posVec)
 {
+	create_entity(
+		new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
+		new Image(&sdlutils().images().at("enemy")),
+		new MovementController(),
+		new KeyboardPlayerCtrl()
+	);
+}
+
+void GameScene::spawnWaveManager()
+{
+	create_entity(
+		new WaveManager()
+	);
 }
 
 void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid, const std::string& texName)

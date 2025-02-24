@@ -1,9 +1,9 @@
 #include <vector>
 #include <random>
 #include "WaveManager.h"
-#include "EnemyPoolManager.h"
 #include "ecs/Manager.h"
 #include "game/Game.h"
+#include "game/GameScene.h"
 #include "sdlutils/SDLUtils.h"
 
 WaveManager::WaveManager() : 
@@ -75,6 +75,7 @@ WaveManager::spawnWave() {
             {
 			case 1:
 				//Game::Instance()->createSarnoRata(posVec);
+                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
 				break;
             case 2:
 				//Game::Instance()->createMichiMafioso(posVec);

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../ecs/Component.h"
-#include "../sdlUtils/SDLUtils.h"
+#include "../../ecs/Component.h"
+#include "../../sdlUtils/SDLUtils.h"
 
 class WaveManager : public ecs::Component {
     // Los 0 son espacios extra
