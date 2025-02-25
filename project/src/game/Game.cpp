@@ -74,31 +74,31 @@ bool Game::init() {
 	// initialize the SDL singleton
 	if (!SDLUtils::Init("crazy paw pals", _screen_size.first, _screen_size.second,
 		"resources/config/crazypawpals.resources.json")) {
-			
-			std::cerr << "Something went wrong while initializing SDLUtils"
-			<< std::endl;
-			return false;
-			
-		}
 		
-		// initialize the InputHandler singleton
-		if (!InputHandler::Init()) {
-			std::cerr << "Something went wrong while initializing SDLHandler"
-			<< std::endl;
-			return false;
-		}
+		std::cerr << "Something went wrong while initializing SDLUtils"
+		<< std::endl;
+		return false;
 		
-		// enable the cursor visibility
-		SDL_ShowCursor(SDL_ENABLE);
+	}
 		
-		_mngr = new ecs::Manager();
-		
-		_game_scene = new GameScene();
-		_game_scene->initScene();
-		_current_scene = _game_scene;
-		
-		#pragma endregion
-		auto cam = _mngr->addEntity();
+	// initialize the InputHandler singleton
+	if (!InputHandler::Init()) {
+		std::cerr << "Something went wrong while initializing SDLHandler"
+		<< std::endl;
+		return false;
+	}
+	
+	// enable the cursor visibility
+	SDL_ShowCursor(SDL_ENABLE);
+	
+	_mngr = new ecs::Manager();
+	
+	_game_scene = new GameScene();
+	_game_scene->initScene();
+	_current_scene = _game_scene;
+	
+	#pragma endregion
+	auto cam = _mngr->addEntity();
 	//_mngr->setHandler(ecs::hdlr::CAMERA, cam);
 	// auto cam_tr = _mngr->addComponent<Transform>(cam);
 	auto &&cam_screen = *_mngr->addComponent<camera_component>(cam, camera_screen{
