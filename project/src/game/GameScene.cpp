@@ -17,12 +17,16 @@
 #include "../our_scripts/components/SimpleMove.h"
 #include "../our_scripts/components/Mana.h"
 #include "../our_scripts/components/Deck.hpp"
+
 #include "../our_scripts/components/WaveManager.h"
 #include "../our_scripts/components/WeaponMichiMafioso.h"
-#include "../our_scripts/components/EnemyStatemachine.h"
 #include "../our_scripts/components/WeaponPlimPlim.h"
 #include "../our_scripts/components/WeaponSarnoRata.h"
 #include "../our_scripts/components/WeaponBoom.h"
+#include "../our_scripts/components/Health.h"
+
+#include "../our_scripts/components/EnemyStatemachine.h"
+#include "../our_scripts/components/dyn_image.hpp"
 
 #include <iostream>
 #include <string>
@@ -47,6 +51,7 @@ void GameScene::initScene()
 #pragma region Player
 
 	//spawnPlayer();
+	spawnSarnoRata({ sdlutils().width() / 2.0f,0});
 
 #pragma endregion Deck
 
@@ -112,9 +117,10 @@ void GameScene::spawnSarnoRata(Vector2D posVec)
 		ecs::grp::ENEMY,
 		ecs::scene::GAMESCENE,
 		new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
-		new Image(&sdlutils().images().at("enemy")),
-		new Health(2), 
-		weapon
+		new Image(&sdlutils().images().at("enemy")),	
+		new Health(2),
+		weapon,
+		new EnemyStateMachine(3)
 	);
 }
 

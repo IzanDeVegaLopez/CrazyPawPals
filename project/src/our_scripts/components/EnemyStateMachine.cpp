@@ -1,8 +1,14 @@
 #include "EnemyStateMachine.h"
+#include "../states/State.h"
 #include "../states/WalkingState.h"
 #include "../states/AttackingState.h"
 
-inline void EnemyStateMachine::setState(StateType s) {
+void EnemyStateMachine::update() {
+	_state->update();
+}
+void EnemyStateMachine::render() {
+}
+void EnemyStateMachine::setState(StateType s) {
 	if (_type != s) {
 		delete _state;
 		switch (s) {

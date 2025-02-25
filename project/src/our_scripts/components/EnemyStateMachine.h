@@ -1,13 +1,15 @@
 // This file is part of the course TPV2@UCM - Samir Genaim
 
 #pragma once
-#include "../states/State.h"
 //#include "../states/DyingState.h"
 //#include "../states/InactiveState.h"
+#include "../../ecs/Component.h"
 
 class Texture;
 class WalkingState;
 class AttackingState;
+class State;
+
 class EnemyStateMachine : public ecs::Component {
 public:
 	__CMPID_DECL__(ecs::cmp::ENEMYSTATEMACHINE);
@@ -16,10 +18,10 @@ public:
 		WALKING, ATTACKING, DYING, INACTIVE
 	};
 
-	EnemyStateMachine(float dist) { _dist == dist; };
+	EnemyStateMachine(float dist) :  _dist(dist),_img(nullptr),_state(nullptr),_type(StateType::WALKING){ };
 
-	virtual ~EnemyStateMachine();
-	void update() { _state->update(); };
+	virtual ~EnemyStateMachine() {};
+	void update();
 	void render() override;
 	void handleInput() {} ;
 
