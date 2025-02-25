@@ -94,9 +94,7 @@ bool Game::init() {
 	
 	_mngr = new ecs::Manager();
 	
-	_game_scene = new GameScene();
-	_game_scene->initScene();
-	_current_scene = _game_scene;
+	
 	
 	#pragma endregion
 	auto cam = _mngr->addEntity();
@@ -112,7 +110,9 @@ bool Game::init() {
 		},
 	});
 	_mngr->setHandler(ecs::hdlr::CAMERA, cam);
-	
+	_game_scene = new GameScene();
+	_game_scene->initScene();
+	_current_scene = _game_scene;
 	create_environment();
 
 	#pragma region player
