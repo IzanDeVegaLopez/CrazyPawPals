@@ -9,7 +9,7 @@ Revolver::~Revolver() {}
 void 
 Revolver::callback(Vector2D shootPos, Vector2D shootDir) {
 	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
-	bp.dir = shootDir - shootPos;
+	bp.dir = shootDir;
 	bp.init_pos = shootPos;
 	bp.speed =_speed;
 	bp.damage = _damage;

@@ -61,7 +61,7 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
 
 
     if (ihdlr.mouseButtonDownEvent()) {
-        Vector2D mousePos = { (float)ihdlr.getMousePos().getX(), (float)ihdlr.getMousePos().getY()};
+        //Vector2D mousePos = { (float)ihdlr.getMousePos().getX(), (float)ihdlr.getMousePos().getY()};
         //shoot
         if (ihdlr.getMouseButtonState(InputHandler::LEFT)) {
             //send message to shoot
