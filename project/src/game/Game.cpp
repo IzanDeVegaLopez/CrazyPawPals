@@ -17,6 +17,7 @@
 #include "../our_scripts/components/dyn_image.hpp"
 #include "../our_scripts/components/camera_component.hpp"
 #include "../our_scripts/components/Revolver.h"
+#include "../our_scripts/components/Rampage.h"
 
 //Scenes for SceneManager
 #include "Scene.h"
@@ -46,7 +47,9 @@ ecs::entity_t create_test_player_at(Vector2D position) {
 	auto tr = manager.addComponent<Transform>(player, position, Vector2D(0.0, 0.0), 100.0f, 100.0f, 0.0f, 0.05f);
 	(void)tr;
 	manager.addComponent<dyn_image>(player, rect_f32{
+		//pos inicial del render
 		{0.0, 0.0},
+		//Que tanto de la textura renderiza
 		{1.0, 1.0}
 	}, size2_f32{1.0, 1.0}, manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam, sdlutils().images().at("player"));
 
@@ -118,7 +121,7 @@ bool Game::init() {
 	auto &&manager = *_mngr;
 
 	auto player = create_test_player_at(Vector2D(0.0, 0.0));
-	manager.addComponent<Revolver>(player);
+	manager.addComponent<Rampage>(player);
 
 	manager.addComponent<MovementController>(player);
 	manager.addComponent<KeyboardPlayerCtrl>(player);
