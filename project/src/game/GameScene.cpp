@@ -101,7 +101,7 @@ void GameScene::spawnEnemies()
 {
 }
 
-void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid, const std::string& texName)
+void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid)
 {
 	auto manager = Game::Instance()->get_mngr();
 	(void)gid;
@@ -114,7 +114,7 @@ void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs
 			rect_f32{ {0,0},{1,1} },
 			size2_f32{1,1},
 			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
-			sdlutils().images().at(texName)
+			sdlutils().images().at(bp.sprite_key)
 		),
 		new LifetimeTimer(bp.life_time),
 		new BulletData(bp.damage)

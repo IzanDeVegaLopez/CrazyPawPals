@@ -14,8 +14,9 @@ void Fireball::on_play(const Vector2D* player_position,const Vector2D* target_po
 	bp.height = 30;
 	bp.width = 80;
 	bp.life_time = 2;
+	bp.sprite_key = "fireball";
 	std::cout << bp.init_pos << "--" << bp.dir << std::endl;
-	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET, "fireball");
+	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }
 
 Minigun::Minigun()
@@ -26,6 +27,7 @@ Minigun::Minigun()
 	_bullets_properties.height = 20;
 	_bullets_properties.width = 20;
 	_bullets_properties.life_time = 0.5f;
+	_bullets_properties.sprite_key = "minigun";
 }
 void Minigun::on_play(const Vector2D* player_position, const Vector2D* target_position)
 {
@@ -45,7 +47,7 @@ void Minigun::update(uint32_t dt)
 			_bullets_properties.dir = ((*_aim_vec) - (*_pl_vec)).normalize();
 			_bullets_properties.init_pos = *_pl_vec;
 			std::cout <<_bullets_properties.init_pos << "--" << _bullets_properties.dir << std::endl;
-			static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(_bullets_properties, ecs::grp::BULLET, "minigun");
+			static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(_bullets_properties, ecs::grp::BULLET);
 			++_number_of_bullets_shot;
 			if (_number_of_bullets_shot == _number_of_shots)
 				_playing = false;
@@ -68,5 +70,6 @@ void Lighting::on_play(const Vector2D* player_position, const Vector2D* target_p
 	bp.height = 30;
 	bp.width = 30;
 	bp.life_time = 0.3;
-	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET, "fireball");
+	bp.sprite_key = "lighting";
+	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }

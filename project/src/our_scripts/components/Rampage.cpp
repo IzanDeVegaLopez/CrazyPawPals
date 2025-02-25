@@ -18,6 +18,7 @@ Rampage::callback(Vector2D shootPos, Vector2D shootDir) {
 	bp.life_time = _distance;
 	bp.width = _attack_width;
 	bp.height = _attack_height;
+	bp.sprite_key = _tex;
 
 	float initialRot = atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI;
 	bp.rot = initialRot;
@@ -34,6 +35,6 @@ Rampage::callback(Vector2D shootPos, Vector2D shootDir) {
 		bp.dir = rotatedDir;
 		bp.rot = atan2(rotatedDir.getY(), rotatedDir.getX()) * 180.0f / M_PI;
 
-		scene->generate_proyectile(bp, ecs::grp::BULLET, _tex);
+		scene->generate_proyectile(bp, ecs::grp::BULLET);
 	}
 }
