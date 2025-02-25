@@ -80,7 +80,7 @@ void GameScene::spawnPlayer()
 {
 	//auto* revolver = new Revolver();
 	auto* revolver = new Rampage();
-	std::list<Card*> c = { new Fireball(), new Minigun(), new Fireball(), new Minigun() };
+	std::list<Card*> c = { new Fireball(), new Minigun(), new Lighting(), new Minigun() };
 	create_entity(
 		ecs::grp::PLAYER,
 		ecs::scene::GAMESCENE,

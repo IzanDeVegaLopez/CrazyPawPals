@@ -52,7 +52,7 @@ ecs::entity_t create_test_player_at(Vector2D position) {
 
 	manager.addComponent<MovementController>(player);
 	manager.addComponent<ManaComponent>(player);
-	std::list<Card*> my_card_list = std::list<Card*>{ new Fireball(), new Fireball(), new Minigun(), new Minigun() };
+	std::list<Card*> my_card_list = std::list<Card*>{ new Fireball(), new Lighting(), new Minigun(), new Minigun() };
 	manager.addComponent<Deck>(player, my_card_list);
 	
 	return player;

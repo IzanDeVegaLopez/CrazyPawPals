@@ -15,37 +15,41 @@
     { "id": "sdl_logo","file": "resources/images/SDL_logo.png"},
     { "id": "enemy","file": "resources/images/enemy.png"},
     {
-      "id": "card",
+      "id":   "card",
       "file": "resources/images/card.png"
     },
     {
-      "id": "fireball",
+      "id":   "fireball",
       "file": "resources/images/fireball.png"
     },
     {
-      "id": "minigun",
+      "id":   "minigun",
       "file": "resources/images/minigun.png"
     },
     {
-      "id": "reloading",
+      "id":   "reloading",
       "file": "resources/images/reloading.png"
     },
     { 
-      "id": "manaorb",
+      "id":   "manaorb",
       "file": "resources/images/manaorb.png"
     },
     { 
-      "id": "manaorbempty",
+      "id":   "manaorbempty",
       "file": "resources/images/manaorbempty.png"
     },
     {
 
-      "id": "floor",
+      "id":   "floor",
       "file": "resources/images/suelo.png"
     },
     {
-      "id": "rampage",
+      "id":   "rampage",
       "file": "resources/images/rampage.png"
+    },
+    {
+      "id":   "lighting",
+      "file": "resources/images/lighting.png"
     }
   ],
   
