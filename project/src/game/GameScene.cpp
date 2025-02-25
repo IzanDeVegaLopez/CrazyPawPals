@@ -112,7 +112,7 @@ void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs
 		new Transform(bp.init_pos, bp.dir, bp.width, bp.height, bp.rot, bp.speed),
 		new dyn_image(
 			rect_f32{ {0,0},{1,1} },
-			size2_f32{1,1},
+			size2_f32{0.5,0.5},
 			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
 			sdlutils().images().at(bp.sprite_key)
 		),
