@@ -18,18 +18,6 @@ void Deck::_put_new_card_on_hand()
 		reload();
 	}
 }
-//For testing Purposes
-/*
-Deck::Deck() noexcept
-{
-	_draw_pile = CardList();
-	_hand = nullptr;
-	_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
-	_discard_pile = CardList();
-	_draw_pile.shuffle();
-	_put_new_card_on_hand();
-}
-*/
 
 Deck::Deck(std::list<Card*>& starterDeck) noexcept
 {
@@ -39,10 +27,6 @@ Deck::Deck(std::list<Card*>& starterDeck) noexcept
 	_draw_pile = CardList(starterDeck);
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
-}
-
-Deck::Deck() noexcept
-{
 }
 
 Deck::Deck(CardList&& starterDeck) noexcept
@@ -99,9 +83,7 @@ void Deck::mill() noexcept
 void Deck::reload() noexcept
 {
 	if (!_is_reloading) {
-		//TODO
 		//TODO -> block player action
-		
 		_is_reloading = true;
 		_time_till_reload_finishes = reload_time;
 
@@ -112,7 +94,6 @@ void Deck::reload() noexcept
 		}
 		_draw_pile.move_from_this_to(_discard_pile);
 	}
-
 }
 void Deck::_finish_realoading()
 {
@@ -161,12 +142,19 @@ void Deck::render() noexcept
 		//reload bar
 		if (_is_reloading) {
 			SDL_SetRenderDrawBlendMode(sdlutils().renderer(), SDL_BLENDMODE_NONE);
-			SDL_SetRenderDrawColor(sdlutils().renderer(), 200, 200, 200, 255);
-			rect_f32 baroutput{ {_tr->getPos().getX(), _tr->getPos().getY() + 0.3}, {(reload_time - _time_till_reload_finishes) / 1000.0f, 0.2 } };
-			//SDL_Rect baroutput{ 100, 100, (reload_time - _time_till_reload_finishes) / 20, 16 };
-			SDL_Rect trueoutput = SDL_Rect_screen_rect_from_global(baroutput, _camera->cam);
-			//std::cout << trueoutput.w << std::endl;
-			SDL_RenderFillRect(sdlutils().renderer(), &trueoutput);
+
+			//bg
+			SDL_SetRenderDrawColor(sdlutils().renderer(), 100, 100, 100, 255);
+			rect_f32 baroutput1{ {_tr->getPos().getX(), _tr->getPos().getY() + 0.3}, {(reload_time) / 1000.0f, 0.2 } };
+			SDL_Rect trueoutput1 = SDL_Rect_screen_rect_from_global(baroutput1, _camera->cam);
+			SDL_RenderFillRect(sdlutils().renderer(), &trueoutput1);
+
+
+			//progress
+			SDL_SetRenderDrawColor(sdlutils().renderer(), 220, 220, 220, 255);
+			rect_f32 baroutput2{ {_tr->getPos().getX(), _tr->getPos().getY() + 0.3}, {(reload_time - _time_till_reload_finishes) / 1000.0f, 0.2 } };
+			SDL_Rect trueoutput2 = SDL_Rect_screen_rect_from_global(baroutput2, _camera->cam);
+			SDL_RenderFillRect(sdlutils().renderer(), &trueoutput2);
 		}
 
 		//Mostrar carta en la mano
@@ -191,7 +179,7 @@ void Deck::render() noexcept
 		cam_screen.camera = { {0,0},{8,6} };
 		//camera screen on pixels size
 		cam_screen.screen = { position.first, position.second };
-
+		
 		//Function for rendering a card
 		card_rendering_descriptor_render(
 			crd,
@@ -213,6 +201,7 @@ void Deck::render() noexcept
 			//card_rendering_descriptor_options_full_subrect
 			card_rendering_descriptor_options_none
 		);
+		
 }
 
 void Deck::add_card_to_deck(Card* c)
@@ -227,7 +216,7 @@ void Deck::remove_card(std::list<Card*>::iterator)
 
 void Deck::initComponent()
 {
-	_mana = Game::Instance()->get_mngr()->getComponent<Mana>(_ent);
+	_mana = Game::Instance()->get_mngr()->getComponent<ManaComponent>(_ent);
 	assert(_mana!=nullptr);
 	_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
 	assert(_tr!=nullptr);

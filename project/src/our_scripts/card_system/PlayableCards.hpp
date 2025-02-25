@@ -6,6 +6,14 @@ public:
 	Fireball();
 	void on_play(const Vector2D* player_position, const Vector2D* target_position) override;
 };
+
+class Lighting : public Card {
+public:
+	Lighting();
+	void on_play(const Vector2D* player_position, const Vector2D* target_position) override;
+};
+
+
 class Minigun : public Card {
 public:
 	Minigun();

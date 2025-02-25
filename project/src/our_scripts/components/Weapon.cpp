@@ -27,7 +27,7 @@ void
 Weapon::shoot(const Vector2D& target) {
 	auto& pos = _tr->getPos();
 	if (sdlutils().virtualTimer().currRealTime() >= _lastShoot + _cooldown) {
-		Vector2D shootPos = { pos.getX() + (_tr->getWidth() / 2), pos.getY() + (_tr->getHeight() / 2) };
+		Vector2D shootPos = { pos.getX(), pos.getY() };
 		Vector2D shootDir = (target - shootPos).normalize();
 		callback(shootPos, shootDir);
 		_lastShoot = sdlutils().virtualTimer().currRealTime();

@@ -51,12 +51,23 @@ ecs::entity_t create_test_player_at(Vector2D position) {
 		{1.0, 1.0}
 	}, size2_f32{1.0, 1.0}, manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam, sdlutils().images().at("player"));
 
-	//manager.addComponent<MovementController>(player);
-	manager.addComponent<Mana>(player);
-	std::list<Card*> my_card_list = std::list<Card*>{ new Fireball(), new Fireball(), new Minigun(), new Minigun() };
+	manager.addComponent<MovementController>(player);
+	manager.addComponent<ManaComponent>(player);
+	std::list<Card*> my_card_list = std::list<Card*>{ new Fireball(), new Lighting(), new Minigun(), new Minigun() };
 	manager.addComponent<Deck>(player, my_card_list);
 	
 	return player;
+}
+ecs::entity_t create_environment() {
+	auto&& manager = *Game::Instance()->get_mngr();
+	auto environment = manager.addEntity();
+	auto tr = manager.addComponent<Transform>(environment, Vector2D(-16.0, 9.0), Vector2D(0.0, 0.0), 100.0f, 100.0f, 0.0f, 0.05f);
+	manager.addComponent<dyn_image>(environment, rect_f32{
+		{0.0, 0.0},
+		{1.0, 1.0}
+		}, size2_f32{ 32.0, 18.0 }, manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam, sdlutils().images().at("floor"));
+
+	return environment;
 }
 
 bool Game::init() {
@@ -64,31 +75,31 @@ bool Game::init() {
 	// initialize the SDL singleton
 	if (!SDLUtils::Init("crazy paw pals", _screen_size.first, _screen_size.second,
 		"resources/config/crazypawpals.resources.json")) {
-			
-			std::cerr << "Something went wrong while initializing SDLUtils"
-			<< std::endl;
-			return false;
-			
-		}
 		
-		// initialize the InputHandler singleton
-		if (!InputHandler::Init()) {
-			std::cerr << "Something went wrong while initializing SDLHandler"
-			<< std::endl;
-			return false;
-		}
+		std::cerr << "Something went wrong while initializing SDLUtils"
+		<< std::endl;
+		return false;
 		
-		// enable the cursor visibility
-		SDL_ShowCursor(SDL_ENABLE);
+	}
 		
-		_mngr = new ecs::Manager();
-		
-		_game_scene = new GameScene();
-		_game_scene->initScene();
-		_current_scene = _game_scene;
-		
-		#pragma endregion
-		auto cam = _mngr->addEntity();
+	// initialize the InputHandler singleton
+	if (!InputHandler::Init()) {
+		std::cerr << "Something went wrong while initializing SDLHandler"
+		<< std::endl;
+		return false;
+	}
+	
+	// enable the cursor visibility
+	SDL_ShowCursor(SDL_ENABLE);
+	
+	_mngr = new ecs::Manager();
+	
+	_game_scene = new GameScene();
+	_game_scene->initScene();
+	_current_scene = _game_scene;
+	
+	#pragma endregion
+	auto cam = _mngr->addEntity();
 	//_mngr->setHandler(ecs::hdlr::CAMERA, cam);
 	// auto cam_tr = _mngr->addComponent<Transform>(cam);
 	auto &&cam_screen = *_mngr->addComponent<camera_component>(cam, camera_screen{
@@ -102,19 +113,19 @@ bool Game::init() {
 	});
 	_mngr->setHandler(ecs::hdlr::CAMERA, cam);
 	
+	create_environment();
+
 	#pragma region player
 	auto &&manager = *_mngr;
+
 	auto player = create_test_player_at(Vector2D(0.0, 0.0));
 	manager.addComponent<Revolver>(player);
 
 	manager.addComponent<MovementController>(player);
 	manager.addComponent<KeyboardPlayerCtrl>(player);
-	
-	create_test_player_at(Vector2D(4.0f, 0.0f));
-	create_test_player_at(Vector2D(-4.0f, 0.0f));
-	create_test_player_at(Vector2D(0.0f, 4.0f));
-	create_test_player_at(Vector2D(0.0f, -4.0f));
 	#pragma endregion
+
+
 
 	manager.addComponent<camera_follow>(cam, camera_follow_descriptor{
 		.previous_position = cam_screen.cam.camera.position,

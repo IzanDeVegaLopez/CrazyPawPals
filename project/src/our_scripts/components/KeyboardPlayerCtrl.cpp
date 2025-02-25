@@ -2,6 +2,7 @@
 #include "../../sdlutils/InputHandler.h"
 #include "../../game/Game.h"
 #include "../../ecs/Manager.h"
+#include "../components/camera_component.hpp"
 
 #include "Deck.hpp"
 #include "Transform.h"
@@ -60,13 +61,16 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
 
 
     if (ihdlr.mouseButtonDownEvent()) {
-        Vector2D mousePos = { (float)ihdlr.getMousePos().getX(), (float)ihdlr.getMousePos().getY()};
+        //Vector2D mousePos = { (float)ihdlr.getMousePos().getX(), (float)ihdlr.getMousePos().getY()};
         //shoot
         if (ihdlr.getMouseButtonState(InputHandler::LEFT)) {
             //send message to shoot
-            _w->shoot(mousePos);
-            if(_dc->discard_card())
-                _w->shoot(ihdlr.getMousePos());
+            //_w->shoot(mousePos);
+            if (_dc->discard_card()) {
+                position2_f32 mouse_pos = Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->mouse_world_position; 
+                _w->shoot(Vector2D{ mouse_pos.x, mouse_pos.y });
+            }
+                //_w->shoot(ihdlr.getMousePos());
            
 
         }
@@ -74,7 +78,10 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
         else if (ihdlr.getMouseButtonState(InputHandler::RIGHT)) {
             //send message to use a card
             //Vector2D mousePos = { (float)ihdlr.getMousePos().first, (float)ihdlr.getMousePos().second };
-            _dc->use_card(&(ihdlr.getMousePos()));
+            position2_f32 mouse_pos = Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->mouse_world_position;
+            //TODO:: WAY BETTER
+            Vector2D* vec = new Vector2D{ mouse_pos.x, mouse_pos.y };
+            _dc->use_card(vec);
         }
     }
     
