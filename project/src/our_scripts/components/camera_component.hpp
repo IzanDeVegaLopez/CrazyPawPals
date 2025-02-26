@@ -13,7 +13,6 @@ struct camera_component : public ecs::Component {
 
 	inline camera_component(const camera_screen cam) : cam(cam) {}
 	void update(uint32_t delta_time) override;
-	position2_f32 mouse_world_position{0,0};
 };
 
 struct camera_follow : public ecs::Component {

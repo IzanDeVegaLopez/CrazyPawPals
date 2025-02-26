@@ -61,26 +61,32 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
 
 
     if (ihdlr.mouseButtonDownEvent()) {
+        rect_f32 converted_mouse_pos = rect_f32_global_from_screen_rect_flipped_y(
+            {
+                {
+                    ih().getMousePos().getX(),
+                    ih().getMousePos().getY()
+                },
+                {
+                    1,1
+                }
+            },
+            Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
+        );
         //Vector2D mousePos = { (float)ihdlr.getMousePos().getX(), (float)ihdlr.getMousePos().getY()};
         //shoot
         if (ihdlr.getMouseButtonState(InputHandler::LEFT)) {
-            //send message to shoot
+            //send message to shootih().getMousePos();
             //_w->shoot(mousePos);
             if (_dc->discard_card()) {
-                position2_f32 mouse_pos = Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->mouse_world_position; 
-                _w->shoot(Vector2D{ mouse_pos.x, mouse_pos.y });
-            }
-                //_w->shoot(ihdlr.getMousePos());
-           
-
+                //position2_f32 mouse_pos = Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->mouse_world_position; 
+                _w->shoot(Vector2D{ converted_mouse_pos.position.x, converted_mouse_pos.position.y });
+            }       
         }
         //use card
         else if (ihdlr.getMouseButtonState(InputHandler::RIGHT)) {
             //send message to use a card
-            //Vector2D mousePos = { (float)ihdlr.getMousePos().first, (float)ihdlr.getMousePos().second };
-            position2_f32 mouse_pos = Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->mouse_world_position;
-            //TODO:: WAY BETTER
-            Vector2D* vec = new Vector2D{ mouse_pos.x, mouse_pos.y };
+            Vector2D* vec = new Vector2D{ converted_mouse_pos.position.x,  converted_mouse_pos.position.y };
             _dc->use_card(vec);
         }
     }

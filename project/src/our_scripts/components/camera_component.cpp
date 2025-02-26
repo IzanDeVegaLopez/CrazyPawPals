@@ -32,7 +32,7 @@ void camera_follow::update(uint32_t delta_time) {
         }
     }, cam.cam).position;
 
-    cam.mouse_world_position = mouse_world_pos;
+    //cam.mouse_world_position = mouse_world_pos;
 
 
     auto &&self_target = const_cast<Transform &>(target);
