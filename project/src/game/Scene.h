@@ -25,4 +25,17 @@ public:
 		Game::Instance()->get_mngr()->addExistingComponent(ent, components...);
 		return ent;
 	}
+
+	struct rendering {
+		enum camera_creation_descriptor_options {
+			camera_creation_descriptor_options_none = 0,
+			camera_creation_descriptor_options_set_handler = 1 << 0,
+			camera_creation_descriptor_options_follow = 1 << 1,
+			camera_creation_descriptor_options_clamp = 1 << 2,
+		};
+		using camera_creation_descriptor_flags = uint8_t;
+		
+		#define CZPP_NULLABLE
+		ecs::entity_t create_camera(const camera_creation_descriptor_flags flags, CZPP_NULLABLE const Transform *optional_follow_target);
+	};
 };
