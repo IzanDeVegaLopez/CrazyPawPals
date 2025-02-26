@@ -220,8 +220,8 @@ void Deck::initComponent()
 	assert(_mana!=nullptr);
 	_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
 	assert(_tr!=nullptr);
-	//_camera = Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA));
-	//assert(_camera != nullptr);
+	_camera = Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA));
+	assert(_camera != nullptr);
 }
 
 std::ostream& operator<<(std::ostream& os, const Deck& deck)
