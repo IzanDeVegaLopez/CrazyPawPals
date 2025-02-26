@@ -21,6 +21,7 @@ public:
 
 	template <typename ... Cmps>
 	ecs::entity_t create_entity(ecs::grpId_t gid, ecs::sceneId_t sid,Cmps ... components) {
+		(void)gid;
 		ecs::entity_t ent = Game::Instance()->get_mngr()->addEntity(sid);
 		Game::Instance()->get_mngr()->addExistingComponent(ent, components...);
 		return ent;
@@ -36,6 +37,7 @@ public:
 		using camera_creation_descriptor_flags = uint8_t;
 		
 		#define CZPP_NULLABLE
+		class Transform;
 		ecs::entity_t create_camera(const camera_creation_descriptor_flags flags, CZPP_NULLABLE const Transform *optional_follow_target);
 	};
 };

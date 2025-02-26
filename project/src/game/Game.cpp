@@ -61,6 +61,7 @@ ecs::entity_t create_environment() {
 	auto&& manager = *Game::Instance()->get_mngr();
 	auto environment = manager.addEntity();
 	auto tr = manager.addComponent<Transform>(environment, Vector2D(-16.0, 9.0), Vector2D(0.0, 0.0), 100.0f, 100.0f, 0.0f, 0.05f);
+	(void)tr;
 	manager.addComponent<dyn_image>(environment, rect_f32{
 		{0.0, 0.0},
 		{1.0, 1.0}
