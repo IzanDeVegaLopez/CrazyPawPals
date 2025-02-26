@@ -17,10 +17,6 @@
 #include "../our_scripts/components/dyn_image.hpp"
 #include "../our_scripts/components/camera_component.hpp"
 #include "../our_scripts/components/Revolver.h"
-#include "../our_scripts/components/WeaponMichiMafioso.h"
-#include "../our_scripts/components/WeaponBoom.h"
-#include "../our_scripts/components/WeaponPlimPlim.h"
-#include "../our_scripts/components/WeaponSarnoRata.h"
 
 //Scenes for SceneManager
 #include "Scene.h"
