@@ -122,7 +122,8 @@ bool Game::init() {
 	auto &&manager = *_mngr;
 
 	auto player = create_test_player_at(Vector2D(0.0, 0.0));
-	manager.addComponent<WeaponSarnoRata>(player);
+	auto weapon = manager.addComponent<Revolver>(player);
+	weapon->set_attack_size(200, 200);
 
 	manager.addComponent<KeyboardPlayerCtrl>(player);
 	#pragma endregion
