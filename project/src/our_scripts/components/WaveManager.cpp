@@ -8,9 +8,9 @@
 
 // 1 segundo = 1000 ticks (ms)
 WaveManager::WaveManager() : 
-    _currentWaveTime(0)
+    _currentWaveTime(0),
 	_currentWave(0), _enemiesSpawned(0), // enemiesSpawned a 1 siempre
-    _enemiesKilled(0), _waveActive(false), _fogActive(false) { }
+    _enemiesKilled(0), _waveActive(false), _fogActive(false),
     _totalSpawnTime(7500.0f)
 {
     _waveTime = 60000;
@@ -112,7 +112,7 @@ WaveManager::spawnWave() {
             // _op_time = _min_time * rn;
             // _nextSpawn = _currentWaveTime + (_min_time + _op_time);
 
-            std::cout << "Enemy " << _waves[_currentWave][_enemiesSpawned] << " spawned at: " << posVec.getX() << ", " << posVec.getY() << std::endl;
+            std::cout << "Enemy " << _waves[_currentWave].second[_enemiesSpawned] << " spawned at: " << posVec.getX() << ", " << posVec.getY() << std::endl;
 			std::cout << std::endl;
             _enemiesSpawned++;
 

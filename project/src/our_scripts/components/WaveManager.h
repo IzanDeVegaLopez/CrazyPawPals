@@ -40,7 +40,7 @@ class WaveManager : public ecs::Component {
 public:
     __CMPID_DECL__(ecs::cmp::WAVEMANAGER)
     WaveManager();
-    virtual ~WaveManager() {};
+    virtual ~WaveManager();
 
     void update(uint32_t delta_time) override;
     void spawnWave();
