@@ -15,6 +15,7 @@ WeaponMichiMafioso::callback(Vector2D shootPos, Vector2D shootDir) {
 	bp.damage = _damage;
 	bp.life_time = 2;
 	bp.width = _attack_width;
+	bp.sprite_key = "fireball";
 	bp.height = _attack_height;
 	bp.rot = atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI;
 
