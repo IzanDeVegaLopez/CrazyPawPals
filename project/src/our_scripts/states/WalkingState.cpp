@@ -39,9 +39,9 @@ void WalkingState::update(uint32_t delta_time) {
 		_tr->setDir(Vector2D(0, 0));
 	}
 	
-	std::cout << "Dirección: " << newDir << "\n";
+	/*std::cout << "Dirección: " << newDir << "\n";
 	std::cout << "Velocidad: " << _tr->getSpeed() << "\n";
-	std::cout << "Posición: " << _tr->getPos() << "\n";
+	std::cout << "Posición: " << _tr->getPos() << "\n";*/
 
 	if (std::abs(_tr - _playerTr) < _dist) {
 		_stateMachine->setState(EnemyStateMachine::ATTACKING);
