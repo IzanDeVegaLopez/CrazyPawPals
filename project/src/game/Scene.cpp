@@ -4,6 +4,7 @@
 
 #include "../our_scripts/components/camera_component.hpp"
 ecs::entity_t Scene::rendering::create_camera(const camera_creation_descriptor_flags flags, CZPP_NULLABLE const Transform *optional_follow_target) {
+    std::cout << std::endl << flags << std::endl;
     assert(
         (flags & camera_creation_descriptor_options_follow) == (optional_follow_target != nullptr)
         && "error: follow target must be provided if and only if the follow flag is set"
