@@ -31,10 +31,10 @@ public:
 	
 	struct rendering {
 		enum camera_creation_descriptor_options {
-			camera_creation_descriptor_options_none = 0,
-			camera_creation_descriptor_options_set_handler = 1 << 0,
-			camera_creation_descriptor_options_follow = 1 << 1,
-			camera_creation_descriptor_options_clamp = 1 << 2,
+			camera_creation_descriptor_options_none = 0, // 0
+			camera_creation_descriptor_options_set_handler = 1 << 0, // 1
+			camera_creation_descriptor_options_follow = 1 << 1, // 2
+			camera_creation_descriptor_options_clamp = 1 << 2, // 4
 		};
 		using camera_creation_descriptor_flags = uint8_t;
 		
