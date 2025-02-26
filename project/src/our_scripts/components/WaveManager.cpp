@@ -56,7 +56,10 @@ WaveManager::spawnWave() {
         std::random_device rd;
         std::mt19937 gen(rd());
         // rAng entre (0, 360)
-        std::uniform_real_distribution<float> rRandGen(-1, 1);
+        std::uniform_real_distribution<float> rAngGen(0.0f, 360.0f);
+        // rn entre (-0.35, 0.35)
+        std::uniform_real_distribution<float> rnGen(-0.35f, 0.35f);
+
 
          if (_currentWaveTime > _nextSpawn){
 
@@ -64,15 +67,14 @@ WaveManager::spawnWave() {
              float rn = rnGen(gen); // (-0.35, 0.35)
             
              // Distancia
-             float _min_distance = sdlutils().width() + sdlutils().width() * 0.1;
+             float _min_distance = Game::Instance()->get_world_half_size().first + Game::Instance()->get_world_half_size().first * 0.1;
              float _op_dist = _min_distance * (-rn);
 
         // DEBUG
 		//std::cout << SDL_GetTicks() << "/" << _nextSpawn << std::endl;
-
             // Medio de la pantalla + angulo * distancia
-            Vector2D posVec = Vector2D(Game::Instance()->get_world_half_size().first * rRandGen(gen), Game::Instance()->get_world_half_size().second * rRandGen(gen));
-			
+             Vector2D posVec = Vector2D(Game::Instance()->get_world_half_size().first + cos(rAng) * (_min_distance + _op_dist), Game::Instance()->get_world_half_size().second + sin(rAng) * (_min_distance + _op_dist));
+
             switch (_waves[_currentWave].second[_enemiesSpawned])
             {
 			case 1:
@@ -80,15 +82,15 @@ WaveManager::spawnWave() {
                 static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
 				break;
             case 2:
-                //static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
+                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
 				//Game::Instance()->createMichiMafioso(posVec);
 				break;
 			case 3:
-                //static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
+                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
 				//Game::Instance()->createSarnoRata(posVec); // plim plim
                 break;
             case 4:
-               // static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
+               static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
 				//Game::Instance()->createMichiMafioso(posVec); // boom
 				break;
             default:
