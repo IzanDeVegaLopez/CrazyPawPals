@@ -98,7 +98,11 @@ bool Game::init() {
 		_current_scene = _game_scene;
 		
 		#pragma endregion
-		auto cam = _mngr->addEntity();
+
+	{
+		
+	}
+	auto cam = _mngr->addEntity();
 	//_mngr->setHandler(ecs::hdlr::CAMERA, cam);
 	// auto cam_tr = _mngr->addComponent<Transform>(cam);
 	auto &&cam_screen = *_mngr->addComponent<camera_component>(cam, camera_screen{
