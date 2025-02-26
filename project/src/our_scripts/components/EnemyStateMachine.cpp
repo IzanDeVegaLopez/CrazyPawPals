@@ -10,8 +10,18 @@ EnemyStateMachine::EnemyStateMachine(float dist) :_dist(dist), _img(nullptr), _s
 };
 
 void EnemyStateMachine::initComponent() {
-	_walking_state = new WalkingState(_dist);
-	_attacking_state = new AttackingState(_dist);
+	
+	auto playerEntities = Game::Instance()->get_mngr()->getEntities(ecs::grp::PLAYER);
+
+	_walking_state = new WalkingState(_dist,
+		Game::Instance()->get_mngr()->getComponent<Transform>(_ent),
+		Game::Instance()->get_mngr()->getComponent<Health>(_ent), this,
+		Game::Instance()->get_mngr()->getComponent<Transform>(playerEntities[0]));
+	_attacking_state = new AttackingState(_dist,
+		Game::Instance()->get_mngr()->getComponent<Transform>(_ent),
+		Game::Instance()->get_mngr()->getComponent<Health>(_ent),
+		Game::Instance()->get_mngr()->getComponent<Weapon>(_ent), this,
+		Game::Instance()->get_mngr()->getComponent<Transform>(playerEntities[0]));
 
 	_attacking_state->setEntity(_ent);
 	_walking_state->setEntity(_ent);
