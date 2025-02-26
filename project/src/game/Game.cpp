@@ -1,4 +1,4 @@
-s// This file is part of the course TPV2@UCM - Samir Genaim
+// This file is part of the course TPV2@UCM - Samir Genaim
 #include "Game.h"
 
 #include "../ecs/Manager.h"
