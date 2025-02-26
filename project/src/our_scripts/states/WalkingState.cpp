@@ -42,14 +42,14 @@ void WalkingState::update(uint32_t delta_time) {
 	std::cout << "Dirección: " << newDir << "\n";
 	std::cout << "Velocidad: " << _tr->getSpeed() << "\n";
 	std::cout << "Posición: " << _tr->getPos() << "\n";
-
-	if (std::abs(_tr - _playerTr) < _dist) {
+	std::cout << "Distancia enemigo-player: " << std::abs((_tr->getPos() - _playerTr->getPos()).magnitude()) << "\n";
+	if (std::abs((_tr->getPos() - _playerTr->getPos()).magnitude() < _dist)) {
 		_stateMachine->setState(EnemyStateMachine::ATTACKING);
 	}
 
-	if (_health->getHealth() <= 0) {
-		//_stateMachine->setState(EnemyStateMachine::INACTIVE);
-	}
+	//if (_health->getHealth() <= 0) {
+	//	//_stateMachine->setState(EnemyStateMachine::INACTIVE);
+	//}
 }
 
 void WalkingState::exit() {
