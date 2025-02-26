@@ -9,7 +9,7 @@
 // 1 segundo = 1000 ticks (ms)
 WaveManager::WaveManager() : 
     _currentWaveTime(0),
-	_currentWave(0), _enemiesSpawned(0), // enemiesSpawned a 1 siempre
+	_currentWave(0), _enemiesSpawned(0),
     _enemiesKilled(0), _waveActive(false), _fogActive(false),
     _totalSpawnTime(7500.0f), _waveTime(60000)
 {
@@ -61,59 +61,51 @@ WaveManager::spawnWave() {
         std::uniform_real_distribution<float> rnGen(-0.35f, 0.35f);
 
 
-         if (_currentWaveTime > _nextSpawn){
-
-             float rAng = rAngGen(gen); // (0, 360)
-             float rn = rnGen(gen); // (-0.35, 0.35)
+        if (_currentWaveTime > _nextSpawn){
+            float rAng = rAngGen(gen); // (0, 360)
+            float rn = rnGen(gen); // (-0.35, 0.35)
             
-             // Distancia
-             float _min_distance = Game::Instance()->get_world_half_size().first + Game::Instance()->get_world_half_size().first * 0.1;
-             float _op_dist = _min_distance * (-rn);
+            // Distancia
+            float _min_distance = Game::Instance()->get_world_half_size().first + Game::Instance()->get_world_half_size().first * 0.1;
+            float _op_dist = _min_distance * (-rn);
 
-        // DEBUG
-		//std::cout << SDL_GetTicks() << "/" << _nextSpawn << std::endl;
+            //DEBUG
             // Medio de la pantalla + angulo * distancia
-             Vector2D posVec = Vector2D(Game::Instance()->get_world_half_size().first + cos(rAng) * (_min_distance + _op_dist), Game::Instance()->get_world_half_size().second + sin(rAng) * (_min_distance + _op_dist));
+            // Vector2D posVec = Vector2D(Game::Instance()->get_world_half_size().first + cos(rAng) * (_min_distance + _op_dist), Game::Instance()->get_world_half_size().second + sin(rAng) * (_min_distance + _op_dist));
 
             switch (_waves[_currentWave].second[_enemiesSpawned])
             {
-			case 1:
-				//Game::Instance()->createSarnoRata(posVec);
+		    case 1:
                 static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
-				break;
+			    break;
             case 2:
                 static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
-				//Game::Instance()->createMichiMafioso(posVec);
-				break;
-			case 3:
+			    break;
+		    case 3:
                 static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
-				//Game::Instance()->createSarnoRata(posVec); // plim plim
                 break;
             case 4:
-               static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
-				//Game::Instance()->createMichiMafioso(posVec); // boom
-				break;
+                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
+			    break;
             default:
-				std::cout << "Enemigo no existe" << std::endl;
+			    std::cout << "Enemigo no existe" << std::endl;
                 break;
             }
-            // // DEBUG
-            // std::cout << "Enemy " << _waves[_currentWave].second[_enemiesSpawned] << std::endl;
-            // //std::cout << "Spawned at(" << posVec.getX() << ", " << posVec.getY() << ") with " << rAng << "º + " << (_min_distance + _op_dist) << "m, rn = " << rn << std::endl;
-            // std::cout << "Time: " << _currentWaveTime << std::endl;
-            // std::cout << "Active time: " << sdlutils().virtualTimer().currRealTime() << std::endl;
-            // //std::cout << "Time: " << _currentWaveTime << "/" << _nextSpawn << std::endl;
-            // std::cout << std::endl;
+                // DEBUG
+                std::cout << "Enemy " << _waves[_currentWave].second[_enemiesSpawned] << std::endl;
+                //std::cout << "Spawned at(" << posVec.getX() << ", " << posVec.getY() << ") with " << rAng << "º + " << (_min_distance + _op_dist) << "m, rn = " << rn << std::endl;
+                std::cout << "Time: " << _currentWaveTime << std::endl;
+                std::cout << "Active time: " << sdlutils().virtualTimer().currRealTime() << std::endl;
+                //std::cout << "Time: " << _currentWaveTime << "/" << _nextSpawn << std::endl;
+                std::cout << std::endl;
 
-            // _enemiesSpawned++;
-
-            // // Tiempo
+                // Tiempo
             _min_time = _totalSpawnTime / _numEnemies;
             _op_time = _min_time * rn;
             _nextSpawn = _currentWaveTime + (_min_time + _op_time);
 
             std::cout << "Enemy " << _waves[_currentWave].second[_enemiesSpawned] << " spawned at: " << posVec.getX() << ", " << posVec.getY() << std::endl;
-			std::cout << std::endl;
+		    std::cout << std::endl;
             _enemiesSpawned++;
         }
     }
@@ -147,7 +139,7 @@ WaveManager::enterRewardsMenu() {
     _currentWave++;
     _currentWaveTime = 0;
     _totalSpawnTime = _waves[_currentWave].first;
-	_enemiesSpawned = 1;
+	_enemiesSpawned = 0;
 	_enemiesKilled = 0;
     _numEnemies = 0;
 	_fogActive = false;
