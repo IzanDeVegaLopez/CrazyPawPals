@@ -7,11 +7,11 @@
 #include "sdlutils/SDLUtils.h"
 
 WaveManager::WaveManager() : 
-    _totalSpawnTime(25000.f),
+    _totalSpawnTime(7500.0f),
     _waveActive(false), _fogActive(false),
     _currentWave(0), _enemiesSpawned(0)
 {
-    _waveTime = 60000 - _totalSpawnTime;
+    _waveTime = 60000;
 }
 
 WaveManager::~WaveManager() {
@@ -87,7 +87,10 @@ WaveManager::spawnWave() {
             _enemiesSpawned++;
 
             // Tiempo
-            _min_time = _totalSpawnTime / _numEnemies;
+            //_min_time = _totalSpawnTime / _numEnemies;
+
+            //TODO: hacer que se spawneen al azar en el tiempo pero de manera más menos uniforme
+
             _op_time = _min_time + _min_time* rRandGen(gen);
             _nextSpawn = SDL_GetTicks() + (_min_time + _op_time);
         }
