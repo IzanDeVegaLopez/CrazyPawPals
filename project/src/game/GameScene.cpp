@@ -139,7 +139,7 @@ void GameScene::spawnSarnoRata(Vector2D posVec)
 		new Health(2),
 		weapon
 	);
-	auto state = manager->addComponent<EnemyStateMachine>(e, 3.0f);
+	auto state = manager->addComponent<EnemyStateMachine>(e, 5.0f);
 	state->setState(EnemyStateMachine::StateType::WALKING);
 }
 

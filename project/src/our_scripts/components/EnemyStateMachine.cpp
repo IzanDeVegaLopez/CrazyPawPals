@@ -33,7 +33,6 @@ void EnemyStateMachine::render() {
 }
 void EnemyStateMachine::setState(StateType s) {
 	if (_type != s) {
-		delete _state;
 		switch (s) {
 		case WALKING:
 			_state = _walking_state;//_walking_state;
