@@ -11,9 +11,8 @@ WaveManager::WaveManager() :
     _currentWaveTime(0),
 	_currentWave(0), _enemiesSpawned(0), // enemiesSpawned a 1 siempre
     _enemiesKilled(0), _waveActive(false), _fogActive(false),
-    _totalSpawnTime(7500.0f)
+    _totalSpawnTime(7500.0f), _waveTime(60000)
 {
-    _waveTime = 60000;
 }
 
 WaveManager::~WaveManager() {
@@ -59,19 +58,18 @@ WaveManager::spawnWave() {
         // rAng entre (0, 360)
         std::uniform_real_distribution<float> rRandGen(-1, 1);
 
-        // if (_currentWaveTime > _nextSpawn){
+         if (_currentWaveTime > _nextSpawn){
 
-        //     float rAng = rAngGen(gen); // (0, 360)
-        //     float rn = rnGen(gen); // (-0.35, 0.35)
+             float rAng = rAngGen(gen); // (0, 360)
+             float rn = rnGen(gen); // (-0.35, 0.35)
             
-        //     // Distancia
-        //     float _min_distance = sdlutils().width() + sdlutils().width() * 0.1;
-        //     float _op_dist = _min_distance * (-rn);
+             // Distancia
+             float _min_distance = sdlutils().width() + sdlutils().width() * 0.1;
+             float _op_dist = _min_distance * (-rn);
 
         // DEBUG
 		//std::cout << SDL_GetTicks() << "/" << _nextSpawn << std::endl;
-        
-        if (SDL_GetTicks() > _nextSpawn){
+
             // Medio de la pantalla + angulo * distancia
             Vector2D posVec = Vector2D(Game::Instance()->get_world_half_size().first * rRandGen(gen), Game::Instance()->get_world_half_size().second * rRandGen(gen));
 			
@@ -108,22 +106,13 @@ WaveManager::spawnWave() {
             // _enemiesSpawned++;
 
             // // Tiempo
-            // _min_time = _totalSpawnTime / _numEnemies;
-            // _op_time = _min_time * rn;
-            // _nextSpawn = _currentWaveTime + (_min_time + _op_time);
+            _min_time = _totalSpawnTime / _numEnemies;
+            _op_time = _min_time * rn;
+            _nextSpawn = _currentWaveTime + (_min_time + _op_time);
 
             std::cout << "Enemy " << _waves[_currentWave].second[_enemiesSpawned] << " spawned at: " << posVec.getX() << ", " << posVec.getY() << std::endl;
 			std::cout << std::endl;
             _enemiesSpawned++;
-
-            // Tiempo
-            //_min_time = _totalSpawnTime / _numEnemies;
-
-            //TODO: hacer que se spawneen al azar en el tiempo pero de manera más menos uniforme
-
-            _op_time = _min_time + _min_time* rRandGen(gen);
-            _nextSpawn = SDL_GetTicks() + (_min_time + _op_time);
-
         }
     }
     else {
