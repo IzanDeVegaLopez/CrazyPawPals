@@ -21,7 +21,7 @@ WeaponBoom::callback(Vector2D shootPos, Vector2D shootDir) {
 
 	int n = 6;
 	for (int i = 1; i < n;++i) {
-		scene->generate_proyectile(bp, ecs::grp::BULLET, _tex);
+		scene->generate_proyectile(bp, ecs::grp::BULLET/*, _tex*/);
 		bp.rot = atan2(bp.dir.getY(), bp.dir.getX()) * (180.0f + 30.0f * i) / M_PI;
 	}
 }

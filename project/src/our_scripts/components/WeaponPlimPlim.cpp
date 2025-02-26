@@ -20,7 +20,7 @@ WeaponPlimPlim::callback(Vector2D shootPos, Vector2D shootDir) {
 	auto* scene = static_cast<GameScene*>(Game::Instance()->get_currentScene());
 
 	for (int i = 0; i < 3; ++i) {
-		scene->generate_proyectile(bp, ecs::grp::BULLET, _tex);
+		scene->generate_proyectile(bp, ecs::grp::BULLET/*, _tex*/);
 		bp.rot = atan2(bp.dir.getY(), bp.dir.getX()) * (180.0f + 10.0f * i) / M_PI;
 	}
 }
