@@ -120,7 +120,6 @@ bool Game::init() {
 	auto player = create_test_player_at(Vector2D(0.0, 0.0));
 	manager.addComponent<Revolver>(player);
 
-	manager.addComponent<MovementController>(player);
 	manager.addComponent<KeyboardPlayerCtrl>(player);
 	#pragma endregion
 

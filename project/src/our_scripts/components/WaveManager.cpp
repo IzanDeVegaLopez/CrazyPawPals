@@ -82,15 +82,15 @@ WaveManager::spawnWave() {
                 static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
 				break;
             case 2:
-                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
+                //static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
 				//Game::Instance()->createMichiMafioso(posVec);
 				break;
 			case 3:
-                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
+                //static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
 				//Game::Instance()->createSarnoRata(posVec); // plim plim
                 break;
             case 4:
-                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
+               // static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
 				//Game::Instance()->createMichiMafioso(posVec); // boom
 				break;
             default:

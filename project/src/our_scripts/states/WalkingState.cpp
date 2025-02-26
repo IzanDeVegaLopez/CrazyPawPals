@@ -24,18 +24,31 @@ void WalkingState::enter() {
 
 void WalkingState::update(uint32_t delta_time) {
 	if (_tr == nullptr || _health == nullptr || _stateMachine == nullptr || _playerTr == nullptr) {
-		//std::cerr << "Error: Componentes no inicializados en WalkingState::update()\n";
+		std::cerr << "Error: Componentes no inicializados en WalkingState::update()\n";
 		return;
 	}
-	Vector2D newDir = (_playerTr->getPos() - _tr->getPos()) * _tr->getSpeed();
-	_tr->setDir(newDir);
+
+	Vector2D newDir = (_playerTr->getPos() - _tr->getPos()).normalize()/1000 ;
+
+	if (newDir.magnitude() > 0) {
+		newDir = newDir.normalize();
+
+		_tr->setDir(newDir * 0.01f);
+	}
+	else {
+		_tr->setDir(Vector2D(0, 0));
+	}
+	
+	std::cout << "Dirección: " << newDir << "\n";
+	std::cout << "Velocidad: " << _tr->getSpeed() << "\n";
+	std::cout << "Posición: " << _tr->getPos() << "\n";
 
 	if (std::abs(_tr - _playerTr) < _dist) {
 		_stateMachine->setState(EnemyStateMachine::ATTACKING);
 	}
 
 	if (_health->getHealth() <= 0) {
-		_stateMachine->setState(EnemyStateMachine::INACTIVE);
+		//_stateMachine->setState(EnemyStateMachine::INACTIVE);
 	}
 }
 
