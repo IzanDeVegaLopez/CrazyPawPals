@@ -3,8 +3,23 @@
 #include "../states/WalkingState.h"
 #include "../states/AttackingState.h"
 
-void EnemyStateMachine::update() {
-	_state->update();
+EnemyStateMachine::EnemyStateMachine(float dist) :_dist(dist), _img(nullptr), _state(nullptr), _type(StateType::WALKING), _walking_state(nullptr), _attacking_state(nullptr)
+{
+
+};
+
+void EnemyStateMachine::initComponent() {
+	_walking_state = new WalkingState(_dist);
+	_attacking_state = new AttackingState(_dist);
+
+	_attacking_state->setEntity(_ent);
+	_walking_state->setEntity(_ent);
+
+	_state = _attacking_state;
+}
+
+void EnemyStateMachine::update(uint32_t delta_time) {
+	_state->update(delta_time);
 }
 void EnemyStateMachine::render() {
 }
@@ -13,10 +28,10 @@ void EnemyStateMachine::setState(StateType s) {
 		delete _state;
 		switch (s) {
 		case WALKING:
-			_state = new WalkingState();//_walking_state;
+			_state = _walking_state;//_walking_state;
 			break;
 		case ATTACKING:
-			_state = new AttackingState();//_attacking_state;
+			_state = _attacking_state;//_attacking_state;
 			break;
 			/*case DYING:
 				_state = _dying_state;
@@ -29,5 +44,7 @@ void EnemyStateMachine::setState(StateType s) {
 			break;
 		}
 	}
-	_state->enter(_ent);
+
+	_type = s;
+	_state->enter();
 }

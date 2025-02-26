@@ -59,7 +59,7 @@ void GameScene::initScene()
 #pragma region Player
 
 	//spawnPlayer();
-	spawnSarnoRata({ sdlutils().width() / 2.0f,0});
+	//spawnSarnoRata({ sdlutils().width() / 2.0f,sdlutils().height() / 2.0f});
 
 #pragma endregion Deck
 
@@ -122,16 +122,27 @@ void GameScene::spawnPlayer()
 void GameScene::spawnSarnoRata(Vector2D posVec)
 {
 	auto* weapon = new WeaponSarnoRata();
+	auto* tr = new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f);
 
-	create_entity(
+	auto manager = Game::Instance()->get_mngr();
+
+	//std::cout << posVec << std::endl;
+
+	auto e = create_entity(
 		ecs::grp::ENEMY,
 		ecs::scene::GAMESCENE,
-		new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
-		new Image(&sdlutils().images().at("enemy")),	
+		tr,
+		new dyn_image(
+			rect_f32{ {0,0},{1,1} },
+			size2_f32{ 1,1 },
+			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
+			sdlutils().images().at("enemy")
+		),
 		new Health(2),
-		weapon,
-		new EnemyStateMachine(3)
+		weapon
 	);
+	auto state = manager->addComponent<EnemyStateMachine>(e, 3);
+	state->setState(EnemyStateMachine::StateType::WALKING);
 }
 
 void GameScene::spawnMichiMafioso(Vector2D posVec)
@@ -151,14 +162,17 @@ void GameScene::spawnMichiMafioso(Vector2D posVec)
 void GameScene::spawnPlimPlim(Vector2D posVec)
 {
 	auto* weapon = new WeaponPlimPlim();
-
+	//auto manager = Game::Instance()->get_mngr();
 	create_entity(
 		ecs::grp::ENEMY,
 		ecs::scene::GAMESCENE,
 		new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
-		new Image(&sdlutils().images().at("enemy")),
 		new Health(2),
 		weapon
+		/*new dyn_image( rect_f32{
+		{0.0, 0.0},
+		{1.0, 1.0}
+			}, size2_f32{ 1.0, 1.0 }, manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam, sdlutils().images().at("enemy"))*/
 	);
 }
 
@@ -249,6 +263,5 @@ void GameScene::check_collision() {
 				}
 			}
 		}
-
 	}
 }

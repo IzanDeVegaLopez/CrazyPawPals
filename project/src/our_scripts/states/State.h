@@ -1,20 +1,21 @@
 // This file is part of the course TPV2@UCM - Samir Genaim
+#include "../../ecs/ecs.h"
 
 #pragma once
-
-#include "../../game/Game.h"
-#include "../../game/GameScene.h"
-#include "../components/Health.h"
-#include "../components/Transform.h"
-#include "../components/EnemyStateMachine.h"
-#include "../components/Weapon.h"
 
 class State {
 public:
 	virtual ~State() {
 	}
-	virtual void enter(ecs::Entity* _enemy) = 0;
-	virtual void update() = 0;
+	virtual void enter() = 0;
+	virtual void update(uint32_t delta_time) = 0;
 	virtual void exit() = 0;
+
+	virtual void setEntity(ecs::entity_t ent) {
+		_ent = ent;
+	}
+
+protected:
+	ecs::entity_t _ent; // Puntero a la entidad
 };
 
