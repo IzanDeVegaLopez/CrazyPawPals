@@ -25,10 +25,8 @@ void AttackingState::enter() {
 }
 
 void AttackingState::update(uint32_t delta_time) {
-	if (_tr == nullptr || _health == nullptr || _stateMachine == nullptr || _playerTr == nullptr ||_weapon==nullptr) {
-		//std::cerr << "Error: Componentes no inicializados en AttackingState::update()\n";
-		return;
-	}
+	if (_tr == nullptr || _health == nullptr || _stateMachine == nullptr || _playerTr == nullptr ||_weapon==nullptr) return;
+	
 	Vector2D _target = _playerTr->getPos();
 	_weapon->shoot(_target);
 
@@ -36,9 +34,10 @@ void AttackingState::update(uint32_t delta_time) {
 		_stateMachine->setState(EnemyStateMachine::WALKING);
 	}
 
-	if (_health->getHealth() <= 0) {
+
+	/*if (_health->getHealth() <= 0) {
 		_stateMachine->setState(EnemyStateMachine::INACTIVE);
-	}
+	}*/
 }
 
 void AttackingState::exit() {

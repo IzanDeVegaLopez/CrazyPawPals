@@ -11,7 +11,7 @@ public:
 	void takeDamage(int damage);
 	void heal(int health);
 	void setMaxHeatlh(int h);
-	int getHealth();
+	int getHealth() const;
 	void takeShield(int s);
 	void update(uint32_t delta_time) override;
 

@@ -22,19 +22,17 @@
 #include "../our_scripts/components/camera_component.hpp"
 
 #include "../our_scripts/components/Health.h" 
-#include "../our_scripts//components//BulletData.h"
-
-#include "../utils/Collisions.h" 
+#include "../our_scripts/components/BulletData.h"
 
 #include "../our_scripts/components/WaveManager.h"
 #include "../our_scripts/components/WeaponMichiMafioso.h"
 #include "../our_scripts/components/WeaponPlimPlim.h"
 #include "../our_scripts/components/WeaponSarnoRata.h"
 #include "../our_scripts/components/WeaponBoom.h"
-#include "../our_scripts/components/Health.h"
+
 
 #include "../our_scripts/components/EnemyStatemachine.h"
-#include "../our_scripts/components/dyn_image.hpp"
+
 
 #include <iostream>
 #include <string>
@@ -122,6 +120,7 @@ void GameScene::spawnPlayer()
 void GameScene::spawnSarnoRata(Vector2D posVec)
 {
 	auto* weapon = new WeaponSarnoRata();
+	weapon->set_attack_size(200, 200);
 	auto* tr = new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f);
 	auto manager = Game::Instance()->get_mngr();
 
@@ -139,7 +138,7 @@ void GameScene::spawnSarnoRata(Vector2D posVec)
 		new Health(2),
 		weapon
 	);
-	auto state = manager->addComponent<EnemyStateMachine>(e, 3);
+	auto state = manager->addComponent<EnemyStateMachine>(e, 1.0f);
 	state->setState(EnemyStateMachine::StateType::WALKING);
 }
 
@@ -157,7 +156,7 @@ void GameScene::spawnMichiMafioso(Vector2D posVec)
 			rect_f32{ {0,0},{1,1} },
 			size2_f32{ 1,1 },
 			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
-			sdlutils().images().at("enemy")
+			sdlutils().images().at("lighting")
 		),
 		new Health(2),
 		weapon
@@ -181,7 +180,7 @@ void GameScene::spawnPlimPlim(Vector2D posVec)
 			rect_f32{ {0,0},{1,1} },
 			size2_f32{ 1,1 },
 			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
-			sdlutils().images().at("enemy")
+			sdlutils().images().at("manaorb")
 		),
 		new Health(2),
 		weapon
@@ -205,7 +204,7 @@ void GameScene::spawnBoom(Vector2D posVec)
 			rect_f32{ {0,0},{1,1} },
 			size2_f32{ 1,1 },
 			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
-			sdlutils().images().at("enemy")
+			sdlutils().images().at("fireball")
 		),
 		new Health(2),
 		weapon

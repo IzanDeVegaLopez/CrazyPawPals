@@ -26,10 +26,10 @@ Weapon::set_attack_size(int w, int h) {
 void
 Weapon::shoot(const Vector2D& target) {
 	auto& pos = _tr->getPos();
-	if (sdlutils().virtualTimer().currRealTime() >= _lastShoot + _cooldown) {
+	if (sdlutils().virtualTimer().currTime() >= _lastShoot + _cooldown) {
 		Vector2D shootPos = { pos.getX(), pos.getY() };
 		Vector2D shootDir = (target - shootPos).normalize();
 		callback(shootPos, shootDir);
-		_lastShoot = sdlutils().virtualTimer().currRealTime();
+		_lastShoot = sdlutils().virtualTimer().currTime();
 	}
 }

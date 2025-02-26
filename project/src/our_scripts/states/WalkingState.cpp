@@ -18,7 +18,7 @@ void WalkingState::enter() {
 		_playerTr = Game::Instance()->get_mngr()->getComponent<Transform>(playerEntities[0]);
 	}
 	else {
-		std::cerr << "Error: No se encontró el jugador.\n";
+		std::cerr << "Error: No se encontrï¿½ el jugador.\n";
 	}
 }
 
@@ -39,20 +39,22 @@ void WalkingState::update(uint32_t delta_time) {
 		_tr->setDir(Vector2D(0, 0));
 	}
 	
-	/*std::cout << "Dirección: " << newDir << "\n";
+	/*std::cout << "Direcciï¿½n: " << newDir << "\n";
 	std::cout << "Velocidad: " << _tr->getSpeed() << "\n";
-	std::cout << "Posición: " << _tr->getPos() << "\n";*/
-
-	if (std::abs(_tr - _playerTr) < _dist) {
+	std::cout << "Posiciï¿½n: " << _tr->getPos() << "\n";
+	std::cout << "Distancia enemigo-player: " << std::abs((_tr->getPos() - _playerTr->getPos()).magnitude()) << "\n";
+	if (std::abs((_tr->getPos() - _playerTr->getPos()).magnitude() < _dist)) {
+		exit();
 		_stateMachine->setState(EnemyStateMachine::ATTACKING);
 	}
 
-	if (_health->getHealth() <= 0) {
-		//_stateMachine->setState(EnemyStateMachine::INACTIVE);
-	}
+	//if (_health->getHealth() <= 0) {
+	//	//_stateMachine->setState(EnemyStateMachine::INACTIVE);
+	//}
 }
 
 void WalkingState::exit() {
+	_tr->setDir(Vector2D(0, 0));
 }
 
 

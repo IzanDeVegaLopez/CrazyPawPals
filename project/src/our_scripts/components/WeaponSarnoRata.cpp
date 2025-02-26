@@ -2,7 +2,7 @@
 #include "../../game/Game.h"
 #include "../../game/GameScene.h"
 
-WeaponSarnoRata::WeaponSarnoRata() : Weapon(4, 0.5f, 20.0f, 5.0f, "sdl_logo") { }
+WeaponSarnoRata::WeaponSarnoRata() : Weapon(4, 0.5f, 20.0f, 0.0f, "sdl_logo") { }
 
 WeaponSarnoRata::~WeaponSarnoRata() {}
 
@@ -18,11 +18,9 @@ WeaponSarnoRata::callback(Vector2D shootPos, Vector2D shootDir) {
 	bp.height = _attack_height;
 	bp.rot = atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI;
 	bp.sprite_key = "fireball";
-	auto* scene = static_cast<GameScene*>(Game::Instance()->get_currentScene());
 
-	int n = 5;
-	for (int i = 0; i < n;++i) {
-		scene->generate_proyectile(bp, ecs::grp::BULLET);
-		bp.rot = atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f * i / M_PI;
-	}
+	auto* scene = static_cast<GameScene*>(Game::Instance()->get_currentScene());
+	bp.rot = atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI;
+
+	scene->generate_proyectile(bp, ecs::grp::BULLET);
 }
