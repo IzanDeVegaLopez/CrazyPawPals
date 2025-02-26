@@ -48,8 +48,12 @@
       "file": "resources/images/galletas.png"
     },
     {
-      "id":   "lighting",
+      "id": "lighting",
       "file": "resources/images/lighting.png"
+    },
+    {
+      "id": "card_back",
+      "file": "resources/images/card_back.png"
     }
   ],
   

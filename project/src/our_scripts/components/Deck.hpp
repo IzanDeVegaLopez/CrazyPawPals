@@ -12,6 +12,8 @@ class Transform;
 class Deck: public ecs::Component {
 protected:
 	int reload_time = 1000;
+	Uint32 _last_card_draw_time = 0;
+	int card_draw_anim_duration = 300;
 	CardList _draw_pile;
 	CardList _discard_pile;
 	Card* _hand;
