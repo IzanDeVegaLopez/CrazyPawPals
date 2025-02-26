@@ -2,7 +2,7 @@
 #include "../../game/Game.h"
 #include "../../game/GameScene.h"
 
-WeaponPlimPlim::WeaponPlimPlim() : Weapon(4, 0.5f, 20.0f, 5.0f, "sdl_logo") { }
+WeaponPlimPlim::WeaponPlimPlim() : Weapon(4, 0.5f, 20.0f, 0.1f, "sdl_logo") { }
 
 WeaponPlimPlim::~WeaponPlimPlim() {}
 
@@ -15,13 +15,23 @@ WeaponPlimPlim::callback(Vector2D shootPos, Vector2D shootDir) {
 	bp.damage = _damage;
 	bp.life_time = 2;
 	bp.width = _attack_width;
-	bp.sprite_key = "fireball";
+	bp.sprite_key = "sdl_logo";
 	bp.height = _attack_height;
-	bp.rot = atan2(bp.dir.getY(), bp.dir.getX()) * (180.0f - 10.0f)/ M_PI;
 	auto* scene = static_cast<GameScene*>(Game::Instance()->get_currentScene());
 
+	float initialRot = atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI;
+	bp.rot = initialRot;
+
+	//Dispara 3 balas
 	for (int i = 0; i < 3; ++i) {
+		float angleOffset = i * 6.0f * (M_PI / 180.0f); // Convertir a radianes
+		Vector2D rotatedDir(
+			shootDir.getX() * cos(angleOffset) - shootDir.getY() * sin(angleOffset),
+			shootDir.getX() * sin(angleOffset) + shootDir.getY() * cos(angleOffset)
+		);
+		bp.dir = rotatedDir;
+		bp.rot = atan2(rotatedDir.getY(), rotatedDir.getX()) * 180.0f / M_PI;
+
 		scene->generate_proyectile(bp, ecs::grp::BULLET);
-		bp.rot = atan2(bp.dir.getY(), bp.dir.getX()) * (180.0f + 10.0f * i) / M_PI;
 	}
 }
