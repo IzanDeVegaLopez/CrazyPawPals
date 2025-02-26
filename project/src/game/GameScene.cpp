@@ -52,11 +52,11 @@ void GameScene::initScene()
 
 	_player = manager.addEntity(ecs::scene::GAMESCENE, ecs::grp::PLAYER);
 	Transform* playerTransform = manager.addComponent<Transform>(_player);
-	playerTransform->init({ 0,0 }, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 0.05f);
+	playerTransform->init({ 0.0f,0.0f }, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 0.05f);
 	assert(playerTransform != nullptr && "Error: Player Transform is nullptr");
 
 	auto cam = Scene::rendering::create_camera(flags, playerTransform);
-	
+	Game::Instance()->create_environment();
 	manager.addComponent<dyn_image>(_player, rect_f32{
 		//pos inicial del render
 		{0.0, 0.0},
@@ -75,10 +75,8 @@ void GameScene::initScene()
 	manager.addComponent<MovementController>(_player);
 	manager.addComponent<KeyboardPlayerCtrl>(_player);
 	revolver->initComponent();
-	revolver->set_attack_size(10, 10);
 
 #pragma endregion
-
 
 	
 #pragma region Enemies
