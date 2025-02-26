@@ -55,10 +55,13 @@ Roguelike de disparos 2D en perspectiva cenital, donde el jugador tiene el contr
 ### 1.2. Género  
 Roguelike, cartas, acción, top-down shooter.  
 
-### 1.3. Setting  
+### 1.3. Público objetivo
+Mayores de 12 años, fanáticos de los gatos y amantes de las cafeterías
+
+### 1.4. Setting  
 En un acogedor café de gatos en plena reforma, extrañas criaturas han aparecido, amenazando con invadir el lugar. Como uno de los valientes gatos del café, la misión del jugador es proteger su hogar y asegurar que todo siga adelante.  
 
-### 1.4. Características principales  
+### 1.5. Características principales  
 - Estética mona con gatos.  
 - Juego de disparos.  
 - Juego por oleadas.  
