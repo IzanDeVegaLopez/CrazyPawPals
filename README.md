@@ -269,7 +269,9 @@ Tiene fijado al personaje en el centro, pero cuando este se acerque a las esquin
 
 - **Enemigos:**  
   - Tipo 1: SarnoRata (ataque en área).  
-  - Tipo 2: MichiMafioso (disparo de proyectiles).  
+  - Tipo 2: MichiMafioso (disparo de proyectiles).
+  - Tipo 3: PlimPlim (disparo de proyectiles).
+  - Tipo 4: Boom  (ataque en área).
   - Miniboss 1: Jefe de la CatKuza (patrones de ataque complejos).  
 
 ### 5.2. Niveles  
