@@ -52,11 +52,11 @@ void GameScene::initScene()
 
 	_player = manager.addEntity(ecs::scene::GAMESCENE, ecs::grp::PLAYER);
 	Transform* playerTransform = manager.addComponent<Transform>(_player);
-	playerTransform->init({ sdlutils().width() / 2.0f, sdlutils().height() / 2.0f }, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 0.05f);
+	playerTransform->init({ 0,0 }, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 0.05f);
 	assert(playerTransform != nullptr && "Error: Player Transform is nullptr");
 
 	auto cam = Scene::rendering::create_camera(flags, playerTransform);
-
+	
 	manager.addComponent<dyn_image>(_player, rect_f32{
 		//pos inicial del render
 		{0.0, 0.0},
@@ -85,25 +85,6 @@ void GameScene::initScene()
 	spawnWaveManager();
 
 #pragma endregion
-
-	//spawnSarnoRata({ sdlutils().width() / 2.0f,sdlutils().height() / 2.0f});
-
-
-	//Deck deck = Deck(std::list<Card*>{new Card("1"), new Card("2"), new Card("3"), new Card("4")});
-	////cout << deck << endl;
-	//deck.add_card_to_deck(new Fireball());
-	//deck.add_card_to_deck(new Minigun());
-
-	//deck.use_card();
-	//deck.use_card();
-	//deck.use_card();
-	//deck.use_card();
-	//deck.use_card();
-	//deck.use_card();
-	//deck.reload();
-
-	////deck.addCardToDeck(new Card("5"));
-	//cout << deck << endl;*/
 }
 
 void GameScene::enterScene()
