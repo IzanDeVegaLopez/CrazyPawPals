@@ -26,6 +26,14 @@ public:
 		setSpeed(s);
 	}
 
+	void init(Vector2D pos, Vector2D dir, float w, float h, float r, float s){
+		_pos = pos;
+		_dir = dir;
+		_width= w;
+		_height = h; 
+		_rot = r;
+		setSpeed(s);
+	}
 	virtual ~Transform() {
 	}
 

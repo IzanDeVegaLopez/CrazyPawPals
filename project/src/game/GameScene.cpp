@@ -9,10 +9,10 @@
 
 #include "../our_scripts/components/Image.h"
 #include "../our_scripts/components/Transform.h"
-#include "../our_scripts/components/KeyboardPlayerCtrl.h"
 #include "../our_scripts/components/MovementController.h"
 #include "../our_scripts/components/LifetimeTimer.h"
 
+#include "../our_scripts/components/KeyboardPlayerCtrl.h"
 #include "../our_scripts/components/Revolver.h"
 #include "../our_scripts/components/Rampage.h"
 #include "../our_scripts/components/SimpleMove.h"
@@ -29,23 +29,48 @@
 #include "../our_scripts/components/WeaponPlimPlim.h"
 #include "../our_scripts/components/WeaponSarnoRata.h"
 #include "../our_scripts/components/WeaponBoom.h"
-
-
 #include "../our_scripts/components/EnemyStatemachine.h"
 
 
 #include <iostream>
 #include <string>
 
-GameScene::GameScene()
-{
-
-}
+GameScene::GameScene() : _player(nullptr)
+{}
 
 void GameScene::initScene()
 {
-#pragma region Bullets
-	//std::vector<Bullet*> b;
+#pragma region camera - player
+	auto&& manager = *Game::Instance()->get_mngr();
+
+	Scene::rendering::camera_creation_descriptor_flags flags = Scene::rendering::camera_creation_descriptor_options_follow;
+
+	_player = manager.addEntity(ecs::scene::GAMESCENE, ecs::grp::PLAYER);
+	Transform* playerTransform = manager.addComponent<Transform>(_player);
+	playerTransform->init({ sdlutils().width() / 2.0f, sdlutils().height() / 2.0f }, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 0.05f);
+	assert(playerTransform != nullptr && "Error: Player Transform is nullptr");
+
+	auto cam = Scene::rendering::create_camera(flags, playerTransform);
+
+	manager.addComponent<dyn_image>(_player, rect_f32{
+		//pos inicial del render
+		{0.0, 0.0},
+		//Que tanto de la textura renderiza
+		{1.0, 1.0}
+		}, size2_f32{ 3.0, 2.25 },
+		manager.getComponent<camera_component>(cam)->cam, sdlutils().images().at("player"));
+
+	//auto* revolver = new Revolver();
+	auto* revolver = new Rampage();
+	std::list<Card*> c = { new Fireball(), new Lighting(), new Minigun(), new Minigun() };
+	manager.addExistingComponent(_player, revolver);
+	manager.addComponent<ManaComponent>(_player);
+	manager.addComponent<Health>(_player, 100);
+	manager.addComponent<Deck>(_player, c);
+	manager.addComponent<MovementController>(_player);
+	manager.addComponent<KeyboardPlayerCtrl>(_player);
+	revolver->initComponent();
+	revolver->set_attack_size(10, 10);
 
 #pragma endregion
 
@@ -54,12 +79,8 @@ void GameScene::initScene()
 
 #pragma endregion
 
-#pragma region Player
-
-	//spawnPlayer();
 	//spawnSarnoRata({ sdlutils().width() / 2.0f,sdlutils().height() / 2.0f});
 
-#pragma endregion Deck
 
 	//Deck deck = Deck(std::list<Card*>{new Card("1"), new Card("2"), new Card("3"), new Card("4")});
 	////cout << deck << endl;
@@ -88,34 +109,39 @@ void GameScene::exitScene()
 
 void GameScene::update(uint32_t delta_time)
 {
-	Game::Instance()->get_mngr()->update(ecs::scene::GAMESCENE,delta_time);
+	Game::Instance()->get_mngr()->update(ecs::scene::GAMESCENE, delta_time);
 }
 
 void GameScene::render()
 {
 	Game::Instance()->get_mngr()->render(ecs::scene::GAMESCENE);
 }
-
+/*
 void GameScene::spawnPlayer()
 {
 	//auto* revolver = new Revolver();
 	auto* revolver = new Rampage();
-	std::list<Card*> c = { new Fireball(), new Minigun(), new Lighting(), new Minigun() };
-	create_entity(
+	std::list<Card*> c = { new Fireball(), new Lighting(), new Minigun(), new Minigun() };
+	_player = create_entity(
 		ecs::grp::PLAYER,
 		ecs::scene::GAMESCENE,
-		new Transform({ sdlutils().width() / 2.0f, sdlutils().height() / 2.0f }, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
-		new Image(&sdlutils().images().at("player")),
-		revolver,
-		new Health(100),
+		new Transform({ sdlutils().width() / 2.0f, sdlutils().height() / 2.0f }, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 0.05f),
 		new ManaComponent(),
-		new Deck(c),
+		new Image(&sdlutils().images().at("player")),
+		new Health(100),
 		new MovementController(),
+		new Deck(c),
+		revolver,
 		new KeyboardPlayerCtrl()
 		);
 	revolver->initComponent();
 	revolver->set_attack_size(10, 10);
+
 }
+
+
+*/
+
 
 void GameScene::spawnSarnoRata(Vector2D posVec)
 {
@@ -235,7 +261,7 @@ void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs
 		new Transform(bp.init_pos, bp.dir, bp.width, bp.height, bp.rot, bp.speed),
 		new dyn_image(
 			rect_f32{ {0,0},{1,1} },
-			size2_f32{bp.width,bp.height},
+			size2_f32{ bp.width,bp.height },
 			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
 			sdlutils().images().at(bp.sprite_key)
 		),
@@ -255,9 +281,9 @@ void GameScene::check_collision() {
 
 		//player bullet array
 		auto& pBullets = mngr->getEntities(ecs::grp::PLAYERBULLETS);
-		
+
 		//Enemy-PlayerBullet collision
-		for (auto e : enemies){
+		for (auto e : enemies) {
 			//check if the actual enemy is alive
 			if (mngr->isAlive(e)) {
 				//actual enemy transform
