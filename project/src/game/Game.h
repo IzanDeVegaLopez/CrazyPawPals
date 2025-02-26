@@ -29,7 +29,7 @@ public:
 
 	ecs::Manager* get_mngr();
 	Scene* get_currentScene();
-	std::pair<int, int> get_screen_size() const;
+	std::pair<int,int> get_world_half_size() const;
 
 private:
 	void change_Scene(State);

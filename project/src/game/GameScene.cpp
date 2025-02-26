@@ -124,6 +124,8 @@ void GameScene::spawnSarnoRata(Vector2D posVec)
 	auto* weapon = new WeaponSarnoRata();
 	auto manager = Game::Instance()->get_mngr();
 
+	//std::cout << posVec << std::endl;
+
 	create_entity(
 		ecs::grp::ENEMY,
 		ecs::scene::GAMESCENE,

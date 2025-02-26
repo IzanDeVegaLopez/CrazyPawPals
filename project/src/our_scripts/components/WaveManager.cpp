@@ -53,23 +53,15 @@ WaveManager::spawnWave() {
         std::random_device rd;
         std::mt19937 gen(rd());
         // rAng entre (0, 360)
-        std::uniform_real_distribution<float> rAngGen(0.0f, 360.0f);
-        // rn entre (-0.35, 0.35)
-        std::uniform_real_distribution<float> rnGen(-0.35f, 0.35f);
+        std::uniform_real_distribution<float> rRandGen(-1, 1);
 
         // DEBUG
 		//std::cout << SDL_GetTicks() << "/" << _nextSpawn << std::endl;
         
         if (SDL_GetTicks() > _nextSpawn){
-            float rAng = rAngGen(gen); // (0, 360)
-            float rn = rnGen(gen); // (-0.35, 0.35)
-            
-            // Distancia
-            float _min_distance = sdlutils().width() + sdlutils().width() * 0.1;
-            float _op_dist = _min_distance * (-rn);
 
             // Medio de la pantalla + angulo * distancia
-            Vector2D posVec = Vector2D(sdlutils().width() / 2 + cos(rAng) * (_min_distance + _op_dist), sdlutils().height() / 2 + sin(rAng) * (_min_distance + _op_dist));
+            Vector2D posVec = Vector2D(Game::Instance()->get_world_half_size().first * rRandGen(gen), Game::Instance()->get_world_half_size().second * rRandGen(gen));
 			
             switch (_waves[_currentWave][_enemiesSpawned])
             {
@@ -90,13 +82,13 @@ WaveManager::spawnWave() {
 				std::cout << "Enemigo no existe" << std::endl;
                 break;
             }
-            std::cout << "Enemy " << _waves[_currentWave][_enemiesSpawned] << " spawned at: " << posVec.getX() << ", " << posVec.getY() << " with " << rAng << "º + " << (_min_distance + _op_dist) << "m, rn = " << rn << std::endl;
+            std::cout << "Enemy " << _waves[_currentWave][_enemiesSpawned] << " spawned at: " << posVec.getX() << ", " << posVec.getY() << std::endl;
 			std::cout << std::endl;
             _enemiesSpawned++;
 
             // Tiempo
             _min_time = _totalSpawnTime / _numEnemies;
-            _op_time = _min_time * rn;
+            _op_time = _min_time + _min_time* rRandGen(gen);
             _nextSpawn = SDL_GetTicks() + (_min_time + _op_time);
         }
     }
