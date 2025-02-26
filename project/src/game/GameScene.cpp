@@ -32,6 +32,9 @@
 #include "../our_scripts/components/EnemyStatemachine.h"
 
 
+#include "../our_scripts/components/render_ordering.hpp"
+
+
 #include <iostream>
 #include <string>
 
@@ -40,10 +43,12 @@ GameScene::GameScene() : _player(nullptr)
 
 void GameScene::initScene()
 {
-#pragma region camera - player
 	auto&& manager = *Game::Instance()->get_mngr();
-
-	Scene::rendering::camera_creation_descriptor_flags flags = Scene::rendering::camera_creation_descriptor_options_follow;
+#pragma region camera - player
+	Scene::rendering::camera_creation_descriptor_flags flags = 
+		Scene::rendering::camera_creation_descriptor_options_follow|
+		Scene::rendering::camera_creation_descriptor_options_set_handler|
+		Scene::rendering::camera_creation_descriptor_options_clamp;
 
 	_player = manager.addEntity(ecs::scene::GAMESCENE, ecs::grp::PLAYER);
 	Transform* playerTransform = manager.addComponent<Transform>(_player);
@@ -74,6 +79,8 @@ void GameScene::initScene()
 
 #pragma endregion
 
+
+	
 #pragma region Enemies
 	spawnWaveManager();
 
