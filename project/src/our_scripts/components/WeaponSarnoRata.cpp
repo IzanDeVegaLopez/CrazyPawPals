@@ -2,7 +2,9 @@
 #include "../../game/Game.h"
 #include "../../game/GameScene.h"
 
-WeaponSarnoRata::WeaponSarnoRata() : Weapon(4, 0.5f, 20.0f, 0.0f, "sdl_logo") { }
+
+WeaponSarnoRata::WeaponSarnoRata() : Weapon(4, 5000.0f, 20.0f, 0.0f, "sdl_logo") { }
+
 
 WeaponSarnoRata::~WeaponSarnoRata() {}
 

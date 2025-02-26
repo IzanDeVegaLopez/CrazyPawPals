@@ -92,20 +92,20 @@ WaveManager::spawnWave() {
                 break;
             }
                 // DEBUG
-                std::cout << "Enemy " << _waves[_currentWave].second[_enemiesSpawned] << std::endl;
+                //std::cout << "Enemy " << _waves[_currentWave].second[_enemiesSpawned] << std::endl;
                 //std::cout << "Spawned at(" << posVec.getX() << ", " << posVec.getY() << ") with " << rAng << "º + " << (_min_distance + _op_dist) << "m, rn = " << rn << std::endl;
-                std::cout << "Time: " << _currentWaveTime << std::endl;
-                std::cout << "Active time: " << sdlutils().virtualTimer().currRealTime() << std::endl;
+                //std::cout << "Time: " << _currentWaveTime << std::endl;
+                //std::cout << "Active time: " << sdlutils().virtualTimer().currRealTime() << std::endl;
                 //std::cout << "Time: " << _currentWaveTime << "/" << _nextSpawn << std::endl;
-                std::cout << std::endl;
+                //std::cout << std::endl;
 
                 // Tiempo
             _min_time = _totalSpawnTime / _numEnemies;
             _op_time = _min_time * rn;
             _nextSpawn = _currentWaveTime + (_min_time + _op_time);
 
-            std::cout << "Enemy " << _waves[_currentWave].second[_enemiesSpawned] << " spawned at: " << posVec.getX() << ", " << posVec.getY() << std::endl;
-		    std::cout << std::endl;
+            //std::cout << "Enemy " << _waves[_currentWave].second[_enemiesSpawned] << " spawned at: " << posVec.getX() << ", " << posVec.getY() << std::endl;
+		    //std::cout << std::endl;
             _enemiesSpawned++;
         }
     }
