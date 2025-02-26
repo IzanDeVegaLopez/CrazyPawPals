@@ -33,7 +33,7 @@ void WalkingState::update(uint32_t delta_time) {
 	if (newDir.magnitude() > 0) {
 		newDir = newDir.normalize();
 
-		_tr->setDir(newDir * 0.01f);
+		_tr->setDir(newDir * 0.04f);
 	}
 	else {
 		_tr->setDir(Vector2D(0, 0));

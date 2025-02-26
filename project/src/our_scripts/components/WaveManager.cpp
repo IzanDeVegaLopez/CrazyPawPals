@@ -71,7 +71,7 @@ WaveManager::spawnWave() {
 
             //DEBUG
             // Medio de la pantalla + angulo * distancia
-            // Vector2D posVec = Vector2D(Game::Instance()->get_world_half_size().first + cos(rAng) * (_min_distance + _op_dist), Game::Instance()->get_world_half_size().second + sin(rAng) * (_min_distance + _op_dist));
+            Vector2D posVec = Vector2D(Game::Instance()->get_world_half_size().first + cos(rAng) * (_min_distance + _op_dist), Game::Instance()->get_world_half_size().second + sin(rAng) * (_min_distance + _op_dist));
 
             switch (_waves[_currentWave].second[_enemiesSpawned])
             {
@@ -79,13 +79,13 @@ WaveManager::spawnWave() {
                 static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
 			    break;
             case 2:
-                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
+                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnMichiMafioso(posVec);
 			    break;
 		    case 3:
-                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
+                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnPlimPlim(posVec);
                 break;
             case 4:
-                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
+                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnBoom(posVec);
 			    break;
             default:
 			    std::cout << "Enemigo no existe" << std::endl;
