@@ -59,7 +59,7 @@ void GameScene::initScene()
 #pragma region Player
 
 	//spawnPlayer();
-	spawnSarnoRata({ sdlutils().width() / 2.0f,sdlutils().height() / 2.0f});
+	//spawnSarnoRata({ sdlutils().width() / 2.0f,sdlutils().height() / 2.0f});
 
 #pragma endregion Deck
 
@@ -122,14 +122,16 @@ void GameScene::spawnPlayer()
 void GameScene::spawnSarnoRata(Vector2D posVec)
 {
 	auto* weapon = new WeaponSarnoRata();
+	auto* tr = new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f);
+
 	auto manager = Game::Instance()->get_mngr();
 
 	//std::cout << posVec << std::endl;
 
-	create_entity(
+	auto e = create_entity(
 		ecs::grp::ENEMY,
 		ecs::scene::GAMESCENE,
-		new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
+		tr,
 		new dyn_image(
 			rect_f32{ {0,0},{1,1} },
 			size2_f32{ 1,1 },
@@ -137,9 +139,10 @@ void GameScene::spawnSarnoRata(Vector2D posVec)
 			sdlutils().images().at("enemy")
 		),
 		new Health(2),
-		weapon,
-		new EnemyStateMachine(3)
+		weapon
 	);
+	auto state = manager->addComponent<EnemyStateMachine>(e, 3);
+	state->setState(EnemyStateMachine::StateType::WALKING);
 }
 
 void GameScene::spawnMichiMafioso(Vector2D posVec)
@@ -260,6 +263,5 @@ void GameScene::check_collision() {
 				}
 			}
 		}
-
 	}
 }
