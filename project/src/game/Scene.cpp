@@ -1,5 +1,5 @@
 #include "Scene.h"
-#include "Transform.h"
+#include "../our_scripts/components/Transform.h"
 #include <cassert>
 
 #include "../our_scripts/components/camera_component.hpp"
