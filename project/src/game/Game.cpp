@@ -1,5 +1,4 @@
-﻿// This file is part of the course TPV2@UCM - Samir Genaim
-
+// This file is part of the course TPV2@UCM - Samir Genaim
 #include "Game.h"
 
 #include "../ecs/Manager.h"
@@ -13,6 +12,7 @@
 #include "../our_scripts/components/KeyboardPlayerCtrl.h"
 #include "../our_scripts/components/MovementController.h"
 #include "../our_scripts/components/Mana.h"
+#include "../our_scripts/components/EnemyMovement.h"
 #include "../our_scripts/components/Deck.hpp"
 #include "../our_scripts/components/dyn_image.hpp"
 #include "../our_scripts/components/camera_component.hpp"
@@ -24,6 +24,7 @@
 #include "MainMenuScene.h"
 #include "SelectionMenuScene.h"
 #include "GameScene.h"
+
 
 using namespace std;
 
@@ -42,7 +43,7 @@ Game::~Game() {
 
 ecs::entity_t create_test_player_at(Vector2D position) {
 	auto &&manager = *Game::Instance()->get_mngr();
-	auto player = manager.addEntity();
+	auto player = manager.addEntity(ecs::scene::GAMESCENE,ecs::grp::PLAYER);
 
 	auto tr = manager.addComponent<Transform>(player, position, Vector2D(0.0, 0.0), 100.0f, 100.0f, 0.0f, 0.05f);
 	(void)tr;
@@ -81,7 +82,6 @@ bool Game::init() {
 		std::cerr << "Something went wrong while initializing SDLUtils"
 		<< std::endl;
 		return false;
-		
 	}
 		
 	// initialize the InputHandler singleton
@@ -96,9 +96,7 @@ bool Game::init() {
 	
 	_mngr = new ecs::Manager();
 	
-	_game_scene = new GameScene();
-	_game_scene->initScene();
-	_current_scene = _game_scene;
+	
 	
 	#pragma endregion
 	auto cam = _mngr->addEntity();
@@ -114,7 +112,9 @@ bool Game::init() {
 		},
 	});
 	_mngr->setHandler(ecs::hdlr::CAMERA, cam);
-	
+	_game_scene = new GameScene();
+	_game_scene->initScene();
+	_current_scene = _game_scene;
 	create_environment();
 
 	#pragma region player
@@ -123,7 +123,6 @@ bool Game::init() {
 	auto player = create_test_player_at(Vector2D(0.0, 0.0));
 	manager.addComponent<Rampage>(player);
 
-	manager.addComponent<MovementController>(player);
 	manager.addComponent<KeyboardPlayerCtrl>(player);
 	#pragma endregion
 
@@ -187,7 +186,7 @@ void Game::start() {
 		sdlutils().presentRenderer();
 
 		//dt = sdlutils().currTime() - startTime;
-		//std::cout << sdlutils().currTime() <<" - " <<startTime;
+		//std::cout << Game::Instance()->get_mngr()->getComponent<Transform>(Game::Instance()->get_mngr()->getEntities(ecs::grp::PLAYER)[0])->getPos() << std::endl;
 		if (dt < 10) {
 			SDL_Delay(10 - dt);
 			//dt = 10;
@@ -204,9 +203,9 @@ Scene* Game::get_currentScene() {
 	return _current_scene;
 }
 
-pair<int, int> Game::get_screen_size() const
+std::pair<int, int> Game::get_world_half_size() const
 {
-	return _screen_size;
+	return std::pair<int, int>(15,8);
 }
 
 void Game::change_Scene(State nextScene){
@@ -228,5 +227,3 @@ void Game::change_Scene(State nextScene){
 	}
 
 }
-
-

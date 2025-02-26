@@ -25,4 +25,6 @@ void SimpleMove::update(uint32_t delta_time) {
 	auto &dir = _tr->getDir();
 	auto speed = _tr->getSpeed();
 	pos += dir * speed;
+	
+	//std::cout << dir;
 }

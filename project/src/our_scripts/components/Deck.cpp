@@ -180,7 +180,9 @@ void Deck::render() noexcept
 		}
 
 		camera_screen cam_screen = camera_screen();
+
 		std::pair<int, int> position = { sdlutils().width(), sdlutils().height() };
+
 		//camera position, similar to aspect ratio but in world units (suppose player is 1 world unit, how many players will fit on camera kinda)
 		cam_screen.camera = { {0,0},{8,6} };
 		//camera screen on pixels size

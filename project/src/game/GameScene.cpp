@@ -26,6 +26,17 @@
 
 #include "../utils/Collisions.h" 
 
+#include "../our_scripts/components/WaveManager.h"
+#include "../our_scripts/components/WeaponMichiMafioso.h"
+#include "../our_scripts/components/WeaponPlimPlim.h"
+#include "../our_scripts/components/WeaponSarnoRata.h"
+#include "../our_scripts/components/WeaponBoom.h"
+#include "../our_scripts/components/Health.h"
+
+#include "../our_scripts/components/EnemyStatemachine.h"
+#include "../our_scripts/components/dyn_image.hpp"
+
+#include <iostream>
 #include <string>
 
 GameScene::GameScene()
@@ -35,9 +46,20 @@ GameScene::GameScene()
 
 void GameScene::initScene()
 {
+#pragma region Bullets
+	//std::vector<Bullet*> b;
+
+#pragma endregion
+
+#pragma region Enemies
+	spawnWaveManager();
+
+#pragma endregion
+
 #pragma region Player
 
 	//spawnPlayer();
+	//spawnSarnoRata({ sdlutils().width() / 2.0f,sdlutils().height() / 2.0f});
 
 #pragma endregion Deck
 
@@ -97,8 +119,110 @@ void GameScene::spawnPlayer()
 	revolver->set_attack_size(10, 10);
 }
 
-void GameScene::spawnEnemies()
+void GameScene::spawnSarnoRata(Vector2D posVec)
 {
+	auto* weapon = new WeaponSarnoRata();
+	auto* tr = new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f);
+	auto manager = Game::Instance()->get_mngr();
+
+	//std::cout << posVec << std::endl;
+	auto e = create_entity(
+		ecs::grp::ENEMY,
+		ecs::scene::GAMESCENE,
+		tr,
+		new dyn_image(
+			rect_f32{ {0,0},{1,1} },
+			size2_f32{ 1,1 },
+			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
+			sdlutils().images().at("enemy")
+		),
+		new Health(2),
+		weapon
+	);
+	auto state = manager->addComponent<EnemyStateMachine>(e, 3);
+	state->setState(EnemyStateMachine::StateType::WALKING);
+}
+
+void GameScene::spawnMichiMafioso(Vector2D posVec)
+{
+	auto* weapon = new WeaponMichiMafioso();
+	auto* tr = new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f);
+	auto manager = Game::Instance()->get_mngr();
+
+	auto e = create_entity(
+		ecs::grp::ENEMY,
+		ecs::scene::GAMESCENE,
+		tr,
+		new dyn_image(
+			rect_f32{ {0,0},{1,1} },
+			size2_f32{ 1,1 },
+			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
+			sdlutils().images().at("enemy")
+		),
+		new Health(2),
+		weapon
+	);
+
+	auto state = manager->addComponent<EnemyStateMachine>(e, 3);
+	state->setState(EnemyStateMachine::StateType::WALKING);
+}
+
+void GameScene::spawnPlimPlim(Vector2D posVec)
+{
+	auto* tr = new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f);
+	auto* weapon = new WeaponPlimPlim();
+	auto manager = Game::Instance()->get_mngr();
+
+	auto e = create_entity(
+		ecs::grp::ENEMY,
+		ecs::scene::GAMESCENE,
+		tr,
+		new dyn_image(
+			rect_f32{ {0,0},{1,1} },
+			size2_f32{ 1,1 },
+			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
+			sdlutils().images().at("enemy")
+		),
+		new Health(2),
+		weapon
+	);
+
+	auto state = manager->addComponent<EnemyStateMachine>(e, 3);
+	state->setState(EnemyStateMachine::StateType::WALKING);
+}
+
+void GameScene::spawnBoom(Vector2D posVec)
+{
+	auto* tr = new Transform(posVec, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f);
+	auto* weapon = new WeaponBoom();
+	auto manager = Game::Instance()->get_mngr();
+
+	auto e = create_entity(
+		ecs::grp::ENEMY,
+		ecs::scene::GAMESCENE,
+		tr,
+		new dyn_image(
+			rect_f32{ {0,0},{1,1} },
+			size2_f32{ 1,1 },
+			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
+			sdlutils().images().at("enemy")
+		),
+		new Health(2),
+		weapon
+	);
+
+	auto state = manager->addComponent<EnemyStateMachine>(e, 3);
+	state->setState(EnemyStateMachine::StateType::WALKING);
+}
+
+
+void GameScene::spawnWaveManager()
+{
+	create_entity(
+		ecs::hdlr::WAVE,
+		ecs::scene::GAMESCENE,
+		new WaveManager()
+	);
 }
 
 void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid)
@@ -164,6 +288,5 @@ void GameScene::check_collision() {
 				}
 			}
 		}
-
 	}
 }

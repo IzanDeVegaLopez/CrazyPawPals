@@ -1,5 +1,7 @@
 #pragma once
 #include "../utils/Singleton.h"
+#include "../utils/Vector2D.h"
+#include "../ecs/ecs.h"
 
 namespace ecs {
 class Manager;
@@ -18,9 +20,16 @@ public:
 	virtual ~Game();
 	bool init();
 	void start();
+
+
+	ecs::entity_t createSarnoRata(Vector2D);
+	ecs::entity_t createPlimPlim(Vector2D);
+	ecs::entity_t createBoom(Vector2D);
+	ecs::entity_t createMichiMafioso(Vector2D);
+
 	ecs::Manager* get_mngr();
 	Scene* get_currentScene();
-	std::pair<int, int> get_screen_size() const;
+	std::pair<int,int> get_world_half_size() const;
 
 private:
 	void change_Scene(State);

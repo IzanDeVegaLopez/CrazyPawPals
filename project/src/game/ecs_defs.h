@@ -20,7 +20,10 @@
 	CAMERA, \
 	CAMERA_FOLLOW, \
 	CAMERA_CLAMP, \
-	RENDER_ORDERING 
+	WAVEMANAGER, \
+	ENEMYSTATEMACHINE, \
+	RENDER_ORDERING \
+
 
 
 // Groups list - must have at least one element
@@ -44,6 +47,7 @@
 //
 #define _HDLRS_LIST_ \
     PLAYER, \
+    WAVE, \
 	GAMEINFO, \
 	CAMERA
 

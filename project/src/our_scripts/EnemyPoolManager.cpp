@@ -1,57 +1,70 @@
-// This file is part of the course TPV2@UCM - Samir Genaim
 
-#include "EnemyPoolManager.h"
-
-#include "../sdlutils/InputHandler.h"
-#include "../sdlutils/SDLUtils.h"
-
-EnemyPoolManager::EnemyPoolManager() :
-		//_pool(50), //
-		_img(&sdlutils().images().at("sarnoRata")) //
-{
-}
-
-EnemyPoolManager::~EnemyPoolManager() {
-}
-
-void EnemyPoolManager::update(uint32_t delta_time) {
-	(void)delta_time;
-	/*for (auto o : _pool) {
-		if (_pool.is_used(o)) {
-			o->_width *= 0.9f;
-			o->_height *= 0.9f;
-			if (o->_width < 1 && o->_height < 1) {
-				_pool.free(o);
-			}
-		}
-	}*/
-
-}
-
-void EnemyPoolManager::render() {
-	/*for (auto o : _pool) {
-		if (_pool.is_used(o)) {
-			SDL_Rect dest = build_sdlrect(o->_pos, o->_width, o->_height);
-			_img->render(dest);
-		}
-	}
-	*/
-}
-
-
-void EnemyPoolManager::addEnemies(uint16_t n) {
-	(void)n;
-	/*
-	for (auto i = 0u; i < n; i++) {
-		Star *s = _pool.alloc();
-		if (s == nullptr)
-			break;
-		auto &rand = sdlutils().rand();
-		s->_width = s->_height = rand.nextInt(30, 100);
-		s->_pos.set(rand.nextInt(0, sdlutils().height()),
-				rand.nextInt(0, sdlutils().width()));
-	}
-	
-	*/
-	
-}
+//// This file is part of the course TPV2@UCM - Samir Genaim
+//
+//#include "EnemyPoolManager.h"
+//
+//#include "../sdlutils/InputHandler.h"
+//#include "../ecs/Manager.h"
+//#include "../ecs/ecs.h"
+//#include "../sdlutils/SDLUtils.h"
+//#include "../our_scripts/components/Image.h"
+//#include "../our_scripts/Enemy.h"
+//
+//
+//template<typename T>
+//EnemyPoolManager::EnemyPoolManager(std::vector<T> _objs) : _pool(_objs.size())
+//{
+//	
+//}
+//
+//EnemyPoolManager::~EnemyPoolManager() {
+//}
+//
+////
+////std::vector<Enemy*> EnemyPoolManager::getActiveObjects() const {
+////	return _pool.getActiveObjects();
+////}
+//
+//
+//void EnemyPoolManager::update() {
+//	
+//	for (auto o : _pool) {
+//		if (_pool.is_used(o)) {
+//			
+//			if (false) {
+//				_pool.free(o);
+//			}
+//		}
+//	}
+//
+//	addEnemies(1);
+//}
+//
+//void EnemyPoolManager::render() {
+//	for (auto o : _pool) {
+//		if (_pool.is_used(o)) {
+//			//o->getImage()->render();
+//		}
+//	}
+//}
+//
+//
+//void EnemyPoolManager::addEnemies(uint16_t n) {
+//	for (auto i = 0u; i < n; i++) {
+//		/*Enemy* e = _pool.alloc();
+//		if (e == nullptr)
+//			break;*/
+//
+//		// Inicializar el enemigo con valores aleatorios
+//		auto& rand = sdlutils().rand();
+//		//const Vector2D& pos, float width, float height, float speed, const std::string& imageName
+//		//e->init(
+//		//	Vector2D(rand.nextInt(0, sdlutils().width()), // Pos aleatoria en X
+//		//		rand.nextInt(0, sdlutils().height())),         // Pos aleatoria en Y
+//		//		rand.nextInt(50, 150),
+//		//		rand.nextInt(50, 150),
+//		//		float(rand.nextInt(1.0f, 3.0f))/100,
+//		//		"enemy"
+//		//	);
+//	}
+//}
