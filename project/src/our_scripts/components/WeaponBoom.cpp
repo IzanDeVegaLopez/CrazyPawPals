@@ -9,7 +9,7 @@ WeaponBoom::~WeaponBoom() {}
 void 
 WeaponBoom::callback(Vector2D shootPos, Vector2D shootDir) {
 	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
-	float dist = 0.1;
+	//float dist = 0.1;
 	bp.dir = shootDir;
 	bp.init_pos = shootPos;
 	bp.speed =_speed;
