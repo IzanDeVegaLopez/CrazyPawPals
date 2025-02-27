@@ -3,6 +3,7 @@
 #include "GameStructs.h"
 #include "../utils/Vector2D.h"
 #include "../sdlutils/SDLUtils.h"
+#include "../sdlutils/InputHandler.h"
 #include "../ecs/Entity.h"
 
 #include "../our_scripts/components/Revolver.h"
@@ -10,6 +11,7 @@
 
 #include <iostream>
 #include <string>
+
 
 SelectionMenuScene::SelectionMenuScene(): Scene(ecs::scene::SELECTIONMENUSCENE)
 {
@@ -50,33 +52,31 @@ void SelectionMenuScene::render()
 {
 	Game::Instance()->get_mngr()->render(ecs::scene::SELECTIONMENUSCENE);
 }
-void 
-SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const GameStructs::ButtonProperties& bp) {
-	auto* mngr = Game::Instance()->get_mngr();
-	auto e = create_button(bp);
-	auto buttonComp = mngr->getComponent<Button>(e);
-	//add callbacks
-	buttonComp->connectClick([buttonComp, &mngr, wt]() {
-		std::cout << "left click-> button" << std::endl;
-		//añadir el tipo de arma
-		auto player = mngr->getHandler(ecs::hdlr::PLAYER);
-		//REMEMBER TO INITIALIZE THIS COMPONENT IS GAMESTATE::ENTER()
-		switch (wt)
-		{
-		case GameStructs::REVOLVER:
-			//mngr->addComponent<Revolver>(player);
-			std::cout << "revolver chosen" << std::endl;
-			break;
-		case GameStructs::RAMPAGE:
-			//mngr->addComponent<Rampage>(player);
-			std::cout << "rampage chosen" << std::endl;
-			break;
-		default:
-			break;
-		}
-		//ir a la escena de juego
-		Game::Instance()->change_Scene(Game::GAMESCENE);
-	});
-	buttonComp->connectHover([buttonComp]() {
-	});
+void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const GameStructs::ButtonProperties& bp) {
+    auto* mngr = Game::Instance()->get_mngr();
+    auto e = create_button(bp);
+    auto buttonComp = mngr->getComponent<Button>(e);
+    auto player = mngr->getHandler(ecs::hdlr::PLAYER);
+    buttonComp->connectClick([buttonComp, &mngr, wt, player]() {
+        if (buttonComp->clicked()) return;
+        buttonComp->set_clicked(true);
+        std::cout << "left click-> button" << std::endl;
+
+        switch (wt) {
+        case GameStructs::REVOLVER:
+            std::cout << "revolver chosen" << std::endl;
+            mngr->addComponent<Revolver>(player);
+            break;
+        case GameStructs::RAMPAGE:
+            std::cout << "rampage chosen" << std::endl;
+            mngr->addComponent<Rampage>(player);
+            break;
+        default:
+            break;
+        }
+
+        Game::Instance()->change_Scene(Game::GAMESCENE);
+        });
+
+    buttonComp->connectHover([buttonComp]() {});
 }

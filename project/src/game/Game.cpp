@@ -73,7 +73,14 @@ ecs::entity_t create_environment() {
 
 	return environment;
 }
+void Game::create_scenes() {
+	_game_scene = new GameScene();
+	_game_scene->initScene();
 
+	//_mainmenu_scene = new MainMenuScene();
+	_selectionmenu_scene = new SelectionMenuScene();
+	_selectionmenu_scene->initScene();
+}
 bool Game::init() {
 	
 	// initialize the SDL singleton
@@ -113,9 +120,8 @@ bool Game::init() {
 		},
 	});
 	_mngr->setHandler(ecs::hdlr::CAMERA, cam);
-	_game_scene = new SelectionMenuScene();
-	_game_scene->initScene();
-	_current_scene = _game_scene;
+	create_scenes();
+	_current_scene = _selectionmenu_scene;
 	//create_environment();
 
 	#pragma region player
@@ -210,6 +216,7 @@ std::pair<int, int> Game::get_world_half_size() const
 }
 
 void Game::change_Scene(State nextScene){
+	_current_scene->exitScene();
 	switch (nextScene) {
 	case Game::MAINMENU:
 		_current_scene = _mainmenu_scene;
@@ -229,5 +236,5 @@ void Game::change_Scene(State nextScene){
 		exit(EXIT_FAILURE);
 	}
 	}
-
+	_current_scene->enterScene();
 }

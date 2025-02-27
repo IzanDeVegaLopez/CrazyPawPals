@@ -44,7 +44,7 @@ GameScene::GameScene(): Scene(ecs::scene::GAMESCENE)
 void GameScene::initScene()
 {
 	//spawnWaveManager();
-	//spawnPlayer();
+	spawnPlayer();
 }
 
 void GameScene::enterScene()
@@ -75,7 +75,7 @@ void GameScene::spawnPlayer()
 	//auto* revolver = new Revolver();
 	auto* revolver = new Rampage();
 	std::list<Card*> c = { new Fireball(), new Minigun(), new Lighting(), new Minigun() };
-	create_entity(
+	ecs::entity_t e = create_entity(
 		ecs::grp::PLAYER,
 		ecs::scene::GAMESCENE,
 		new Transform({ sdlutils().width() / 2.0f, sdlutils().height() / 2.0f }, { 0.0f,0.0f }, 100.0f, 100.0f, 0.0f, 2.0f),
@@ -87,6 +87,7 @@ void GameScene::spawnPlayer()
 		new MovementController(),
 		new KeyboardPlayerCtrl()
 		);
+	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::PLAYER, e);
 	revolver->initComponent();
 	revolver->set_attack_size(10, 10);
 }

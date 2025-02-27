@@ -7,7 +7,6 @@ namespace ecs {
 class Manager;
 }
 class Scene;
-class GameScene;
 class Game: public Singleton<Game>  {
 public:
 	enum State {
@@ -40,4 +39,6 @@ private:
 	std::pair<int, int> _screen_size = std::make_pair(800,600);
 	Game();
 	ecs::Manager* _mngr;
+
+	void create_scenes();
 };

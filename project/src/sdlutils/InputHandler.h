@@ -41,6 +41,7 @@ public:
 
 	// update the state with a new event
 	inline void update(const SDL_Event &event) {
+
 		switch (event.type) {
 		case SDL_KEYDOWN:
 			onKeyDown(event);
@@ -144,7 +145,6 @@ public:
 
 	// TODO add support for Joystick, see Chapter 4 of
 	// the book 'SDL Game Development'
-	
 
 private:
 	// Set all the mouse button state to false (each button turns true when it is pressed)

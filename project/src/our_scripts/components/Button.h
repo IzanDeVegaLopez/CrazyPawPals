@@ -24,7 +24,8 @@ public:
     // link methods
     void connectClick(SDLEventCallback callback);
     void connectHover(SDLEventCallback callback);
-
+    inline bool clicked() const { return _clicked; };
+    inline void set_clicked(bool s) { _clicked = s; };
 private:
     // Button states
     enum ButtonState { EMPTY, HOVER, CLICK };
@@ -38,4 +39,6 @@ private:
     void emitHover() const; 
 
     SDL_Rect _button_collider;
+
+    bool _clicked;
 };
