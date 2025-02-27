@@ -3,13 +3,17 @@
 #include "../../game/Game.h"
 #include "../../ecs/Manager.h"
 #include "camera_component.hpp"
+#include <iostream>
 
 void camera_component::update(uint32_t delta_time) {
     (void)delta_time;
-    cam.screen.pixel_size = size2_i32{
-        sdlutils().width(),
-        sdlutils().height()
-    };
+    //HACK: other should be the one updating the correct screen size
+    size2_i32 screen_size{};
+    SDL_GetWindowSizeInPixels(sdlutils().window(), &screen_size.x, &screen_size.y);
+
+    sdlutils().width() = screen_size.x;
+    sdlutils().height() = screen_size.y;
+    cam.screen.pixel_size = screen_size;
 }
 
 #include <iostream>
