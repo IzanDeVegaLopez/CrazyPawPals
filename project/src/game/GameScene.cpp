@@ -56,7 +56,6 @@ void GameScene::initScene()
 	assert(playerTransform != nullptr && "Error: Player Transform is nullptr");
 
 	auto cam = Scene::rendering::create_camera(flags, playerTransform);
-	Game::Instance()->create_environment();
 	manager.addComponent<dyn_image>(_player, rect_f32{
 		//pos inicial del render
 		{0.0, 0.0},
@@ -74,13 +73,15 @@ void GameScene::initScene()
 	manager.addComponent<Deck>(_player, c);
 	manager.addComponent<MovementController>(_player);
 	manager.addComponent<KeyboardPlayerCtrl>(_player);
+	manager.addComponent<render_ordering>(_player)->ordinal = 1;
 	revolver->initComponent();
 
 #pragma endregion
-
+	auto env = Game::Instance()->create_environment();
+	manager.addComponent<render_ordering>(env)->ordinal = 0;
 	
 #pragma region Enemies
-	spawnWaveManager();
+	//spawnWaveManager();
 
 #pragma endregion
 }

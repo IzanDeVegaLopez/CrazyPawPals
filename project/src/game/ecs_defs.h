@@ -31,6 +31,7 @@
 #define _GRPS_LIST_ \
 	BULLET,\
 	PLAYER,\
+	UI,\
 	ENEMY,\
 	PLAYERBULLETS,\
     ENEMYBULLETS
