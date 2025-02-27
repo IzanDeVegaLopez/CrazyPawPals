@@ -70,10 +70,19 @@ Scene::create_button(const GameStructs::ButtonProperties& bp) {
     ecs::entity_t e = create_entity(
                         ecs::grp::UI,
                         _scene_ID,
-                        new Transform(bp.pos, { 0.0f,0.0f }, bp.width, bp.height, bp.rot, 0.0f),
+                        new Transform(bp.pos, { 0.0f,0.0f }, bp.rot, 0.0f, bp.width, bp.height),
                         new Image(&sdlutils().images().at(bp.sprite_key)),
                         b
                     );
     b->initComponent();
     return e;
+}
+void Scene::update(uint32_t delta_time)
+{
+    Game::Instance()->get_mngr()->update(_scene_ID, delta_time);
+}
+
+void Scene::render()
+{
+    Game::Instance()->get_mngr()->render(_scene_ID);
 }

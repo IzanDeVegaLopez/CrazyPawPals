@@ -44,7 +44,7 @@
 #include <iostream>
 #include <string>
 
-GameScene::GameScene() : _player(nullptr)
+GameScene::GameScene() : Scene(ecs::scene::GAMESCENE), _player(nullptr)
 {}
 
 static ecs::entity_t create_environment() {
@@ -93,16 +93,6 @@ void GameScene::exitScene()
 {
 }
 
-void GameScene::update(uint32_t delta_time)
-{
-	Game::Instance()->get_mngr()->update(ecs::scene::GAMESCENE, delta_time);
-}
-
-void GameScene::render()
-{
-	Game::Instance()->get_mngr()->render(ecs::scene::GAMESCENE);
-}
-
 ecs::entity_t GameScene::spawnPlayer()
 {
 	std::list<Card*> c = { new Fireball(), new Minigun(), new Lighting(), new Minigun() };
@@ -129,7 +119,7 @@ ecs::entity_t GameScene::spawnPlayer()
 		new MovementController(),
 		new Deck(c)
 		);
-	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::PLAYER, e);
+	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::PLAYER, player);
 	return player;
 }
 

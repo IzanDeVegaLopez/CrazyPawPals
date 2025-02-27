@@ -36,8 +36,7 @@
 	UI,\
 	ENEMY,\
 	PLAYERBULLETS,\
-    ENEMYBULLETS, \
-    UI
+    ENEMYBULLETS
 
 
 // Scene list
