@@ -138,7 +138,7 @@ void GameScene::spawnSarnoRata(Vector2D posVec)
 {
 	auto* weapon = new WeaponSarnoRata();
 	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
-	auto &&rect = *new rect_component{0, 0, 1.0f, 1.0f};
+	auto &&rect = *new rect_component{0, 0, 2.0f, 2.0f};
 	auto manager = Game::Instance()->get_mngr();
 
 	//std::cout << posVec << std::endl;
@@ -151,7 +151,7 @@ void GameScene::spawnSarnoRata(Vector2D posVec)
 			rect_f32{ {0,0},{1,1} },
 			rect,
 			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
-			sdlutils().images().at("enemy"),
+			sdlutils().images().at("sarnoRata"),
 			tr
 		),
 		new Health(2),
