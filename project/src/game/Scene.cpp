@@ -3,6 +3,11 @@
 #include <cassert>
 
 #include "../our_scripts/components/camera_component.hpp"
+#include "../our_scripts/components/Transform.h"
+#include "../our_scripts/components/Image.h"
+#include "../our_scripts/components/Button.h"
+#include <string>
+Scene::Scene(ecs::sceneId_t id) : _scene_ID(id) {}
 ecs::entity_t Scene::rendering::create_camera(const camera_creation_descriptor_flags flags, CZPP_NULLABLE const Transform *optional_follow_target) {
     assert(
         (flags & camera_creation_descriptor_options_follow) == (optional_follow_target != nullptr)
@@ -51,4 +56,18 @@ ecs::entity_t Scene::rendering::create_camera(const camera_creation_descriptor_f
         assert(clamp != nullptr && "error: failed to add camera clamp");
     }
     return camera;
+}
+
+ecs::entity_t
+Scene::create_button(const GameStructs::ButtonProperties& bp) {
+    auto b = new Button();
+    ecs::entity_t e = create_entity(
+                        ecs::grp::UI,
+                        _scene_ID,
+                        new Transform(bp.pos, { 0.0f,0.0f }, bp.width, bp.height, bp.rot, 0.0f),
+                        new Image(&sdlutils().images().at(bp.sprite_key)),
+                        b
+                    );
+    b->initComponent();
+    return e;
 }

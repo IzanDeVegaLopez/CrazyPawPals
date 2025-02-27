@@ -33,7 +33,8 @@
 	PLAYER,\
 	ENEMY,\
 	PLAYERBULLETS,\
-    ENEMYBULLETS
+    ENEMYBULLETS, \
+    UI
 
 
 // Scene list

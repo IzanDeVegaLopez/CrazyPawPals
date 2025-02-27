@@ -11,7 +11,7 @@ class Transform;
 
 class Scene {
 public:
-	Scene() {};
+	Scene(ecs::sceneId_t id);
 	virtual ~Scene() {};
 	//Each scene
 	virtual void initScene() = 0;
@@ -41,4 +41,8 @@ public:
 		#define CZPP_NULLABLE
 		ecs::entity_t create_camera(const camera_creation_descriptor_flags flags, CZPP_NULLABLE const Transform *optional_follow_target);
 	};
+protected:
+	ecs::sceneId_t _scene_ID;
+
+	ecs::entity_t create_button(const GameStructs::ButtonProperties& bp);
 };

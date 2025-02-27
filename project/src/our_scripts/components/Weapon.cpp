@@ -7,8 +7,9 @@
 
 //Weapon::Weapon() : _damage(0), _cooldown(0.0f), _distance(0.0f), _speed(0.0f), _tex(""), _attack_width(50), _attack_height(50) {}
 
-Weapon::Weapon(int d, float cd, float dis, float s, const std::string& t)
-	: _damage(d), _cooldown(cd), _distance(dis), _speed(s), _tex(t), _attack_width(1), _attack_height(1), _lastShoot(0.0f), _tr(nullptr)
+Weapon::Weapon(int d, float cd, float dis, float s, const std::string& t, int w, int h)
+	: _damage(d), _cooldown(cd), _distance(dis), _speed(s), _tex(t), 
+	_attack_width(w), _attack_height(h), _lastShoot(0.0f), _tr(nullptr) 
 {
 }
 void 

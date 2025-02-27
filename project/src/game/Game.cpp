@@ -212,10 +212,13 @@ std::pair<int, int> Game::get_world_half_size() const
 void Game::change_Scene(State nextScene){
 	switch (nextScene) {
 	case Game::MAINMENU:
+		_current_scene = _mainmenu_scene;
 		break;	
 	case Game::GAMESCENE:
+		_current_scene = _game_scene;
 		break;
 	case Game::SELECTIONMENU:
+		_current_scene = _selectionmenu_scene;
 		break;
 	case Game::NUM_SCENE: {
 		assert(false && "unimplemented");

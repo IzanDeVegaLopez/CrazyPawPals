@@ -23,7 +23,7 @@ protected:
 	virtual void callback(Vector2D shootPos, Vector2D shootDir) = 0; //when you attacks, this callback will be called
 public:
 	__CMPID_DECL__(ecs::cmp::WEAPON);
-	Weapon(int d, float cd, float dis, float s, const std::string& t);
+	Weapon(int d, float cd, float dis, float s, const std::string& t, int w=50, int h=50);
 	virtual ~Weapon();
 	void initComponent() override;
 	//NECCESARY, ALL TYPE OF WEAPON NEED TO CALL THIS METHOD TO INITIALIZE ATTRIBUTES

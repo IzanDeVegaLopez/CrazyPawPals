@@ -37,49 +37,22 @@
 #include <iostream>
 #include <string>
 
-GameScene::GameScene()
+GameScene::GameScene(): Scene(ecs::scene::GAMESCENE)
 {
-
 }
 
 void GameScene::initScene()
 {
-#pragma region Bullets
-	//std::vector<Bullet*> b;
-
-#pragma endregion
-
-#pragma region Enemies
 	spawnWaveManager();
-
-#pragma endregion
-
-#pragma region Player
-
-	//spawnPlayer();
-	//spawnSarnoRata({ sdlutils().width() / 2.0f,sdlutils().height() / 2.0f});
-
-#pragma endregion Deck
-
-	//Deck deck = Deck(std::list<Card*>{new Card("1"), new Card("2"), new Card("3"), new Card("4")});
-	////cout << deck << endl;
-	//deck.add_card_to_deck(new Fireball());
-	//deck.add_card_to_deck(new Minigun());
-
-	//deck.use_card();
-	//deck.use_card();
-	//deck.use_card();
-	//deck.use_card();
-	//deck.use_card();
-	//deck.use_card();
-	//deck.reload();
-
-	////deck.addCardToDeck(new Card("5"));
-	//cout << deck << endl;*/
 }
 
 void GameScene::enterScene()
 {
+	auto* mngr = Game::Instance()->get_mngr();
+	auto player = mngr->getHandler(ecs::hdlr::PLAYER);
+	auto w = mngr->getComponent<Weapon>(player);
+
+	w->initComponent();
 }
 
 void GameScene::exitScene()
@@ -235,7 +208,7 @@ void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs
 		new Transform(bp.init_pos, bp.dir, bp.width, bp.height, bp.rot, bp.speed),
 		new dyn_image(
 			rect_f32{ {0,0},{1,1} },
-			size2_f32{bp.width,bp.height},
+			size2_f32{ bp.width,bp.height },
 			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
 			sdlutils().images().at(bp.sprite_key)
 		),

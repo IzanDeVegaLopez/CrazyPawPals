@@ -29,10 +29,10 @@ public:
 
 	ecs::Manager* get_mngr();
 	Scene* get_currentScene();
+	void change_Scene(State);
 	std::pair<int,int> get_world_half_size() const;
 
 private:
-	void change_Scene(State);
 	Scene* _current_scene;
 	Scene* _game_scene;
 	Scene* _mainmenu_scene;
