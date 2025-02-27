@@ -2,6 +2,7 @@
 #include "../utils/Singleton.h"
 #include "../utils/Vector2D.h"
 #include "../ecs/ecs.h"
+#include <vector>
 
 namespace ecs {
 class Manager;
@@ -27,16 +28,16 @@ public:
 	ecs::entity_t createBoom(Vector2D);
 	ecs::entity_t createMichiMafioso(Vector2D);
 
+	ecs::entity_t create_environment();
+
 	ecs::Manager* get_mngr();
 	Scene* get_currentScene();
 	std::pair<int,int> get_world_half_size() const;
 
 private:
 	void change_Scene(State);
-	Scene* _current_scene;
-	Scene* _game_scene;
-	Scene* _mainmenu_scene;
-	Scene* _selectionmenu_scene;
+	int _current_scene_index = -1;
+	std::vector<Scene*> _scenes;
 	std::pair<int, int> _screen_size = std::make_pair(800,600);
 	Game();
 	ecs::Manager* _mngr;

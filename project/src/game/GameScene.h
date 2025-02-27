@@ -3,6 +3,7 @@
 #include "Scene.h"
 class GameScene : public Scene
 {
+	ecs::entity_t _player;
 public:
 	GameScene();
 	~GameScene() {};

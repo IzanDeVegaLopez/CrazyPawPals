@@ -9,10 +9,10 @@
 
 #include "../our_scripts/components/Image.h"
 #include "../our_scripts/components/Transform.h"
-#include "../our_scripts/components/KeyboardPlayerCtrl.h"
 #include "../our_scripts/components/MovementController.h"
 #include "../our_scripts/components/LifetimeTimer.h"
 
+#include "../our_scripts/components/KeyboardPlayerCtrl.h"
 #include "../our_scripts/components/Revolver.h"
 #include "../our_scripts/components/Rampage.h"
 #include "../our_scripts/components/SimpleMove.h"
@@ -38,13 +38,14 @@
 #include "../our_scripts/components/render_ordering.hpp"
 #include "../our_scripts/components/rect_component.hpp"
 
+#include "../our_scripts/components/render_ordering.hpp"
+
+
 #include <iostream>
 #include <string>
 
-GameScene::GameScene()
-{
-
-}
+GameScene::GameScene() : _player(nullptr)
+{}
 
 static ecs::entity_t create_environment() {
 	auto&& manager = *Game::Instance()->get_mngr();
@@ -89,7 +90,7 @@ void GameScene::exitScene()
 
 void GameScene::update(uint32_t delta_time)
 {
-	Game::Instance()->get_mngr()->update(ecs::scene::GAMESCENE,delta_time);
+	Game::Instance()->get_mngr()->update(ecs::scene::GAMESCENE, delta_time);
 }
 
 void GameScene::render()
@@ -106,7 +107,7 @@ ecs::entity_t GameScene::spawnPlayer()
 	auto &&camera = manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam;
 	
 	auto &&player_transform = *new Transform({ 0.0f, 0.0f }, { 0.0f,0.0f }, 0.0f, 2.0f);
-	auto &&player_rect = *new rect_component{0, 0, 1.0f, 1.0f};
+	auto &&player_rect = *new rect_component{0, 0, 2.0f, 1.5f};
 	ecs::entity_t player = create_entity(
 		ecs::grp::PLAYER,
 		ecs::scene::GAMESCENE,
@@ -123,14 +124,15 @@ ecs::entity_t GameScene::spawnPlayer()
 		revolver,
 		new Health(100),
 		new ManaComponent(),
-		new Deck(c),
 		new MovementController(),
+		new Deck(c),
 		new KeyboardPlayerCtrl()
 		);
 	revolver->initComponent();
-	revolver->set_attack_size(10, 10);
+	revolver->set_attack_size(1, 1);
 	return player;
 }
+
 
 void GameScene::spawnSarnoRata(Vector2D posVec)
 {
@@ -286,9 +288,9 @@ void GameScene::check_collision() {
 
 		//player bullet array
 		auto& pBullets = mngr->getEntities(ecs::grp::PLAYERBULLETS);
-		
+
 		//Enemy-PlayerBullet collision
-		for (auto e : enemies){
+		for (auto e : enemies) {
 			//check if the actual enemy is alive
 			if (mngr->isAlive(e)) {
 				//actual enemy transform

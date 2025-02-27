@@ -33,6 +33,13 @@ Game::Game() : _mngr(nullptr){}
 
 Game::~Game() {
 
+	for (auto scene : _scenes) {
+		if (scene != nullptr) {
+			delete scene;
+		}
+	}
+	_scenes.clear();
+
 	// release InputHandler if the instance was created correctly.
 	if (InputHandler::HasInstance())
 		InputHandler::Release();
@@ -40,8 +47,8 @@ Game::~Game() {
 	// release SLDUtil if the instance was created correctly.
 	if (SDLUtils::HasInstance())
 		SDLUtils::Release();
-}
 
+}
 
 
 bool Game::init() {
@@ -66,7 +73,17 @@ bool Game::init() {
 	SDL_ShowCursor(SDL_ENABLE);
 	
 	_mngr = new ecs::Manager();
-	Game::change_Scene(State::GAMESCENE);
+
+	// Inicializar el vector de escenas
+	_scenes.resize(NUM_SCENE);
+
+	//_scenes[MAINMENU] = new MainMenuScene();
+	_scenes[GAMESCENE] = new GameScene();
+	//_scenes[SELECTIONMENU] = new SelectionMenuScene();
+
+	_current_scene_index = GAMESCENE;
+	_scenes[_current_scene_index]->initScene();
+
 	return true;
 }
 
@@ -105,16 +122,14 @@ void Game::start() {
 			continue;
 		}
 
-		_current_scene->update(sdlutils().virtualTimer().deltaTime());
+		_scenes[_current_scene_index]->update(sdlutils().virtualTimer().deltaTime());
 		_mngr->refresh();
 
 
 		sdlutils().clearRenderer();
-		_current_scene->render();
+		_scenes[_current_scene_index]->render();
 		sdlutils().presentRenderer();
 
-		//dt = sdlutils().currTime() - startTime;
-		//std::cout << Game::Instance()->get_mngr()->getComponent<Transform>(Game::Instance()->get_mngr()->getEntities(ecs::grp::PLAYER)[0])->getPos() << std::endl;
 		if (dt < 10) {
 			SDL_Delay(10 - dt);
 			//dt = 10;
@@ -128,7 +143,7 @@ ecs::Manager* Game::get_mngr() {
 }
 
 Scene* Game::get_currentScene() {
-	return _current_scene;
+	return _scenes[_current_scene_index];
 }
 
 std::pair<int, int> Game::get_world_half_size() const
@@ -137,31 +152,14 @@ std::pair<int, int> Game::get_world_half_size() const
 }
 
 void Game::change_Scene(State nextScene){
-	switch (nextScene) {
-	case Game::MAINMENU:{
-		assert(false && "unimplemented");
-		exit(EXIT_FAILURE);
-		break;
-	}
-	case Game::GAMESCENE: {
-		_current_scene = new GameScene();
-		_current_scene->initScene();
-		break;
-	}
-	case Game::SELECTIONMENU:{
-		assert(false && "unimplemented");
-		exit(EXIT_FAILURE);
-		break;
-	}
-	case Game::NUM_SCENE: {
-		assert(false && "unimplemented");
-		exit(EXIT_FAILURE);
-		break;
-	}
-	default: {
-		assert(false && "unreachable");
-		exit(EXIT_FAILURE);
-	}
+	if (nextScene < 0 || nextScene >= NUM_SCENE) {
+		std::cerr << "Error: Invalid scene index" << std::endl;
+		return;
 	}
 
+	if (_current_scene_index != -1) {
+		_scenes[_current_scene_index]->exitScene();
+	}
+	_current_scene_index = nextScene;
+	_scenes[_current_scene_index]->enterScene();
 }
