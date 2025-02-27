@@ -16,6 +16,7 @@
 #include "../our_scripts/components/Deck.hpp"
 #include "../our_scripts/components/dyn_image.hpp"
 #include "../our_scripts/components/camera_component.hpp"
+#include "../our_scripts/components/rect_component.hpp"
 #include "../our_scripts/components/Revolver.h"
 #include "../our_scripts/components/Rampage.h"
 
@@ -41,38 +42,7 @@ Game::~Game() {
 		SDLUtils::Release();
 }
 
-ecs::entity_t create_test_player_at(Vector2D position) {
-	auto &&manager = *Game::Instance()->get_mngr();
-	auto player = manager.addEntity(ecs::scene::GAMESCENE,ecs::grp::PLAYER);
 
-	auto tr = manager.addComponent<Transform>(player, position, Vector2D(0.0, 0.0), 100.0f, 100.0f, 0.0f, 0.05f);
-	(void)tr;
-	manager.addComponent<dyn_image>(player, rect_f32{
-		//pos inicial del render
-		{0.0, 0.0},
-		//Que tanto de la textura renderiza
-		{1.0, 1.0}
-	}, size2_f32{3.0, 2.25}, manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam, sdlutils().images().at("player"));
-
-	manager.addComponent<MovementController>(player);
-	manager.addComponent<ManaComponent>(player);
-	std::list<Card*> my_card_list = std::list<Card*>{ new Fireball(), new Lighting(), new Minigun(), new Minigun() };
-	manager.addComponent<Deck>(player, my_card_list);
-	
-	return player;
-}
-ecs::entity_t create_environment() {
-	auto&& manager = *Game::Instance()->get_mngr();
-	auto environment = manager.addEntity();
-	auto tr = manager.addComponent<Transform>(environment, Vector2D(-16.0, 9.0), Vector2D(0.0, 0.0), 100.0f, 100.0f, 0.0f, 0.05f);
-	(void)tr;
-	manager.addComponent<dyn_image>(environment, rect_f32{
-		{0.0, 0.0},
-		{1.0, 1.0}
-		}, size2_f32{ 32.0, 18.0 }, manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam, sdlutils().images().at("floor"));
-
-	return environment;
-}
 
 bool Game::init() {
 	
@@ -96,50 +66,7 @@ bool Game::init() {
 	SDL_ShowCursor(SDL_ENABLE);
 	
 	_mngr = new ecs::Manager();
-	
-	
-	
-	#pragma endregion
-	auto cam = _mngr->addEntity();
-	//_mngr->setHandler(ecs::hdlr::CAMERA, cam);
-	// auto cam_tr = _mngr->addComponent<Transform>(cam);
-	auto &&cam_screen = *_mngr->addComponent<camera_component>(cam, camera_screen{
-		.camera = {
-			.position = {0.0, 0.0},
-			.half_size = {8.0, 4.5},
-		},
-		.screen = {
-			.pixel_size = {sdlutils().width(), sdlutils().height()},
-		},
-	});
-	_mngr->setHandler(ecs::hdlr::CAMERA, cam);
-	_game_scene = new GameScene();
-	_game_scene->initScene();
-	_current_scene = _game_scene;
-	create_environment();
-
-	#pragma region player
-	auto &&manager = *_mngr;
-
-	auto player = create_test_player_at(Vector2D(0.0, 0.0));
-	manager.addComponent<Rampage>(player);
-
-	manager.addComponent<KeyboardPlayerCtrl>(player);
-	#pragma endregion
-
-
-
-	manager.addComponent<camera_follow>(cam, camera_follow_descriptor{
-		.previous_position = cam_screen.cam.camera.position,
-		.lookahead_time = 1.0,
-		.semi_reach_time = 2.5
-	}, cam_screen, *manager.getComponent<Transform>(player));
-	manager.addComponent<camera_clamp>(cam, camera_clamp_descriptor{
-		.bounds = {
-			.position = {0.0, 0.0},
-			.size = {32.0, 18.0},
-		}
-	}, cam_screen);
+	Game::change_Scene(State::GAMESCENE);
 	return true;
 }
 
@@ -211,15 +138,25 @@ std::pair<int, int> Game::get_world_half_size() const
 
 void Game::change_Scene(State nextScene){
 	switch (nextScene) {
-	case Game::MAINMENU:
-		break;	
-	case Game::GAMESCENE:
+	case Game::MAINMENU:{
+		assert(false && "unimplemented");
+		exit(EXIT_FAILURE);
 		break;
-	case Game::SELECTIONMENU:
+	}
+	case Game::GAMESCENE: {
+		_current_scene = new GameScene();
+		_current_scene->initScene();
 		break;
+	}
+	case Game::SELECTIONMENU:{
+		assert(false && "unimplemented");
+		exit(EXIT_FAILURE);
+		break;
+	}
 	case Game::NUM_SCENE: {
 		assert(false && "unimplemented");
 		exit(EXIT_FAILURE);
+		break;
 	}
 	default: {
 		assert(false && "unreachable");
