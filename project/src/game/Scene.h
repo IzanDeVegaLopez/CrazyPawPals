@@ -22,8 +22,7 @@ public:
 
 	template <typename ... Cmps>
 	ecs::entity_t create_entity(ecs::grpId_t gid, ecs::sceneId_t sid,Cmps ... components) {
-		(void)gid;
-		ecs::entity_t ent = Game::Instance()->get_mngr()->addEntity(sid);
+		ecs::entity_t ent = Game::Instance()->get_mngr()->addEntity(sid, gid);
 		Game::Instance()->get_mngr()->addExistingComponent(ent, components...);
 		return ent;
 	}
