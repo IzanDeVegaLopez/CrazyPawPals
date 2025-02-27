@@ -16,6 +16,7 @@
 #include "../our_scripts/components/Deck.hpp"
 #include "../our_scripts/components/dyn_image.hpp"
 #include "../our_scripts/components/camera_component.hpp"
+#include "../our_scripts/components/rect_component.hpp"
 #include "../our_scripts/components/Revolver.h"
 #include "../our_scripts/components/Rampage.h"
 
@@ -32,6 +33,13 @@ Game::Game() : _mngr(nullptr){}
 
 Game::~Game() {
 
+	for (auto scene : _scenes) {
+		if (scene != nullptr) {
+			delete scene;
+		}
+	}
+	_scenes.clear();
+
 	// release InputHandler if the instance was created correctly.
 	if (InputHandler::HasInstance())
 		InputHandler::Release();
@@ -39,48 +47,9 @@ Game::~Game() {
 	// release SLDUtil if the instance was created correctly.
 	if (SDLUtils::HasInstance())
 		SDLUtils::Release();
+
 }
 
-ecs::entity_t create_test_player_at(Vector2D position) {
-	auto &&manager = *Game::Instance()->get_mngr();
-	auto player = manager.addEntity(ecs::scene::GAMESCENE,ecs::grp::PLAYER);
-
-	auto tr = manager.addComponent<Transform>(player, position, Vector2D(0.0, 0.0), 100.0f, 100.0f, 0.0f, 0.05f);
-	(void)tr;
-	manager.addComponent<dyn_image>(player, rect_f32{
-		//pos inicial del render
-		{0.0, 0.0},
-		//Que tanto de la textura renderiza
-		{1.0, 1.0}
-	}, size2_f32{3.0, 2.25}, manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam, sdlutils().images().at("player"));
-
-	manager.addComponent<MovementController>(player);
-	manager.addComponent<ManaComponent>(player);
-	std::list<Card*> my_card_list = std::list<Card*>{ new Fireball(), new Lighting(), new Minigun(), new Minigun() };
-	manager.addComponent<Deck>(player, my_card_list);
-	
-	return player;
-}
-ecs::entity_t create_environment() {
-	auto&& manager = *Game::Instance()->get_mngr();
-	auto environment = manager.addEntity();
-	auto tr = manager.addComponent<Transform>(environment, Vector2D(-16.0, 9.0), Vector2D(0.0, 0.0), 100.0f, 100.0f, 0.0f, 0.05f);
-	(void)tr;
-	manager.addComponent<dyn_image>(environment, rect_f32{
-		{0.0, 0.0},
-		{1.0, 1.0}
-		}, size2_f32{ 32.0, 18.0 }, manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam, sdlutils().images().at("floor"));
-
-	return environment;
-}
-void Game::create_scenes() {
-	_game_scene = new GameScene();
-	_game_scene->initScene();
-
-	//_mainmenu_scene = new MainMenuScene();
-	_selectionmenu_scene = new SelectionMenuScene();
-	_selectionmenu_scene->initScene();
-}
 bool Game::init() {
 	
 	// initialize the SDL singleton
@@ -103,49 +72,18 @@ bool Game::init() {
 	SDL_ShowCursor(SDL_ENABLE);
 	
 	_mngr = new ecs::Manager();
-	
-	
-	
-	#pragma endregion
-	auto cam = _mngr->addEntity();
-	//_mngr->setHandler(ecs::hdlr::CAMERA, cam);
-	// auto cam_tr = _mngr->addComponent<Transform>(cam);
-	auto &&cam_screen = *_mngr->addComponent<camera_component>(cam, camera_screen{
-		.camera = {
-			.position = {0.0, 0.0},
-			.half_size = {8.0, 4.5},
-		},
-		.screen = {
-			.pixel_size = {sdlutils().width(), sdlutils().height()},
-		},
-	});
-	_mngr->setHandler(ecs::hdlr::CAMERA, cam);
-	create_scenes();
-	_current_scene = _selectionmenu_scene;
-	//create_environment();
 
-	#pragma region player
-	auto &&manager = *_mngr;
+	// Inicializar el vector de escenas
+	_scenes.resize(NUM_SCENE);
 
-	auto player = create_test_player_at(Vector2D(0.0, 0.0));
-	manager.addComponent<Rampage>(player);
+	//_scenes[MAINMENU] = new MainMenuScene();
+	_scenes[GAMESCENE] = new GameScene();
+	_scenes[GAMESCENE]->initScene();
 
-	manager.addComponent<KeyboardPlayerCtrl>(player);
-	#pragma endregion
+	_scenes[SELECTIONMENU] = new SelectionMenuScene();
+	_scenes[SELECTIONMENU]->initScene();
 
-
-
-	manager.addComponent<camera_follow>(cam, camera_follow_descriptor{
-		.previous_position = cam_screen.cam.camera.position,
-		.lookahead_time = 1.0,
-		.semi_reach_time = 2.5
-	}, cam_screen, *manager.getComponent<Transform>(player));
-	manager.addComponent<camera_clamp>(cam, camera_clamp_descriptor{
-		.bounds = {
-			.position = {0.0, 0.0},
-			.size = {32.0, 18.0},
-		}
-		}, cam_screen);
+	_current_scene_index = SELECTIONMENU;
 	return true;
 }
 
@@ -184,16 +122,14 @@ void Game::start() {
 			continue;
 		}
 
-		_current_scene->update(sdlutils().virtualTimer().deltaTime());
+		_scenes[_current_scene_index]->update(sdlutils().virtualTimer().deltaTime());
 		_mngr->refresh();
 
 
 		sdlutils().clearRenderer();
-		_current_scene->render();
+		_scenes[_current_scene_index]->render();
 		sdlutils().presentRenderer();
 
-		//dt = sdlutils().currTime() - startTime;
-		//std::cout << Game::Instance()->get_mngr()->getComponent<Transform>(Game::Instance()->get_mngr()->getEntities(ecs::grp::PLAYER)[0])->getPos() << std::endl;
 		if (dt < 10) {
 			SDL_Delay(10 - dt);
 			//dt = 10;
@@ -207,7 +143,7 @@ ecs::Manager* Game::get_mngr() {
 }
 
 Scene* Game::get_currentScene() {
-	return _current_scene;
+	return _scenes[_current_scene_index];
 }
 
 std::pair<int, int> Game::get_world_half_size() const
@@ -216,25 +152,14 @@ std::pair<int, int> Game::get_world_half_size() const
 }
 
 void Game::change_Scene(State nextScene){
-	_current_scene->exitScene();
-	switch (nextScene) {
-	case Game::MAINMENU:
-		_current_scene = _mainmenu_scene;
-		break;	
-	case Game::GAMESCENE:
-		_current_scene = _game_scene;
-		break;
-	case Game::SELECTIONMENU:
-		_current_scene = _selectionmenu_scene;
-		break;
-	case Game::NUM_SCENE: {
-		assert(false && "unimplemented");
-		exit(EXIT_FAILURE);
+	if (nextScene < 0 || nextScene >= NUM_SCENE) {
+		std::cerr << "Error: Invalid scene index" << std::endl;
+		return;
 	}
-	default: {
-		assert(false && "unreachable");
-		exit(EXIT_FAILURE);
+
+	if (_current_scene_index != -1) {
+		_scenes[_current_scene_index]->exitScene();
 	}
-	}
-	_current_scene->enterScene();
+	_current_scene_index = nextScene;
+	_scenes[_current_scene_index]->enterScene();
 }

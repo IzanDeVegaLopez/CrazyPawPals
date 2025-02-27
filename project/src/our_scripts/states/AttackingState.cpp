@@ -7,7 +7,7 @@
 #include "../components/Weapon.h"
 
 
-AttackingState::AttackingState(float dist) : _tr(nullptr), _health(nullptr), _weapon(nullptr), _stateMachine(nullptr), _playerTr(nullptr), _dist(dist){
+AttackingState::AttackingState(float dist) : _tr(nullptr), _playerTr(nullptr), _health(nullptr), _weapon(nullptr), _stateMachine(nullptr), _dist(dist){
 }
 
 void AttackingState::enter() {
@@ -20,11 +20,12 @@ void AttackingState::enter() {
 		_playerTr = Game::Instance()->get_mngr()->getComponent<Transform>(playerEntities[0]);
 	}
 	else {
-		std::cerr << "Error: No se encontró el jugador.\n";
+		std::cerr << "Error: No se encontro el jugador.\n";
 	}
 }
 
 void AttackingState::update(uint32_t delta_time) {
+	(void)delta_time;
 	if (_tr == nullptr || _health == nullptr || _stateMachine == nullptr || _playerTr == nullptr ||_weapon==nullptr) return;
 	
 	Vector2D _target = _playerTr->getPos();

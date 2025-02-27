@@ -4,31 +4,16 @@
 #include "Transform.h"
 #include "Image.h"
 #include "dyn_image.hpp"
-
-dyn_image::dyn_image(const rect_f32 subrect, const size2_f32 size, camera_screen &camera, Texture &texture)
-    : subrect(subrect), size(size), camera(camera), texture(texture), transform(nullptr) {
-    
-}
-
-void dyn_image::initComponent()
-{
-    auto &&manager = *Game::Instance()->get_mngr();
-    
-    if (transform == nullptr) {
-        transform = manager.getComponent<Transform>(_ent);
-        assert(transform != nullptr);
-    }
-}
+#include "rect_component.hpp"
 
 void dyn_image::render() {
     const SDL_Rect destination = SDL_Rect_screen_rect_from_global({
         .position = {
-            .x = transform->getPos().getX(),
-            .y = transform->getPos().getY()
+            .x = transform.getPos().getX() + output_rect.rect.position.x,
+            .y = transform.getPos().getY() + output_rect.rect.position.y,
         },
-        .size = size
-    }, camera
-    );
+        .size = output_rect.rect.size
+    }, camera);
     
 	texture.render(SDL_Rect{
         .x = int(subrect.position.x * float(texture.width())),

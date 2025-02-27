@@ -97,7 +97,7 @@ public:
 
 	//For one component only
 	template<typename T>
-	inline void addExistingComponent(entity_t e, T* c) {
+	inline T* addExistingComponent(entity_t e, T* c) {
 		constexpr cmpId_t cId = cmpId<T>;
 		static_assert(cId < ecs::maxComponentId);
 		removeComponent<T>(e);
@@ -107,7 +107,7 @@ public:
 		e->_cmps[cId] = c;
 		e->_currCmps.push_back(c);
 
-		//return c;
+		return static_cast<T*>(c);
 	}
 	//recursive for more than one argument
 	template<typename T, typename... Args>

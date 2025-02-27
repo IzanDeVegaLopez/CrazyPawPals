@@ -5,7 +5,7 @@
 #include "../components/Transform.h"
 #include "../components/EnemyStateMachine.h"
 
-WalkingState::WalkingState(float dist) : _tr(nullptr), _health(nullptr),  _stateMachine(nullptr), _playerTr(nullptr), _dist(dist) {
+WalkingState::WalkingState(float dist) :  _stateMachine(nullptr), _tr(nullptr), _playerTr(nullptr), _health(nullptr), _dist(dist) {
 	
 }
 
@@ -23,6 +23,7 @@ void WalkingState::enter() {
 }
 
 void WalkingState::update(uint32_t delta_time) {
+	(void)delta_time;
 	if (_tr == nullptr || _health == nullptr || _stateMachine == nullptr || _playerTr == nullptr) {
 		std::cerr << "Error: Componentes no inicializados en WalkingState::update()\n";
 		return;
@@ -43,7 +44,7 @@ void WalkingState::update(uint32_t delta_time) {
 	std::cout << "Velocidad: " << _tr->getSpeed() << "\n";
 	std::cout << "Posici�n: " << _tr->getPos() << "\n";
 	std::cout << "Distancia enemigo-player: " << std::abs((_tr->getPos() - _playerTr->getPos()).magnitude()) << "\n";*/
-	if (std::abs((_tr->getPos() - _playerTr->getPos()).magnitude() < _dist)) {
+	if ((_tr->getPos() - _playerTr->getPos()).magnitude() < _dist) {
 		exit();
 		_stateMachine->setState(EnemyStateMachine::ATTACKING);
 	}

@@ -4,7 +4,7 @@
 #include "../states/AttackingState.h"
 #include <iostream>
 
-EnemyStateMachine::EnemyStateMachine(float dist) :_dist(dist), _img(nullptr), _state(nullptr), _type(StateType::WALKING), _walking_state(nullptr), _attacking_state(nullptr)
+EnemyStateMachine::EnemyStateMachine(float dist) : _type(StateType::WALKING), _img(nullptr), _dist(dist), _state(nullptr), _walking_state(nullptr), _attacking_state(nullptr)
 {
 
 };

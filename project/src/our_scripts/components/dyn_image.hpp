@@ -7,19 +7,26 @@
 
 class Transform;
 class Texture;
+struct rect_component;
 
 struct dyn_image : public ecs::Component {
 	__CMPID_DECL__(ecs::cmp::CAMERA);
 	rect_f32 subrect;
-	size2_f32 size;
-	camera_screen &camera;
+	const rect_component &output_rect;
+	const camera_screen &camera;
 	Texture &texture;
-	Transform *transform;
+	const Transform &transform;
 
-	dyn_image(const rect_f32 subrect, const size2_f32 size, camera_screen &camera, Texture &texture);
+	//static_assert(false);
+	inline dyn_image(
+		const rect_f32 subrect,
+		const rect_component &output_rect,
+		const camera_screen &camera,
+		Texture &texture,
+		const Transform &transform
+	) : subrect(subrect), output_rect(output_rect), camera(camera), texture(texture), transform(transform) {};
 
-    virtual void initComponent() override; 
-	virtual void render() override;
+    virtual void render() override;
 };
 
 #endif
