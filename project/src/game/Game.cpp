@@ -113,16 +113,16 @@ bool Game::init() {
 		},
 	});
 	_mngr->setHandler(ecs::hdlr::CAMERA, cam);
-	_game_scene = new GameScene();
+	_game_scene = new SelectionMenuScene();
 	_game_scene->initScene();
 	_current_scene = _game_scene;
-	create_environment();
+	//create_environment();
 
 	#pragma region player
 	auto &&manager = *_mngr;
 
 	auto player = create_test_player_at(Vector2D(0.0, 0.0));
-	manager.addComponent<Revolver>(player);
+	manager.addComponent<Rampage>(player);
 
 	manager.addComponent<KeyboardPlayerCtrl>(player);
 	#pragma endregion
@@ -139,7 +139,7 @@ bool Game::init() {
 			.position = {0.0, 0.0},
 			.size = {32.0, 18.0},
 		}
-	}, cam_screen);
+		}, cam_screen);
 	return true;
 }
 

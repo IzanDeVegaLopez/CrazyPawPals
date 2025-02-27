@@ -14,16 +14,16 @@
 SelectionMenuScene::SelectionMenuScene(): Scene(ecs::scene::SELECTIONMENUSCENE)
 {
 	GameStructs::ButtonProperties buttonPropTemplate = { {sdlutils().width()/4.0f, sdlutils().height()/2.0f},
-		50.0f, 50.0f, 0.0f, ""
+		200.0f, 200.0f, 0.0f, ""
 	};
 	GameStructs::ButtonProperties revolverB = buttonPropTemplate;
-	revolverB.sprite_key = "revolver";
+	revolverB.sprite_key = "revolver_button";
 	create_weapon_button(GameStructs::REVOLVER, revolverB); 
 
 	GameStructs::ButtonProperties rampageB = buttonPropTemplate;
-	rampageB.sprite_key = "rampage";
-	rampageB.pos.setX(sdlutils().width() * 3 / 4);
-	create_weapon_button(GameStructs::RAMPAGE, revolverB);
+	rampageB.sprite_key = "rampage_button";
+	rampageB.pos.setX(sdlutils().width() /2.0f);
+	create_weapon_button(GameStructs::RAMPAGE, rampageB);
 }
 
 SelectionMenuScene::~SelectionMenuScene()
@@ -43,12 +43,12 @@ void SelectionMenuScene::exitScene()
 
 void SelectionMenuScene::update(uint32_t delta_time)
 {
-	Game::Instance()->get_mngr()->update(ecs::scene::GAMESCENE, delta_time);
+	Game::Instance()->get_mngr()->update(ecs::scene::SELECTIONMENUSCENE, delta_time);
 }
 
 void SelectionMenuScene::render()
 {
-	Game::Instance()->get_mngr()->render(ecs::scene::GAMESCENE);
+	Game::Instance()->get_mngr()->render(ecs::scene::SELECTIONMENUSCENE);
 }
 void 
 SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const GameStructs::ButtonProperties& bp) {
@@ -64,10 +64,12 @@ SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const GameS
 		switch (wt)
 		{
 		case GameStructs::REVOLVER:
-			mngr->addComponent<Revolver>(player);
+			//mngr->addComponent<Revolver>(player);
+			std::cout << "revolver chosen" << std::endl;
 			break;
 		case GameStructs::RAMPAGE:
-			mngr->addComponent<Rampage>(player);
+			//mngr->addComponent<Rampage>(player);
+			std::cout << "rampage chosen" << std::endl;
 			break;
 		default:
 			break;
@@ -76,6 +78,5 @@ SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const GameS
 		Game::Instance()->change_Scene(Game::GAMESCENE);
 	});
 	buttonComp->connectHover([buttonComp]() {
-		std::cout << "hover-> button" << std::endl;
 	});
 }

@@ -43,7 +43,8 @@ GameScene::GameScene(): Scene(ecs::scene::GAMESCENE)
 
 void GameScene::initScene()
 {
-	spawnWaveManager();
+	//spawnWaveManager();
+	//spawnPlayer();
 }
 
 void GameScene::enterScene()

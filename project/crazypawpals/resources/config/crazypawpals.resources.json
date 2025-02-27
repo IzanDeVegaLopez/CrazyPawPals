@@ -53,6 +53,14 @@
     {
       "id": "card_back",
       "file": "resources/images/card_back.png"
+    },
+    {
+      "id": "revolver_button",
+      "file": "resources/images/card.png"
+    },
+    {
+      "id": "rampage_button",
+      "file": "resources/images/card.png"
     }
   ],
   
