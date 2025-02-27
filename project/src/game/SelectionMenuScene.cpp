@@ -13,7 +13,7 @@
 
 SelectionMenuScene::SelectionMenuScene(): Scene(ecs::scene::SELECTIONMENUSCENE)
 {
-	GameStructs::ButtonProperties buttonPropTemplate = { {sdlutils().width()/4, sdlutils().height()/2},
+	GameStructs::ButtonProperties buttonPropTemplate = { {sdlutils().width()/4.0f, sdlutils().height()/2.0f},
 		50.0f, 50.0f, 0.0f, ""
 	};
 	GameStructs::ButtonProperties revolverB = buttonPropTemplate;

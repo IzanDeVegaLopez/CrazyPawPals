@@ -122,7 +122,7 @@ bool Game::init() {
 	auto &&manager = *_mngr;
 
 	auto player = create_test_player_at(Vector2D(0.0, 0.0));
-	manager.addComponent<Rampage>(player);
+	manager.addComponent<Revolver>(player);
 
 	manager.addComponent<KeyboardPlayerCtrl>(player);
 	#pragma endregion

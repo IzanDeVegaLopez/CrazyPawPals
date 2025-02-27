@@ -2,7 +2,7 @@
 #include "../../game/Game.h"
 #include "../../game/GameScene.h"
 
-WeaponMichiMafioso::WeaponMichiMafioso() : Weapon(4, 5000, 20.0f, 0.1f, "sdl_logo") { }
+WeaponMichiMafioso::WeaponMichiMafioso() : Weapon(4, 5000, 20.0f, 0.1f, "sdl_logo", 3.5f, 3.5f) { }
 
 WeaponMichiMafioso::~WeaponMichiMafioso() {}
 

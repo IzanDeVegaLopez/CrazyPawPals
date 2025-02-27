@@ -2,7 +2,7 @@
 #include "../../game/Game.h"
 #include "../../game/GameScene.h"
 
-WeaponBoom::WeaponBoom() : Weapon(4, 5000, 20.0f, 0.0f, "sdl_logo") { }
+WeaponBoom::WeaponBoom() : Weapon(4, 5000, 20.0f, 0.0f, "sdl_logo", 1.0f, 1.0f) { }
 
 WeaponBoom::~WeaponBoom() {}
 

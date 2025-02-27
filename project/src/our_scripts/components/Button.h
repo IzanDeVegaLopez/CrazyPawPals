@@ -9,6 +9,7 @@ using SDLEventCallback = std::function<void(void)>;
 
 class Button : public ecs::Component {
 public:
+    __CMPID_DECL__(ecs::cmp::BUTTON);
     Button();
     ~Button();
 

@@ -2,7 +2,7 @@
 #include "../../game/Game.h"
 #include "../../game/GameScene.h"
 
-WeaponPlimPlim::WeaponPlimPlim() : Weapon(4, 5000, 20.0f, 0.1f, "sdl_logo") { }
+WeaponPlimPlim::WeaponPlimPlim() : Weapon(4, 5000, 20.0f, 0.1f, "sdl_logo", 2.0f, 2.0f) { }
 
 WeaponPlimPlim::~WeaponPlimPlim() {}
 
