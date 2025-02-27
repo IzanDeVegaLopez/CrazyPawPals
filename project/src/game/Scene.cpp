@@ -1,22 +1,25 @@
 #include "Scene.h"
-#include "../our_scripts/components/Transform.h"
 #include <cassert>
 
+#include "../our_scripts/components/Transform.h"
 #include "../our_scripts/components/camera_component.hpp"
-ecs::entity_t Scene::rendering::create_camera(const camera_creation_descriptor_flags flags, CZPP_NULLABLE const Transform *optional_follow_target) {
-    std::cout << std::endl << flags << std::endl;
+ecs::entity_t Scene::rendering::create_camera(
+    const ecs::sceneId_t scene,
+    const camera_creation_descriptor_flags flags,
+    CZPP_NULLABLE const Transform *optional_follow_target
+) {
     assert(
         (flags & camera_creation_descriptor_options_follow) == (optional_follow_target != nullptr)
         && "error: follow target must be provided if and only if the follow flag is set"
     );
 
     auto &&manager = *Game::Instance()->get_mngr();
-    auto camera = manager.addEntity();
+    auto camera = manager.addEntity(scene);
     if (flags & camera_creation_descriptor_options_set_handler) {
         manager.setHandler(ecs::hdlr::CAMERA, camera);
     }
 
-    auto transform = manager.addComponent<Transform>(camera, Vector2D(0.0, 0.0), Vector2D(0.0, 0.0), 0.0, 0.0, 0.0, 0.0);
+    auto transform = manager.addComponent<Transform>(camera, Vector2D(0.0, 0.0), Vector2D(0.0, 0.0), 0.0, 0.0);
     assert(transform != nullptr && "error: failed to add camera transform");
 
     constexpr static const ::camera default_camera{

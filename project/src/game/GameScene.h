@@ -15,7 +15,7 @@ public:
 	void render() override;
 
 	//Methods of entities to spawn
-	void spawnPlayer();
+	ecs::entity_t spawnPlayer();
 
 	void spawnSarnoRata(Vector2D posVec);
 	void spawnMichiMafioso(Vector2D posVec);

@@ -8,7 +8,6 @@
 #include "../game/Game.h"
 
 class Transform;
-
 class Scene {
 public:
 	Scene() {};
@@ -39,6 +38,10 @@ public:
 		using camera_creation_descriptor_flags = uint8_t;
 		
 		#define CZPP_NULLABLE
-		static ecs::entity_t create_camera(const camera_creation_descriptor_flags flags, CZPP_NULLABLE const Transform *optional_follow_target);
+		static ecs::entity_t create_camera(
+			const ecs::sceneId_t scene,
+			const camera_creation_descriptor_flags flags,
+			CZPP_NULLABLE const Transform *optional_follow_target
+		);
 	};
 };

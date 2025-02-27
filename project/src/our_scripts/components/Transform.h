@@ -18,11 +18,11 @@ public:
 	__CMPID_DECL__(ecs::cmp::TRANSFORM)
 
 	Transform() :
-			_pos(), _dir(), _width(), _height(), _rot() {
+			_pos(), _dir(), _rot() {
 	}
 
-	Transform(Vector2D pos, Vector2D dir, float w, float h, float r, float s) :
-			_pos(pos), _dir(dir), _width(w), _height(h), _rot(r) {
+	Transform(Vector2D pos, Vector2D dir, float r, float s) :
+			_pos(pos), _dir(dir), _rot(r) {
 		setSpeed(s);
 	}
 
@@ -43,6 +43,14 @@ public:
 	Vector2D& getDir() {
 		return _dir;
 	}
+	
+	const Vector2D& getPos() const {
+		return _pos;
+	}
+	const Vector2D& getDir() const {
+		return _dir;
+	}
+
 
 	void add_directional_speed(Vector2D extra_speed) {
 		_dir = _dir + extra_speed;
@@ -61,21 +69,6 @@ public:
 		_dir = d;
 	}
 
-	float getWidth() {
-		return _width;
-	}
-
-	void setWidth(float w) {
-		_width = w;
-	}
-
-	float getHeight() {
-		return _height;
-	}
-
-	void setHeight(float h) {
-		_height = h;
-	}
 
 	float getRot() {
 		return _rot;
@@ -104,8 +97,6 @@ public:
 private:
 	Vector2D _pos;
 	Vector2D _dir;
-	float _width;
-	float _height;
 	float _rot;
 };
 
