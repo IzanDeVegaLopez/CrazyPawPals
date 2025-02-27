@@ -9,8 +9,8 @@
 void dyn_image::render() {
     const SDL_Rect destination = SDL_Rect_screen_rect_from_global({
         .position = {
-            .x = transform.getPos().getX() + output_rect.rect.position.x,
-            .y = transform.getPos().getY() + output_rect.rect.position.y,
+            .x = -(output_rect.rect.size.x/2) + transform.getPos().getX() + output_rect.rect.position.x,
+            .y = +(output_rect.rect.size.y/2) + transform.getPos().getY() + output_rect.rect.position.y,
         },
         .size = output_rect.rect.size
     }, camera);
