@@ -107,7 +107,7 @@ ecs::entity_t GameScene::spawnPlayer()
 	auto &&camera = manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam;
 	
 	auto &&player_transform = *new Transform({ 0.0f, 0.0f }, { 0.0f,0.0f }, 0.0f, 2.0f);
-	auto &&player_rect = *new rect_component{0, 0, 1.0f, 1.0f};
+	auto &&player_rect = *new rect_component{0, 0, 2.0f, 1.5f};
 	ecs::entity_t player = create_entity(
 		ecs::grp::PLAYER,
 		ecs::scene::GAMESCENE,
@@ -124,15 +124,12 @@ ecs::entity_t GameScene::spawnPlayer()
 		revolver,
 		new Health(100),
 		new ManaComponent(),
-		new Image(&sdlutils().images().at("player")),
-		new Health(100),
 		new MovementController(),
 		new Deck(c),
-		revolver,
 		new KeyboardPlayerCtrl()
 		);
 	revolver->initComponent();
-	revolver->set_attack_size(10, 10);
+	revolver->set_attack_size(1, 1);
 	return player;
 }
 
