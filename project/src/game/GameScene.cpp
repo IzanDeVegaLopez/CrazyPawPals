@@ -39,7 +39,7 @@
 #include "../our_scripts/components/rect_component.hpp"
 
 #include "../our_scripts/components/render_ordering.hpp"
-
+#include "../our_scripts/card_system/PlayableCards.hpp"
 
 #include <iostream>
 #include <string>
@@ -102,7 +102,7 @@ ecs::entity_t GameScene::spawnPlayer()
 {
 	//auto* revolver = new Revolver();
 	auto* revolver = new Rampage();
-	std::list<Card*> c = { new Fireball(), new Minigun(), new Lighting(), new Minigun() };
+	std::list<Card*> c = { new Fireball(), new Minigun(), new Lighting(), new CardSpray() };
 	auto &&manager = *Game::Instance()->get_mngr();
 	auto &&camera = manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam;
 	

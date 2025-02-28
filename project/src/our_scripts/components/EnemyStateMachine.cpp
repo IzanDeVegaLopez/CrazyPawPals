@@ -22,7 +22,8 @@ void EnemyStateMachine::initComponent() {
 void EnemyStateMachine::update(uint32_t delta_time) {
 	_state->update(delta_time);
 	if (_state == _walking_state) {
-		//std::cout << "Walking";
+		//std::
+		//  << "Walking";
 	}
 	else if (_state == _attacking_state) {
 		//std::cout << "Attacking";

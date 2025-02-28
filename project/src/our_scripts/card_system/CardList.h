@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <random>
 #include <ostream>
-#include "Card.hpp"
+class Card;
 
 class CardList {
 protected:

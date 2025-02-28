@@ -1,4 +1,5 @@
 #include "CardList.h"
+#include "Card.hpp"
 
 CardList::CardList()
 {

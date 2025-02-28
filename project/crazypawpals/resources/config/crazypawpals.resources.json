@@ -58,6 +58,10 @@
     {
       "id": "card_back",
       "file": "resources/images/card_back.png"
+    },
+    {
+      "id": "card_spray",
+      "file": "resources/images/card_spray.png"
     }
   ],
   

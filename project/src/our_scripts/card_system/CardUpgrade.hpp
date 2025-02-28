@@ -1,4 +1,5 @@
 #include "Card.hpp"
+#include "../components/Deck.hpp"
 
 
 //Decorator Patron --> https://refactoring.guru/design-patterns/decorator/cpp/example
@@ -15,8 +16,8 @@ public:
 	}
 
 	void 
-	(Vector2D* player_position, Vector2D* target_position) override{
-		_card->on_play(player_position, target_position);
+	(Deck& d, Vector2D* player_position, Vector2D* target_position) override{
+		_card->on_play(d,player_position, target_position);
 		//call CardUpgrade::on_play and then 
 		//add to the function whatever you need
 	}
@@ -42,7 +43,7 @@ public:
 class PlayItTwice : public BaseCardUpgrade {
 public:
 	PlayItTwice(std::unique_ptr<Card>&& c) :BaseCardUpgrade(c, Resources(1,0)) {}
-	void on_play(Vector2D* player_position, Vector2D* target_position) override {
+	void on_play(Deck& d,Vector2D* player_position, Vector2D* target_position) override {
 		BaseCardUpgrade::on_play(player_position, target_position);
 		_card->on_play(player_position, target_position);
 	}

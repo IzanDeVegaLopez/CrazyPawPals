@@ -1,7 +1,6 @@
 #pragma once
 #include "../card_system/CardList.h"
 #include "../card_system/Card.hpp"
-#include "../card_system/PlayableCards.hpp"
 #include "Mana.h"
 #include "../../utils/Vector2D.h"
 #include "../components/camera_component.hpp"

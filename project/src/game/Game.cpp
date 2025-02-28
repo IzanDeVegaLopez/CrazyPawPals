@@ -19,7 +19,6 @@
 #include "../our_scripts/components/rect_component.hpp"
 #include "../our_scripts/components/Revolver.h"
 #include "../our_scripts/components/Rampage.h"
-
 //Scenes for SceneManager
 #include "Scene.h"
 #include "MainMenuScene.h"
