@@ -4,6 +4,7 @@
 #include "game/Game.h"
 #include "../components/Transform.h"
 #include "../../rendering/card_rendering.hpp"
+#include <algorithm>
 
 void Deck::_put_new_card_on_hand()
 {
@@ -12,6 +13,7 @@ void Deck::_put_new_card_on_hand()
 	}
 	if (!_draw_pile.empty()) {
 		_hand = _draw_pile.pop_first();
+		_last_card_draw_time = sdlutils().virtualTimer().currTime();
 	}
 	else {
 		_hand = nullptr;
@@ -102,7 +104,7 @@ void Deck::_finish_realoading()
 	_is_reloading = false;
 	_discard_pile.move_from_this_to(_draw_pile);
 	_draw_pile.shuffle();
-	_hand = _draw_pile.pop_first();
+	_put_new_card_on_hand();
 	//std::cout << *this;
 }
 bool Deck::_can_finish_reloading()
@@ -145,14 +147,14 @@ void Deck::render() noexcept
 
 			//bg
 			SDL_SetRenderDrawColor(sdlutils().renderer(), 100, 100, 100, 255);
-			rect_f32 baroutput1{ {_tr->getPos().getX(), _tr->getPos().getY() + 0.3}, {(reload_time) / 1000.0f, 0.2 } };
+			rect_f32 baroutput1{ {_tr->getPos().getX(), _tr->getPos().getY() + 0.3f}, {(reload_time) / 1000.0f, 0.2 } };
 			SDL_Rect trueoutput1 = SDL_Rect_screen_rect_from_global(baroutput1, _camera->cam);
 			SDL_RenderFillRect(sdlutils().renderer(), &trueoutput1);
 
 
 			//progress
 			SDL_SetRenderDrawColor(sdlutils().renderer(), 220, 220, 220, 255);
-			rect_f32 baroutput2{ {_tr->getPos().getX(), _tr->getPos().getY() + 0.3}, {(reload_time - _time_till_reload_finishes) / 1000.0f, 0.2 } };
+			rect_f32 baroutput2{ {_tr->getPos().getX(), _tr->getPos().getY() + 0.3f}, {(reload_time - _time_till_reload_finishes) / 1000.0f, 0.2 } };
 			SDL_Rect trueoutput2 = SDL_Rect_screen_rect_from_global(baroutput2, _camera->cam);
 			SDL_RenderFillRect(sdlutils().renderer(), &trueoutput2);
 		}
@@ -161,6 +163,10 @@ void Deck::render() noexcept
 		//Mostrar n� cartas draw_pile and discard_pile
 		card_rendering_descriptor crd = card_rendering_descriptor();
 		//Position and scale for the cost --> both values from 0 to 1
+
+		//Función que calcula la posición de una carta según el tiempo
+		float percentual_time_to_card_in_position = (sdlutils().virtualTimer().currTime() - _last_card_draw_time) / (float)card_draw_anim_duration;
+		
 		crd.mana_cost_font_key = "ARIAL16";
 		crd.mana_cost_color = { 255,0,0,255 };
 		if (_hand == nullptr) {
@@ -169,12 +175,14 @@ void Deck::render() noexcept
 		}
 		else {
 			crd.mana_cost_subrect = { {0,0.2},{0.4,0.4} };
-			crd.card_image_key = _hand->get_name().data();
+			crd.card_image_key = percentual_time_to_card_in_position < 0.5f ? "card_back" : _hand->get_name().data();
 			crd.mana_cost = _hand->get_costs().get_mana();
 		}
 
 		camera_screen cam_screen = camera_screen();
-		std::pair<int, int> position = std::make_pair(sdlutils().width(), sdlutils().height());
+
+		std::pair<int, int> position = { sdlutils().width(), sdlutils().height() };
+
 		//camera position, similar to aspect ratio but in world units (suppose player is 1 world unit, how many players will fit on camera kinda)
 		cam_screen.camera = { {0,0},{8,6} };
 		//camera screen on pixels size
@@ -187,7 +195,7 @@ void Deck::render() noexcept
 			//take renderer
 			*sdlutils().renderer(),
 			//destination rect --> where will the card be placed (position, size in world units)
-			{ {-8,-4},{2,2} },
+			{ {(float)std::lerp(-6,-8, std::min(percentual_time_to_card_in_position,1.0f)),-4},{(percentual_time_to_card_in_position < 0.5f) ? (float)std::lerp(2,0,std::min(percentual_time_to_card_in_position*2,1.0f)) : (float)std::lerp(0,2,std::min((percentual_time_to_card_in_position-0.5f)*2,1.0f)),2}},
 			//src subrect --> if our image is only 1 take this parameters
 			//if we have a map of 5x6 cards and we wanted to render card (3,2) being first card(0,0), and last (4,5)
 			//values would be --> { {3/5, 2/6}, {1/5,1/6} }

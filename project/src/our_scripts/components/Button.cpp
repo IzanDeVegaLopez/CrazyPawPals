@@ -30,7 +30,8 @@
 //	_tr = mngr->getComponent<Transform>(_ent);
 //	assert(_tr != nullptr);
 //
-//	buttonCollider = new SDL_Rect{ _tr->getPos().getX(), _tr->getPos().getY(), _tr->getWidth(), _tr->getHeight() };
+//	buttonCollider = new SDL_Rect{ _tr->getPos().getX(), _tr->getPos().getY(), _tr->get
+// (), _tr->getHeight() };
 //}
 //
 //void Button::update()

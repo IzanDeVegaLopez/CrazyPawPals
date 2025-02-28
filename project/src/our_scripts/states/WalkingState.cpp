@@ -20,11 +20,12 @@ void WalkingState::enter() {
 		_playerTr = Game::Instance()->get_mngr()->getComponent<Transform>(playerEntities[0]);
 	}
 	else {
-		std::cerr << "Error: No se encontró el jugador.\n";
+		std::cerr << "Error: No se encontrï¿½ el jugador.\n";
 	}*/
 }
 
 void WalkingState::update(uint32_t delta_time) {
+	(void)delta_time;
 	if (_tr == nullptr || _health == nullptr || _stateMachine == nullptr || _playerTr == nullptr) {
 		std::cerr << "Error: Componentes no inicializados en WalkingState::update()\n";
 		return;
@@ -41,11 +42,11 @@ void WalkingState::update(uint32_t delta_time) {
 		_tr->setDir(Vector2D(0, 0));
 	}
 	
-	std::cout << "Dirección: " << newDir << "\n";
+	/*std::cout << "Direcciï¿½n: " << newDir << "\n";
 	std::cout << "Velocidad: " << _tr->getSpeed() << "\n";
-	std::cout << "Posición: " << _tr->getPos() << "\n";
-	std::cout << "Distancia enemigo-player: " << std::abs((_tr->getPos() - _playerTr->getPos()).magnitude()) << "\n";
-	if (std::abs((_tr->getPos() - _playerTr->getPos()).magnitude() < _dist)) {
+	std::cout << "Posiciï¿½n: " << _tr->getPos() << "\n";
+	std::cout << "Distancia enemigo-player: " << std::abs((_tr->getPos() - _playerTr->getPos()).magnitude()) << "\n";*/
+	if ((_tr->getPos() - _playerTr->getPos()).magnitude() < _dist) {
 		exit();
 		_stateMachine->setState(EnemyStateMachine::ATTACKING);
 	}

@@ -24,11 +24,12 @@ void AttackingState::enter() {
 		_playerTr = Game::Instance()->get_mngr()->getComponent<Transform>(playerEntities[0]);
 	}
 	else {
-		std::cerr << "Error: No se encontró el jugador.\n";
+		std::cerr << "Error: No se encontrï¿½ el jugador.\n";
 	}*/
 }
 
 void AttackingState::update(uint32_t delta_time) {
+	(void)delta_time;
 	if (_tr == nullptr || _health == nullptr || _stateMachine == nullptr || _playerTr == nullptr ||_weapon==nullptr) return;
 	
 	Vector2D _target = _playerTr->getPos();

@@ -24,6 +24,7 @@ EnemyMovement::initComponent() {
 
 void 
 EnemyMovement::update(uint32_t delta_time) {
+	(void)delta_time;
 	auto newDir = _playerTr->getPos() - _tr->getPos();
 
 	newDir = newDir.normalize();

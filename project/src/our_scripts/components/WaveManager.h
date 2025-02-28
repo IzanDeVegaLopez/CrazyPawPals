@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../ecs/Component.h"
-#include "../../sdlUtils/SDLUtils.h"
+#include "../../sdlutils/SDLUtils.h"
 
 class WaveManager : public ecs::Component {
     // _waves es un vector de pares (int, vector<int>)

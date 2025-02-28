@@ -1,9 +1,10 @@
 #include "Rampage.h"
 #include "../../game/Game.h"
 #include "../../game/GameScene.h"
+#include "../card_system/ShootPatrons.hpp"
 
 
-Rampage::Rampage() : Weapon(5, 750, 1.5f, 2.0f, "rampage") { }
+Rampage::Rampage() : Weapon(5, 0.55f, 0.5f, 0.1f, "rampage") { }
 
 Rampage::~Rampage() {}
 
@@ -20,12 +21,14 @@ Rampage::callback(Vector2D shootPos, Vector2D shootDir) {
 	bp.height = _attack_height;
 	bp.sprite_key = _tex;
 
-	float initialRot = atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI;
-	bp.rot = initialRot;
+	ShotgunPatron(bp, ecs::grp::BULLET, 120, 5);
 
+	//float initialRot = atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI;
+	//bp.rot = initialRot;
+	/*
 	auto* scene = static_cast<GameScene*>(Game::Instance()->get_currentScene());
 
-	// Dispara 5 balas con ángulos de -60, -30, 0, 30 y 60 grados
+	// Dispara 5 balas con ï¿½ngulos de -60, -30, 0, 30 y 60 grados
 	for (int i = -2; i <= 2; ++i) {
 		float angleOffset = i * 6.0f * (M_PI / 180.0f); // Convertir a radianes
 		Vector2D rotatedDir(
@@ -36,5 +39,5 @@ Rampage::callback(Vector2D shootPos, Vector2D shootDir) {
 		bp.rot = atan2(rotatedDir.getY(), rotatedDir.getX()) * 180.0f / M_PI;
 
 		scene->generate_proyectile(bp, ecs::grp::BULLET);
-	}
+	}*/
 }
