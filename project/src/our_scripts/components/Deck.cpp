@@ -78,7 +78,8 @@ bool Deck::discard_card() noexcept
 void Deck::mill() noexcept
 {
 	if (!_draw_pile.empty()) {
-		_discard_pile.add_card(_draw_pile.pop_first()->on_mill());
+		_last_milled_card = _discard_pile.add_card(_draw_pile.pop_first()->on_mill());
+		_last_milled_card_time = sdlutils().virtualTimer().currTime();
 	}
 }
 
@@ -140,7 +141,7 @@ void Deck::update(Uint32 deltaTime) noexcept
 
 void Deck::render() noexcept
 {
-		//TODO
+#pragma region reload_bar
 		//reload bar
 		if (_is_reloading) {
 			SDL_SetRenderDrawBlendMode(sdlutils().renderer(), SDL_BLENDMODE_NONE);
@@ -158,14 +159,25 @@ void Deck::render() noexcept
 			SDL_Rect trueoutput2 = SDL_Rect_screen_rect_from_global(baroutput2, _camera->cam);
 			SDL_RenderFillRect(sdlutils().renderer(), &trueoutput2);
 		}
+#pragma endregion
 
+#pragma region camera_definition
+		camera_screen cam_screen = camera_screen();
+		std::pair<int, int> position = { sdlutils().width(), sdlutils().height() };
+		//camera position, similar to aspect ratio but in world units (suppose player is 1 world unit, how many players will fit on camera kinda)
+		cam_screen.camera = { {0,0},{8,6} };
+		//camera screen on pixels size
+		cam_screen.screen = { position.first, position.second };
+#pragma endregion
+
+#pragma region hand_card
 		//Mostrar carta en la mano
 		//Mostrar n� cartas draw_pile and discard_pile
 		card_rendering_descriptor crd = card_rendering_descriptor();
 		//Position and scale for the cost --> both values from 0 to 1
 
 		//Función que calcula la posición de una carta según el tiempo
-		float percentual_time_to_card_in_position = (sdlutils().virtualTimer().currTime() - _last_card_draw_time) / (float)card_draw_anim_duration;
+		float percentual_time_to_card_in_position = (sdlutils().virtualTimer().currTime() - _last_card_draw_time) / (float)_card_draw_anim_duration;
 		
 		crd.mana_cost_font_key = "ARIAL16";
 		crd.mana_cost_color = { 255,0,0,255 };
@@ -179,15 +191,6 @@ void Deck::render() noexcept
 			crd.mana_cost = _hand->get_costs().get_mana();
 		}
 
-		camera_screen cam_screen = camera_screen();
-
-		std::pair<int, int> position = { sdlutils().width(), sdlutils().height() };
-
-		//camera position, similar to aspect ratio but in world units (suppose player is 1 world unit, how many players will fit on camera kinda)
-		cam_screen.camera = { {0,0},{8,6} };
-		//camera screen on pixels size
-		cam_screen.screen = { position.first, position.second };
-		
 		//Function for rendering a card
 		card_rendering_descriptor_render(
 			crd,
@@ -209,6 +212,44 @@ void Deck::render() noexcept
 			//card_rendering_descriptor_options_full_subrect
 			card_rendering_descriptor_options_none
 		);
+#pragma endregion
+
+#pragma region milled_card
+		if (_last_milled_card != nullptr) {
+			//Función que calcula la posición de una carta según el tiempo
+			percentual_time_to_card_in_position = (sdlutils().virtualTimer().currTime() - _last_milled_card_time) / (float)_mill_card_anim_duration;
+
+			float scale = std::lerp(1.0f, 0.0f, std::max(0.0f, std::min((percentual_time_to_card_in_position - 0.75f) / 0.25f, 1.0f)));
+
+			crd.mana_cost_font_key = "ARIAL16";
+			crd.mana_cost_color = { 255,0,0,255 };
+			crd.mana_cost_subrect = { {0.0f,0.4f-0.2f * scale},{0.4f,0.4f * scale} };
+			crd.card_image_key = _last_milled_card->get_name().data();
+			crd.mana_cost = _last_milled_card->get_costs().get_mana();
+
+			//Function for rendering a card
+			card_rendering_descriptor_render(
+				crd,
+				cam_screen,
+				//take renderer
+				*sdlutils().renderer(),
+				//destination rect --> where will the card be placed (position, size in world units)
+				{ {-6,std::lerp(-3.0f,-2.5f,percentual_time_to_card_in_position)},{2,2*scale} },
+				//src subrect --> if our image is only 1 take this parameters
+				//if we have a map of 5x6 cards and we wanted to render card (3,2) being first card(0,0), and last (4,5)
+				//values would be --> { {3/5, 2/6}, {1/5,1/6} }
+				{ {0,0},{1,scale} },
+				//rotation
+				0,
+				//adittional options
+				//card_rendering_descriptor_options_none,
+				//card_rendering_descriptor_options_flip_horizontal,
+				//card_rendering_descriptor_options_flip_vertical,
+				//card_rendering_descriptor_options_full_subrect
+				card_rendering_descriptor_options_none
+			);
+		}
+#pragma endregion
 		
 }
 
