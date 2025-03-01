@@ -7,6 +7,8 @@
 #include "ecs/Component.h"
 #include <list>
 #include <cassert>
+
+#include "../../utils/EventsSystem.hpp"
 class Transform;
 class Deck: public ecs::Component {
 protected:
@@ -49,7 +51,7 @@ public:
 	//Puts all cards on discard pile and sets player unable to use any action outside moving
 	//Then puts all cards on drawPile and shuffles
 	void reload() noexcept;
-	void update(uint32_t deltaTime) noexcept override;
+	void update(Uint32 deltaTime) noexcept override;
 	void render() noexcept override;
 	friend std::ostream& operator << (std::ostream& os, const Deck& deck);
 
@@ -67,4 +69,7 @@ public:
 		friend class Deck;
 	};
 	*/
+
+	void suscribe_to_mill_event(ev_sys::event_receiver* er);
+	void desuscribe_to_mill_event(ev_sys::event_receiver* er);
 };

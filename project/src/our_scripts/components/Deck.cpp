@@ -273,6 +273,8 @@ void Deck::initComponent()
 	assert(_camera != nullptr);
 }
 
+
+
 std::ostream& operator<<(std::ostream& os, const Deck& deck)
 {
 	os << "Draw Pile: " << std::endl;
@@ -287,4 +289,14 @@ std::ostream& operator<<(std::ostream& os, const Deck& deck)
 	os<<std::endl;
 	
 	return os;
+}
+
+//Suscribe / Desuscribe to thingies
+void Deck::suscribe_to_mill_event(ev_sys::event_receiver* er)
+{
+
+}
+void Deck::desuscribe_to_mill_event(ev_sys::event_receiver* er)
+{
+
 }
