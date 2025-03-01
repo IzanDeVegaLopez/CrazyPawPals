@@ -2,7 +2,7 @@
 #include "../../game/Game.h"
 #include "../../game/GameScene.h"
 
-Fireball::Fireball():Card("fireball", Resources(1))
+Fireball::Fireball():Card("card_fireball", Resources(1))
 {
 }
 void Fireball::on_play(const Vector2D* player_position,const Vector2D* target_position) {
@@ -14,20 +14,20 @@ void Fireball::on_play(const Vector2D* player_position,const Vector2D* target_po
 	bp.height = 1.3;
 	bp.width = 1.3;
 	bp.life_time = 2;
-	bp.sprite_key = "fireball";
+	bp.sprite_key = "card_fireball";
 	std::cout << bp.init_pos << "--" << bp.dir << std::endl;
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }
 
 Minigun::Minigun()
-	: Card("minigun", Resources(2)), _pl_vec(), _playing(false), _time_since_played(0)
+	: Card("card_minigun", Resources(2)), _pl_vec(), _playing(false), _time_since_played(0)
 {
 	_bullets_properties = GameStructs::BulletProperties();
 	_bullets_properties.speed = 1;
 	_bullets_properties.height = 0.5;
 	_bullets_properties.width = 0.5;
 	_bullets_properties.life_time = 0.5f;
-	_bullets_properties.sprite_key = "minigun";
+	_bullets_properties.sprite_key = "card_minigun";
 }
 void Minigun::on_play(const Vector2D* player_position, const Vector2D* target_position)
 {
@@ -56,7 +56,7 @@ void Minigun::update(uint32_t dt)
 }
 
 Lighting::Lighting()
-	:Card("lighting", Resources(2))
+	:Card("card_lighting", Resources(2))
 {
 }
 
@@ -70,6 +70,6 @@ void Lighting::on_play(const Vector2D* player_position, const Vector2D* target_p
 	bp.height = 2;
 	bp.width = 2;
 	bp.life_time = 0.3;
-	bp.sprite_key = "lighting";
+	bp.sprite_key = "card_lighting";
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }

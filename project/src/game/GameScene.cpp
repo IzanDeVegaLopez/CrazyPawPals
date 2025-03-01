@@ -22,7 +22,7 @@
 #include "../our_scripts/components/camera_component.hpp"
 
 #include "../our_scripts/components/Health.h" 
-#include "../our_scripts//components//BulletData.h"
+#include "../our_scripts/components/BulletData.h"
 
 #include "../utils/Collisions.h" 
 
@@ -111,7 +111,7 @@ ecs::entity_t GameScene::spawnPlayer()
 			rect_f32_full_subrect,
 			player_rect,
 			camera,
-			sdlutils().images().at("player"),
+			sdlutils().images().at("piu"),
 			player_transform
 		),
 		new render_ordering{1},
@@ -142,7 +142,7 @@ void GameScene::spawnSarnoRata(Vector2D posVec)
 			rect_f32{ {0,0},{1,1} },
 			rect,
 			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
-			sdlutils().images().at("sarnoRata"),
+			sdlutils().images().at("sarno_rata"),
 			tr
 		),
 		new Health(2),
@@ -168,7 +168,7 @@ void GameScene::spawnMichiMafioso(Vector2D posVec)
 			rect_f32{ {0,0},{1,1} },
 			rect,
 			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
-			sdlutils().images().at("enemy"),
+			sdlutils().images().at("michi_mafioso"),
 			tr
 		),
 		new Health(2),
@@ -195,7 +195,7 @@ void GameScene::spawnPlimPlim(Vector2D posVec)
 			rect_f32{ {0,0},{1,1} },
 			rect,
 			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
-			sdlutils().images().at("enemy"),
+			sdlutils().images().at("plim_plim"),
 			tr
 		),
 		new Health(2),
@@ -222,7 +222,7 @@ void GameScene::spawnBoom(Vector2D posVec)
 			rect_f32{ {0,0},{1,1} },
 			rect,
 			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
-			sdlutils().images().at("enemy"),
+			sdlutils().images().at("boom"),
 			tr
 		),
 		new Health(2),

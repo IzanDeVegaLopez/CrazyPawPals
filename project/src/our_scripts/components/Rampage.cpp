@@ -4,7 +4,7 @@
 #include "../card_system/ShootPatrons.hpp"
 
 
-Rampage::Rampage() : Weapon(5, 0.55f, 0.5f, 0.1f, "rampage", 1.0f, 1.0f) { }
+Rampage::Rampage() : Weapon(5, 0.55f, 0.5f, 0.1f, "p_rampage", 1.0f, 1.0f) { }
 
 Rampage::~Rampage() {}
 

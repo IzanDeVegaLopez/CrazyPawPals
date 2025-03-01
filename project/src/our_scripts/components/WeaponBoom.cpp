@@ -2,7 +2,7 @@
 #include "../../game/Game.h"
 #include "../../game/GameScene.h"
 
-WeaponBoom::WeaponBoom() : Weapon(4, 5000, 20.0f, 0.0f, "sdl_logo", 1.0f, 1.0f) { }
+WeaponBoom::WeaponBoom() : Weapon(4, 5000, 20.0f, 0.0f, "p_boom", 1.0f, 1.0f) { }
 
 WeaponBoom::~WeaponBoom() {}
 
@@ -16,7 +16,7 @@ WeaponBoom::callback(Vector2D shootPos, Vector2D shootDir) {
 	bp.damage = _damage;
 	bp.life_time = 2;
 	bp.width = _attack_width;
-	bp.sprite_key = "sdl_logo";
+	bp.sprite_key = "p_boom";
 	bp.height = _attack_height;
 	bp.rot = atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI;
 	auto* scene = static_cast<GameScene*>(Game::Instance()->get_currentScene());

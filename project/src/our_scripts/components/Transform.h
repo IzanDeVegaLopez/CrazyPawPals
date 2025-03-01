@@ -66,9 +66,10 @@ public:
 	}
 
 
-	float getRot() {
+	float getRot() const {
 		return _rot;
 	}
+
 
 	void setRot(float r) {
 		_rot = r;
