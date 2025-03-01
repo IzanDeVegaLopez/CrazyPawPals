@@ -182,7 +182,7 @@ void Deck::render() noexcept
 		crd.mana_cost_font_key = "ARIAL16";
 		crd.mana_cost_color = { 255,0,0,255 };
 		if (_hand == nullptr) {
-			crd.card_image_key = "reloading";
+			crd.card_image_key = "card_reloading";
 			crd.mana_cost_subrect = { {0,0.2},{0,0} };
 		}
 		else {

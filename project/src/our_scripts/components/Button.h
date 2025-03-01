@@ -1,40 +1,44 @@
 #pragma once
-
 #include "../../utils/Vector2D.h"
-#include "../../game/GameObject.h"
+#include "../../ecs/Component.h"
 #include <functional>
+#include <list>
+#include "../../sdlutils/SDLUtils.h"
 
-class Transform;
-
-//Usa Callbacks a funciones de tipo <void(void)>
 using SDLEventCallback = std::function<void(void)>;
 
-class Button : public GameObject
-{
+class Button : public ecs::Component {
 public:
-	Button();
-	~Button();
+    __CMPID_DECL__(ecs::cmp::BUTTON);
+    Button();
+    ~Button();
 
-	void initComponent() override;
-	void update() override;
+    void initComponent() override;
+    void update(uint32_t delta_time) override;
 
-	int getButtonState() { return _currentState; }
+    // clic and hover events
+    void leftClickUp();
+    void leftClickDown();
+    bool mouseOver();
 
-	//Clicks and actions
-	void actionsOfButton(SDLEventCallback _callback);
-	void leftClickUp();
-	void leftClickDown();
-	bool mouseOver(SDL_Rect* collider);
-
+    // link methods
+    void connectClick(SDLEventCallback callback);
+    void connectHover(SDLEventCallback callback);
+    inline bool clicked() const { return _clicked; };
+    inline void set_clicked(bool s) { _clicked = s; };
 private:
-	//Pressing states
-	enum ButtonState { EMPTY, HOVER, CLICK };
-	int _currentState;
+    // Button states
+    enum ButtonState { EMPTY, HOVER, CLICK };
+    ButtonState _current_state;
 
-	//Callbacks
-	std::list<SDLEventCallback> callbacks;
-	void callback() const;
+    // Callbacks
+    std::list<SDLEventCallback> _click_callbacks;  
+    std::list<SDLEventCallback> _hover_callbacks;  
 
-	SDL_Rect buttonCollider;
-	Transform* _tr;
+    void emitClick() const;
+    void emitHover() const; 
+
+    SDL_Rect _button_collider;
+
+    bool _clicked;
 };

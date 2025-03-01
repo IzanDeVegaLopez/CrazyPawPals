@@ -1,6 +1,6 @@
 #include "MainMenuScene.h"
 
-MainMenuScene::MainMenuScene()
+MainMenuScene::MainMenuScene(): Scene(ecs::scene::MAINMENUSCENE)
 {
 
 }

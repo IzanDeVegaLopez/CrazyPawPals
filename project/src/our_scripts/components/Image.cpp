@@ -27,11 +27,11 @@ void Image::initComponent() {
 
 void Image::render() {
 
-	assert(false && "deprecated: removed functionality, use dyn_image");
-	// SDL_Rect dest = build_sdlrect(_tr->getPos(), _tr->getWidth(),
-	// 		_tr->getHeight());
+	//assert(false && "deprecated: removed functionality, use dyn_image");
+	 SDL_Rect dest = build_sdlrect(_tr->getPos(), _tr->getWidth(),
+	 		_tr->getHeight());
 
-	// assert(_tex != nullptr);
-	// _tex->render(dest, _tr->getRot());
+	 assert(_tex != nullptr);
+	 _tex->render(dest, _tr->getRot());
 
 }
