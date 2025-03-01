@@ -37,6 +37,7 @@
 #include "../our_scripts/components/dyn_image.hpp"
 #include "../our_scripts/components/render_ordering.hpp"
 #include "../our_scripts/components/rect_component.hpp"
+#include "../our_scripts/components/StopOnBorder.h"
 
 #include "../our_scripts/components/render_ordering.hpp"
 #include "../our_scripts/card_system/PlayableCards.hpp"
@@ -101,7 +102,7 @@ ecs::entity_t GameScene::spawnPlayer()
 	auto &&camera = manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam;
 	
 	auto &&player_transform = *new Transform({ 0.0f, 0.0f }, { 0.0f,0.0f }, 0.0f, 2.0f);
-	auto &&player_rect = *new rect_component{0, 0, 1.75f, 2.0f};
+	auto &&player_rect = *new rect_component{0, 0, 1.5f, 2.0f};
 	ecs::entity_t player = create_entity(
 		ecs::grp::PLAYER,
 		ecs::scene::GAMESCENE,
@@ -118,7 +119,8 @@ ecs::entity_t GameScene::spawnPlayer()
 		new Health(100),
 		new ManaComponent(),
 		new MovementController(),
-		new Deck(c)
+		new Deck(c),
+		new StopOnBorder(camera, 1.5f, 2.0f)
 		);
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::PLAYER, player);
 	return player;
