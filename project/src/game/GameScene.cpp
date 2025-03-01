@@ -87,6 +87,7 @@ void GameScene::enterScene()
 	auto w = mngr->getComponent<Weapon>(player);
 
 	w->initComponent();
+	mngr->addComponent<KeyboardPlayerCtrl>(player);
 }
 
 void GameScene::exitScene()
