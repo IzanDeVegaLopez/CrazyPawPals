@@ -37,7 +37,7 @@ public:
 private:
 	int _current_scene_index = -1;
 	std::vector<Scene*> _scenes;
-	std::pair<int, int> _screen_size = std::make_pair(800,600);
+	std::pair<int, int> _screen_size = std::make_pair(960,540);
 	Game();
 	ecs::Manager* _mngr;
 

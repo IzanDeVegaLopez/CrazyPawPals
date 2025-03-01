@@ -101,7 +101,7 @@ ecs::entity_t GameScene::spawnPlayer()
 	auto &&camera = manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam;
 	
 	auto &&player_transform = *new Transform({ 0.0f, 0.0f }, { 0.0f,0.0f }, 0.0f, 2.0f);
-	auto &&player_rect = *new rect_component{0, 0, 2.0f, 1.5f};
+	auto &&player_rect = *new rect_component{0, 0, 1.5f, 2.0f};
 	ecs::entity_t player = create_entity(
 		ecs::grp::PLAYER,
 		ecs::scene::GAMESCENE,
@@ -129,7 +129,7 @@ void GameScene::spawnSarnoRata(Vector2D posVec)
 {
 	auto* weapon = new WeaponSarnoRata();
 	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
-	auto &&rect = *new rect_component{0, 0, 2.0f, 2.0f};
+	auto &&rect = *new rect_component{0, 0, 1.5f, 2.0f};
 	auto manager = Game::Instance()->get_mngr();
 
 	//std::cout << posVec << std::endl;
