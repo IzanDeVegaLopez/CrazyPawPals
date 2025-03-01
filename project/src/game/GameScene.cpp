@@ -101,7 +101,7 @@ ecs::entity_t GameScene::spawnPlayer()
 	auto &&camera = manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam;
 	
 	auto &&player_transform = *new Transform({ 0.0f, 0.0f }, { 0.0f,0.0f }, 0.0f, 2.0f);
-	auto &&player_rect = *new rect_component{0, 0, 1.5f, 2.0f};
+	auto &&player_rect = *new rect_component{0, 0, 1.75f, 2.0f};
 	ecs::entity_t player = create_entity(
 		ecs::grp::PLAYER,
 		ecs::scene::GAMESCENE,
