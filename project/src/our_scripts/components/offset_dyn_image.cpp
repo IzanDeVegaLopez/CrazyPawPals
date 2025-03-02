@@ -9,8 +9,8 @@
 void offset_dyn_image::render() {
     const SDL_Rect destination = SDL_Rect_screen_rect_from_global({
         .position = {
-            .x = -offset.x + transform.getPos().getX() + output_rect.rect.position.x,
-            .y = +offset.y + transform.getPos().getY() + output_rect.rect.position.y,
+            .x = offset.x + transform.getPos().getX() + output_rect.rect.position.x,
+            .y = offset.y + transform.getPos().getY() + output_rect.rect.position.y,
         },
         .size = output_rect.rect.size
     }, camera);

@@ -95,12 +95,14 @@ void Game::start() {
 
 	auto& ihdlr = ih();
 	//delta time
-	Uint32 dt = 10;
+	constexpr static const uint32_t target_delta_time_milliseconds = 10;
 
+	assert(!sdlutils().virtualTimer().paused() && "fatal error: game must not start paused");
 	// reset the time before starting - so we calculate correct
 	// delta-time in the first iteration
 	//
 	sdlutils().virtualTimer().resetTime();
+	SDL_Delay(target_delta_time_milliseconds);
 
 	while (!exit) {
 		// store the current time -- all game objects should use this time when
@@ -121,7 +123,10 @@ void Game::start() {
 			continue;
 		}
 
-		_scenes[_current_scene_index]->update(sdlutils().virtualTimer().deltaTime());
+		const uint32_t delta_time_milliseconds = sdlutils().virtualTimer().deltaTime();
+		assert(delta_time_milliseconds > 0 && "fatal error: delta time must be strictly positive");
+
+		_scenes[_current_scene_index]->update(delta_time_milliseconds);
 		_mngr->refresh();
 
 
@@ -129,9 +134,8 @@ void Game::start() {
 		_scenes[_current_scene_index]->render();
 		sdlutils().presentRenderer();
 
-		if (dt < 10) {
-			SDL_Delay(10 - dt);
-			//dt = 10;
+		if (delta_time_milliseconds < target_delta_time_milliseconds) {
+			SDL_Delay(target_delta_time_milliseconds - delta_time_milliseconds);
 		}
 	}
 

@@ -11,7 +11,7 @@ class Texture;
 //struct rect_component;
 
 struct offset_dyn_image : public ecs::Component {
-	__CMPID_DECL__(ecs::cmp::CAMERA);
+	__CMPID_DECL__(ecs::cmp::OFFSET_DYN_IMAGE);
 	rect_f32 subrect;
 	const rect_component &output_rect;
 	const camera_screen &camera;

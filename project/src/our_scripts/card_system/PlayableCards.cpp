@@ -17,7 +17,7 @@ void Fireball::on_play(Deck& d, const Vector2D* player_position,const Vector2D* 
 	bp.width = 1.3;
 	bp.life_time = 2;
 	bp.sprite_key = "card_fireball";
-	std::cout << bp.init_pos << "--" << bp.dir << std::endl;
+	//std::cout << bp.init_pos << "--" << bp.dir << std::endl;
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }
 

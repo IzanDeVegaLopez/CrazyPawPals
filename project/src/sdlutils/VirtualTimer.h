@@ -79,6 +79,10 @@ public:
 		return _deltaTime;
 	}
 
+	inline bool paused() const {
+		return _paused;
+	}
+
 private:
 	bool _paused;
 	Uint32 _zeroTime;
