@@ -104,6 +104,9 @@ void Game::start() {
 		const uint64_t frame_start_tick = SDL_GetTicks64();
 		const uint32_t delta_time_milliseconds = frame_start_tick - last_frame_start_tick;
 		assert(delta_time_milliseconds > 0 && "fatal error: delta time must be strictly positive");
+		sdlutils().virtualTimer() = VirtualTimer{
+			.current_time = frame_start_tick
+		};
 
 		last_frame_start_tick = frame_start_tick;
 		ihdlr.refresh();

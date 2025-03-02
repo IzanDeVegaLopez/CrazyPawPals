@@ -28,7 +28,23 @@ static outcode rect_f32_min_max_outcode(rect_f32_min_max rect, position2_f32 poi
     return code;
 }
 
+enum rect_f32_intersection_segment_result {
+    rect_f32_intersection_segment_result_0 = 0,
+    rect_f32_intersection_segment_result_1 = 1 << 0,
+    rect_f32_intersection_segment_result_2 = 1 << 1,
+    rect_f32_intersection_segment_result_both_inside = 1 << 2,
+    rect_f32_intersection_segment_result_both_outside = 1 << 3,
+};
+
 static size_t cohen_sutherland_line_clip(const rect_f32_min_max rect, position2_f32 a, position2_f32 b, position2_f32 out_clipped[2]) {
+    // outcode outcode_a = rect_f32_min_max_outcode(rect, a);
+    // outcode outcode_b = rect_f32_min_max_outcode(rect, b);
+
+    // if (!(outcode_a | outcode_b)) {
+    //     return 2;
+    // } else if (outcode_a & outcode_b) {
+    //     return 0;
+    // }
 }
 
 size_t rect_f32_intersects_segment(const rect_f32 rect, const position2_f32 a, const position2_f32 b, position2_f32 out_intersections[2]) {
