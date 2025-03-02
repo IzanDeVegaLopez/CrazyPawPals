@@ -14,12 +14,12 @@ void offset_dyn_image::render() {
         },
         .size = output_rect.rect.size
     }, camera);
-    
+
 	texture.render(SDL_Rect{
         .x = int(subrect.position.x * float(texture.width())),
         .y = int(subrect.position.y * float(texture.height())),
         .w = int(subrect.size.x * float(texture.width())),
         .h = int(subrect.size.y * float(texture.height()))
-    }, destination);
+    }, destination, transform.getRot());
 }
 

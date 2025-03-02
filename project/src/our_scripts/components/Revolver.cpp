@@ -2,7 +2,7 @@
 #include "../../game/Game.h"
 #include "../../game/GameScene.h"
 
-Revolver::Revolver() : Weapon(4, 500.0f, 2.0f, 0.5f, "revolver") { }
+Revolver::Revolver() : Weapon(4, 500.0f, 2.0f, 0.5f, "p_revolver", 2.0f, 1.0f) { }
 
 Revolver::~Revolver() {}
 

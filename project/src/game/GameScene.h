@@ -11,9 +11,6 @@ public:
 	void enterScene() override;
 	void exitScene() override;
 
-	void update(uint32_t delta_time) override;
-	void render() override;
-
 	//Methods of entities to spawn
 	ecs::entity_t spawnPlayer();
 

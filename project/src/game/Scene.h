@@ -10,15 +10,15 @@
 class Transform;
 class Scene {
 public:
-	Scene() {};
+	Scene(ecs::sceneId_t id);
 	virtual ~Scene() {};
 	//Each scene
 	virtual void initScene() = 0;
 	virtual void enterScene() = 0;
 	virtual void exitScene() = 0;
 
-	virtual void update(uint32_t delta_time) = 0;
-	virtual void render() = 0;
+    void update(uint32_t delta_time);
+	void render();
 
 	template <typename ... Cmps>
 	ecs::entity_t create_entity(ecs::grpId_t gid, ecs::sceneId_t sid,Cmps ... components) {
@@ -43,4 +43,8 @@ public:
 			CZPP_NULLABLE const Transform *optional_follow_target
 		);
 	};
+protected:
+	ecs::sceneId_t _scene_ID;
+
+	ecs::entity_t create_button(const GameStructs::ButtonProperties& bp);
 };

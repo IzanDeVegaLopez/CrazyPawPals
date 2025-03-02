@@ -8,7 +8,6 @@ namespace ecs {
 class Manager;
 }
 class Scene;
-class GameScene;
 class Game: public Singleton<Game>  {
 public:
 	enum State {
@@ -32,13 +31,15 @@ public:
 
 	ecs::Manager* get_mngr();
 	Scene* get_currentScene();
+	void change_Scene(State);
 	std::pair<int,int> get_world_half_size() const;
 
 private:
-	void change_Scene(State);
 	int _current_scene_index = -1;
 	std::vector<Scene*> _scenes;
-	std::pair<int, int> _screen_size = std::make_pair(800,600);
+	std::pair<int, int> _screen_size = std::make_pair(960,540);
 	Game();
 	ecs::Manager* _mngr;
+
+	void create_scenes();
 };

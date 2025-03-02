@@ -13,4 +13,16 @@ namespace GameStructs {
 		float rot = 0.0f;
 		std::string sprite_key;
 	};
+	struct ButtonProperties {
+		Vector2D pos;
+		float width = 40.0f;
+		float height = 40.0f;
+		float rot = 0.0f;
+		std::string sprite_key;
+	};
+	enum WeaponType {
+		REVOLVER,
+		RAMPAGE,
+		LAST_WEAPON,
+	};
 }

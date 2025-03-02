@@ -49,7 +49,6 @@ Game::~Game() {
 
 }
 
-
 bool Game::init() {
 	
 	// initialize the SDL singleton
@@ -78,11 +77,12 @@ bool Game::init() {
 
 	//_scenes[MAINMENU] = new MainMenuScene();
 	_scenes[GAMESCENE] = new GameScene();
-	//_scenes[SELECTIONMENU] = new SelectionMenuScene();
+	_scenes[GAMESCENE]->initScene();
 
-	_current_scene_index = GAMESCENE;
-	_scenes[_current_scene_index]->initScene();
+	_scenes[SELECTIONMENU] = new SelectionMenuScene();
+	_scenes[SELECTIONMENU]->initScene();
 
+	_current_scene_index = SELECTIONMENU;
 	return true;
 }
 

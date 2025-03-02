@@ -22,7 +22,7 @@
 #include "../our_scripts/components/camera_component.hpp"
 
 #include "../our_scripts/components/Health.h" 
-#include "../our_scripts//components//BulletData.h"
+#include "../our_scripts/components/BulletData.h"
 
 #include "../utils/Collisions.h" 
 
@@ -37,6 +37,7 @@
 #include "../our_scripts/components/dyn_image.hpp"
 #include "../our_scripts/components/render_ordering.hpp"
 #include "../our_scripts/components/rect_component.hpp"
+#include "../our_scripts/components/StopOnBorder.h"
 
 #include "../our_scripts/components/render_ordering.hpp"
 #include "../our_scripts/card_system/PlayableCards.hpp"
@@ -44,7 +45,7 @@
 #include <iostream>
 #include <string>
 
-GameScene::GameScene() : _player(nullptr)
+GameScene::GameScene() : Scene(ecs::scene::GAMESCENE), _player(nullptr)
 {}
 
 static ecs::entity_t create_environment() {
@@ -82,32 +83,26 @@ void GameScene::initScene() {
 
 void GameScene::enterScene()
 {
+	auto* mngr = Game::Instance()->get_mngr();
+	auto player = mngr->getHandler(ecs::hdlr::PLAYER);
+	auto w = mngr->getComponent<Weapon>(player);
+
+	w->initComponent();
+	mngr->addComponent<KeyboardPlayerCtrl>(player);
 }
 
 void GameScene::exitScene()
 {
 }
 
-void GameScene::update(uint32_t delta_time)
-{
-	Game::Instance()->get_mngr()->update(ecs::scene::GAMESCENE, delta_time);
-}
-
-void GameScene::render()
-{
-	Game::Instance()->get_mngr()->render(ecs::scene::GAMESCENE);
-}
-
 ecs::entity_t GameScene::spawnPlayer()
 {
-	//auto* revolver = new Revolver();
-	auto* revolver = new Rampage();
-	std::list<Card*> c = { new Fireball(), new Minigun(), new Lighting(), new CardSpray() };
+	std::list<Card*> c = { new Fireball(), new Minigun(), new Lighting(), new Minigun() };
 	auto &&manager = *Game::Instance()->get_mngr();
 	auto &&camera = manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam;
 	
 	auto &&player_transform = *new Transform({ 0.0f, 0.0f }, { 0.0f,0.0f }, 0.0f, 2.0f);
-	auto &&player_rect = *new rect_component{0, 0, 2.0f, 1.5f};
+	auto &&player_rect = *new rect_component{0, 0, 1.5f, 2.0f};
 	ecs::entity_t player = create_entity(
 		ecs::grp::PLAYER,
 		ecs::scene::GAMESCENE,
@@ -117,19 +112,17 @@ ecs::entity_t GameScene::spawnPlayer()
 			rect_f32_full_subrect,
 			player_rect,
 			camera,
-			sdlutils().images().at("player"),
+			sdlutils().images().at("piu"),
 			player_transform
 		),
 		new render_ordering{1},
-		revolver,
 		new Health(100),
 		new ManaComponent(),
 		new MovementController(),
 		new Deck(c),
-		new KeyboardPlayerCtrl()
+		new StopOnBorder(camera, 1.5f, 2.0f)
 		);
-	revolver->initComponent();
-	revolver->set_attack_size(1, 1);
+	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::PLAYER, player);
 	return player;
 }
 
@@ -138,7 +131,7 @@ void GameScene::spawnSarnoRata(Vector2D posVec)
 {
 	auto* weapon = new WeaponSarnoRata();
 	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
-	auto &&rect = *new rect_component{0, 0, 2.0f, 2.0f};
+	auto &&rect = *new rect_component{0, 0, 1.5f, 2.0f};
 	auto manager = Game::Instance()->get_mngr();
 
 	//std::cout << posVec << std::endl;
@@ -151,7 +144,7 @@ void GameScene::spawnSarnoRata(Vector2D posVec)
 			rect_f32{ {0,0},{1,1} },
 			rect,
 			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
-			sdlutils().images().at("sarnoRata"),
+			sdlutils().images().at("sarno_rata"),
 			tr
 		),
 		new Health(2),
@@ -177,7 +170,7 @@ void GameScene::spawnMichiMafioso(Vector2D posVec)
 			rect_f32{ {0,0},{1,1} },
 			rect,
 			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
-			sdlutils().images().at("enemy"),
+			sdlutils().images().at("michi_mafioso"),
 			tr
 		),
 		new Health(2),
@@ -204,7 +197,7 @@ void GameScene::spawnPlimPlim(Vector2D posVec)
 			rect_f32{ {0,0},{1,1} },
 			rect,
 			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
-			sdlutils().images().at("enemy"),
+			sdlutils().images().at("plim_plim"),
 			tr
 		),
 		new Health(2),
@@ -231,7 +224,7 @@ void GameScene::spawnBoom(Vector2D posVec)
 			rect_f32{ {0,0},{1,1} },
 			rect,
 			manager->getComponent<camera_component>(manager->getHandler(ecs::hdlr::CAMERA))->cam,
-			sdlutils().images().at("enemy"),
+			sdlutils().images().at("boom"),
 			tr
 		),
 		new Health(2),
