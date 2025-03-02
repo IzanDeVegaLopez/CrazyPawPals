@@ -97,21 +97,15 @@ void Game::start() {
 	//delta time
 	constexpr static const uint32_t target_delta_time_milliseconds = 10;
 
-	assert(!sdlutils().virtualTimer().paused() && "fatal error: game must not start paused");
-	// reset the time before starting - so we calculate correct
-	// delta-time in the first iteration
-	//
-	sdlutils().virtualTimer().resetTime();
+	uint64_t last_frame_start_tick = SDL_GetTicks64();
 	SDL_Delay(target_delta_time_milliseconds);
 
 	while (!exit) {
-		// store the current time -- all game objects should use this time when
-		// then need to the current time. They also have accessed to the time elapsed
-		// between the last two calls to regCurrTime().
-		Uint32 startTime = sdlutils().virtualTimer().regCurrTime();
-		(void)startTime;
+		const uint64_t frame_start_tick = SDL_GetTicks64();
+		const uint32_t delta_time_milliseconds = frame_start_tick - last_frame_start_tick;
+		assert(delta_time_milliseconds > 0 && "fatal error: delta time must be strictly positive");
 
-		// refresh the input handler
+		last_frame_start_tick = frame_start_tick;
 		ihdlr.refresh();
 
 		if (ihdlr.isKeyDown(SDL_SCANCODE_ESCAPE)) {
@@ -122,10 +116,7 @@ void Game::start() {
 			exit = true;
 			continue;
 		}
-
-		const uint32_t delta_time_milliseconds = sdlutils().virtualTimer().deltaTime();
-		assert(delta_time_milliseconds > 0 && "fatal error: delta time must be strictly positive");
-
+		
 		_scenes[_current_scene_index]->update(delta_time_milliseconds);
 		_mngr->refresh();
 
@@ -134,8 +125,10 @@ void Game::start() {
 		_scenes[_current_scene_index]->render();
 		sdlutils().presentRenderer();
 
-		if (delta_time_milliseconds < target_delta_time_milliseconds) {
-			SDL_Delay(target_delta_time_milliseconds - delta_time_milliseconds);
+		const uint64_t frame_end_tick = SDL_GetTicks64();
+		const uint32_t frame_duration_milliseconds = frame_end_tick - frame_start_tick;
+		if (frame_duration_milliseconds < target_delta_time_milliseconds) {
+			SDL_Delay(target_delta_time_milliseconds - frame_duration_milliseconds);
 		}
 	}
 
