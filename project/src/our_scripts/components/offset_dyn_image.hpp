@@ -13,11 +13,11 @@ class Texture;
 struct offset_dyn_image : public ecs::Component {
 	__CMPID_DECL__(ecs::cmp::OFFSET_DYN_IMAGE);
 	rect_f32 subrect;
+	position2_f32 offset;
 	const rect_component &output_rect;
 	const camera_screen &camera;
 	Texture &texture;
 	const Transform &transform;
-	position2<float> offset;
 
 
 	virtual void render() override;
@@ -25,12 +25,12 @@ struct offset_dyn_image : public ecs::Component {
 	//static_assert(false);
 	inline offset_dyn_image(
 		const rect_f32 subrect,
+		const position2_f32 offset,
 		const rect_component &output_rect,
 		const camera_screen &camera,
 		Texture &texture,
-		const Transform &transform,
-		const position2<float> offset = {0,0}
-	) : subrect(subrect), output_rect(output_rect), camera(camera), texture(texture), transform(transform), offset({offset.x*output_rect.rect.size.x, offset.y * output_rect.rect.size.y }) {};
+		const Transform &transform
+	) : subrect(subrect), offset(offset), output_rect(output_rect), camera(camera), texture(texture), transform(transform) {};
 
 };
 

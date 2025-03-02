@@ -17,7 +17,7 @@ struct dyn_image : public offset_dyn_image {
 		const camera_screen &camera,
 		Texture &texture,
 		const Transform &transform
-	) : offset_dyn_image(subrect, output_rect, camera, texture, transform, {-0.5f, -0.5f}) {};
+	) : offset_dyn_image(subrect, {0.5f, 0.5f}, output_rect, camera, texture, transform) {};
 };
 
 #endif

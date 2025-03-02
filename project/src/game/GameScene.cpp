@@ -57,7 +57,7 @@ static ecs::entity_t create_environment() {
 	manager.addComponent<offset_dyn_image>(environment, rect_f32{
 		{0.0, 0.0},
 		{1.0, 1.0}
-	}, rect, manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam, sdlutils().images().at("floor"), tr);
+	}, position2_f32{0.0f, 0.0f}, rect, manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam, sdlutils().images().at("floor"), tr);
 	manager.addComponent<render_ordering>(environment, 0);
 	return environment;
 }
