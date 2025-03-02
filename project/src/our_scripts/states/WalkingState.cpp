@@ -5,12 +5,14 @@
 #include "../components/Transform.h"
 #include "../components/EnemyStateMachine.h"
 
-WalkingState::WalkingState(float dist) :  _stateMachine(nullptr), _tr(nullptr), _playerTr(nullptr), _health(nullptr), _dist(dist) {
+WalkingState::WalkingState(float dist, Transform* tr,
+	Health* health, EnemyStateMachine* stateMachine, Transform* playerTr) :
+	_tr(tr), _health(health),  _stateMachine(stateMachine), _playerTr(playerTr), _dist(dist) {
 	
 }
 
 void WalkingState::enter() {
-	_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
+	/*_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
 	_health = Game::Instance()->get_mngr()->getComponent<Health>(_ent);
 	_stateMachine = Game::Instance()->get_mngr()->getComponent<EnemyStateMachine>(_ent);
 	auto playerEntities = Game::Instance()->get_mngr()->getEntities(ecs::grp::PLAYER);
@@ -19,7 +21,7 @@ void WalkingState::enter() {
 	}
 	else {
 		std::cerr << "Error: No se encontr� el jugador.\n";
-	}
+	}*/
 }
 
 void WalkingState::update(uint32_t delta_time) {
@@ -49,9 +51,9 @@ void WalkingState::update(uint32_t delta_time) {
 		_stateMachine->setState(EnemyStateMachine::ATTACKING);
 	}
 
-	//if (_health->getHealth() <= 0) {
-	//	//_stateMachine->setState(EnemyStateMachine::INACTIVE);
-	//}
+	if (_health->getHealth() <= 0) {
+		//_stateMachine->setState(EnemyStateMachine::INACTIVE);
+	}
 }
 
 void WalkingState::exit() {

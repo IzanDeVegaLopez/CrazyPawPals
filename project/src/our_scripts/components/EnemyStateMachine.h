@@ -2,6 +2,10 @@
 
 #pragma once
 #include "../../ecs/Component.h"
+#include "../../game/GameScene.h"
+#include "../components/Health.h"
+#include "../components/Transform.h"
+#include "../components/Weapon.h"
 
 class Texture;
 class WalkingState;
@@ -28,10 +32,16 @@ public:
 	}
 
 	void setState(StateType s);
-private:
+protected:
 	StateType _type;
 	Texture *_img;
+
 	float _dist;
+	/*Transform* _tr;
+	Health* _health;
+	Weapon* _weapon;
+	Transform* _playerTr;*/
+
 	State* _state;
 	WalkingState* _walking_state;
 	AttackingState* _attacking_state;
