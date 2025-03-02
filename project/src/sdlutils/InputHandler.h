@@ -41,6 +41,7 @@ public:
 
 	// update the state with a new event
 	inline void update(const SDL_Event &event) {
+
 		switch (event.type) {
 		case SDL_KEYDOWN:
 			onKeyDown(event);

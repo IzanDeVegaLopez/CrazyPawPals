@@ -1,7 +1,6 @@
 #pragma once
 #include "../card_system/CardList.h"
 #include "../card_system/Card.hpp"
-#include "../card_system/PlayableCards.hpp"
 #include "Mana.h"
 #include "../../utils/Vector2D.h"
 #include "../components/camera_component.hpp"
@@ -12,11 +11,16 @@ class Transform;
 class Deck: public ecs::Component {
 protected:
 	int reload_time = 1000;
+#pragma region animation_vars
 	Uint32 _last_card_draw_time = 0;
-	int card_draw_anim_duration = 300;
+	Uint32 _card_draw_anim_duration = 150;
+	Uint32 _last_milled_card_time = 0;
+	Uint32 _mill_card_anim_duration = 500;
+#pragma endregion
 	CardList _draw_pile;
 	CardList _discard_pile;
 	Card* _hand;
+	Card* _last_milled_card = nullptr;
 	ManaComponent* _mana;
 	Transform* _tr;
 	const camera_component* _camera;

@@ -1,5 +1,5 @@
 #include "Card.hpp"
-
+#include "../components/Deck.hpp"
 
 Card::Card(std::string card_name, Resources r)
 	:_name(card_name), _my_costs(r)
@@ -21,7 +21,7 @@ Card* Card::on_mill()
 	return this;
 }
 
-void Card::on_play(const Vector2D* player_position, const Vector2D* target_position) {
+void Card::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position) {
 	(void)player_position;
 	(void)target_position;
 	// Deploy effect

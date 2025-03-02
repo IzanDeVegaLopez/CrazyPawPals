@@ -3,6 +3,13 @@
 
 #include "../our_scripts/components/Transform.h"
 #include "../our_scripts/components/camera_component.hpp"
+
+#include "../our_scripts/components/Transform.h"
+#include "../our_scripts/components/Image.h"
+#include "../our_scripts/components/Button.h"
+#include <string>
+Scene::Scene(ecs::sceneId_t id) : _scene_ID(id) {}
+
 ecs::entity_t Scene::rendering::create_camera(
     const ecs::sceneId_t scene,
     const camera_creation_descriptor_flags flags,
@@ -55,4 +62,27 @@ ecs::entity_t Scene::rendering::create_camera(
         assert(clamp != nullptr && "error: failed to add camera clamp");
     }
     return camera;
+}
+
+ecs::entity_t
+Scene::create_button(const GameStructs::ButtonProperties& bp) {
+    auto b = new Button();
+    ecs::entity_t e = create_entity(
+                        ecs::grp::UI,
+                        _scene_ID,
+                        new Transform(bp.pos, { 0.0f,0.0f }, bp.rot, 0.0f, bp.width, bp.height),
+                        new Image(&sdlutils().images().at(bp.sprite_key)),
+                        b
+                    );
+    b->initComponent();
+    return e;
+}
+void Scene::update(uint32_t delta_time)
+{
+    Game::Instance()->get_mngr()->update(_scene_ID, delta_time);
+}
+
+void Scene::render()
+{
+    Game::Instance()->get_mngr()->render(_scene_ID);
 }

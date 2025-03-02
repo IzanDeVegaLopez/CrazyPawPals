@@ -4,6 +4,9 @@
 #include <iostream>
 #include <algorithm>
 #include "../../utils/Vector2D.h"
+#include "../components/Deck.hpp"
+
+class Deck;
 
 class Resources {
 private:
@@ -44,7 +47,7 @@ public:
 	virtual Resources& get_costs();
 
 	//bool can_play();
-	virtual void on_play( const Vector2D* player_position, const Vector2D* target_position) = 0;
+	virtual void on_play( Deck& d, const Vector2D* player_position, const Vector2D* target_position) = 0;
 	virtual Card* on_mill();
 
 	//friend std::ostream& operator << (std::ostream& os, const Card& card);

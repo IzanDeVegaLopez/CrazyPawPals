@@ -19,7 +19,6 @@
 #include "../our_scripts/components/rect_component.hpp"
 #include "../our_scripts/components/Revolver.h"
 #include "../our_scripts/components/Rampage.h"
-
 //Scenes for SceneManager
 #include "Scene.h"
 #include "MainMenuScene.h"
@@ -50,7 +49,6 @@ Game::~Game() {
 
 }
 
-
 bool Game::init() {
 	
 	// initialize the SDL singleton
@@ -79,11 +77,12 @@ bool Game::init() {
 
 	//_scenes[MAINMENU] = new MainMenuScene();
 	_scenes[GAMESCENE] = new GameScene();
-	//_scenes[SELECTIONMENU] = new SelectionMenuScene();
+	_scenes[GAMESCENE]->initScene();
 
-	_current_scene_index = GAMESCENE;
-	_scenes[_current_scene_index]->initScene();
+	_scenes[SELECTIONMENU] = new SelectionMenuScene();
+	_scenes[SELECTIONMENU]->initScene();
 
+	_current_scene_index = SELECTIONMENU;
 	return true;
 }
 

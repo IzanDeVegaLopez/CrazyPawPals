@@ -1,10 +1,10 @@
 #include "Rampage.h"
 #include "../../game/Game.h"
 #include "../../game/GameScene.h"
-#include "../card_system/ShootPatrons.hpp"
+#include "our_scripts/card_system/ShootPatrons.hpp"
 
 
-Rampage::Rampage() : Weapon(5, 0.55f, 0.5f, 0.1f, "rampage") { }
+Rampage::Rampage() : Weapon(5, 0.55f, 0.5f, 0.1f, "p_rampage", 1.0f, 1.0f) { }
 
 Rampage::~Rampage() {}
 
@@ -21,7 +21,7 @@ Rampage::callback(Vector2D shootPos, Vector2D shootDir) {
 	bp.height = _attack_height;
 	bp.sprite_key = _tex;
 
-	ShotgunPatron(bp, ecs::grp::BULLET, 120, 5);
+	patrons::ShotgunPatron(bp, ecs::grp::BULLET, 120, 5);
 
 	//float initialRot = atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI;
 	//bp.rot = initialRot;
