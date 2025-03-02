@@ -18,7 +18,7 @@ WeaponBoom::callback(Vector2D shootPos, Vector2D shootDir) {
 	bp.width = _attack_width;
 	bp.sprite_key = "p_boom";
 	bp.height = _attack_height;
-	bp.rot = atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI;
+	//bp.rot = atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI;
 	auto* scene = static_cast<GameScene*>(Game::Instance()->get_currentScene());
 	float alpha = 90 * (180.0f / M_PI);
 	int n = 9;

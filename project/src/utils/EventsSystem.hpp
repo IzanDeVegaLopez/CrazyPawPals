@@ -29,7 +29,7 @@
 namespace event_system {
 
 	enum event_name {
-		mill = 0
+		mill = 0				//bin 0
 		//2º evento = 1 << 0,	//bin 1
 		//3er evento = 1 << 1,	//bin 2
 		//4º evento = 1 << 2,	//bin 4

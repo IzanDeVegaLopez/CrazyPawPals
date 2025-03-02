@@ -20,7 +20,7 @@ WeaponPlimPlim::callback(Vector2D shootPos, Vector2D shootDir) {
 	auto* scene = static_cast<GameScene*>(Game::Instance()->get_currentScene());
 
 	float initialRot = atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI;
-	bp.rot = initialRot;
+	//bp.rot = initialRot;
 
 	//Dispara 3 balas
 	for (int i = 0; i < 3; ++i) {
@@ -29,9 +29,8 @@ WeaponPlimPlim::callback(Vector2D shootPos, Vector2D shootDir) {
 			shootDir.getX() * cos(angleOffset) - shootDir.getY() * sin(angleOffset),
 			shootDir.getX() * sin(angleOffset) + shootDir.getY() * cos(angleOffset)
 		);
-		bp.dir = rotatedDir;
-		bp.rot = atan2(rotatedDir.getY(), rotatedDir.getX()) * 180.0f / M_PI;
-
+		//bp.dir = rotatedDir;
+		//bp.rot = atan2(rotatedDir.getY(), rotatedDir.getX()) * 180.0f / M_PI;
 		scene->generate_proyectile(bp, ecs::grp::BULLET);
 	}
 }

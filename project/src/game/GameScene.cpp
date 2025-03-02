@@ -249,8 +249,8 @@ void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs
 {
 	auto manager = Game::Instance()->get_mngr();
 	(void)gid;
-
-	auto &&transform = *new Transform(bp.init_pos, bp.dir, bp.rot, bp.speed);
+	std::cout << std::endl << atan2(bp.dir.getY(), bp.dir.getX()) << " = " << atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI << std::endl;
+	auto &&transform = *new Transform(bp.init_pos, bp.dir, atan2(-bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI, bp.speed);
 	auto &&rect = *new rect_component{0, 0, bp.width, bp.height};
 	//std::cout << bp.speed << std::endl;
 	create_entity(

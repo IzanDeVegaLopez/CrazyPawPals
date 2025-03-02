@@ -16,11 +16,11 @@ WeaponSarnoRata::callback(Vector2D shootPos, Vector2D shootDir) {
 	bp.life_time = 2;
 	bp.width = _attack_width;
 	bp.height = _attack_height;
-	bp.rot = atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI;
+	//bp.rot = atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI;
 	bp.sprite_key = "p_sarno_rata";
 
 	auto* scene = static_cast<GameScene*>(Game::Instance()->get_currentScene());
-	bp.rot = atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI;
+	//bp.rot = atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI;
 
 	scene->generate_proyectile(bp, ecs::grp::BULLET);
 }
