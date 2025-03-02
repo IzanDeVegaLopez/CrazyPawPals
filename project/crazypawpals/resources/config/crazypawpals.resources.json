@@ -12,8 +12,9 @@
 
     { "id": "p_revolver",  "file": "resources/images/projectiles/revolver.png"},
     { "id": "p_canon",  "file": "resources/images/projectiles/canon.png"},
-    { "id": "p_kunai",  "file": "resources/images/projectiles/kunai.png"},
+    { "id": "p_kunai",  "file": "resources/images/projectiles/p_card_kunai.png"},
     { "id": "p_rampage", "file": "resources/images/projectiles/rampage.png"},
+    { "id": "p_fireball", "file": "resources/images/projectiles/p_card_fireball.png"},
 
 
     { "id": "p_sarno_rata","file": "resources/images/projectiles/SDL_logo.png"},
