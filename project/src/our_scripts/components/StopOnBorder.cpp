@@ -15,6 +15,7 @@ StopOnBorder::initComponent() {
 	assert(_tr != nullptr);
 }
 void StopOnBorder::update(Uint32 delta_time) {
+    (void)delta_time;
     auto& pos = _tr->getPos();
     auto& dir = _tr->getDir();
 

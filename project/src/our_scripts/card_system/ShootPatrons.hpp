@@ -14,9 +14,9 @@ namespace patrons {
 
 		Vector2D initialRot = bp.dir;
 
-		// Dispara 5 balas con ángulos de -60, -30, 0, 30 y 60 grados
+		// Dispara 5 balas con ï¿½ngulos de -60, -30, 0, 30 y 60 grados
 		for (int i = 0; i < proyectile_number; ++i) {
-			std::cout << "angle = " << (angle * (i / ((float)proyectile_number - 1)) - angle / 2.0f);
+			//std::cout << "angle = " << (angle * (i / ((float)proyectile_number - 1)) - angle / 2.0f);
 			float angleOffset = (angle * (i / ((float)proyectile_number - 1)) - angle / 2.0f) * (M_PI / 180.0f);//i * 6.0f * (M_PI / 180.0f); // Convertir a radianes
 			Vector2D rotatedDir(
 				initialRot.getX() * cos(angleOffset) - initialRot.getY() * sin(angleOffset),

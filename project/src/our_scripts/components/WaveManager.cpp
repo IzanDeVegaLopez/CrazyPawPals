@@ -76,8 +76,11 @@ WaveManager::spawnWave() {
             // Medio de la pantalla + angulo * distancia
             Vector2D posVec = Vector2D(Game::Instance()->get_world_half_size().first + cos(rAng) * (_min_distance + _op_dist), Game::Instance()->get_world_half_size().second + sin(rAng) * (_min_distance + _op_dist));
 
+            // FIXME: define enum values
             switch (_waves[_currentWave].second[_enemiesSpawned])
             {
+            case 0:
+                break;
 		    case 1:
                 static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
 			    break;
@@ -90,9 +93,12 @@ WaveManager::spawnWave() {
             case 4:
                 static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnBoom(posVec);
 			    break;
-            default:
-			    std::cout << "Enemigo no existe" << std::endl;
+            default: {
+                assert(false && "unreachable");
+                exit(EXIT_FAILURE);
                 break;
+			    //std::cout << "Enemigo no existe" << std::endl;
+            }
             }
                 // DEBUG
                 //std::cout << "Enemy " << _waves[_currentWave].second[_enemiesSpawned] << std::endl;
@@ -115,7 +121,7 @@ WaveManager::spawnWave() {
     else {
         _waveActive = true; // después de que se spawnee el último enemigo
 
-        std::cout << "WAVE ACTIVE" << std::endl;
+        //std::cout << "WAVE ACTIVE" << std::endl;
     }
 }
 
@@ -129,14 +135,14 @@ WaveManager::areAllEnemiesDead() {
 void 
 WaveManager::activateFog() {
     _fogActive = true;
-    std::cout << "Niebla activada!" << std::endl;
+    //std::cout << "Niebla activada!" << std::endl;
 }
 
 
 void 
 WaveManager::enterRewardsMenu() {
-    std::cout << "Active time: " << sdlutils().virtualTimer().currRealTime() << std::endl;
-    std::cout << "Todos los enemigos eliminados. Entrando al menu de recompensas..." << std::endl;
+    //std::cout << "Active time: " << sdlutils().virtualTimer().currRealTime() << std::endl;
+    //std::cout << "Todos los enemigos eliminados. Entrando al menu de recompensas..." << std::endl;
 
     // Esto tiene que ir después del menu de recompensas
     _currentWave++;

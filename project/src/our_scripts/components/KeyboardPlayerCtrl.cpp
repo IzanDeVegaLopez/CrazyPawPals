@@ -56,7 +56,7 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
     //collect
     if (ihdlr.isKeyDown(_collect)) {
         //if we are not close enought to a reward, do nothing
-        std::cout << "colecta" << std::endl;
+        //std::cout << "colecta" << std::endl;
     }
 
 

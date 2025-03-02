@@ -51,15 +51,15 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
     buttonComp->connectClick([buttonComp, &mngr, wt, player]() {
         if (buttonComp->clicked()) return;
         buttonComp->set_clicked(true);
-        std::cout << "left click-> button" << std::endl;
+        //std::cout << "left click-> button" << std::endl;
 
         switch (wt) {
         case GameStructs::REVOLVER:
-            std::cout << "revolver chosen" << std::endl;
+            //std::cout << "revolver chosen" << std::endl;
             mngr->addComponent<Revolver>(player);
             break;
         case GameStructs::RAMPAGE:
-            std::cout << "rampage chosen" << std::endl;
+            //std::cout << "rampage chosen" << std::endl;
             mngr->addComponent<Rampage>(player);
             break;
         default:
@@ -69,5 +69,7 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
         Game::Instance()->change_Scene(Game::GAMESCENE);
         });
 
-    buttonComp->connectHover([buttonComp]() {});
+    buttonComp->connectHover([buttonComp]() {
+        (void)buttonComp;
+    });
 }

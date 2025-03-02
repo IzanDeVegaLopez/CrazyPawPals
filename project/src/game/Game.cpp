@@ -101,21 +101,20 @@ void Game::start() {
 
 	auto& ihdlr = ih();
 	//delta time
-	Uint32 dt = 10;
+	constexpr static const uint32_t target_delta_time_milliseconds = 10;
 
-	// reset the time before starting - so we calculate correct
-	// delta-time in the first iteration
-	//
-	sdlutils().virtualTimer().resetTime();
+	uint64_t last_frame_start_tick = SDL_GetTicks64();
+	SDL_Delay(target_delta_time_milliseconds);
 
 	while (!exit) {
-		// store the current time -- all game objects should use this time when
-		// then need to the current time. They also have accessed to the time elapsed
-		// between the last two calls to regCurrTime().
-		Uint32 startTime = sdlutils().virtualTimer().regCurrTime();
-		(void)startTime;
+		const uint64_t frame_start_tick = SDL_GetTicks64();
+		const uint32_t delta_time_milliseconds = frame_start_tick - last_frame_start_tick;
+		assert(delta_time_milliseconds > 0 && "fatal error: delta time must be strictly positive");
+		sdlutils().virtualTimer() = VirtualTimer{
+			.current_time = frame_start_tick
+		};
 
-		// refresh the input handler
+		last_frame_start_tick = frame_start_tick;
 		ihdlr.refresh();
 
 		if (ihdlr.isKeyDown(SDL_SCANCODE_ESCAPE)) {
@@ -126,8 +125,8 @@ void Game::start() {
 			exit = true;
 			continue;
 		}
-
-		_scenes[_current_scene_index]->update(sdlutils().virtualTimer().deltaTime());
+		
+		_scenes[_current_scene_index]->update(delta_time_milliseconds);
 		_mngr->refresh();
 
 
@@ -135,9 +134,10 @@ void Game::start() {
 		_scenes[_current_scene_index]->render();
 		sdlutils().presentRenderer();
 
-		if (dt < 10) {
-			SDL_Delay(10 - dt);
-			//dt = 10;
+		const uint64_t frame_end_tick = SDL_GetTicks64();
+		const uint32_t frame_duration_milliseconds = frame_end_tick - frame_start_tick;
+		if (frame_duration_milliseconds < target_delta_time_milliseconds) {
+			SDL_Delay(target_delta_time_milliseconds - frame_duration_milliseconds);
 		}
 	}
 

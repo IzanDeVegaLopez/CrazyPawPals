@@ -21,6 +21,7 @@ void Button::initComponent() {
 }
 
 void Button::update(uint32_t delta_time) {
+    (void)delta_time;
     if (mouseOver()) {
         if (_current_state != HOVER) {
             _current_state = HOVER;
