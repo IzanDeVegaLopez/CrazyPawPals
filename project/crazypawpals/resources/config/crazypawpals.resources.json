@@ -18,7 +18,7 @@
 
 
     { "id": "p_sarno_rata","file": "resources/images/projectiles/SDL_logo.png"},
-    { "id": "p_michi_mafioso","file": "resources/images/projectiles/SDL_logo.png"},
+    { "id": "p_michi_mafioso","file": "resources/images/projectiles/p_michi_mafioso.png"},
     { "id": "p_plimplim","file": "resources/images/projectiles/plim_plim.png"},
     { "id": "p_boom","file": "resources/images/projectiles/SDL_logo.png"},
 
