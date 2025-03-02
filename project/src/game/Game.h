@@ -2,6 +2,7 @@
 #include "../utils/Singleton.h"
 #include "../utils/Vector2D.h"
 #include "../ecs/ecs.h"
+#include "../utils/EventsSystem.hpp"
 #include <vector>
 
 namespace ecs {
@@ -30,6 +31,8 @@ public:
 	ecs::entity_t create_environment();
 
 	ecs::Manager* get_mngr();
+	event_system::event_manager* get_event_mngr();
+	
 	Scene* get_currentScene();
 	void change_Scene(State);
 	std::pair<int,int> get_world_half_size() const;

@@ -63,13 +63,4 @@ public:
 	void remove_card(std::list<Card*>::iterator);
 
 	void initComponent() override;
-	/*
-	class const_iterator {
-	private:
-		friend class Deck;
-	};
-	*/
-
-	void suscribe_to_mill_event(ev_sys::event_receiver* er);
-	void desuscribe_to_mill_event(ev_sys::event_receiver* er);
 };

@@ -59,11 +59,17 @@ bool Game::init() {
 		<< std::endl;
 		return false;
 	}
-		
+
 	// initialize the InputHandler singleton
 	if (!InputHandler::Init()) {
 		std::cerr << "Something went wrong while initializing SDLHandler"
 		<< std::endl;
+		return false;
+	}
+
+	if (!event_system::event_manager::Init()) {
+		std::cerr << "Something went wrong while initializing event_system"
+			<< std::endl;
 		return false;
 	}
 	
@@ -139,6 +145,11 @@ void Game::start() {
 
 ecs::Manager* Game::get_mngr() {
 	return _mngr;
+}
+
+event_system::event_manager* Game::get_event_mngr()
+{
+	return event_system::event_manager::Instance();
 }
 
 Scene* Game::get_currentScene() {

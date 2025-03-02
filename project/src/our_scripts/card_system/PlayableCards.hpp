@@ -1,9 +1,10 @@
 #include "Card.hpp"
 
-class Fireball : public Card {
+class Fireball : public Card /*, public event_system::event_receiver*/ {
 public:
 	Fireball();
 	void on_play(Deck& d,const Vector2D* player_position, const Vector2D* target_position) override;
+	//void event_callback0(const Msg& m) override;
 };
 
 class Lighting : public Card {

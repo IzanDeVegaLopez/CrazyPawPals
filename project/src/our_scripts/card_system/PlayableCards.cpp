@@ -6,6 +6,7 @@
 
 Fireball::Fireball():Card("card_fireball", Resources(1))
 {
+	//Game::Instance()->get_event_mngr()->suscribe_to_event(event_system::mill,this, &event_system::event_receiver::event_callback0);
 }
 void Fireball::on_play(Deck& d, const Vector2D* player_position,const Vector2D* target_position) {
 	Card::on_play(d,player_position,target_position);
@@ -20,6 +21,12 @@ void Fireball::on_play(Deck& d, const Vector2D* player_position,const Vector2D* 
 	std::cout << bp.init_pos << "--" << bp.dir << std::endl;
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }
+/*
+void Fireball::event_callback0(const Msg& m)
+{
+	std::cout << "fireball is crying cause something was milled" << std::endl;
+}
+*/
 
 Minigun::Minigun()
 	: Card("card_minigun", Resources(2)), _pl_vec(), _playing(false), _time_since_played(0)

@@ -28,6 +28,7 @@
     { "id": "card_minigun", "file": "resources/images/cards/card_minigun.png"},
     { "id": "card_reloading", "file": "resources/images/cards/card_reloading.png"},
     { "id": "card_lighting", "file": "resources/images/cards/card_lighting.png"},
+    { "id": "card_spray", "file": "resources/images/cards/card_spray.png"},
     { "id": "card_back", "file": "resources/images/cards/card_back.png"},
 
 
