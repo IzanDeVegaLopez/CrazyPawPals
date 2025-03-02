@@ -13,7 +13,9 @@ protected:
 	Health* _health;
 	float _dist;
 public:
-	WalkingState(float);
+	WalkingState(float dist, Transform* tr,
+		Health* health,	EnemyStateMachine* stateMachine,
+		Transform* playerTr);
 	void enter() override;
 	void update(uint32_t delta_time) override;
 	void exit() override;
