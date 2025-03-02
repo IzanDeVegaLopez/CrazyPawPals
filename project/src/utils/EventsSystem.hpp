@@ -7,16 +7,17 @@
 
 
 //CASE OF USE:
-// For a real example see the commented lines on PlayableCards.hpp/.cpp of card Fireball
+// 
+
 // uncommment to see better
 /*
 	"Game::Instance()::get_event_mngr" is the same as "event_system::event_manager::Instance()" and should work the same (not tested, I recommend sticking with the first)
 
-	//FIRE EVENT
+	//FIRE EVENT => for a real example of use see Deck.cpp line 83
 	//sustitute event_system::mill with the name that the event to be fired was given in the "event_name" enum
 	Game::Instance()::get_event_mngr()->fire_event(event_system::mill);
 
-	//RECEIVE EVENT
+	//RECEIVE EVENT => For a real example see the commented lines on PlayableCards.hpp/.cpp of card Fireball
 	//inherit from event_system::event_receiver and override event_callback0
 	//On the init / constructor or similar of the object call:
 	Game::Instance()::get_event_mngr()->suscribe_to_event(event_system_mill, this,  &event_system::event_receiver::event_callback0);
