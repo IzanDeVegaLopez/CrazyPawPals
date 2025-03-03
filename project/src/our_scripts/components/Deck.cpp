@@ -187,7 +187,7 @@ void Deck::render() noexcept
 			crd.mana_cost_subrect = { {0,0.2},{0,0} };
 		}
 		else {
-			crd.mana_cost_subrect = { {0,0.2},{0.4,0.4} };
+			crd.mana_cost_subrect = { {0.1,0.2},{0.3,0.3} };
 			crd.card_image_key = percentual_time_to_card_in_position < 0.5f ? "card_back" : _hand->get_name().data();
 			crd.mana_cost = _hand->get_costs().get_mana();
 		}
