@@ -21,7 +21,7 @@ void CardList::move_from_this_to(CardList& my_new_list)
 	my_new_list._my_card_list.splice(my_new_list._my_card_list.end(), _my_card_list, _my_card_list.begin(), _my_card_list.end());
 }
 
-Card* CardList::add_card(Card*&& c)
+Card* CardList::add_card(Card* c)
 {
 	_my_card_list.emplace_back(c);
 	return c;

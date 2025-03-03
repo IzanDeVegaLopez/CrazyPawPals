@@ -5,7 +5,11 @@
 #include <algorithm>
 #include "../../utils/Vector2D.h"
 #include "../components/Deck.hpp"
-
+enum MillDestination {
+	DRAW_PILE,
+	DISCARD_PILE,
+	DESTROY
+};
 class Deck;
 
 class Resources {
@@ -31,6 +35,7 @@ class Card {
 protected:
 	std::string _name;
 	Resources _my_costs;
+	MillDestination _my_mill_destination;
 
 	// OPTIONAL ATTRIBUTES
 	// These can be declared, modified and utilized within specific subclasses if necessary.
@@ -41,7 +46,7 @@ protected:
 	// int _boost_threshold = 0; //Represents the value at which _boost enhances the card. 
 public:
 	//Card();
-	Card(std::string = "default", Resources = Resources(0,0));
+	Card(std::string = "default", Resources = Resources(0,0), MillDestination = DISCARD_PILE);
 	virtual ~Card(); 
 
 	virtual Resources& get_costs();
@@ -53,6 +58,7 @@ public:
 	//friend std::ostream& operator << (std::ostream& os, const Card& card);
 	//Debug purposes
 	virtual std::string get_written_info();
+	inline MillDestination get_mill_destination() { return _my_mill_destination; }
 	virtual void update(uint32_t dt) {
 		(void)dt;
 	};
