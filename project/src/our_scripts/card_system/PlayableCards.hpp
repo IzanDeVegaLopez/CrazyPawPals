@@ -42,7 +42,7 @@ public:
 	void on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position) override;
 };
 
-class EldritchBlast : public Card {
+class EldritchBlast : public Card { // TODO: Reset on round end
 public: 
 	EldritchBlast();
 	void on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position) override;
