@@ -105,6 +105,7 @@ void Deck::reload() noexcept
 			_hand = nullptr;
 		}
 		_draw_pile.move_from_this_to(_discard_pile);
+		_primed = false;
 	}
 }
 void Deck::_finish_realoading()
@@ -150,6 +151,14 @@ void Deck::update(Uint32 deltaTime) noexcept
 
 void Deck::render() noexcept
 {
+
+#pragma region prime
+		if (_primed) {
+			SDL_Rect primerect{ 10,71,31,32 };
+			_prime_tex->render(primerect);
+		}
+#pragma endregion
+
 #pragma region reload_bar
 		//reload bar
 		if (_is_reloading) {
@@ -285,6 +294,7 @@ void Deck::set_primed(bool prime)
 
 void Deck::initComponent()
 {
+	_prime_tex = &sdlutils().images().at("prime");
 	_mana = Game::Instance()->get_mngr()->getComponent<ManaComponent>(_ent);
 	assert(_mana!=nullptr);
 	_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);

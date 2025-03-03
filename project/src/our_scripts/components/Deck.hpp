@@ -25,6 +25,7 @@ protected:
 	Card* _last_milled_card = nullptr;
 	ManaComponent* _mana;
 	Transform* _tr;
+	Texture* _prime_tex;
 	const camera_component* _camera;
 	bool _is_reloading = false;
 	int _time_till_reload_finishes;

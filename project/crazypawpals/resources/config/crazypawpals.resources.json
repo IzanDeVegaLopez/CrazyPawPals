@@ -138,6 +138,11 @@
       "id":   "manaorbempty",
       "file": "resources/images/ui/caffeinempty.png"
     },
+    {
+      "id": "prime",
+      "file": "resources/images/ui/prime.png"
+
+    },
 
 
     {
