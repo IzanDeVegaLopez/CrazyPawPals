@@ -8,6 +8,7 @@
 
 #include "../our_scripts/components/Revolver.h"
 #include "../our_scripts/components/Rampage.h"
+#include "../our_scripts/components/PumpShotgun.h"
 
 #include <iostream>
 #include <string>
@@ -22,7 +23,7 @@ SelectionMenuScene::~SelectionMenuScene()
 }
 
 void SelectionMenuScene::initScene() {
-    GameStructs::ButtonProperties buttonPropTemplate = { {sdlutils().width() / 4.0f, sdlutils().height() / 2.0f},
+    GameStructs::ButtonProperties buttonPropTemplate = { {sdlutils().width() / 6.0f, sdlutils().height() / 2.0f},
         200.0f, 200.0f, 0.0f, ""
     };
     GameStructs::ButtonProperties revolverB = buttonPropTemplate;
@@ -31,8 +32,13 @@ void SelectionMenuScene::initScene() {
 
     GameStructs::ButtonProperties rampageB = buttonPropTemplate;
     rampageB.sprite_key = "rampage_button";
-    rampageB.pos.setX(sdlutils().width() / 2.0f);
+    rampageB.pos.setX(sdlutils().width() / 3.0f);
     create_weapon_button(GameStructs::RAMPAGE, rampageB);
+
+    GameStructs::ButtonProperties pump_shotgun_B = buttonPropTemplate;
+    pump_shotgun_B.sprite_key = "pump_shotgun_button";
+    pump_shotgun_B.pos.setX(sdlutils().width() / 1.5f);
+    create_weapon_button(GameStructs::PUMP_SHOTGUN, pump_shotgun_B);
 }
 void SelectionMenuScene::enterScene()
 {
@@ -61,6 +67,9 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
         case GameStructs::RAMPAGE:
             //std::cout << "rampage chosen" << std::endl;
             mngr->addComponent<Rampage>(player);
+            break;
+        case GameStructs::PUMP_SHOTGUN:
+            mngr->addComponent<PumpShotgun>(player);
             break;
         default:
             break;

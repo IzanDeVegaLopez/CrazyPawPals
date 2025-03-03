@@ -4,51 +4,147 @@
     { "id" : "ARIAL16", "file" : "resources/fonts/ARIAL.ttf", "size": 16 },
     { "id" : "ARIAL24", "file" : "resources/fonts/ARIAL.ttf", "size": 24 }
   ],
-  
-  "images" : [
-    { "id": "mimi",  "file": "resources/images/characters/mimi.png"},
-    { "id": "piu",  "file": "resources/images/characters/piu.png"},
+
+  "images": [
+    {
+      "id": "mimi",
+      "file": "resources/images/characters/mimi.png"
+    },
+    {
+      "id": "piu",
+      "file": "resources/images/characters/piu.png"
+    },
 
 
-    { "id": "p_revolver",  "file": "resources/images/projectiles/revolver.png"},
-    { "id": "p_canon",  "file": "resources/images/projectiles/canon.png"},
-    { "id": "p_kunai",  "file": "resources/images/projectiles/p_card_kunai.png"},
-    { "id": "p_rampage", "file": "resources/images/projectiles/rampage.png"},
-    { "id": "p_fireball", "file": "resources/images/projectiles/p_card_fireball.png"},
+    {
+      "id": "p_revolver",
+      "file": "resources/images/projectiles/revolver.png"
+    },
+    {
+      "id": "p_pump_shotgun",
+      "file": "resources/images/projectiles/revolver.png"
+    },
+    {
+      "id": "p_canon",
+      "file": "resources/images/projectiles/canon.png"
+    },
+    {
+      "id": "p_kunai",
+      "file": "resources/images/projectiles/p_card_kunai.png"
+    },
+    {
+      "id": "p_rampage",
+      "file": "resources/images/projectiles/rampage.png"
+    },
+    {
+      "id": "p_fireball",
+      "file": "resources/images/projectiles/p_card_fireball.png"
+    },
 
 
-    { "id": "p_sarno_rata","file": "resources/images/projectiles/SDL_logo.png"},
-    { "id": "p_michi_mafioso","file": "resources/images/projectiles/p_michi_mafioso.png"},
-    { "id": "p_plimplim","file": "resources/images/projectiles/plim_plim.png"},
-    { "id": "p_boom","file": "resources/images/projectiles/SDL_logo.png"},
+    {
+      "id": "p_sarno_rata",
+      "file": "resources/images/projectiles/SDL_logo.png"
+    },
+    {
+      "id": "p_michi_mafioso",
+      "file": "resources/images/projectiles/p_michi_mafioso.png"
+    },
+    {
+      "id": "p_plimplim",
+      "file": "resources/images/projectiles/plim_plim.png"
+    },
+    {
+      "id": "p_boom",
+      "file": "resources/images/projectiles/SDL_logo.png"
+    },
 
 
-    { "id": "card_kunai",  "file": "resources/images/cards/card_kunai.png"},
-    { "id": "card", "file": "resources/images/cards/card.png"},
-    { "id": "card_fireball", "file": "resources/images/cards/card_fireball.png"},
-    { "id": "card_minigun", "file": "resources/images/cards/card_minigun.png"},
-    { "id": "card_reloading", "file": "resources/images/cards/card_reloading.png"},
-    { "id": "card_lighting", "file": "resources/images/cards/card_lighting.png"},
-    { "id": "card_spray", "file": "resources/images/cards/card_spray.png"},
-    { "id": "card_back", "file": "resources/images/cards/card_back.png"},
+    {
+      "id": "card_kunai",
+      "file": "resources/images/cards/card_kunai.png"
+    },
+    {
+      "id": "card",
+      "file": "resources/images/cards/card.png"
+    },
+    {
+      "id": "card_fireball",
+      "file": "resources/images/cards/card_fireball.png"
+    },
+    {
+      "id": "card_minigun",
+      "file": "resources/images/cards/card_minigun.png"
+    },
+    {
+      "id": "card_reloading",
+      "file": "resources/images/cards/card_reloading.png"
+    },
+    {
+      "id": "card_lighting",
+      "file": "resources/images/cards/card_lighting.png"
+    },
+    {
+      "id": "card_spray",
+      "file": "resources/images/cards/card_spray.png"
+    },
+    {
+      "id": "card_back",
+      "file": "resources/images/cards/card_back.png"
+    },
 
 
-    { "id": "boom", "file": "resources/images/enemies/boom.png"},
-    { "id": "sarno_rata","file": "resources/images/enemies/sarno_rata.png"},
-    { "id": "plim_plim","file": "resources/images/enemies/plim_plim.png"},
-    { "id": "michi_mafioso","file": "resources/images/enemies/michi_mafioso.png"},
+    {
+      "id": "boom",
+      "file": "resources/images/enemies/boom.png"
+    },
+    {
+      "id": "sarno_rata",
+      "file": "resources/images/enemies/sarno_rata.png"
+    },
+    {
+      "id": "plim_plim",
+      "file": "resources/images/enemies/plim_plim.png"
+    },
+    {
+      "id": "michi_mafioso",
+      "file": "resources/images/enemies/michi_mafioso.png"
+    },
 
 
-    { "id": "heart", "file": "resources/images/ui/heart.png"},
-    { "id": "manaorb", "file": "resources/images/ui/manaorb.png"},
-    { "id": "manaorbempty", "file": "resources/images/ui/manaorbempty.png"}, 
+    {
+      "id": "heart",
+      "file": "resources/images/ui/heart.png"
+    },
+    {
+      "id": "manaorb",
+      "file": "resources/images/ui/manaorb.png"
+    },
+    {
+      "id": "manaorbempty",
+      "file": "resources/images/ui/manaorbempty.png"
+    },
 
 
-    { "id": "floor", "file": "resources/images/enviroment/floor.png"},
+    {
+      "id": "floor",
+      "file": "resources/images/enviroment/floor.png"
+    },
 
 
-    { "id": "revolver_button", "file": "resources/images/cards/card.png"},
-    { "id": "rampage_button", "file": "resources/images/cards/card.png"}
+    {
+      "id": "revolver_button",
+      "file": "resources/images/cards/card.png"
+    },
+    {
+      "id": "rampage_button",
+      "file": "resources/images/cards/card.png"
+    },
+
+    {
+      "id": "pump_shotgun_button",
+      "file": "resources/images/cards/card.png"
+    }
   ],
   
   "messages" : [

@@ -3,9 +3,16 @@
 #include "../../game/GameScene.h"
 
 
-PumpShotgun::PumpShotgun() : Weapon(1, 0.9f, 1.5f, 2.0f, "pacman"), _has_mill(false) {}
+PumpShotgun::PumpShotgun() : Weapon(1, 0.9f, 1.5f, 0.6f, "p_pump_shotgun",1.0f,1.0f), _has_mill(false) {
+	event_system::event_manager::Instance()->suscribe_to_event(event_system::mill, this, &event_system::event_receiver::event_callback0);
+}
 
 PumpShotgun::~PumpShotgun() {}
+
+void PumpShotgun::event_callback0(const event_system::event_receiver::Msg& m)
+{
+	_has_mill = true;
+}
 
 void
 PumpShotgun::callback(Vector2D shootPos, Vector2D shootDir) {
@@ -15,29 +22,14 @@ PumpShotgun::callback(Vector2D shootPos, Vector2D shootDir) {
 	bp.init_pos = shootPos;
 	bp.speed = _speed;
 	bp.damage = _damage;
-	bp.life_time = _lifeTime;
+	bp.life_time = 0.2f;//_lifeTime;
 	bp.width = _attack_width;
 	bp.height = _attack_height;
+	bp.sprite_key = _tex;
 
-	int numBullets = _has_mill ? 8 : 4;
 	float totalAngle = 60.0f;
 
-	float initialRot = atan2(bp.dir.getY(), bp.dir.getX()) - (totalAngle / 2.0f);
+	patrons::ShotgunPatron(bp, ecs::grp::BULLET, totalAngle, _has_mill ? 8 : 4);
 
-	float angleIncrement = totalAngle / (numBullets - 1);
-
-	auto* scene = static_cast<GameScene*>(Game::Instance()->get_currentScene());
-
-	for (int i = 0; i < numBullets; ++i) {
-		float angleOffset = (initialRot + (i * angleIncrement)) * (M_PI / 180.0f); // Convertir a radianes
-		Vector2D rotatedDir(
-			shootDir.getX() * cos(angleOffset) - shootDir.getY() * sin(angleOffset),
-			shootDir.getX() * sin(angleOffset) + shootDir.getY() * cos(angleOffset)
-		);
-		bp.dir = rotatedDir;
-		bp.rot = atan2(rotatedDir.getY(), rotatedDir.getX()) * 180.0f / M_PI;
-
-		scene->generate_proyectile(bp, ecs::grp::BULLET, _tex);
-	}
-	if (_has_mill) _has_mill = false;
+	_has_mill = false;
 }

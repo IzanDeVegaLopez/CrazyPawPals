@@ -22,6 +22,7 @@ namespace GameStructs {
 	enum WeaponType {
 		REVOLVER,
 		RAMPAGE,
+		PUMP_SHOTGUN,
 		LAST_WEAPON,
 	};
 }
