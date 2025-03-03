@@ -1,14 +1,6 @@
 #include "rigidbody_component.hpp"
 #include <cassert>
 
-void verlet_component::update(uint32_t delta_time_milliseconds) {
-    auto &&position = transform.getPos();
-    previous_position = position2_f32{
-        .x = position.getX(),
-        .y = position.getY()
-    };
-    transform.update(delta_time_milliseconds);
-}
 
 rigidbody_component::rigidbody_component(mass_f32 mass, float restitution_coefficient){
     assert(mass.value > 0.0f && "error: must be strictly positive");

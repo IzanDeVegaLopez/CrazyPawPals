@@ -19,7 +19,9 @@ struct rigidbody_component : public ecs::Component {
 
 private:
     rigidbody_component()
-        : inverse_mass{0.0f}, restitution_coefficient{0.0};
+        : inverse_mass{0.0f}, restitution_coefficient{0.0} {
+
+    }
 
 public:
     rigidbody_component(mass_f32 mass, float restitution_coefficient);
