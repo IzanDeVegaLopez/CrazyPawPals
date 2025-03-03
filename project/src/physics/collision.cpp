@@ -1,6 +1,7 @@
 #include "collision.hpp"
 #include <cassert>
 #include <cstdlib>
+#include <cmath>
 
 // source: adapted from https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm
 using outcode = uint_fast8_t;
@@ -125,7 +126,12 @@ static rect_f32_intersection_segment_result cohen_sutherland_line_clip(
     }
 }
 
-size_t rect_f32_intersects_segment(const rect_f32 rect, const position2_f32 a, const position2_f32 b, position2_f32 out_intersections[2]) {
+size_t rect_f32_intersects_segment(
+    const rect_f32 rect,
+    const position2_f32 a,
+    const position2_f32 b,
+    position2_f32 out_intersections[2]
+) {
     const size2_f32 half_size = {
         .x = rect.size.x * 0.5f,
         .y = rect.size.y * 0.5f,
@@ -160,4 +166,157 @@ size_t rect_f32_intersects_segment(const rect_f32 rect, const position2_f32 a, c
         std::exit(EXIT_FAILURE);
     }
     }
+}
+
+static vec2_f32 rect_f32_normal_of_boundary_point(rect_f32 rect, const position2_f32 point) {
+    const size2_f32 half_size = {
+        .x = rect.size.x * 0.5f,
+        .y = rect.size.y * 0.5f,
+    };
+    const position2_f32 center = {
+        .x = rect.position.x,
+        .y = rect.position.y,
+    };
+    const vec2_f32 to_point = {
+        .x = point.x - center.x,
+        .y = point.y - center.y,
+    };
+    const float dx = std::abs(to_point.x) - half_size.x;
+    const float dy = std::abs(to_point.y) - half_size.y;
+    if (dx > dy) {
+        return vec2_f32{
+            .x = std::copysignf(1.0f, to_point.x),
+            .y = 0.0f,
+        };
+    } else {
+        return vec2_f32{
+            .x = 0.0f,
+            .y = std::copysignf(1.0f, to_point.y),
+        };
+    }
+}
+
+bool collision_body_check(
+    const collision_body &moving,
+    const collision_body &stationary,
+    const seconds_f32 delta_time,
+    collision_contact &out_contact
+) {
+    const size2_f32 moving_half_size = {
+        .x = moving.body.body.size.x * 0.5f,
+        .y = moving.body.body.size.y * 0.5f,
+    }; 
+    const position2_f32 endpoints[4] = {
+        position2_f32{
+            .x = moving.body.body.position.x - moving_half_size.x,
+            .y = moving.body.body.position.y - moving_half_size.y,
+        },
+        position2_f32{
+            .x = moving.body.body.position.x + moving_half_size.x,
+            .y = moving.body.body.position.y - moving_half_size.y,
+        },
+        position2_f32{
+            .x = moving.body.body.position.x - moving_half_size.x,
+            .y = moving.body.body.position.y + moving_half_size.y,
+        },
+        position2_f32{
+            .x = moving.body.body.position.x + moving_half_size.x,
+            .y = moving.body.body.position.y + moving_half_size.y,
+        },
+    };
+    const position2_f32 origins[4] = {
+        position2_f32{
+            .x = moving.body.space.previous_position.x - moving_half_size.x,
+            .y = moving.body.space.previous_position.y - moving_half_size.y,
+        },
+        position2_f32{
+            .x = moving.body.space.previous_position.x + moving_half_size.x,
+            .y = moving.body.space.previous_position.y - moving_half_size.y,
+        },
+        position2_f32{
+            .x = moving.body.space.previous_position.x - moving_half_size.x,
+            .y = moving.body.space.previous_position.y + moving_half_size.y,
+        },
+        position2_f32{
+            .x = moving.body.space.previous_position.x + moving_half_size.x,
+            .y = moving.body.space.previous_position.y + moving_half_size.y,
+        },
+    };
+
+    const rect_f32 stationary_rect = {
+        .position = {
+            .x = stationary.body.body.position.x + stationary.body.space.position.x,
+            .y = stationary.body.body.position.y + stationary.body.space.position.y,
+        },
+        .size = stationary.body.body.size,
+    };
+
+    bool collision = false;
+    uint_fast8_t i = 0;
+    while (i < 4 && !collision) {
+        position2_f32 intersections[2];
+        const size_t intersection_count = rect_f32_intersects_segment(
+            stationary_rect,
+            origins[i],
+            endpoints[i],
+            intersections
+        );
+        if (intersection_count > 0) {
+            collision = true;
+            out_contact = {
+                .penetration = {vec2_f32{
+                    .x = endpoints[i].x - intersections[0].x,
+                    .y = endpoints[i].y - intersections[0].y,
+                }},
+                .normal = rect_f32_normal_of_boundary_point(stationary_rect, intersections[0]),
+            };
+        } else {
+            ++i;
+        }
+    }
+
+    return collision;
+}
+
+static vec2_f32 vec2_f32_reflect(const vec2_f32 normal, const vec2_f32 v) {
+    const float dot = v.x * normal.x + v.y * normal.y;
+    return vec2_f32{
+        .x = v.x - 2.0f * dot * normal.x,
+        .y = v.y - 2.0f * dot * normal.y,
+    };
+}
+
+void collision_body_resolve(
+    collision_body &moving,
+    collision_body &stationary,
+    const seconds_f32 delta_time,
+    const collision_contact &contact
+) {
+    const inverse_mass_f32 inverse_mass_sum = {moving.body.mass_rcp.value + stationary.body.mass_rcp.value};
+    const vec2_f32 negative_penetration = vec2_f32{
+        .x = -contact.penetration.penetration.x,
+        .y = -contact.penetration.penetration.y,
+    };
+    moving.body.space.position = {
+        .x = moving.body.space.position.x + negative_penetration.x * moving.body.mass_rcp.value / inverse_mass_sum.value,
+        .y = moving.body.space.position.y + negative_penetration.y * moving.body.mass_rcp.value / inverse_mass_sum.value,
+    };
+    stationary.body.space.position = {
+        .x = stationary.body.space.position.x + contact.penetration.penetration.x * stationary.body.mass_rcp.value / inverse_mass_sum.value,
+        .y = stationary.body.space.position.y + contact.penetration.penetration.y * stationary.body.mass_rcp.value / inverse_mass_sum.value,
+    };
+
+
+    // TODO: maybe separate restitution from interpenetration resolution
+    const vec2_f32 reflected_penetration_moving = vec2_f32_reflect(contact.normal, contact.penetration.penetration);
+    moving.body.space.previous_position = {
+        .x = moving.body.space.position.x + reflected_penetration_moving.x * moving.restitution,
+        .y = moving.body.space.position.y + reflected_penetration_moving.y * moving.restitution,
+    };
+
+    const vec2_f32 reflected_penetration_stationary = vec2_f32_reflect(contact.normal, negative_penetration);
+    stationary.body.space.previous_position = {
+        .x = stationary.body.space.position.x + reflected_penetration_stationary.x * stationary.restitution,
+        .y = stationary.body.space.position.y + reflected_penetration_stationary.y * stationary.restitution,
+    };
 }
