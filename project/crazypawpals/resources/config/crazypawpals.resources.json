@@ -25,6 +25,7 @@
       "file": "resources/images/projectiles/revolver.png"
     },
     {
+
       "id": "p_canon",
       "file": "resources/images/projectiles/canon.png"
     },
@@ -116,13 +117,13 @@
       "id": "heart",
       "file": "resources/images/ui/heart.png"
     },
-    {
-      "id": "manaorb",
-      "file": "resources/images/ui/manaorb.png"
+    { 
+      "id":   "manaorb",
+      "file": "resources/images/ui/caffeinefull.png"
     },
-    {
-      "id": "manaorbempty",
-      "file": "resources/images/ui/manaorbempty.png"
+    { 
+      "id":   "manaorbempty",
+      "file": "resources/images/ui/caffeinempty.png"
     },
 
 
