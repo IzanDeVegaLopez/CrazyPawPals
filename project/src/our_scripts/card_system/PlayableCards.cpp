@@ -116,7 +116,7 @@ void CardSpray::on_play(Deck& d, const Vector2D* player_position, const Vector2D
 	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
 	bp.dir = ((*target_position) - (*player_position)).normalize();
 	bp.init_pos = *player_position;
-	bp.speed = 0.05;
+	bp.speed = 0.05f;
 	bp.height = 0.7;
 	bp.width = 0.7;
 	bp.life_time = 3;
@@ -124,4 +124,29 @@ void CardSpray::on_play(Deck& d, const Vector2D* player_position, const Vector2D
 
 	patrons::ShotgunPatron(bp, ecs::grp::BULLET, 75, 3);
 	d.mill();
+}
+
+EldritchBlast::EldritchBlast() :Card("card_eldritch_blast", Resources(1))
+{
+}
+
+void EldritchBlast::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
+{
+	Card::on_play(d, player_position, target_position);
+	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
+	bp.dir = ((*target_position) - (*player_position)).normalize();
+	bp.init_pos = *player_position;
+	bp.speed = 0.5f;
+	bp.height = 2.3;
+	bp.width = 2.3;
+	bp.life_time = 0.1;
+	bp.sprite_key = "p_eldritch_blast";
+
+	patrons::ShotgunPatron(bp, ecs::grp::BULLET, _amplitude * (_shot_count-1), _shot_count);
+}
+
+Card* EldritchBlast::on_mill()
+{
+	_shot_count++;
+	return this;
 }

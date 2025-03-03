@@ -41,6 +41,10 @@
       "id": "p_fireball",
       "file": "resources/images/projectiles/p_card_fireball.png"
     },
+    {
+      "id": "p_eldritch_blast",
+      "file": "resources/images/projectiles/p_card_eldritch_blast.png"
+    },
 
 
     {
@@ -92,6 +96,10 @@
     {
       "id": "card_back",
       "file": "resources/images/cards/card_back.png"
+    },
+    {
+      "id": "card_eldritch_blast",
+      "file": "resources/images/cards/card_eldritch_blast.png"
     },
 
 
