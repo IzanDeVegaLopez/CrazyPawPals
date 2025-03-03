@@ -12,6 +12,7 @@ Weapon::Weapon(int d, float cd, float dis, float s, const std::string& t, float 
 	_attack_width(w), _attack_height(h), _lastShoot(0.0f), _tr(nullptr) 
 {
 }
+
 void 
 Weapon::initComponent() {
 	_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
