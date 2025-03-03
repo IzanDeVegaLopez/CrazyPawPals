@@ -78,7 +78,7 @@ bool Deck::discard_card() noexcept
 void Deck::mill() noexcept
 {
 	if (!_draw_pile.empty()) {
-		_last_milled_card = _discard_pile.add_card(_draw_pile.pop_first()->on_mill());
+		_last_milled_card = _discard_pile.add_card(_draw_pile.pop_first()->on_mill(*this, &_tr->getPos()));
 		_last_milled_card_time = sdlutils().virtualTimer().currTime();
 		Game::Instance()->get_event_mngr()->fire_event(event_system::mill, event_system::event_receiver::Msg());
 	}
