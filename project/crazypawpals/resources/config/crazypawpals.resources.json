@@ -45,6 +45,7 @@
       "id": "p_eldritch_blast",
       "file": "resources/images/projectiles/p_card_eldritch_blast.png"
     },
+    
 
 
     {
@@ -101,6 +102,10 @@
       "id": "card_eldritch_blast",
       "file": "resources/images/cards/card_eldritch_blast.png"
     },
+    {
+      "id": "card_primordia",
+      "file": "resources/images/cards/carta.png"
+    },
 
 
     {
@@ -132,6 +137,11 @@
     { 
       "id":   "manaorbempty",
       "file": "resources/images/ui/caffeinempty.png"
+    },
+    {
+      "id": "prime",
+      "file": "resources/images/ui/prime.png"
+
     },
 
 

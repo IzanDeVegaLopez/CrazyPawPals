@@ -14,7 +14,7 @@ public:
 	~CardList();
 	CardList(std::list<Card*>&);
 	void move_from_this_to(CardList&);
-	Card* add_card(Card*&&);
+	Card* add_card(Card*);
 	void erase_card(std::list<Card*>::iterator);
 	Card* pop_first();
 	int number_of_cards();

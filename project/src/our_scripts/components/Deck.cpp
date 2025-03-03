@@ -78,7 +78,15 @@ bool Deck::discard_card() noexcept
 void Deck::mill() noexcept
 {
 	if (!_draw_pile.empty()) {
-		_last_milled_card = _discard_pile.add_card(_draw_pile.pop_first()->on_mill(*this, &_tr->getPos()));
+		_last_milled_card = _draw_pile.pop_first()->on_mill(*this, &_tr->getPos());
+		switch (_last_milled_card->get_mill_destination()) {
+		case DISCARD_PILE:
+			_discard_pile.add_card(_last_milled_card);
+			break;
+		case DRAW_PILE:
+			_draw_pile.add_card(_last_milled_card);
+			break;
+		}
 		_last_milled_card_time = sdlutils().virtualTimer().currTime();
 		Game::Instance()->get_event_mngr()->fire_event(event_system::mill, event_system::event_receiver::Msg());
 	}
@@ -97,6 +105,7 @@ void Deck::reload() noexcept
 			_hand = nullptr;
 		}
 		_draw_pile.move_from_this_to(_discard_pile);
+		_primed = false;
 	}
 }
 void Deck::_finish_realoading()
@@ -142,6 +151,14 @@ void Deck::update(Uint32 deltaTime) noexcept
 
 void Deck::render() noexcept
 {
+
+#pragma region prime
+		if (_primed) {
+			SDL_Rect primerect{ 10,71,31,32 };
+			_prime_tex->render(primerect);
+		}
+#pragma endregion
+
 #pragma region reload_bar
 		//reload bar
 		if (_is_reloading) {
@@ -260,12 +277,24 @@ void Deck::add_card_to_deck(Card* c)
 	_draw_pile.add_card(std::move(c));
 }
 
+void Deck::add_card_to_discard_pile(Card* c)
+{
+	assert(c != nullptr);
+	_discard_pile.add_card(std::move(c));
+}
+
 void Deck::remove_card(std::list<Card*>::iterator)
 {
 }
 
+void Deck::set_primed(bool prime)
+{
+	_primed = prime;
+}
+
 void Deck::initComponent()
 {
+	_prime_tex = &sdlutils().images().at("prime");
 	_mana = Game::Instance()->get_mngr()->getComponent<ManaComponent>(_ent);
 	assert(_mana!=nullptr);
 	_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);

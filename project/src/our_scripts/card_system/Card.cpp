@@ -1,8 +1,8 @@
 #include "Card.hpp"
 #include "../components/Deck.hpp"
 
-Card::Card(std::string card_name, Resources r)
-	:_name(card_name), _my_costs(r)
+Card::Card(std::string card_name, Resources r,MillDestination(md))
+	:_name(card_name), _my_costs(r),_my_mill_destination(md)
 {
 }
 

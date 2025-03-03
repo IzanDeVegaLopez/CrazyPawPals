@@ -147,8 +147,27 @@ void EldritchBlast::on_play(Deck& d, const Vector2D* player_position, const Vect
 
 Card* EldritchBlast::on_mill(Deck& d, const Vector2D* player_position)
 {
-	(void)d;
-	(void)player_position;
 	_shot_count++;
+	return Card::on_mill(d, player_position);
+}
+
+Primordia::Primordia():Card("card_primordia",Resources(3),DRAW_PILE)
+{
+}
+
+void Primordia::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
+{
+	if (d.get_primed()) {
+		d.set_primed(false);
+		//TODO: PRIMED EFFECT
+	}
+	else {
+		//TODO: BASE EFFECT
+	}
+}
+
+Card* Primordia::on_mill(Deck& d, const Vector2D* player_position)
+{
+	d.set_primed(true);
 	return this;
 }
