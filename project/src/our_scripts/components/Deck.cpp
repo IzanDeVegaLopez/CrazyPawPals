@@ -90,7 +90,7 @@ void Deck::reload() noexcept
 		//TODO -> block player action
 		_is_reloading = true;
 		_time_till_reload_finishes = reload_time;
-
+		event_system::event_manager::Instance()->fire_event(event_system::shuffle, event_system::event_receiver::Msg());
 		//Puts all cards on discard
 		if (_hand != nullptr) {
 			_discard_pile.add_card(std::move(_hand));
