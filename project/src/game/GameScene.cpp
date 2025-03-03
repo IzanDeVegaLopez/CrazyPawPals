@@ -158,7 +158,7 @@ void GameScene::spawnMichiMafioso(Vector2D posVec)
 {
 	auto* weapon = new WeaponMichiMafioso();
 	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
-	auto &&rect = *new rect_component{0, 0, 1.0f, 1.0f};
+	auto &&rect = *new rect_component{0, 0, 1.0f, 1.125f};
 	auto manager = Game::Instance()->get_mngr();
 
 	auto e = create_entity(

@@ -199,7 +199,7 @@ void Deck::render() noexcept
 			//take renderer
 			*sdlutils().renderer(),
 			//destination rect --> where will the card be placed (position, size in world units)
-			{ {(float)std::lerp(-6,-8, std::min(percentual_time_to_card_in_position,1.0f)),-4},{(percentual_time_to_card_in_position < 0.5f) ? (float)std::lerp(2,0,std::min(percentual_time_to_card_in_position*2,1.0f)) : (float)std::lerp(0,2,std::min((percentual_time_to_card_in_position-0.5f)*2,1.0f)),2}},
+			{ {(float)std::lerp(-6,-8, std::min(percentual_time_to_card_in_position,1.0f)),-3.5f},{(percentual_time_to_card_in_position < 0.5f) ? (float)std::lerp(2,0,std::min(percentual_time_to_card_in_position*2,1.0f)) : (float)std::lerp(0,2,std::min((percentual_time_to_card_in_position-0.5f)*2,1.0f)),2.5f}},
 			//src subrect --> if our image is only 1 take this parameters
 			//if we have a map of 5x6 cards and we wanted to render card (3,2) being first card(0,0), and last (4,5)
 			//values would be --> { {3/5, 2/6}, {1/5,1/6} }
@@ -235,7 +235,7 @@ void Deck::render() noexcept
 				//take renderer
 				*sdlutils().renderer(),
 				//destination rect --> where will the card be placed (position, size in world units)
-				{ {-6,std::lerp(-3.0f,-2.5f,percentual_time_to_card_in_position)},{2,2*scale} },
+				{ {-6,std::lerp(-3.0f,-2.5f,percentual_time_to_card_in_position)},{2,2.5f*scale} },
 				//src subrect --> if our image is only 1 take this parameters
 				//if we have a map of 5x6 cards and we wanted to render card (3,2) being first card(0,0), and last (4,5)
 				//values would be --> { {3/5, 2/6}, {1/5,1/6} }
