@@ -78,7 +78,7 @@ void GameScene::initScene() {
 	}, *manager.getComponent<camera_component>(camera), *manager.getComponent<Transform>(player));
 
 	create_environment();
-	spawnWaveManager();
+	spawn_wave_manager();
 }
 
 void GameScene::enterScene()
@@ -127,11 +127,12 @@ ecs::entity_t GameScene::spawnPlayer()
 }
 
 
-void GameScene::spawnSarnoRata(Vector2D posVec)
+void GameScene::spawn_sarno_rata(Vector2D posVec)
 {
+	float randSize = float(sdlutils().rand().nextInt(6, 14)) / 10.0f;
 	auto* weapon = new WeaponSarnoRata();
 	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
-	auto &&rect = *new rect_component{0, 0, 1.5f, 2.0f};
+	auto &&rect = *new rect_component{0, 0, 1.5f * randSize, 2.0f * randSize};
 	auto manager = Game::Instance()->get_mngr();
 
 	//std::cout << posVec << std::endl;
@@ -154,7 +155,7 @@ void GameScene::spawnSarnoRata(Vector2D posVec)
 	state->setState(EnemyStateMachine::StateType::WALKING);
 }
 
-void GameScene::spawnMichiMafioso(Vector2D posVec)
+void GameScene::spawn_michi_mafioso(Vector2D posVec)
 {
 	auto* weapon = new WeaponMichiMafioso();
 	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
@@ -181,7 +182,7 @@ void GameScene::spawnMichiMafioso(Vector2D posVec)
 	state->setState(EnemyStateMachine::StateType::WALKING);
 }
 
-void GameScene::spawnPlimPlim(Vector2D posVec)
+void GameScene::spawn_plim_plim(Vector2D posVec)
 {
 	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 	auto &&rect = *new rect_component{0, 0, 1.0f, 1.0f};
@@ -208,10 +209,10 @@ void GameScene::spawnPlimPlim(Vector2D posVec)
 	state->setState(EnemyStateMachine::StateType::WALKING);
 }
 
-void GameScene::spawnBoom(Vector2D posVec)
+void GameScene::spawn_boom(Vector2D posVec)
 {
 	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
-	auto &&rect = *new rect_component{0, 0, 1.0f, 1.0f};
+	auto &&rect = *new rect_component{0, 0, 1.8f, 1.8f};
 	auto* weapon = new WeaponBoom();
 	auto manager = Game::Instance()->get_mngr();
 
@@ -236,7 +237,7 @@ void GameScene::spawnBoom(Vector2D posVec)
 }
 
 
-void GameScene::spawnWaveManager()
+void GameScene::spawn_wave_manager()
 {
 	create_entity(
 		ecs::hdlr::WAVE,
