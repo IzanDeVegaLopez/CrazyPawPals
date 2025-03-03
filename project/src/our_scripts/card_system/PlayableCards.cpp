@@ -14,8 +14,8 @@ void Fireball::on_play(Deck& d, const Vector2D* player_position,const Vector2D* 
 	bp.dir = ((*target_position) - (*player_position)).normalize();
 	bp.init_pos = *player_position;
 	bp.speed = 0.1f;
-	bp.height = 1.3;
-	bp.width = 1.3;
+	bp.height = 2.3;
+	bp.width = 2.3;
 	bp.life_time = 2;
 	bp.sprite_key = "p_fireball";
 	//std::cout << bp.init_pos << "--" << bp.dir << std::endl;
@@ -82,6 +82,28 @@ void Lighting::on_play(Deck& d, const Vector2D* player_position, const Vector2D*
 	bp.sprite_key = "card_lighting";
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }
+
+
+Kunai::Kunai()
+	:Card("card_kunai", Resources(2))
+{
+}
+
+void Kunai::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
+{
+	Card::on_play(d,player_position,target_position);
+	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
+	bp.dir = ((*target_position) - (*player_position)).normalize();
+	bp.init_pos = *player_position;
+	bp.speed = 0.5f;
+	bp.height = 2.3;
+	bp.width = 2.3;
+	bp.life_time = 2;
+	bp.sprite_key = "p_kunai";
+	//std::cout << bp.init_pos << "--" << bp.dir << std::endl;
+	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
+}
+
 
 CardSpray::CardSpray()
 	:Card("card_spray", Resources(0))

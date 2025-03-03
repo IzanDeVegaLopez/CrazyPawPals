@@ -13,6 +13,12 @@ public:
 	void on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position) override;
 };
 
+class Kunai : public Card {
+public:
+	Kunai();
+	void on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position) override;
+};
+
 
 class Minigun : public Card {
 public:

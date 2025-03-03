@@ -97,7 +97,7 @@ void GameScene::exitScene()
 
 ecs::entity_t GameScene::spawnPlayer()
 {
-	std::list<Card*> c = { new Fireball(), new CardSpray(), new Lighting(), new Minigun() };
+	std::list<Card*> c = { new Fireball(), new CardSpray(), new Lighting(), new Minigun(), new Kunai()};
 	auto &&manager = *Game::Instance()->get_mngr();
 	auto &&camera = manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam;
 	
