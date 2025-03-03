@@ -46,7 +46,7 @@ class EldritchBlast : public Card { // TODO: Reset on round end
 public: 
 	EldritchBlast();
 	void on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position) override;
-	Card* on_mill() override;
+	Card* on_mill(Deck& d, const Vector2D* player_position) override;
 private:
 	int _shot_count = 1;
 	const int _amplitude = 10;

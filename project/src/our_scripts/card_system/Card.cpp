@@ -15,8 +15,11 @@ Resources& Card::get_costs()
 }
 
 
-Card* Card::on_mill()
+Card* Card::on_mill(Deck& d, const Vector2D* player_position)
 {
+	(void)d;
+	(void)player_position;
+	(void)target_position;
 	// Mill effect
 	return this;
 }

@@ -145,8 +145,10 @@ void EldritchBlast::on_play(Deck& d, const Vector2D* player_position, const Vect
 	patrons::ShotgunPatron(bp, ecs::grp::BULLET, _amplitude * (_shot_count-1), _shot_count);
 }
 
-Card* EldritchBlast::on_mill()
+Card* EldritchBlast::on_mill(Deck& d, const Vector2D* player_position)
 {
+	(void)d;
+	(void)player_position;
 	_shot_count++;
 	return this;
 }
