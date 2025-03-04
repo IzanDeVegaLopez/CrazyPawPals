@@ -2,6 +2,7 @@
 #include "../../game/Game.h"
 #include "../../game/GameScene.h"
 #include "ShootPatrons.hpp"
+#define PI 3.14159265358979323846
 
 #pragma region fireball
 Fireball::Fireball() :Card("card_fireball", Resources(1))
@@ -138,7 +139,6 @@ void CardSpray::on_play(Deck& d, const Vector2D* player_position, const Vector2D
 }
 #pragma endregion
 
-
 #pragma region eldritchblast
 EldritchBlast::EldritchBlast() :Card("card_eldritch_blast", Resources(1))
 {
@@ -165,8 +165,6 @@ Card* EldritchBlast::on_mill(Deck& d, const Vector2D* player_position)
 	return Card::on_mill(d, player_position);
 }
 #pragma endregion
-
-
 
 #pragma region primordia
 Primordia::Primordia() :Card("card_primordia", Resources(1), DISCARD_PILE, DRAW_PILE)
@@ -228,7 +226,6 @@ void Primordia::update(uint32_t dt) //TODO: Projectile must return following pat
 #pragma region commune
 Commune::Commune() :Card("card_commune", Resources(3))
 {
-
 }
 
 void Commune::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
@@ -260,6 +257,58 @@ void Evoke::on_play(Deck& d, const Vector2D* player_position, const Vector2D* ta
 {
 	std::pair<bool, Card*> milled_card = d.mill();
 	if (milled_card.first) milled_card.second->on_play(d,player_position,target_position);
+}
+#pragma endregion
+
+#pragma region fulgur
+Fulgur::Fulgur() : Card("card_fulgur", Resources(3))
+{
+	_bullets_properties = GameStructs::BulletProperties();
+	_bullets_properties.speed = 0.0;
+	_bullets_properties.height = 2;
+	_bullets_properties.width = 2;
+	_bullets_properties.life_time = 0.1f;
+	_bullets_properties.dir = (Vector2D(0, 1));
+	_bullets_properties.sprite_key = "p_lighting";
+}
+void Fulgur::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
+{
+	Card::on_play(d, player_position, target_position);
+
+	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
+	bp.dir = Vector2D(0, 1);
+	bp.init_pos = *target_position;
+	bp.speed = 0;
+	bp.height = 4.2;
+	bp.width = 3.8;
+	bp.life_time = 0.5;
+	bp.sprite_key = "p_lighting";
+	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
+
+	// If Primed
+	if (d.get_primed()) {
+
+		d.set_primed(false);
+		_playing = true;
+		_time_since_played = 0;
+		_aim_vec = Vector2D(target_position->getX(), target_position->getY()),
+			_number_of_bullets_shot = 0;
+	}
+}
+void Fulgur::update(uint32_t dt)
+{
+	if (_playing) {
+		_time_since_played += dt;
+		if (_time_since_played >= _number_of_bullets_shot * (_shooting_duration / (_number_of_shots - 1))) {
+
+			_bullets_properties.init_pos = _aim_vec+(Vector2D(sin(_number_of_bullets_shot*2*PI/_number_of_shots),cos(_number_of_bullets_shot * 2 * PI / _number_of_shots))*2);
+			//std::cout <<_bullets_properties.init_pos << "--" << _bullets_properties.dir << std::endl;
+			static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(_bullets_properties, ecs::grp::BULLET);
+			++_number_of_bullets_shot;
+			if (_number_of_bullets_shot == _number_of_shots)
+				_playing = false;
+		}
+	}
 }
 #pragma endregion
 

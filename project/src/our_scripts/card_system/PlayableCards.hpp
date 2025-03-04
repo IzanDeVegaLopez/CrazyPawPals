@@ -76,4 +76,21 @@ class Evoke : public Card {
 public:
 	Evoke();
 	void on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position) override;
+
+};
+
+//Archetypes: Prime, High Costs
+class Fulgur : public Card {
+public:
+	Fulgur();
+	void on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position) override;
+	void update(uint32_t) override;
+private:
+	GameStructs::BulletProperties _bullets_properties;
+	Vector2D _aim_vec;
+	bool _playing;
+	int _time_since_played;
+	int _number_of_bullets_shot = 0;
+	int _number_of_shots = 8;
+	int _shooting_duration = 500;
 };
