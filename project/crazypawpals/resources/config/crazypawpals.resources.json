@@ -2,7 +2,8 @@
 
   "fonts" : [
     { "id" : "ARIAL16", "file" : "resources/fonts/ARIAL.ttf", "size": 16 },
-    { "id" : "ARIAL24", "file" : "resources/fonts/ARIAL.ttf", "size": 24 }
+    { "id": "ARIAL24", "file": "resources/fonts/ARIAL.ttf", "size": 24 },
+    { "id": "PROTEST_GUERRILLA100", "file": "resources/fonts/ProtestGuerrilla-Regular.ttf", "size": 100}
   ],
 
   "images": [
@@ -14,8 +15,6 @@
       "id": "piu",
       "file": "resources/images/characters/piu.png"
     },
-
-
     {
       "id": "p_revolver",
       "file": "resources/images/projectiles/revolver.png"
@@ -45,9 +44,6 @@
       "id": "p_eldritch_blast",
       "file": "resources/images/projectiles/p_card_eldritch_blast.png"
     },
-    
-
-
     {
       "id": "p_sarno_rata",
       "file": "resources/images/projectiles/SDL_logo.png"
@@ -64,8 +60,6 @@
       "id": "p_boom",
       "file": "resources/images/projectiles/SDL_logo.png"
     },
-
-
     {
       "id": "card_kunai",
       "file": "resources/images/cards/card_kunai.png"
@@ -106,8 +100,6 @@
       "id": "card_primordia",
       "file": "resources/images/cards/carta.png"
     },
-
-
     {
       "id": "boom",
       "file": "resources/images/enemies/boom.png"
@@ -124,53 +116,55 @@
       "id": "michi_mafioso",
       "file": "resources/images/enemies/michi_mafioso.png"
     },
-
-
     {
       "id": "heart",
       "file": "resources/images/ui/heart.png"
     },
-    { 
-      "id":   "manaorb",
+    {
+      "id": "manaorb",
       "file": "resources/images/ui/caffeinefull.png"
     },
-    { 
-      "id":   "manaorbempty",
+    {
+      "id": "manaorbempty",
       "file": "resources/images/ui/caffeinempty.png"
     },
     {
       "id": "prime",
       "file": "resources/images/ui/prime.png"
-
     },
-
-
     {
       "id": "floor",
       "file": "resources/images/enviroment/floor.png"
     },
-
-
     {
       "id": "revolver_button",
-      "file": "resources/images/cards/card.png"
+      "file": "resources/images/ui/revolver_b.png"
     },
     {
       "id": "rampage_button",
-      "file": "resources/images/cards/card.png"
+      "file": "resources/images/ui/rampage_b.png"
     },
-
     {
       "id": "pump_shotgun_button",
-      "file": "resources/images/cards/card.png"
+      "file": "resources/images/ui/pump_shotgun_b.png"
+    },
+    {
+      "id": "play_button",
+      "file": "resources/images/ui/play.png"
+    },
+    {
+      "id": "start",
+      "file": "resources/images/enviroment/start.png"
     }
+
   ],
   
   "messages" : [
     { "id" : "start", "text" : "Press space to start", "font" : "ARIAL24", "color" : "0x441155ff"},
     { "id" : "continue", "text" : "Press space to continue", "font" : "ARIAL24", "color" : "0x112233ff", "bg" : "0xffffffff" },
     { "id": "gameover", "text": "Game Over", "font": "ARIAL24","color": "0x0000ffff"},
-    { "id": "life", "text": "Health: ","font": "ARIAL24",  "color": "000000ff"}
+    { "id": "life", "text": "Health: ", "font": "ARIAL24", "color": "000000ff"},
+    { "id": "choose_weapon", "text": "Choose your weapon", "font": "PROTEST_GUERRILLA100", "color": "0xfcacacff"}
   ],
   
   "sounds" : [

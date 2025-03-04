@@ -18,7 +18,7 @@ public:
 	virtual void exitScene() = 0;
 
     void update(uint32_t delta_time);
-	void render();
+	virtual void render();
 
 	template <typename ... Cmps>
 	ecs::entity_t create_entity(ecs::grpId_t gid, ecs::sceneId_t sid,Cmps ... components) {
