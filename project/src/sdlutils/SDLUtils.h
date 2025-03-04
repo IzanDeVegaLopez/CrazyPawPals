@@ -96,14 +96,22 @@ public:
 	}
 
 	// the window's width
-	inline int width() {
+	inline int width() const {
 		return _width;
 	}
-
 	// the window's height
-	inline int height() {
+	inline int height() const {
 		return _height;
 	}
+
+	inline int &width() {
+		return _width;
+	}
+	// the window's height
+	inline int &height() {
+		return _height;
+	}
+
 
 	// toggle to full-screen/window mode
 	inline void toggleFullScreen() {

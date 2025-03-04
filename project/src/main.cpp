@@ -1,21 +1,28 @@
 // This file is part of the course TPV2@UCM - Samir Genaim
 
 #include <iostream>
-#include "sdlutils/sdlutils_demo.h"
 
-int main(int ac, char **av) {
+#include "game/Game.h"
+
+int main(int, char**) {
+
 	try {
-		sdlutils_basic_demo();
-	} catch (const std::string &e) { // catch exceptions thrown as strings
+		Game::Init();
+		Game::Instance()->start();
+		if (Game::HasInstance()) Game::Release();
+	}
+	catch (const std::string& e) { // catch exceptions thrown as strings
 		std::cerr << e << std::endl;
-	} catch (const char *e) { // catch exceptions thrown as char*
+	}
+	catch (const char* e) { // catch exceptions thrown as char*
 		std::cerr << e << std::endl;
-	} catch (const std::exception &e) { // catch exceptions thrown as a sub-type of std::exception
+	}
+	catch (const std::exception& e) { // catch exceptions thrown as a sub-type of std::exception
 		std::cerr << e.what();
-	} catch (...) {
+	}
+	catch (...) {
 		std::cerr << "Caught and exception of unknown type ...";
 	}
 
 	return 0;
 }
-

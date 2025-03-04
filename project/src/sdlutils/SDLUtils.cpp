@@ -72,8 +72,11 @@ void SDLUtils::initWindow() {
 	// Create window
 	_window = SDL_CreateWindow(_windowTitle.c_str(),
 	SDL_WINDOWPOS_UNDEFINED,
-	SDL_WINDOWPOS_UNDEFINED, _width, _height, SDL_WINDOW_SHOWN);
+	SDL_WINDOWPOS_UNDEFINED, _width, _height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	assert(_window != nullptr);
+
+	//MAKE FULLSCREEN
+	SDL_SetWindowFullscreen(_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
 #ifdef _DEBUG
 	std::cout << "Creating SDL renderer" << std::endl;

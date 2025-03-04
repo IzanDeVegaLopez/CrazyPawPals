@@ -83,7 +83,14 @@ public:
 		return i == 0 ? _x : _y;
 	}
 
+	inline bool operator==(const Vector2D& v) const {
+		return _x == v._x && _y == v._y;
+	}
 
+	inline bool operator!=(const Vector2D& v) const {
+		return !(_x == v._x && _y == v._y);
+		
+	}
 	// ** various operations
 
 	// length of the vector
@@ -93,7 +100,10 @@ public:
 
 	// vector in the same direction of length 1
 	inline Vector2D normalize() const {
-		return *this / magnitude();
+		if (this->_x == 0 && this->_y == 0)
+			return *this;
+		else
+			return *this / magnitude();
 	}
 
 	// counter clockwise rotation in a normal coordinate system, and
@@ -118,6 +128,12 @@ public:
 	// vector addition
 	inline Vector2D operator+(const Vector2D &v) const {
 		return Vector2D(_x + v._x, _y + v._y);
+	}
+
+	// vector +=
+	inline void operator+=(const Vector2D& v){
+		_x = _x + v._x;
+		_y = _y + v._y;
 	}
 
 	// multiplication by constant (scaling)
