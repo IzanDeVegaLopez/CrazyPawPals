@@ -61,11 +61,6 @@ public:
 	void on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position) override;
 	Card* on_mill(Deck& d, const Vector2D* player_position) override;
 	void update(uint32_t) override;
-private:
-	const Vector2D* _player_pos;
-	Vector2D _target_pos;
-	bool _playing;
-	int _time_since_played;
 };
 
 class Commune : public Card {

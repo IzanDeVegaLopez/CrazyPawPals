@@ -169,15 +169,13 @@ Card* EldritchBlast::on_mill(Deck& d, const Vector2D* player_position)
 
 
 #pragma region primordia
-Primordia::Primordia() :Card("card_primordia", Resources(1), DISCARD_PILE, DRAW_PILE), _playing(false), _time_since_played(0)
+Primordia::Primordia() :Card("card_primordia", Resources(1), DISCARD_PILE, DRAW_PILE)
 {
-	_playing = false;
 }
 
 void Primordia::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
 {
 	Card::on_play(d, player_position, target_position);
-
 	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
 	bp.dir = ((*target_position) - (*player_position)).normalize();
 	bp.init_pos = *player_position;
@@ -185,20 +183,17 @@ void Primordia::on_play(Deck& d, const Vector2D* player_position, const Vector2D
 	bp.height = 2.3;
 	bp.width = 2.3;
 	bp.life_time = 0.3;
-	bp.sprite_key = "p_fireball";
 	// Primed effect
-	//if (d.get_primed()) {
+	// TODO: Make distinct from standard effect
+	if (d.get_primed()) {
 
-	_playing = true;
-	_time_since_played = 0;
+		d.set_primed(false);
 
-	d.set_primed(false);
-
-	_player_pos = player_position;
-	_target_pos = bp.init_pos + (bp.dir * bp.speed * bp.life_time);
-
-
-	//}
+		bp.sprite_key = "p_eldritch_blast";
+	}
+	else {
+		bp.sprite_key = "p_fireball";
+	}
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }
 
@@ -210,7 +205,7 @@ Card* Primordia::on_mill(Deck& d, const Vector2D* player_position)
 
 void Primordia::update(uint32_t dt) //TODO: Projectile must return following path end rather than set time.
 {
-	if (_playing) {
+	/*if (_playing) {
 		_time_since_played += dt;
 		if (_time_since_played >= 300) {
 			std::cout << "back" << std::endl;
@@ -226,7 +221,7 @@ void Primordia::update(uint32_t dt) //TODO: Projectile must return following pat
 			static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 			_playing = false;
 		}
-	}
+	}*/
 }
 #pragma endregion
 
