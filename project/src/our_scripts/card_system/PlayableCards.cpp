@@ -151,7 +151,7 @@ Card* EldritchBlast::on_mill(Deck& d, const Vector2D* player_position)
 	return Card::on_mill(d, player_position);
 }
 
-Primordia::Primordia():Card("card_primordia",Resources(3),DRAW_PILE)
+Primordia::Primordia():Card("card_primordia",Resources(3),DISCARD_PILE,DRAW_PILE)
 {
 }
 
