@@ -3,13 +3,13 @@
 #include "../../game/GameScene.h"
 #include "ShootPatrons.hpp"
 
-
-Fireball::Fireball():Card("card_fireball", Resources(1))
+#pragma region fireball
+Fireball::Fireball() :Card("card_fireball", Resources(1))
 {
 	//Game::Instance()->get_event_mngr()->suscribe_to_event(event_system::mill,this, &event_system::event_receiver::event_callback0);
 }
-void Fireball::on_play(Deck& d, const Vector2D* player_position,const Vector2D* target_position) {
-	Card::on_play(d,player_position,target_position);
+void Fireball::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position) {
+	Card::on_play(d, player_position, target_position);
 	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
 	bp.dir = ((*target_position) - (*player_position)).normalize();
 	bp.init_pos = *player_position;
@@ -27,7 +27,10 @@ void Fireball::event_callback0(const Msg& m)
 	std::cout << "fireball is crying cause something was milled" << std::endl;
 }
 */
+#pragma endregion
 
+
+#pragma region minigun
 Minigun::Minigun()
 	: Card("card_minigun", Resources(2)), _pl_vec(), _playing(false), _time_since_played(0)
 {
@@ -40,7 +43,7 @@ Minigun::Minigun()
 }
 void Minigun::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
 {
-	Card::on_play(d,player_position,target_position);
+	Card::on_play(d, player_position, target_position);
 	_playing = true;
 	_time_since_played = 0;
 	_aim_vec = target_position;
@@ -52,7 +55,7 @@ void Minigun::update(uint32_t dt)
 {
 	if (_playing) {
 		_time_since_played += dt;
-		if (_time_since_played >= _number_of_bullets_shot * (_shooting_duration / (_number_of_shots-1))) {
+		if (_time_since_played >= _number_of_bullets_shot * (_shooting_duration / (_number_of_shots - 1))) {
 			_bullets_properties.dir = ((*_aim_vec) - (*_pl_vec)).normalize();
 			_bullets_properties.init_pos = *_pl_vec;
 			//std::cout <<_bullets_properties.init_pos << "--" << _bullets_properties.dir << std::endl;
@@ -63,7 +66,10 @@ void Minigun::update(uint32_t dt)
 		}
 	}
 }
+#pragma endregion
 
+
+#pragma region lightning
 Lighting::Lighting()
 	:Card("card_lighting", Resources(2))
 {
@@ -82,8 +88,11 @@ void Lighting::on_play(Deck& d, const Vector2D* player_position, const Vector2D*
 	bp.sprite_key = "card_lighting";
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }
+#pragma endregion
 
 
+
+#pragma region kunai
 Kunai::Kunai()
 	:Card("card_kunai", Resources(2))
 {
@@ -91,7 +100,7 @@ Kunai::Kunai()
 
 void Kunai::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
 {
-	Card::on_play(d,player_position,target_position);
+	Card::on_play(d, player_position, target_position);
 	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
 	bp.dir = ((*target_position) - (*player_position)).normalize();
 	bp.init_pos = *player_position;
@@ -103,8 +112,10 @@ void Kunai::on_play(Deck& d, const Vector2D* player_position, const Vector2D* ta
 	//std::cout << bp.init_pos << "--" << bp.dir << std::endl;
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }
+#pragma endregion
 
 
+#pragma region cardspray
 CardSpray::CardSpray()
 	:Card("card_spray", Resources(0))
 {
@@ -125,7 +136,10 @@ void CardSpray::on_play(Deck& d, const Vector2D* player_position, const Vector2D
 	patrons::ShotgunPatron(bp, ecs::grp::BULLET, 75, 3);
 	d.mill();
 }
+#pragma endregion
 
+
+#pragma region eldritchblast
 EldritchBlast::EldritchBlast() :Card("card_eldritch_blast", Resources(1))
 {
 }
@@ -142,7 +156,7 @@ void EldritchBlast::on_play(Deck& d, const Vector2D* player_position, const Vect
 	bp.life_time = 0.1;
 	bp.sprite_key = "p_eldritch_blast";
 
-	patrons::ShotgunPatron(bp, ecs::grp::BULLET, _amplitude * (_shot_count-1), _shot_count);
+	patrons::ShotgunPatron(bp, ecs::grp::BULLET, _amplitude * (_shot_count - 1), _shot_count);
 }
 
 Card* EldritchBlast::on_mill(Deck& d, const Vector2D* player_position)
@@ -150,20 +164,42 @@ Card* EldritchBlast::on_mill(Deck& d, const Vector2D* player_position)
 	_shot_count++;
 	return Card::on_mill(d, player_position);
 }
+#pragma endregion
 
-Primordia::Primordia():Card("card_primordia",Resources(3),DISCARD_PILE,DRAW_PILE)
+
+
+#pragma region primordia
+Primordia::Primordia() :Card("card_primordia", Resources(1), DISCARD_PILE, DRAW_PILE), _playing(false), _time_since_played(0)
 {
+	_playing = false;
 }
 
 void Primordia::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
 {
-	if (d.get_primed()) {
-		d.set_primed(false);
-		//TODO: PRIMED EFFECT
-	}
-	else {
-		//TODO: BASE EFFECT
-	}
+	Card::on_play(d, player_position, target_position);
+
+	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
+	bp.dir = ((*target_position) - (*player_position)).normalize();
+	bp.init_pos = *player_position;
+	bp.speed = 0.4f;
+	bp.height = 2.3;
+	bp.width = 2.3;
+	bp.life_time = 0.3;
+	bp.sprite_key = "p_fireball";
+	// Primed effect
+	//if (d.get_primed()) {
+
+	_playing = true;
+	_time_since_played = 0;
+
+	d.set_primed(false);
+
+	_player_pos = player_position;
+	_target_pos = bp.init_pos + (bp.dir * bp.speed * bp.life_time);
+
+
+	//}
+	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }
 
 Card* Primordia::on_mill(Deck& d, const Vector2D* player_position)
@@ -171,3 +207,55 @@ Card* Primordia::on_mill(Deck& d, const Vector2D* player_position)
 	d.set_primed(true);
 	return this;
 }
+
+void Primordia::update(uint32_t dt) //TODO: Projectile must return following path end rather than set time.
+{
+	if (_playing) {
+		_time_since_played += dt;
+		if (_time_since_played >= 300) {
+			std::cout << "back" << std::endl;
+			GameStructs::BulletProperties bp = GameStructs::BulletProperties();
+			bp.dir = ((*_player_pos) - (_target_pos)).normalize();
+			bp.init_pos = _target_pos;
+			bp.speed = 0.4f;
+			bp.height = 2.3;
+			bp.width = 2.3;
+			bp.life_time = 0.3;
+			bp.sprite_key = "p_eldritch_blast";
+			//std::cout << bp.init_pos << "--" << bp.dir << std::endl;
+			static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
+			_playing = false;
+		}
+	}
+}
+#pragma endregion
+
+#pragma region commune
+Commune::Commune() :Card("card_commune", Resources(3))
+{
+
+}
+
+void Commune::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
+{
+	int amp = 0;
+	std::pair<bool, Card*> milled_card = d.mill();
+	if (milled_card.first) amp = milled_card.second->get_costs().get_mana();
+
+
+	Card::on_play(d, player_position, target_position);
+	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
+	bp.dir = ((*target_position) - (*player_position)).normalize();
+	bp.init_pos = *target_position;
+	bp.speed = 0;
+	bp.height = 1.0 + (amp * 1.5);
+	bp.width = 1.0 + (amp * 1.5);
+	bp.life_time = 0.2;
+	bp.sprite_key = "card_commune";
+	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
+}
+#pragma endregion
+
+
+
+
