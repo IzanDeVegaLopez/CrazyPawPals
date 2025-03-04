@@ -54,6 +54,7 @@ private:
 	int _shot_count = 1;
 	const int _amplitude = 10;
 };
+
 // Archetypes: Mill, Prime
 class Primordia : public Card { 
 public: 
@@ -63,8 +64,16 @@ public:
 	void update(uint32_t) override;
 };
 
+// Archetypes: Mill, High Costs
 class Commune : public Card {
 public:
 	Commune();
+	void on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position) override;
+};
+
+// Archetypes: Mill, High Costs
+class Evoke : public Card {
+public:
+	Evoke();
 	void on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position) override;
 };

@@ -109,6 +109,10 @@
       "file": "resources/images/cards/card_commune.png"
     },
     {
+      "id": "card_evoke",
+      "file": "resources/images/cards/carta.png"
+    },
+    {
       "id": "boom",
       "file": "resources/images/enemies/boom.png"
     },

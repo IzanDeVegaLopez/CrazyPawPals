@@ -153,7 +153,7 @@ void EldritchBlast::on_play(Deck& d, const Vector2D* player_position, const Vect
 	bp.speed = 0.5f;
 	bp.height = 2.3;
 	bp.width = 2.3;
-	bp.life_time = 0.1;
+	bp.life_time = 0.13;
 	bp.sprite_key = "p_eldritch_blast";
 
 	patrons::ShotgunPatron(bp, ecs::grp::BULLET, _amplitude * (_shot_count - 1), _shot_count);
@@ -251,6 +251,16 @@ void Commune::on_play(Deck& d, const Vector2D* player_position, const Vector2D* 
 }
 #pragma endregion
 
+#pragma region evoke
+Evoke::Evoke() :Card("card_evoke", Resources(1))
+{
+}
 
+void Evoke::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
+{
+	std::pair<bool, Card*> milled_card = d.mill();
+	if (milled_card.first) milled_card.second->on_play(d,player_position,target_position);
+}
+#pragma endregion
 
 
