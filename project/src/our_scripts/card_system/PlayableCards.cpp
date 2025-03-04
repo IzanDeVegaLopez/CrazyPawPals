@@ -79,13 +79,13 @@ void Lighting::on_play(Deck& d, const Vector2D* player_position, const Vector2D*
 {
 	Card::on_play(d, player_position, target_position);
 	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
-	bp.dir = ((*target_position) - (*player_position)).normalize();
+	bp.dir = Vector2D(0,1);
 	bp.init_pos = *target_position;
 	bp.speed = 0;
-	bp.height = 1.4;
-	bp.width = 1.8;
+	bp.height = 4.2;
+	bp.width = 3.8;
 	bp.life_time = 0.1;
-	bp.sprite_key = "card_lighting";
+	bp.sprite_key = "p_lighting";
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }
 #pragma endregion
