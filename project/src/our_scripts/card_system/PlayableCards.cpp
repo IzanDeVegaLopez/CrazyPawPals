@@ -261,7 +261,7 @@ void Evoke::on_play(Deck& d, const Vector2D* player_position, const Vector2D* ta
 #pragma endregion
 
 #pragma region fulgur
-Fulgur::Fulgur() : Card("card_fulgur", Resources(3))
+Fulgur::Fulgur() : Card("card_fulgur", Resources(3)), _playing(false),_time_since_played(0)
 {
 	_bullets_properties = GameStructs::BulletProperties();
 	_bullets_properties.speed = 0.0;
