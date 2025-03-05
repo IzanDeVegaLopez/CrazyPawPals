@@ -50,7 +50,7 @@ public:
 	bool discard_card() noexcept;
 	//Puts the top card of draw pile on discard and fires its mill effect
 	//If there's no cards left on deck this does nothing
-	void mill() noexcept;
+	std::pair<bool,Card*> mill() noexcept;
 	//Puts all cards on discard pile and sets player unable to use any action outside moving
 	//Then puts all cards on drawPile and shuffles
 	void reload() noexcept;

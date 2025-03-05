@@ -75,9 +75,11 @@ bool Deck::discard_card() noexcept
 	}
 }
 
-void Deck::mill() noexcept
-{
+std::pair<bool, Card*> Deck::mill() noexcept
+{		
+	bool milled = false;
 	if (!_draw_pile.empty()) {
+		milled = true;
 		_last_milled_card = _draw_pile.pop_first()->on_mill(*this, &_tr->getPos());
 		switch (_last_milled_card->get_mill_destination()) {
 		case DISCARD_PILE:
@@ -90,6 +92,7 @@ void Deck::mill() noexcept
 		_last_milled_card_time = sdlutils().virtualTimer().currTime();
 		Game::Instance()->get_event_mngr()->fire_event(event_system::mill, event_system::event_receiver::Msg());
 	}
+	return std::make_pair(milled, _last_milled_card);
 }
 
 void Deck::reload() noexcept
