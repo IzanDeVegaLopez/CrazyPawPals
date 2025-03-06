@@ -2,6 +2,7 @@
 #include "ecs/Manager.h"
 #include <iostream>
 #include "game/Game.h"
+#include "../components/MovementController.h"
 #include "../components/Transform.h"
 #include "../../rendering/card_rendering.hpp"
 #include <algorithm>
@@ -301,6 +302,11 @@ void Deck::add_card_to_discard_pile(Card* c)
 
 void Deck::remove_card(std::list<Card*>::iterator)
 {
+}
+
+MovementController* Deck::get_movement_controller()
+{
+	return Game::Instance()->get_mngr()->getComponent<MovementController>(_ent); 
 }
 
 void Deck::set_primed(bool prime)

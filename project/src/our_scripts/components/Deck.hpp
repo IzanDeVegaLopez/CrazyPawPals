@@ -10,6 +10,7 @@
 
 #include "../../utils/EventsSystem.hpp"
 class Transform;
+class MovementController;
 class Deck: public ecs::Component {
 protected:
 	int reload_time = 1000;
@@ -68,6 +69,7 @@ public:
 
 	// Used for Primed cards to gain additional effects.
 	inline bool get_primed() { return _primed; }
+	MovementController* get_movement_controller();
 	void set_primed(bool);
 
 	void initComponent() override;

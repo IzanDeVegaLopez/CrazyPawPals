@@ -1,5 +1,6 @@
 #include "PlayableCards.hpp"
 #include "CardUpgrade.hpp"
+#include "../components/MovementController.h"
 #include "../../game/Game.h"
 #include "../../game/GameScene.h"
 #include "ShootPatrons.hpp"
@@ -318,11 +319,26 @@ QuickFeet::QuickFeet(): Card("card_quick_feet", Resources(2)), _playing(false), 
 }
 void QuickFeet::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
 {
+	_playing = true;
+	_time_since_played = 0;
+
+	_ctrl = d.get_movement_controller();
+	_ctrl->get_acceleration() += 10.0f;
+	_ctrl->get_max_speed() += 0.05f;
+
 	d.add_card_to_deck(new Ephemeral(new Kunai()));
 	d.add_card_to_deck(new Ephemeral(new Kunai()));
 }
-void QuickFeet::update(uint32_t)
+void QuickFeet::update(uint32_t dt)
 {
+	if (_playing) {
+		_time_since_played += dt;
+		if (_time_since_played >= _effect_duration) {
+			_ctrl->get_acceleration() -= 10.0f;
+			_ctrl->get_max_speed() -= 0.05f;
+			_playing = false;
+		}
+	}
 }
 #pragma endregion
 

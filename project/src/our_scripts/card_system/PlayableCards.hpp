@@ -1,4 +1,5 @@
 #include "Card.hpp"
+class MovementController;
 
 class Fireball : public Card /*, public event_system::event_receiver*/ {
 public:
@@ -103,4 +104,5 @@ private:
 	bool _playing;
 	int _time_since_played;
 	int _effect_duration = 1000;
+	MovementController* _ctrl;
 };
