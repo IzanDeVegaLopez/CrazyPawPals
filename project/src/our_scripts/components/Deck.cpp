@@ -8,17 +8,6 @@
 
 void Deck::_put_new_card_on_hand()
 {
-	if (_hand != nullptr) {
-		switch (_hand->get_play_destination()) {
-		case DISCARD_PILE:
-			_discard_pile.add_card(std::move(_hand));
-			break;
-		case DRAW_PILE:
-			_draw_pile.add_card(std::move(_hand));
-			break;
-		}
-		
-	}
 	if (!_draw_pile.empty()) {
 		_hand = _draw_pile.pop_first();
 		_last_card_draw_time = sdlutils().virtualTimer().currTime();
@@ -63,6 +52,14 @@ bool Deck::use_card(const Vector2D* target_pos) noexcept
 		//Se pudo usar la carta
 		_mana->change_mana(-_hand->get_costs().get_mana());
 		_hand->on_play(*this, &_tr->getPos(), target_pos);
+		switch (_hand->get_play_destination()) {
+		case DISCARD_PILE:
+			_discard_pile.add_card(std::move(_hand));
+			break;
+		case DRAW_PILE:
+			_draw_pile.add_card(std::move(_hand));
+			break;
+		}
 		_put_new_card_on_hand();
 		return true;
 	}
@@ -75,6 +72,14 @@ bool Deck::use_card(const Vector2D* target_pos) noexcept
 bool Deck::discard_card() noexcept
 {
 	if (_hand != nullptr) {
+		switch (_hand->get_discard_destination()) {
+		case DISCARD_PILE:
+			_discard_pile.add_card(std::move(_hand));
+			break;
+		case DRAW_PILE:
+			_draw_pile.add_card(std::move(_hand));
+			break;
+		}
 		_put_new_card_on_hand();
 		return true;
 	}

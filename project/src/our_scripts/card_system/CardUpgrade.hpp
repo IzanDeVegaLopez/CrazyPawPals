@@ -59,6 +59,7 @@ class Ephemeral : public BaseCardUpgrade {
 public:
 	Ephemeral(Card* c) : BaseCardUpgrade(c){
 		_play_destination = DESTROY;
+		_discard_destination = DESTROY;
 		_mill_destination = DESTROY;
 	}
 };

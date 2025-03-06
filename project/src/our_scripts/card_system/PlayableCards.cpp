@@ -1,4 +1,5 @@
 #include "PlayableCards.hpp"
+#include "CardUpgrade.hpp"
 #include "../../game/Game.h"
 #include "../../game/GameScene.h"
 #include "ShootPatrons.hpp"
@@ -95,7 +96,7 @@ void Lighting::on_play(Deck& d, const Vector2D* player_position, const Vector2D*
 
 #pragma region kunai
 Kunai::Kunai()
-	:Card("card_kunai", Resources(2))
+	:Card("card_kunai")
 {
 }
 
@@ -118,7 +119,7 @@ void Kunai::on_play(Deck& d, const Vector2D* player_position, const Vector2D* ta
 
 #pragma region cardspray
 CardSpray::CardSpray()
-	:Card("card_spray", Resources(0))
+	:Card("card_spray")
 {
 }
 
@@ -167,7 +168,7 @@ Card* EldritchBlast::on_mill(Deck& d, const Vector2D* player_position)
 #pragma endregion
 
 #pragma region primordia
-Primordia::Primordia() :Card("card_primordia", Resources(1), DISCARD_PILE, DRAW_PILE)
+Primordia::Primordia() :Card("card_primordia", Resources(1), DISCARD_PILE, DISCARD_PILE, DRAW_PILE)
 {
 }
 
@@ -309,6 +310,19 @@ void Fulgur::update(uint32_t dt)
 				_playing = false;
 		}
 	}
+}
+#pragma endregion
+#pragma region quickfeet
+QuickFeet::QuickFeet(): Card("card_quick_feet", Resources(2)), _playing(false), _time_since_played(0)
+{
+}
+void QuickFeet::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
+{
+	d.add_card_to_deck(new Ephemeral(new Kunai()));
+	d.add_card_to_deck(new Ephemeral(new Kunai()));
+}
+void QuickFeet::update(uint32_t)
+{
 }
 #pragma endregion
 
