@@ -6,13 +6,13 @@
 class BaseCardUpgrade : public Card {
 protected:
 	//reference to the card it upgrades
-	std::unique_ptr<Card> _card;
+	Card* _card;
 public:
-	BaseCardUpgrade(std::unique_ptr<Card>&& my_card, Resources res_mod = Resources(0, 0))
-		:Card(my_card->get_name(), 
+	BaseCardUpgrade(Card* my_card, const Resources res_mod = Resources(0, 0))
+		: _card(my_card), Card(my_card->get_name(), 
 			my_card->get_costs() + res_mod, 
 			my_card->get_play_destination(),
-			my_card->get_mill_destination()), _card(std::move(my_card)) {
+			my_card->get_mill_destination()) {
 		//Resources& res = get_costs();
 		//res = res + res_mod;
 		//my_card = this;
@@ -44,7 +44,8 @@ public:
 //Upgrades-----------------------------------------------------------
 class PlayItTwice : public BaseCardUpgrade {
 public:
-	PlayItTwice(std::unique_ptr<Card>&& c) :BaseCardUpgrade(c, Resources(1,0)) {}
+	//Necesita poner un timer antes de hacer otra vez el efecto de la carta pq si no parece que no pasa
+	PlayItTwice(Card* c) :BaseCardUpgrade(c, Resources(1,0)) {}
 	void on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position) override {
 		BaseCardUpgrade::on_play(d, player_position, target_position);
 		_card->on_play(d, player_position, target_position);
@@ -52,9 +53,12 @@ public:
 };
 class CheaperBy1 : public BaseCardUpgrade {
 public:
-	CheaperBy1(std::unique_ptr<Card>&& c) :BaseCardUpgrade(c, Resources(-1, 0)) {}
+	CheaperBy1(Card* c) :BaseCardUpgrade(c, Resources(-1, 0)) {}
 };
 class Ephemeral : public BaseCardUpgrade {
-	Ephemeral(std::unique_ptr<Card>&& c) : BaseCardUpgrade(c),_play_destination(DESTROY),_mill_destination(DESTROY) {
+public:
+	Ephemeral(Card* c) : BaseCardUpgrade(c){
+		_play_destination = DESTROY;
+		_mill_destination = DESTROY;
 	}
 };
