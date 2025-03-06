@@ -73,4 +73,6 @@ public:
 	void set_primed(bool);
 
 	void initComponent() override;
+
+	inline bool empty_hand() { return _hand == nullptr; }
 };

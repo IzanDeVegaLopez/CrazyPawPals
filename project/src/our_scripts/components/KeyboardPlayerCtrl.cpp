@@ -81,9 +81,9 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
         if (ihdlr.getMouseButtonState(InputHandler::LEFT)) {
             //send message to shootih().getMousePos();
             //_w->shoot(mousePos);
-            if (_dc->discard_card()) {
+            if (!_dc->empty_hand() && _w->shoot(_mouse_pos)) {
                 //position2_f32 mouse_pos = Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->mouse_world_position; 
-                _w->shoot(_mouse_pos);
+                _dc->discard_card();
             }       
         }
         //use card
