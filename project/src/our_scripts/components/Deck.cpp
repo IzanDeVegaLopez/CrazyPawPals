@@ -9,7 +9,15 @@
 void Deck::_put_new_card_on_hand()
 {
 	if (_hand != nullptr) {
-		_discard_pile.add_card(std::move(_hand));
+		switch (_hand->get_play_destination()) {
+		case DISCARD_PILE:
+			_discard_pile.add_card(std::move(_hand));
+			break;
+		case DRAW_PILE:
+			_draw_pile.add_card(std::move(_hand));
+			break;
+		}
+		
 	}
 	if (!_draw_pile.empty()) {
 		_hand = _draw_pile.pop_first();

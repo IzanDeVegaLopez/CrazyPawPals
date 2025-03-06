@@ -8,15 +8,17 @@ protected:
 	//reference to the card it upgrades
 	std::unique_ptr<Card> _card;
 public:
-	BaseCardUpgrade(std::unique_ptr<Card>&& my_card, Resources& res_mod = Resources(0,0))
-		:_card(std::move(my_card)) {
-		Resources& res = get_costs();
-		res = res + res_mod;
+	BaseCardUpgrade(std::unique_ptr<Card>&& my_card, Resources res_mod = Resources(0, 0))
+		:Card(my_card->get_name(), 
+			my_card->get_costs() + res_mod, 
+			my_card->get_play_destination(),
+			my_card->get_mill_destination()), _card(std::move(my_card)) {
+		//Resources& res = get_costs();
+		//res = res + res_mod;
 		//my_card = this;
 	}
 
-	void 
-	(Deck& d, Vector2D* player_position, Vector2D* target_position) override{
+	void on_play (Deck& d, const Vector2D* player_position, const Vector2D* target_position) override {
 		_card->on_play(d,player_position, target_position);
 		//call CardUpgrade::on_play and then 
 		//add to the function whatever you need
@@ -33,7 +35,7 @@ public:
 		return _card->get_written_info();
 	}
 
-	virtual std::string get_name() override {
+	virtual std::string& get_name() override {
 		return _card->get_name();
 	}
 };
@@ -43,12 +45,16 @@ public:
 class PlayItTwice : public BaseCardUpgrade {
 public:
 	PlayItTwice(std::unique_ptr<Card>&& c) :BaseCardUpgrade(c, Resources(1,0)) {}
-	void on_play(Deck& d,Vector2D* player_position, Vector2D* target_position) override {
-		BaseCardUpgrade::on_play(player_position, target_position);
-		_card->on_play(player_position, target_position);
+	void on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position) override {
+		BaseCardUpgrade::on_play(d, player_position, target_position);
+		_card->on_play(d, player_position, target_position);
 	}
 };
 class CheaperBy1 : public BaseCardUpgrade {
 public:
 	CheaperBy1(std::unique_ptr<Card>&& c) :BaseCardUpgrade(c, Resources(-1, 0)) {}
+};
+class Ephemeral : public BaseCardUpgrade {
+	Ephemeral(std::unique_ptr<Card>&& c) : BaseCardUpgrade(c),_play_destination(DESTROY),_mill_destination(DESTROY) {
+	}
 };

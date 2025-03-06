@@ -41,6 +41,7 @@
 
 #include "../our_scripts/components/render_ordering.hpp"
 #include "../our_scripts/card_system/PlayableCards.hpp"
+#include "../our_scripts/card_system/CardUpgrade.hpp"
 
 #include <iostream>
 #include <string>
@@ -97,7 +98,7 @@ void GameScene::exitScene()
 
 ecs::entity_t GameScene::spawnPlayer()
 {
-	std::list<Card*> c = { new Fireball(), new CardSpray(), new Lighting(), new Minigun(), new Kunai(), new EldritchBlast()};
+	std::list<Card*> c = { new Fireball(), new Ephemeral(new Fireball())};
 	auto &&manager = *Game::Instance()->get_mngr();
 	auto &&camera = manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam;
 	
