@@ -4,14 +4,13 @@
 #include "our_scripts/card_system/ShootPatrons.hpp"
 
 
-Rampage::Rampage() : Weapon(5, 0.55f, 0.5f, 0.1f, "p_rampage", 1.0f, 1.0f) { }
+Rampage::Rampage() : Weapon(5, 550.0f, 0.5f, 0.1f, "p_rampage", 1.0f, 1.0f) { }
 
 Rampage::~Rampage() {}
 
 void 
 Rampage::callback(Vector2D shootPos, Vector2D shootDir) {
 	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
-
 	bp.dir = shootDir;
 	bp.init_pos = shootPos;
 	bp.speed = _speed;
@@ -20,6 +19,7 @@ Rampage::callback(Vector2D shootPos, Vector2D shootDir) {
 	bp.width = _attack_width * 0.6f;
 	bp.height = _attack_height * 0.6f;
 	bp.sprite_key = _tex;
+	bp.weapon_type = GameStructs::RAMPAGE;
 
 	patrons::ShotgunPatron(bp, ecs::grp::BULLET, 120, 5);
 

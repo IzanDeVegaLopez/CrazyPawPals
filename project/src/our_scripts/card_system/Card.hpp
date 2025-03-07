@@ -36,6 +36,7 @@ protected:
 	std::string _name;
 	Resources _my_costs;
 	Destination _play_destination;
+	Destination _discard_destination;
 	Destination _mill_destination;
 
 	// OPTIONAL ATTRIBUTES
@@ -47,7 +48,7 @@ protected:
 	// int _boost_threshold = 0; //Represents the value at which _boost enhances the card. 
 public:
 	//Card();
-	Card(std::string = "default", Resources = Resources(0,0), Destination play = DISCARD_PILE, Destination mill = DISCARD_PILE);
+	Card(std::string = "default", Resources = Resources(0,0), Destination play = DISCARD_PILE, Destination discard = DISCARD_PILE, Destination mill = DISCARD_PILE);
 	virtual ~Card(); 
 
 	virtual Resources& get_costs();
@@ -60,6 +61,7 @@ public:
 	//Debug purposes
 	virtual std::string get_written_info();
 	inline Destination get_play_destination() { return _play_destination; }
+	inline Destination get_discard_destination() { return _discard_destination; }
 	inline Destination get_mill_destination() { return _mill_destination; }
 	virtual void update(uint32_t dt) {
 		(void)dt;

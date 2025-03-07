@@ -2,15 +2,13 @@
 #include "ecs/Manager.h"
 #include <iostream>
 #include "game/Game.h"
+#include "../components/MovementController.h"
 #include "../components/Transform.h"
 #include "../../rendering/card_rendering.hpp"
 #include <algorithm>
 
 void Deck::_put_new_card_on_hand()
 {
-	if (_hand != nullptr) {
-		_discard_pile.add_card(std::move(_hand));
-	}
 	if (!_draw_pile.empty()) {
 		_hand = _draw_pile.pop_first();
 		_last_card_draw_time = sdlutils().virtualTimer().currTime();
@@ -55,6 +53,14 @@ bool Deck::use_card(const Vector2D* target_pos) noexcept
 		//Se pudo usar la carta
 		_mana->change_mana(-_hand->get_costs().get_mana());
 		_hand->on_play(*this, &_tr->getPos(), target_pos);
+		switch (_hand->get_play_destination()) {
+		case DISCARD_PILE:
+			_discard_pile.add_card(std::move(_hand));
+			break;
+		case DRAW_PILE:
+			_draw_pile.add_card(std::move(_hand));
+			break;
+		}
 		_put_new_card_on_hand();
 		return true;
 	}
@@ -67,6 +73,14 @@ bool Deck::use_card(const Vector2D* target_pos) noexcept
 bool Deck::discard_card() noexcept
 {
 	if (_hand != nullptr) {
+		switch (_hand->get_discard_destination()) {
+		case DISCARD_PILE:
+			_discard_pile.add_card(std::move(_hand));
+			break;
+		case DRAW_PILE:
+			_draw_pile.add_card(std::move(_hand));
+			break;
+		}
 		_put_new_card_on_hand();
 		return true;
 	}
@@ -75,9 +89,11 @@ bool Deck::discard_card() noexcept
 	}
 }
 
-void Deck::mill() noexcept
-{
+std::pair<bool, Card*> Deck::mill() noexcept
+{		
+	bool milled = false;
 	if (!_draw_pile.empty()) {
+		milled = true;
 		_last_milled_card = _draw_pile.pop_first()->on_mill(*this, &_tr->getPos());
 		switch (_last_milled_card->get_mill_destination()) {
 		case DISCARD_PILE:
@@ -90,6 +106,7 @@ void Deck::mill() noexcept
 		_last_milled_card_time = sdlutils().virtualTimer().currTime();
 		Game::Instance()->get_event_mngr()->fire_event(event_system::mill, event_system::event_receiver::Msg());
 	}
+	return std::make_pair(milled, _last_milled_card);
 }
 
 void Deck::reload() noexcept
@@ -285,6 +302,11 @@ void Deck::add_card_to_discard_pile(Card* c)
 
 void Deck::remove_card(std::list<Card*>::iterator)
 {
+}
+
+MovementController* Deck::get_movement_controller()
+{
+	return Game::Instance()->get_mngr()->getComponent<MovementController>(_ent); 
 }
 
 void Deck::set_primed(bool prime)

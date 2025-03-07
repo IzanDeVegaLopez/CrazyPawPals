@@ -10,6 +10,7 @@
 
 #include "../../utils/EventsSystem.hpp"
 class Transform;
+class MovementController;
 class Deck: public ecs::Component {
 protected:
 	int reload_time = 1000;
@@ -50,7 +51,7 @@ public:
 	bool discard_card() noexcept;
 	//Puts the top card of draw pile on discard and fires its mill effect
 	//If there's no cards left on deck this does nothing
-	void mill() noexcept;
+	std::pair<bool,Card*> mill() noexcept;
 	//Puts all cards on discard pile and sets player unable to use any action outside moving
 	//Then puts all cards on drawPile and shuffles
 	void reload() noexcept;
@@ -68,7 +69,10 @@ public:
 
 	// Used for Primed cards to gain additional effects.
 	inline bool get_primed() { return _primed; }
+	MovementController* get_movement_controller();
 	void set_primed(bool);
 
 	void initComponent() override;
+
+	inline bool empty_hand() { return _hand == nullptr; }
 };

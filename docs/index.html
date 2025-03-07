@@ -1,31 +1,68 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&family=Modak&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap');
-    </style>
-    <meta charset="utf-8">
-      <title>Crazy Paw Pals</title>
-    <link rel="icon" type="image/x-icon" href = "img/curtainreaper32.png">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="css/style.css">
-   
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&family=Modak&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap');
+    body {
+      /* background-image: url('img/floor_bg.png'); */
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+  </style>
+  <meta charset="utf-8">
+  <title>Crazy Paw Pals</title>
+  <link rel="icon" type="image/x-icon" href="img/curtainreaper32.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
   <h1>Crazy Paw Pals</h1>
   <h2>¡Únete a la gatalla!</h2>
   <p>Crazy Paw Pals es un juego de acción roguelike en el que deberás defender un café de gatos a lo largo de varias oleadas.</p>
-  <div class = "column3">
-    <h3>¡Zarpa a zarpa!</h3>
-    <p>El café será sitiado por numerosos enemigos. ¡Neutraliza su ofensiva y contraataca con tu propia!</p>
+
+  <!-- Ambos bloques -->
+  <div style="display: flex; justify-content: space-between;">
+
+    <!-- Bloque izq -->
+    <div style="width: 45%; display: flex; align-items: center;">
+      <!-- Título e Imagen -->
+      <div style="display: flex;">
+        <!-- Título -->
+        <div style="width: 50%;">
+          <h3>¡Zarpa a zarpa!</h3>
+        </div>
+  
+        <!-- Imagen -->
+        <div style="width: 50%; text-align: center;">
+          <img src="img/michi_mafioso.png" width=50 height=50>
+        </div>
+      </div>
+      <!-- Texto -->
+      <p>El café será sitiado por numerosos enemigos. ¡Neutraliza su ofensiva y contraataca con tu propia!</p>
+    </div>
+    
+    <div style="width: 45%; display: flex; align-items: center;">
+      <div style="width: 50%;">
+        <h3>¡Construye tu miauzo!</h3>
+        <p>Tus cartas serán tu línea de defensa ante las amenazas. ¡Experimenta con arquetipos variados para alcanzar la victoria!</p>
+      </div>
+      <div style="width: 50%; text-align: center;">
+        <img src="img/sarno_rata.png" width=50 height=50>
+      </div>
+    </div>
   </div>
-  <div class = "column3">
-    <h3>¡Construye tu miauzo!</h3>
-    <p>Tus cartas serán tu línea de defensa ante las amenazas. ¡Experimenta con arquetipos variados para alcanzar la victoria!</p>
+
+
+
+  <!-- <div style = "text-align:center;"> -->
+  <div class="centered">
+    <img src="img/bocetoPersonaje1.png" width=10% height=10%>
   </div>
-  <div class = "footer">Curtain Reaper, 2025.
-  <div class = "iconimage"><img src="img/curtainreaper32.png"></div>
+  
+  <div class="footer">Curtain Reaper, 2025.
+  <div class="iconimage"><img src="img/curtainreaper32.png"></div>
   </div>
 
 </body>
