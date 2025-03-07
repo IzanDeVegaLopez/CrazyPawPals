@@ -13,8 +13,6 @@
 #include "../our_scripts/components/LifetimeTimer.h"
 
 #include "../our_scripts/components/KeyboardPlayerCtrl.h"
-#include "../our_scripts/components/Revolver.h"
-#include "../our_scripts/components/Rampage.h"
 #include "../our_scripts/components/SimpleMove.h"
 #include "../our_scripts/components/Mana.h"
 #include "../our_scripts/components/Deck.hpp"
@@ -69,7 +67,7 @@ void GameScene::initScene() {
 		rendering::camera_creation_descriptor_options::camera_creation_descriptor_options_set_handler
 		| rendering::camera_creation_descriptor_options::camera_creation_descriptor_options_clamp;
 	ecs::entity_t camera = rendering::create_camera(ecs::scene::GAMESCENE, flags, nullptr);
-	ecs::entity_t player = spawnPlayer();
+	ecs::entity_t player = create_player();
 
 	auto &&manager = *Game::Instance()->get_mngr();
 	manager.addComponent<camera_follow>(camera, camera_follow_descriptor{
@@ -96,7 +94,7 @@ void GameScene::exitScene()
 {
 }
 
-ecs::entity_t GameScene::spawnPlayer()
+ecs::entity_t GameScene::create_player()
 {
 	std::list<Card*> c = { new Fireball(), new CardSpray(), new Lighting(), new Minigun(), new Kunai(), new EldritchBlast()};
 	auto &&manager = *Game::Instance()->get_mngr();
@@ -268,7 +266,7 @@ void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs
 			transform
 		),
 		new LifetimeTimer(bp.life_time),
-		new BulletData(bp.damage)
+		new BulletData(bp.damage, bp.weapon_type)
 	);
 }
 void GameScene::check_collision() {

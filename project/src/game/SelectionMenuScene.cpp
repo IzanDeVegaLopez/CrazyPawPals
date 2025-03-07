@@ -9,6 +9,7 @@
 #include "../our_scripts/components/Revolver.h"
 #include "../our_scripts/components/Rampage.h"
 #include "../our_scripts/components/PumpShotgun.h"
+#include "../our_scripts/components/RampCanon.h"
 
 #include <iostream>
 #include <string>
@@ -41,6 +42,11 @@ void SelectionMenuScene::initScene() {
     pump_shotgun_B.sprite_key = "pump_shotgun_button";
     pump_shotgun_B.pos.setX(sdlutils().width() + 300);
     create_weapon_button(GameStructs::PUMP_SHOTGUN, pump_shotgun_B);
+
+    GameStructs::ButtonProperties ramp_canon_B = buttonPropTemplate;
+    ramp_canon_B.sprite_key = "pump_shotgun_button";
+    ramp_canon_B.pos.setY(sdlutils().height() - 500);
+    create_weapon_button(GameStructs::RAMP_CANON, ramp_canon_B);
 }
 void SelectionMenuScene::enterScene()
 {
@@ -72,6 +78,9 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
             break;
         case GameStructs::PUMP_SHOTGUN:
             mngr->addComponent<PumpShotgun>(player);
+            break;
+        case GameStructs::RAMP_CANON:
+            mngr->addComponent<RampCanon>(player);
             break;
         default:
             break;

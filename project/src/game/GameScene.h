@@ -13,7 +13,7 @@ public:
 	void exitScene() override;
 
 	//Methods of entities to spawn
-	ecs::entity_t spawnPlayer();
+	ecs::entity_t create_player();
 
 	void spawn_sarno_rata(Vector2D posVec);
 	void spawn_michi_mafioso(Vector2D posVec);
