@@ -11,22 +11,22 @@ EnemyStateMachine::EnemyStateMachine(float dist) : _type(StateType::WALKING), _i
 
 void EnemyStateMachine::initComponent() {
 	
-	auto playerEntities = Game::Instance()->get_mngr()->getEntities(ecs::grp::PLAYER);
+	// auto playerEntities = Game::Instance()->get_mngr()->getEntities(ecs::grp::PLAYER);
 
-	_walking_state = new WalkingState(_dist,
-		Game::Instance()->get_mngr()->getComponent<Transform>(_ent),
-		Game::Instance()->get_mngr()->getComponent<Health>(_ent), this,
-		Game::Instance()->get_mngr()->getComponent<Transform>(playerEntities[0]));
-	_attacking_state = new AttackingState(_dist,
-		Game::Instance()->get_mngr()->getComponent<Transform>(_ent),
-		Game::Instance()->get_mngr()->getComponent<Health>(_ent),
-		Game::Instance()->get_mngr()->getComponent<Weapon>(_ent), this,
-		Game::Instance()->get_mngr()->getComponent<Transform>(playerEntities[0]));
+	// _walking_state = new WalkingState(_dist,
+	// 	Game::Instance()->get_mngr()->getComponent<Transform>(_ent),
+	// 	Game::Instance()->get_mngr()->getComponent<Health>(_ent), this,
+	// 	Game::Instance()->get_mngr()->getComponent<Transform>(playerEntities[0]));
+	// _attacking_state = new AttackingState(_dist,
+	// 	Game::Instance()->get_mngr()->getComponent<Transform>(_ent),
+	// 	Game::Instance()->get_mngr()->getComponent<Health>(_ent),
+	// 	Game::Instance()->get_mngr()->getComponent<Weapon>(_ent), this,
+	// 	Game::Instance()->get_mngr()->getComponent<Transform>(playerEntities[0]));
 
-	_attacking_state->setEntity(_ent);
-	_walking_state->setEntity(_ent);
+	// _attacking_state->setEntity(_ent);
+	// _walking_state->setEntity(_ent);
 
-	_state = _walking_state;
+	// _state = _walking_state;
 }
 
 void EnemyStateMachine::update(uint32_t delta_time) {
