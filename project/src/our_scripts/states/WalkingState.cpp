@@ -9,7 +9,7 @@ WalkingState::WalkingState(Transform* tr, Transform* playerTr, MovementControlle
     : _tr(tr), _playerTr(playerTr), _movementController(movementController) {}
 
 void WalkingState::enter() {
-    std::cout << "Entering WalkingState" << std::endl;
+    //std::cout << "Entering WalkingState" << std::endl;
     // Lógica de entrada
 }
 
@@ -25,6 +25,8 @@ void WalkingState::update(uint32_t delta_time) {
 }
 
 void WalkingState::exit() {
-   // std::cout << "Exiting WalkingState" << std::endl;
+   //std::cout << "Exiting WalkingState" << std::endl;
+
+   _movementController->set_input({0,0});
     
 }

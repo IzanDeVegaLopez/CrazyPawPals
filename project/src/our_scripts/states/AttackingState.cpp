@@ -12,6 +12,8 @@ AttackingState::AttackingState(Transform* tr, Transform* playerTr, Weapon* weapo
 }
 
 void AttackingState::enter() {
+    //std::cout << "Entering AttackingState" << std::endl;
+
 	/*_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
 	_health = Game::Instance()->get_mngr()->getComponent<Health>(_ent);
 	_weapon = Game::Instance()->get_mngr()->getComponent<Weapon>(_ent);
@@ -34,4 +36,6 @@ void AttackingState::update(uint32_t delta_time) {
 }
 
 void AttackingState::exit() {
+	//std::cout << "Exiting AttackingState" << std::endl;
+	
 }
