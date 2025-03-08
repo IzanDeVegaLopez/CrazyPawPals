@@ -342,4 +342,17 @@ void QuickFeet::update(uint32_t dt)
 }
 #pragma endregion
 
+#pragma region TestCards
+#pragma region prime
+Prime::Prime() : Card("card_placeholder", Resources(0))
+{
+}
+
+void Prime::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
+{
+	d.set_primed(true);
+}
+#pragma endregion
+#pragma endregion
+
 

@@ -70,7 +70,7 @@ project(CrazyPawPals)
         ${PROJECT_NAME}
         ${CrazyPawPals_SRC_DIRECTORY}/main.cpp
         ${CrazyPawPals_SOURCES}
-    )
+     "project/src/our_scripts/components/Lightbringer.h" "project/src/our_scripts/components/Lightbringer.cpp")
     
     target_include_directories(
         ${PROJECT_NAME}

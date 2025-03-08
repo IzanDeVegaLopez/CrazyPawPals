@@ -95,6 +95,7 @@ private:
 	int _number_of_shots = 8;
 	int _shooting_duration = 500;
 };
+
 class QuickFeet : public Card {
 public:
 	QuickFeet();
@@ -106,3 +107,14 @@ private:
 	int _effect_duration = 1000;
 	MovementController* _ctrl;
 };
+
+
+// The following cards exist for testing purposes and may not be playable in the finished product. These are subject to change.
+#pragma region TestCards
+class Prime : public Card {
+public:
+	Prime();
+	void on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position) override;
+};
+#pragma endregion
+

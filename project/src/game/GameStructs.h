@@ -7,6 +7,7 @@ namespace GameStructs {
 		RAMPAGE,
 		PUMP_SHOTGUN,
 		RAMP_CANON,
+		LIGHTBRINGER,
 		LAST_WEAPON,
 	};
 	struct BulletProperties {
