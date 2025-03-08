@@ -15,7 +15,7 @@ private:
 
 public:
 	__CMPID_DECL__(ecs::cmp::MOVEMENTCONTROLLER);
-	MovementController(float max_speed = 0.1f, float acceleration = 3.5f, float decceleration = 1.0f);
+	MovementController(float max_speed = 0.1f, float acceleration = 5.0f, float decceleration = 20.0f);
 	virtual ~MovementController();
 	void initComponent() override;
 	void update(uint32_t delta_time) override;
