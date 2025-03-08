@@ -7,11 +7,8 @@
 #include "../components/Weapon.h"
 
 
-AttackingState::AttackingState(float dist, Transform* tr,
-	Health* health, Weapon* weapon, EnemyStateMachine* stateMachine,
-	Transform* playerTr) :
-	_tr(tr), _health(health), _weapon(weapon),
-	_stateMachine(stateMachine), _playerTr(playerTr), _dist(dist){
+AttackingState::AttackingState(Transform* tr, Transform* playerTr, Weapon* weapon) :
+	_tr(tr), _playerTr(playerTr), _weapon(weapon){
 }
 
 void AttackingState::enter() {
@@ -30,19 +27,10 @@ void AttackingState::enter() {
 
 void AttackingState::update(uint32_t delta_time) {
 	(void)delta_time;
-	if (_tr == nullptr || _health == nullptr || _stateMachine == nullptr || _playerTr == nullptr ||_weapon==nullptr) return;
+	if (_tr == nullptr || _playerTr == nullptr ||_weapon==nullptr) return;
 	
 	Vector2D _target = _playerTr->getPos();
 	_weapon->shoot(_target);
-
-	if (std::abs(_tr - _playerTr) > _dist) {
-		_stateMachine->setState(EnemyStateMachine::WALKING);
-	}
-
-
-	if (_health->getHealth() <= 0) {
-		//_stateMachine->setState(EnemyStateMachine::INACTIVE);
-	}
 }
 
 void AttackingState::exit() {
