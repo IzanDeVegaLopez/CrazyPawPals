@@ -65,6 +65,14 @@
       "file": "resources/images/projectiles/SDL_logo.png"
     },
     {
+      "id": "p_lightbringer",
+      "file": "resources/images/projectiles/SDL_logo.png"
+    },
+    {
+      "id": "p_lightbringer_amp",
+      "file": "resources/images/projectiles/SDL_logo.png"
+    },
+    {
       "id": "card_kunai",
       "file": "resources/images/cards/card_kunai.png"
     },
@@ -114,6 +122,10 @@
     },
     {
       "id": "card_fulgur",
+      "file": "resources/images/cards/carta.png"
+    },
+    {
+      "id": "card_placeholder",
       "file": "resources/images/cards/carta.png"
     },
     {
@@ -167,6 +179,10 @@
     {
       "id": "pump_shotgun_button",
       "file": "resources/images/ui/pump_shotgun_b.png"
+    },
+    {
+      "id": "lightbringer_button",
+      "file": "resources/images/projectiles/SDL_logo.png"
     },
     {
       "id": "play_button",

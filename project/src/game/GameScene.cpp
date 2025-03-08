@@ -122,7 +122,7 @@ ecs::entity_t GameScene::create_player()
 		new render_ordering{1},
 		new Health(100),
 		new ManaComponent(),
-		new MovementController(),
+		new MovementController(0.1f,5.0f,20.0f),
 		new Deck(c),
 		new StopOnBorder(camera, 1.5f, 2.0f)
 		);
