@@ -8,9 +8,10 @@ protected:
 	Transform* _tr;
 	Transform* _playerTr;
 	MovementController* _movementController;
-
+	
+	bool _to_destination;
 public:
-	WalkingState(Transform* tr, Transform* playerTr, MovementController* movementController);
+	WalkingState(Transform* tr, Transform* playerTr, MovementController* movementController, bool toDestination = false);
 	~WalkingState() {};
 	void enter() override;
 	void update(uint32_t delta_time) override;

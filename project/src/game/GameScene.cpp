@@ -188,7 +188,7 @@ void GameScene::spawn_sarno_rata(Vector2D posVec)
 
 	// De: Attacking a: Walking, Condición: Jugador lejos
     state->add_transition("Attacking", "Walking", [&conditionManager, _p_tr, &tr]() {
-        return conditionManager.isPlayerFar(_p_tr, &tr, 10.0f); 
+        return !conditionManager.isPlayerNear(_p_tr, &tr, 5.0f); 
     });
 
     // Estado inicial
@@ -233,21 +233,46 @@ void GameScene::spawn_michi_mafioso(Vector2D posVec)
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc); 
+	auto backingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc, true); 
 	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon); 
 	//poner los estado a la state
 	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
     state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));
+    state->add_state("Backing", std::static_pointer_cast<State>(backingState));
+
+	float dist_to_attack=10.0f;
+	float dist_to_fallback=6.0f;
 
     // Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador cerca
-    state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr]() {
-        return conditionManager.isPlayerNear(_p_tr, &tr, 5.0f);  
+    state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr, dist_to_attack]() {
+        return conditionManager.isPlayerNear(_p_tr, &tr, dist_to_attack);  
     });
 
 	// De: Attacking a: Walking, Condición: Jugador lejos
-    state->add_transition("Attacking", "Walking", [&conditionManager, _p_tr, &tr]() {
-        return conditionManager.isPlayerFar(_p_tr, &tr, 10.0f); 
+    state->add_transition("Attacking", "Walking", [&conditionManager, _p_tr, &tr, dist_to_attack]() {
+        return !conditionManager.isPlayerNear(_p_tr, &tr, dist_to_attack); 
     });
+
+	// De: Walking a: Backing, Condición: Jugador cerca
+	state->add_transition("Walking", "Backing", [&conditionManager, _p_tr, &tr, dist_to_fallback]() {
+		return conditionManager.isPlayerNear(_p_tr, &tr, dist_to_fallback);  
+	});
+	
+	// De: Backing a: Walking, Condición: Jugador lejos y Jugador lejos de ataque
+	state->add_transition("Backing", "Walking", [&conditionManager, _p_tr, &tr, dist_to_fallback, dist_to_attack]() {
+		return !conditionManager.isPlayerNear(_p_tr, &tr, dist_to_fallback) && !conditionManager.isPlayerNear(_p_tr, &tr, dist_to_attack);  
+	});
+
+	// De: Attacking a: Backing, Condición: Jugador cerca
+	state->add_transition("Attacking", "Backing", [&conditionManager, _p_tr, &tr, dist_to_fallback]() {
+		return conditionManager.isPlayerNear(_p_tr, &tr, dist_to_fallback);  
+	});
+
+	// De: Backing a: Attacking, Condición: Jugador lejos
+	state->add_transition("Backing", "Attacking", [&conditionManager, _p_tr, &tr, dist_to_fallback]() {
+		return !conditionManager.isPlayerNear(_p_tr, &tr, dist_to_fallback);  
+	});
 
     // Estado inicial
     state->set_initial_state("Walking");
@@ -306,7 +331,7 @@ void GameScene::spawn_plim_plim(Vector2D posVec)
 
 	// De: Attacking a: Walking, Condición: Jugador lejos
     state->add_transition("Attacking", "Walking", [&conditionManager, _p_tr, &tr]() {
-        return conditionManager.isPlayerFar(_p_tr, &tr, 10.0f); 
+        return !conditionManager.isPlayerNear(_p_tr, &tr, 10.0f); 
     });
 
     // Estado inicial
@@ -369,7 +394,7 @@ void GameScene::spawn_boom(Vector2D posVec)
 
 	// De: Attacking a: Walking, Condición: Jugador lejos
     state->add_transition("Attacking", "Walking", [&conditionManager, _p_tr, &tr]() {
-        return conditionManager.isPlayerFar(_p_tr, &tr, 10.0f); 
+        return !conditionManager.isPlayerNear(_p_tr, &tr, 10.0f); 
     });
 
     // Estado inicial

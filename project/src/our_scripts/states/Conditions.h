@@ -11,13 +11,6 @@ public:
 		if (!_player || !_enemy) return false;
         float distance = (_player->getPos() - _enemy->getPos()).magnitude();
         return distance < _dist;
-
-    }
-
-    bool isPlayerFar(Transform* _player, Transform* _enemy, float _dist) const {
-		if (!_player || !_enemy) return false;
-        float distance = (_player->getPos() - _enemy->getPos()).magnitude();
-        return distance > _dist;
     }
 
     bool is_enemy_dead(Health* _enemy) const {

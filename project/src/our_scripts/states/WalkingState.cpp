@@ -5,8 +5,8 @@
 #include "../components/Transform.h"
 #include "../components/MovementController.h"
 
-WalkingState::WalkingState(Transform* tr, Transform* playerTr, MovementController* movementController)
-    : _tr(tr), _playerTr(playerTr), _movementController(movementController) {}
+WalkingState::WalkingState(Transform* tr, Transform* playerTr, MovementController* movementController, bool toDestination)
+    : _tr(tr), _playerTr(playerTr), _movementController(movementController), _to_destination(toDestination) {}
 
 void WalkingState::enter() {
     //std::cout << "Entering WalkingState" << std::endl;
@@ -21,7 +21,7 @@ void WalkingState::update(uint32_t delta_time) {
     direction = direction.normalize();
 
     // Establecer la dirección en el MovementController
-    _movementController->set_input(direction);
+	_movementController->set_input(_to_destination ? (direction * -1.0f) : direction);
 }
 
 void WalkingState::exit() {
