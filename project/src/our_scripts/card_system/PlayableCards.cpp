@@ -4,6 +4,7 @@
 #include "../../game/Game.h"
 #include "../../game/GameScene.h"
 #include "ShootPatrons.hpp"
+#include "../components/Health.h"
 #define PI 3.14159265358979323846
 
 #pragma region fireball
@@ -117,6 +118,18 @@ void Kunai::on_play(Deck& d, const Vector2D* player_position, const Vector2D* ta
 }
 #pragma endregion
 
+#pragma region Recover
+Recover::Recover() :Card("card_recover", Resources(1)){
+}
+void 
+Recover::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position) {
+	auto&& manager = *Game::Instance()->get_mngr();
+	auto&& playerHealth = manager.getComponent<Health>(manager.getHandler(ecs::hdlr::PLAYER));
+	playerHealth->takeDamage(2);
+
+	d.move_discard_to_draw();
+}
+#pragma endregion
 
 #pragma region cardspray
 CardSpray::CardSpray()

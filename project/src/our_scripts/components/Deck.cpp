@@ -314,6 +314,11 @@ void Deck::set_primed(bool prime)
 	_primed = prime;
 }
 
+void Deck::move_discard_to_draw() {
+	_discard_pile.move_from_this_to(_draw_pile);
+	_draw_pile.shuffle();
+}
+
 void Deck::initComponent()
 {
 	_prime_tex = &sdlutils().images().at("prime");

@@ -132,7 +132,10 @@
       "id": "card_quick_feet",
       "file": "resources/images/cards/carta.png"
     },
-
+    {
+      "id": "card_recover",
+      "file": "resources/images/cards/carta.png"
+    },
     {
       "id": "boom",
       "file": "resources/images/enemies/boom.png"

@@ -49,8 +49,7 @@
 #include <string>
 
 
-GameScene::GameScene() : Scene(ecs::scene::GAMESCENE), _player(nullptr)
-{}
+GameScene::GameScene() : Scene(ecs::scene::GAMESCENE){}
 
 static ecs::entity_t create_environment() {
 	auto&& manager = *Game::Instance()->get_mngr();
@@ -101,7 +100,7 @@ void GameScene::exitScene()
 
 ecs::entity_t GameScene::create_player()
 {
-	std::list<Card*> c = { new Fireball(), new CardSpray(), new Lighting(), new Minigun(), new Kunai(), new EldritchBlast()};
+	std::list<Card*> c = {new Recover, new Fireball(), new CardSpray(), new Lighting(), new Minigun(), new Kunai(), new EldritchBlast()};
 	auto &&manager = *Game::Instance()->get_mngr();
 	auto &&camera = manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam;
 	
