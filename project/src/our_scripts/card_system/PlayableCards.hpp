@@ -21,6 +21,12 @@ public:
 	void on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position) override;
 };
 
+class Recover : public Card {
+public:
+	Recover();
+	void on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position) override;
+};
+
 // Archetypes: Multi-hit
 class Minigun : public Card {
 public:

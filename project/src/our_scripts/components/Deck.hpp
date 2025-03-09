@@ -74,5 +74,7 @@ public:
 
 	void initComponent() override;
 
+	void move_discard_to_draw();
+
 	inline bool empty_hand() { return _hand == nullptr; }
 };
