@@ -1,10 +1,14 @@
 #pragma once
 
 #include "Scene.h"
+class Weapon;
+class Transform;
 class GameScene : public Scene
 {
 	[[maybe_unused]]
 	ecs::entity_t _player;
+
+	ecs::entity_t create_enemy(Transform* tr, const std::string& spriteKey, Weapon* weapon, float health, float width, float height);
 public:
 	GameScene();
 	~GameScene() {};
