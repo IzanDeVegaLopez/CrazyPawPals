@@ -4,6 +4,7 @@
 #include "../rendering/rect.hpp"
 #include "../rendering/units.hpp"
 #include "rigidbody.hpp"
+#include <array>
 
 size_t rect_f32_intersects_segment(
     const rect_f32 rect,
@@ -27,15 +28,29 @@ struct collision_contact {
 };
 
 bool collision_body_check(
-    const collision_body &moving,
-    const collision_body &stationary,
+    const collision_body &body0,
+    const collision_body &body1,
     const seconds_f32 delta_time,
     collision_contact &out_contact
 );
 
-void collision_body_resolve(
-    collision_body &moving,
-    collision_body &stationary,
+
+struct collision_penetration_response {
+    vec2_f32 separation;
+};
+
+struct collision_restitution_response {
+    vec2_f32 restitution_displacement;
+};
+
+struct collision_response_pairs {
+    std::array<collision_penetration_response, 2> penetration_responses;
+    std::array<collision_restitution_response, 2> velocity_responses;
+};
+
+collision_response_pairs collision_body_resolve(
+    const collision_body &body0,
+    const collision_body &body1,
     const seconds_f32 delta_time,
     const collision_contact &contact
 );
