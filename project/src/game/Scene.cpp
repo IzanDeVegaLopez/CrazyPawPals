@@ -68,7 +68,7 @@ ecs::entity_t
 Scene::create_button(const GameStructs::ButtonProperties& bp) {
     auto b = new Button();
     ecs::entity_t e = create_entity(
-                        ecs::grp::UI,
+                        bp.ID,
                         _scene_ID,
                         new Transform(bp.pos, { 0.0f,0.0f }, bp.rot, 0.0f, bp.width, bp.height),
                         new Image(&sdlutils().images().at(bp.sprite_key)),
