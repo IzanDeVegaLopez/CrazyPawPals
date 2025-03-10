@@ -149,7 +149,7 @@ GameScene::create_enemy(Transform* tr, const std::string& spriteKey, Weapon* wea
 			sdlutils().images().at(spriteKey),
 			*tr
 		),
-		new Health(2),
+		new Health(health),
 		weapon
 	);
 
