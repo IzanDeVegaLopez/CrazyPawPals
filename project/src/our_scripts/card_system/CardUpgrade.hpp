@@ -21,8 +21,8 @@ public:
 		//call CardUpgrade::on_play and then 
 		//add to the function whatever you need
 	}
-	Card* on_mill() override {
-		_card->on_mill();
+	Card* on_mill(Deck& d, const Vector2D* player_position) override {
+		_card->on_mill(d,player_position);
 		return this;
 		//add to the function whatever you need and then call CardUpgrade::on_mill
 	}

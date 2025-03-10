@@ -21,7 +21,7 @@ private:
 	SDL_Scancode _down;
 	SDL_Scancode _reload;
 	SDL_Scancode _collect;
-
+	Vector2D _mouse_pos;
 	MovementController* _mc;
 	Weapon* _w;
 	Deck* _dc;

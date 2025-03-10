@@ -14,8 +14,8 @@ void Fireball::on_play(Deck& d, const Vector2D* player_position,const Vector2D* 
 	bp.dir = ((*target_position) - (*player_position)).normalize();
 	bp.init_pos = *player_position;
 	bp.speed = 0.1f;
-	bp.height = 1.3;
-	bp.width = 1.3;
+	bp.height = 2.3;
+	bp.width = 2.3;
 	bp.life_time = 2;
 	bp.sprite_key = "p_fireball";
 	//std::cout << bp.init_pos << "--" << bp.dir << std::endl;
@@ -73,15 +73,37 @@ void Lighting::on_play(Deck& d, const Vector2D* player_position, const Vector2D*
 {
 	Card::on_play(d, player_position, target_position);
 	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
-	bp.dir = ((*target_position) - (*player_position)).normalize();
+	bp.dir = Vector2D(0,1);
 	bp.init_pos = *target_position;
 	bp.speed = 0;
-	bp.height = 1.4;
-	bp.width = 1.8;
+	bp.height = 4.2;
+	bp.width = 3.8;
 	bp.life_time = 0.1;
-	bp.sprite_key = "card_lighting";
+	bp.sprite_key = "p_lighting";
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }
+
+
+Kunai::Kunai()
+	:Card("card_kunai", Resources(2))
+{
+}
+
+void Kunai::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
+{
+	Card::on_play(d,player_position,target_position);
+	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
+	bp.dir = ((*target_position) - (*player_position)).normalize();
+	bp.init_pos = *player_position;
+	bp.speed = 0.5f;
+	bp.height = 2.3;
+	bp.width = 2.3;
+	bp.life_time = 2;
+	bp.sprite_key = "p_kunai";
+	//std::cout << bp.init_pos << "--" << bp.dir << std::endl;
+	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
+}
+
 
 CardSpray::CardSpray()
 	:Card("card_spray", Resources(0))
@@ -94,7 +116,7 @@ void CardSpray::on_play(Deck& d, const Vector2D* player_position, const Vector2D
 	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
 	bp.dir = ((*target_position) - (*player_position)).normalize();
 	bp.init_pos = *player_position;
-	bp.speed = 0.05;
+	bp.speed = 0.05f;
 	bp.height = 0.7;
 	bp.width = 0.7;
 	bp.life_time = 3;
@@ -102,4 +124,50 @@ void CardSpray::on_play(Deck& d, const Vector2D* player_position, const Vector2D
 
 	patrons::ShotgunPatron(bp, ecs::grp::BULLET, 75, 3);
 	d.mill();
+}
+
+EldritchBlast::EldritchBlast() :Card("card_eldritch_blast", Resources(1))
+{
+}
+
+void EldritchBlast::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
+{
+	Card::on_play(d, player_position, target_position);
+	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
+	bp.dir = ((*target_position) - (*player_position)).normalize();
+	bp.init_pos = *player_position;
+	bp.speed = 0.5f;
+	bp.height = 2.3;
+	bp.width = 2.3;
+	bp.life_time = 0.1;
+	bp.sprite_key = "p_eldritch_blast";
+
+	patrons::ShotgunPatron(bp, ecs::grp::BULLET, _amplitude * (_shot_count-1), _shot_count);
+}
+
+Card* EldritchBlast::on_mill(Deck& d, const Vector2D* player_position)
+{
+	_shot_count++;
+	return Card::on_mill(d, player_position);
+}
+
+Primordia::Primordia():Card("card_primordia",Resources(3),DISCARD_PILE,DRAW_PILE)
+{
+}
+
+void Primordia::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
+{
+	if (d.get_primed()) {
+		d.set_primed(false);
+		//TODO: PRIMED EFFECT
+	}
+	else {
+		//TODO: BASE EFFECT
+	}
+}
+
+Card* Primordia::on_mill(Deck& d, const Vector2D* player_position)
+{
+	d.set_primed(true);
+	return this;
 }

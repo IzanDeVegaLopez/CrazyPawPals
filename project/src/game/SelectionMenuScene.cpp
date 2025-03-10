@@ -23,7 +23,9 @@ SelectionMenuScene::~SelectionMenuScene()
 }
 
 void SelectionMenuScene::initScene() {
-    GameStructs::ButtonProperties buttonPropTemplate = { {sdlutils().width() / 6.0f, sdlutils().height() / 2.0f},
+    _choose_weapon_text = &sdlutils().msgs().at("choose_weapon");
+
+    GameStructs::ButtonProperties buttonPropTemplate = { {sdlutils().width() / 6.0f, sdlutils().height() / 2.0f + 100},
         200.0f, 200.0f, 0.0f, ""
     };
     GameStructs::ButtonProperties revolverB = buttonPropTemplate;
@@ -32,12 +34,12 @@ void SelectionMenuScene::initScene() {
 
     GameStructs::ButtonProperties rampageB = buttonPropTemplate;
     rampageB.sprite_key = "rampage_button";
-    rampageB.pos.setX(sdlutils().width() / 3.0f);
+    rampageB.pos.setX(sdlutils().width()-250);
     create_weapon_button(GameStructs::RAMPAGE, rampageB);
 
     GameStructs::ButtonProperties pump_shotgun_B = buttonPropTemplate;
     pump_shotgun_B.sprite_key = "pump_shotgun_button";
-    pump_shotgun_B.pos.setX(sdlutils().width() / 1.5f);
+    pump_shotgun_B.pos.setX(sdlutils().width() + 300);
     create_weapon_button(GameStructs::PUMP_SHOTGUN, pump_shotgun_B);
 }
 void SelectionMenuScene::enterScene()
@@ -81,4 +83,9 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
     buttonComp->connectHover([buttonComp]() {
         (void)buttonComp;
     });
+}
+void SelectionMenuScene::render() {
+
+    _choose_weapon_text->render(350, 100);
+    Scene::render();
 }

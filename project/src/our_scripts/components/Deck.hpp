@@ -25,6 +25,7 @@ protected:
 	Card* _last_milled_card = nullptr;
 	ManaComponent* _mana;
 	Transform* _tr;
+	Texture* _prime_tex;
 	const camera_component* _camera;
 	bool _is_reloading = false;
 	int _time_till_reload_finishes;
@@ -32,6 +33,8 @@ protected:
 	void _finish_realoading();
 	bool _can_finish_reloading();
 	bool _can_play_hand_card();
+	// Used for Primed cards to gain additional effects.
+	bool _primed = false;
 public:
 	__CMPID_DECL__(ecs::cmp::DECK)
 	//Creates a starter with a list of cards
@@ -56,11 +59,16 @@ public:
 	friend std::ostream& operator << (std::ostream& os, const Deck& deck);
 
 	void add_card_to_deck(Card*);
+	void add_card_to_discard_pile(Card*);
 	//removeCard, must only be used during menu time
 	//Whenever this happens the iterator passed to this function must
 	//belong to _draw_pile (during rewards menu all cards are exclusively in
 	//the draw pile)
 	void remove_card(std::list<Card*>::iterator);
+
+	// Used for Primed cards to gain additional effects.
+	inline bool get_primed() { return _primed; }
+	void set_primed(bool);
 
 	void initComponent() override;
 };

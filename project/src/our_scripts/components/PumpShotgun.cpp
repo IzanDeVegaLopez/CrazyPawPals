@@ -23,8 +23,8 @@ PumpShotgun::callback(Vector2D shootPos, Vector2D shootDir) {
 	bp.speed = _speed;
 	bp.damage = _damage;
 	bp.life_time = 0.2f;//_lifeTime;
-	bp.width = _attack_width;
-	bp.height = _attack_height;
+	bp.width = _attack_width * 0.6f;
+	bp.height = _attack_height * 0.6f;
 	bp.sprite_key = _tex;
 
 	float totalAngle = 60.0f;

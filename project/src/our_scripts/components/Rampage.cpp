@@ -17,8 +17,8 @@ Rampage::callback(Vector2D shootPos, Vector2D shootDir) {
 	bp.speed = _speed;
 	bp.damage = _damage;
 	bp.life_time = _distance;
-	bp.width = _attack_width;
-	bp.height = _attack_height;
+	bp.width = _attack_width * 0.6f;
+	bp.height = _attack_height * 0.6f;
 	bp.sprite_key = _tex;
 
 	patrons::ShotgunPatron(bp, ecs::grp::BULLET, 120, 5);

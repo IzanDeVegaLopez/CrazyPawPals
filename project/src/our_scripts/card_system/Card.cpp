@@ -1,8 +1,8 @@
 #include "Card.hpp"
 #include "../components/Deck.hpp"
 
-Card::Card(std::string card_name, Resources r)
-	:_name(card_name), _my_costs(r)
+Card::Card(std::string card_name, Resources r,Destination pd, Destination md)
+	:_name(card_name), _my_costs(r),_play_destination(pd), _mill_destination(md)
 {
 }
 
@@ -15,8 +15,10 @@ Resources& Card::get_costs()
 }
 
 
-Card* Card::on_mill()
+Card* Card::on_mill(Deck& d, const Vector2D* player_position)
 {
+	(void)d;
+	(void)player_position;
 	// Mill effect
 	return this;
 }

@@ -85,10 +85,14 @@ bool Game::init() {
 	_scenes[GAMESCENE] = new GameScene();
 	_scenes[GAMESCENE]->initScene();
 
+	_scenes[MAINMENU] = new MainMenuScene();
+	_scenes[MAINMENU]->initScene();
+
 	_scenes[SELECTIONMENU] = new SelectionMenuScene();
 	_scenes[SELECTIONMENU]->initScene();
 
-	_current_scene_index = SELECTIONMENU;
+
+	_current_scene_index = MAINMENU;
 	return true;
 }
 

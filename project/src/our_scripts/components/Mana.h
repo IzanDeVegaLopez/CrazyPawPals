@@ -26,12 +26,12 @@ public:
 
 		//bg
 		SDL_SetRenderDrawColor(sdlutils().renderer(), 222, 81, 100, 255);
-		SDL_Rect progress1{ 10,42,200,16 };
+		SDL_Rect progress1{ 10,45,200,16 };
 		SDL_RenderFillRect(sdlutils().renderer(), &progress1);
 
 		//progress
 		SDL_SetRenderDrawColor(sdlutils().renderer(), 81, 100, 222, 255);
-		SDL_Rect progress2{ 10,42,(_mana_count % 1000) / 5,16 };
+		SDL_Rect progress2{ 10,45,(_mana_count % 1000) / 5,16 };
 		SDL_RenderFillRect(sdlutils().renderer(), &progress2);
 
 		// full mana orbs

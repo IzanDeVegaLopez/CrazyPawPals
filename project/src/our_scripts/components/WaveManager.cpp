@@ -75,40 +75,41 @@ WaveManager::spawnWave() {
             //DEBUG
             // Medio de la pantalla + angulo * distancia
             Vector2D posVec = Vector2D(Game::Instance()->get_world_half_size().first + cos(rAng) * (_min_distance + _op_dist), Game::Instance()->get_world_half_size().second + sin(rAng) * (_min_distance + _op_dist));
-
+            
             // FIXME: define enum values
             switch (_waves[_currentWave].second[_enemiesSpawned])
             {
-            case 0:
-                break;
-		    case 1:
-                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnSarnoRata(posVec);
-			    break;
-            case 2:
-                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnMichiMafioso(posVec);
-			    break;
-		    case 3:
-                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnPlimPlim(posVec);
-                break;
-            case 4:
-                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawnBoom(posVec);
-			    break;
-            default: {
-                assert(false && "unreachable");
-                exit(EXIT_FAILURE);
-                break;
-			    //std::cout << "Enemigo no existe" << std::endl;
+                case 0:
+                    break;
+		        case 1:
+                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_sarno_rata(posVec);
+			        break;
+                case 2:
+                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_michi_mafioso(posVec);
+			        break;
+		        case 3:
+                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_plim_plim(posVec);
+                    break;
+                case 4:
+                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_boom(posVec);
+                    std::cout << "Boom" << std::endl;
+			        break;
+                default: {
+                    assert(false && "unreachable");
+                    exit(EXIT_FAILURE);
+                    break;
+			        //std::cout << "Enemigo no existe" << std::endl;
+                }
             }
-            }
-                // DEBUG
-                //std::cout << "Enemy " << _waves[_currentWave].second[_enemiesSpawned] << std::endl;
-                //std::cout << "Spawned at(" << posVec.getX() << ", " << posVec.getY() << ") with " << rAng << "º + " << (_min_distance + _op_dist) << "m, rn = " << rn << std::endl;
-                //std::cout << "Time: " << _currentWaveTime << std::endl;
-                //std::cout << "Active time: " << sdlutils().virtualTimer().currRealTime() << std::endl;
-                //std::cout << "Time: " << _currentWaveTime << "/" << _nextSpawn << std::endl;
-                //std::cout << std::endl;
+            // DEBUG
+            //std::cout << "Enemy " << _waves[_currentWave].second[_enemiesSpawned] << std::endl;
+            //std::cout << "Spawned at(" << posVec.getX() << ", " << posVec.getY() << ") with " << rAng << "º + " << (_min_distance + _op_dist) << "m, rn = " << rn << std::endl;
+            //std::cout << "Time: " << _currentWaveTime << std::endl;
+            //std::cout << "Active time: " << sdlutils().virtualTimer().currRealTime() << std::endl;
+            //std::cout << "Time: " << _currentWaveTime << "/" << _nextSpawn << std::endl;
+            //std::cout << std::endl;
 
-                // Tiempo
+            // Tiempo
             _min_time = _totalSpawnTime / _numEnemies;
             _op_time = _min_time * rn;
             _nextSpawn = _currentWaveTime + (_min_time + _op_time);

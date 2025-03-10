@@ -78,7 +78,15 @@ bool Deck::discard_card() noexcept
 void Deck::mill() noexcept
 {
 	if (!_draw_pile.empty()) {
-		_last_milled_card = _discard_pile.add_card(_draw_pile.pop_first()->on_mill());
+		_last_milled_card = _draw_pile.pop_first()->on_mill(*this, &_tr->getPos());
+		switch (_last_milled_card->get_mill_destination()) {
+		case DISCARD_PILE:
+			_discard_pile.add_card(_last_milled_card);
+			break;
+		case DRAW_PILE:
+			_draw_pile.add_card(_last_milled_card);
+			break;
+		}
 		_last_milled_card_time = sdlutils().virtualTimer().currTime();
 		Game::Instance()->get_event_mngr()->fire_event(event_system::mill, event_system::event_receiver::Msg());
 	}
@@ -97,6 +105,7 @@ void Deck::reload() noexcept
 			_hand = nullptr;
 		}
 		_draw_pile.move_from_this_to(_discard_pile);
+		_primed = false;
 	}
 }
 void Deck::_finish_realoading()
@@ -142,6 +151,14 @@ void Deck::update(Uint32 deltaTime) noexcept
 
 void Deck::render() noexcept
 {
+
+#pragma region prime
+		if (_primed) {
+			SDL_Rect primerect{ 10,71,31,32 };
+			_prime_tex->render(primerect);
+		}
+#pragma endregion
+
 #pragma region reload_bar
 		//reload bar
 		if (_is_reloading) {
@@ -149,14 +166,14 @@ void Deck::render() noexcept
 
 			//bg
 			SDL_SetRenderDrawColor(sdlutils().renderer(), 100, 100, 100, 255);
-			rect_f32 baroutput1{ {_tr->getPos().getX(), _tr->getPos().getY() + 0.3f}, {(reload_time) / 1000.0f, 0.2 } };
+			rect_f32 baroutput1{ {_tr->getPos().getX()-0.35f, _tr->getPos().getY()+1.2f}, {(reload_time) / 1000.0f, 0.2 } };
 			SDL_Rect trueoutput1 = SDL_Rect_screen_rect_from_global(baroutput1, _camera->cam);
 			SDL_RenderFillRect(sdlutils().renderer(), &trueoutput1);
 
 
 			//progress
 			SDL_SetRenderDrawColor(sdlutils().renderer(), 220, 220, 220, 255);
-			rect_f32 baroutput2{ {_tr->getPos().getX(), _tr->getPos().getY() + 0.3f}, {(reload_time - _time_till_reload_finishes) / 1000.0f, 0.2 } };
+			rect_f32 baroutput2{ {_tr->getPos().getX() - 0.35f, _tr->getPos().getY() + 1.2f}, {(reload_time - _time_till_reload_finishes) / 1000.0f, 0.2 } };
 			SDL_Rect trueoutput2 = SDL_Rect_screen_rect_from_global(baroutput2, _camera->cam);
 			SDL_RenderFillRect(sdlutils().renderer(), &trueoutput2);
 		}
@@ -187,7 +204,7 @@ void Deck::render() noexcept
 			crd.mana_cost_subrect = { {0,0.2},{0,0} };
 		}
 		else {
-			crd.mana_cost_subrect = { {0,0.2},{0.4,0.4} };
+			crd.mana_cost_subrect = { {0.1,0.2},{0.3,0.3} };
 			crd.card_image_key = percentual_time_to_card_in_position < 0.5f ? "card_back" : _hand->get_name().data();
 			crd.mana_cost = _hand->get_costs().get_mana();
 		}
@@ -260,12 +277,24 @@ void Deck::add_card_to_deck(Card* c)
 	_draw_pile.add_card(std::move(c));
 }
 
+void Deck::add_card_to_discard_pile(Card* c)
+{
+	assert(c != nullptr);
+	_discard_pile.add_card(std::move(c));
+}
+
 void Deck::remove_card(std::list<Card*>::iterator)
 {
 }
 
+void Deck::set_primed(bool prime)
+{
+	_primed = prime;
+}
+
 void Deck::initComponent()
 {
+	_prime_tex = &sdlutils().images().at("prime");
 	_mana = Game::Instance()->get_mngr()->getComponent<ManaComponent>(_ent);
 	assert(_mana!=nullptr);
 	_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
