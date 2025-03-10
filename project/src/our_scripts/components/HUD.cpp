@@ -113,7 +113,8 @@ void HUD::render()
 	float percentual_time_to_card_in_position = (sdlutils().virtualTimer().currTime() - av._last_card_draw_time) / (float)av._card_draw_anim_duration;
 
 	crd.mana_cost_font_key = "ARIAL16";
-	crd.mana_cost_color = { 255,0,0,255 };
+	crd.mana_cost_color = { 81, 100, 222, 255 };
+	crd.health_cost_color = { 200, 80, 100, 255 };
 	if (_deck->hand() == nullptr) {
 		crd.card_image_key = "card_reloading";
 		crd.mana_cost_subrect = { {0,0.2},{0,0} };
@@ -122,6 +123,8 @@ void HUD::render()
 		crd.mana_cost_subrect = { {0.1,0.2},{0.3,0.3} };
 		crd.card_image_key = percentual_time_to_card_in_position < 0.5f ? "card_back" : _deck->hand()->get_name().data();
 		crd.mana_cost = _deck->hand()->get_costs().get_mana();
+		crd.health_cost = _deck->hand()->get_costs().get_health();
+		crd.health_cost_subrect = { {0.55,0.2},{0.3,0.3} };
 	}
 
 	//Function for rendering a card
@@ -155,8 +158,10 @@ void HUD::render()
 		float scale = std::lerp(1.0f, 0.0f, std::max(0.0f, std::min((percentual_time_to_card_in_position - 0.75f) / 0.25f, 1.0f)));
 
 		crd.mana_cost_font_key = "ARIAL16";
-		crd.mana_cost_color = { 255,0,0,255 };
 		crd.mana_cost_subrect = { {0.0f,0.4f - 0.2f * scale},{0.4f,0.4f * scale} };
+		crd.health_cost_subrect = { {0.0f,0.7f - 0.2f * scale},{0.4f,0.4f * scale} };
+		crd.mana_cost_color = { 81, 100, 222, 255 };
+		crd.health_cost_color = { 200, 80, 100, 255 };
 		crd.card_image_key = _deck->last_milled_card()->get_name().data();
 		crd.mana_cost = _deck->last_milled_card()->get_costs().get_mana();
 
