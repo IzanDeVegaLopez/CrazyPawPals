@@ -152,8 +152,9 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
     auto e = create_button(bp);
     auto buttonComp = mngr->getComponent<Button>(e);
     auto player = mngr->getHandler(ecs::hdlr::PLAYER);
-    std::list<Card*> cl = {};
-    buttonComp->connectClick([buttonComp, &mngr, player, dt, &cl, this]() {
+
+    buttonComp->connectClick([buttonComp, &mngr, player, dt, this]() {
+        std::list<Card*> cl = {};
         if (buttonComp->clicked()) return;
         buttonComp->set_clicked(true);
         
