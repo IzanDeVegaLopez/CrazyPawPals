@@ -40,6 +40,7 @@
 #include "../our_scripts/components/render_ordering.hpp"
 #include "../our_scripts/components/rect_component.hpp"
 #include "../our_scripts/components/StopOnBorder.h"
+#include "../our_scripts/components/HUD.h"
 
 #include "../our_scripts/components/render_ordering.hpp"
 #include "../our_scripts/card_system/PlayableCards.hpp"
@@ -95,6 +96,7 @@ void GameScene::enterScene()
 
 	auto d = mngr->getComponent<Deck>(player);
 	d->initComponent();
+	mngr->addComponent<HUD>(player);
 }
 
 void GameScene::exitScene()
@@ -150,7 +152,7 @@ GameScene::create_enemy(Transform* tr, const std::string& spriteKey, Weapon* wea
 			sdlutils().images().at(spriteKey),
 			*tr
 		),
-		new Health(2),
+		new Health(health),
 		weapon
 	);
 

@@ -22,6 +22,7 @@
 //Scenes for SceneManager
 #include "Scene.h"
 #include "MainMenuScene.h"
+#include "ControlsScene.h"
 #include "SelectionMenuScene.h"
 #include "GameScene.h"
 
@@ -88,9 +89,11 @@ bool Game::init() {
 	_scenes[MAINMENU] = new MainMenuScene();
 	_scenes[MAINMENU]->initScene();
 
+	_scenes[CONTROLSSCENE] = new ControlsScene();
+	_scenes[CONTROLSSCENE]->initScene();
+
 	_scenes[SELECTIONMENU] = new SelectionMenuScene();
 	_scenes[SELECTIONMENU]->initScene();
-
 
 	_current_scene_index = MAINMENU;
 	return true;
@@ -101,7 +104,7 @@ bool Game::init() {
 void Game::start() {
 
 	// a boolean to exit the loop
-	bool exit = false;
+	exit = false;
 
 	auto& ihdlr = ih();
 	//delta time

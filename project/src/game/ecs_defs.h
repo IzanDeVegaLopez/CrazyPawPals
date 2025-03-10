@@ -28,7 +28,8 @@
 	RECT, \
 	DYN_IMAGE, \
 	OFFSET_DYN_IMAGE,\
-	STATEMACHINE
+	STATEMACHINE, \
+	HUD
 
 
 
@@ -50,6 +51,7 @@
 #define _SCENE_LIST_ \
 	GAMESCENE,\
 	MAINMENUSCENE,\
+	CONTROLSSCENE,\
 	SELECTIONMENUSCENE
 
 // Handlers list - must have at least one element
