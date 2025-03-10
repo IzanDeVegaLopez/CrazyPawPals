@@ -153,6 +153,10 @@
       "file": "resources/images/enemies/michi_mafioso.png"
     },
     {
+      "id": "ratatouille",
+      "file": "resources/images/enemies/ratatouille.png"
+    },
+    {
       "id": "heart",
       "file": "resources/images/ui/heart.png"
     },
