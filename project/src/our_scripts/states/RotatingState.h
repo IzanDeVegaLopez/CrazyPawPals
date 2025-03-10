@@ -18,6 +18,6 @@ protected:
 	float _angle;
 	Vector2D _center;
 	float _radius;
-	const float _ANGULAR_SPEED = 1.5f;
+	const float _ANGULAR_SPEED = 2.0f;
 
 };

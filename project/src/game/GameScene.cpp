@@ -145,7 +145,6 @@ GameScene::create_enemy(Transform* tr, const std::string& spriteKey, Weapon* wea
 		ecs::scene::GAMESCENE,
 		tr,
 		&rect,
-		new MovementController(),
 		new dyn_image(
 			rect_f32{ {0,0},{1,1} },
 			rect,
@@ -167,7 +166,7 @@ void GameScene::spawn_sarno_rata(Vector2D posVec)
 	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
 	auto e = create_enemy(&tr, "sarno_rata", static_cast<Weapon*>(&weapon), 2, 1.125f, 1.5f);
-	auto&& mc = *manager.getComponent<MovementController>(e);
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.05));
 
 
 	ConditionManager conditionManager;
@@ -207,7 +206,7 @@ void GameScene::spawn_michi_mafioso(Vector2D posVec)
 	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
 	auto e = create_enemy(&tr, "michi_mafioso", static_cast<Weapon*>(&weapon), 2, 1.0f, 1.125f);
-	auto&& mc = *manager.getComponent<MovementController>(e);
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.01));
 
 	ConditionManager conditionManager;
 
@@ -272,7 +271,7 @@ void GameScene::spawn_plim_plim(Vector2D posVec)
 	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
 	auto e = create_enemy(&tr, "plim_plim", static_cast<Weapon*>(&weapon), 2, 1.0f, 1.0f);
-	auto&& mc = *manager.getComponent<MovementController>(e);
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.02));
 
 	ConditionManager conditionManager;
 
@@ -312,8 +311,7 @@ void GameScene::spawn_boom(Vector2D posVec)
 	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
 	auto e = create_enemy(&tr, "boom", static_cast<Weapon*>(&weapon), 2, 1.8f, 1.8f);
-	auto&& mc = *manager.getComponent<MovementController>(e);
-
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.08));
 
 	ConditionManager conditionManager;
 
@@ -348,7 +346,7 @@ void GameScene::spawn_ratatouille(Vector2D posVec)
 	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
 	auto e = create_enemy(&tr, "ratatouille", nullptr, 2, 1.0f, 1.0f);
-	auto&& mc = *manager.getComponent<MovementController>(e);
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.06));
 
 	ConditionManager conditionManager;
 
@@ -367,7 +365,7 @@ void GameScene::spawn_ratatouille(Vector2D posVec)
 	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
 	state->add_state("Rotating", std::static_pointer_cast<State>(rotatingState));
 
-	float dist_to_rotate = 3.0f;
+	float dist_to_rotate = 4.0f;
 
 	// Condiciones de cada estado
 	// De: Walking a: Rotating, Condición: Jugador cerca
@@ -377,7 +375,7 @@ void GameScene::spawn_ratatouille(Vector2D posVec)
 
 	// De: Rotating a: Walking, Condición: Jugador lejos
 	state->add_transition("Rotating", "Walking", [&conditionManager, _p_tr, &tr, dist_to_rotate]() {
-		return !conditionManager.isPlayerNear(_p_tr, &tr, dist_to_rotate*3);
+		return !conditionManager.isPlayerNear(_p_tr, &tr, dist_to_rotate * 2);
 		});
 
 
