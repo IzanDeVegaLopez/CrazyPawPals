@@ -30,8 +30,12 @@ struct collision_contact {
 bool collision_body_check(
     const collision_body &body0,
     const collision_body &body1,
-    const seconds_f32 delta_time,
     collision_contact &out_contact
+);
+
+bool collision_body_check_broad(
+    const collision_body &body0,
+    const collision_body &body1
 );
 
 
@@ -45,7 +49,7 @@ struct collision_restitution_response {
 
 struct collision_response_pairs {
     std::array<collision_penetration_response, 2> penetration_responses;
-    std::array<collision_restitution_response, 2> velocity_responses;
+    std::array<collision_restitution_response, 2> restitution_responses;
 };
 
 collision_response_pairs collision_body_resolve(

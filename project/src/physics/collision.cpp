@@ -2,6 +2,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <cmath>
+#include <utility>
 
 // source: adapted from https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm
 using outcode = uint_fast8_t;
@@ -199,7 +200,6 @@ static vec2_f32 rect_f32_normal_of_boundary_point(rect_f32 rect, const position2
 bool collision_body_check(
     const collision_body &body0,
     const collision_body &body1,
-    const seconds_f32 delta_time,
     collision_contact &out_contact
 ) {
     const size2_f32 moving_half_size = {
@@ -278,6 +278,24 @@ bool collision_body_check(
     return collision;
 }
 
+bool collision_body_check_broad(const collision_body &body0, const collision_body &body1) {
+    const size2_f32 max_size_doubled{
+        std::max(body0.body.body.size.x, body1.body.body.size.x) * 2.0f,
+        std::max(body0.body.body.size.y, body1.body.body.size.y) * 2.0f,
+    };
+    
+    const position2_f32 broad0{
+        body0.body.space.position.x / max_size_doubled.x,
+        body0.body.space.position.y / max_size_doubled.y,
+    };
+    const position2_f32 broad1{
+        body1.body.space.position.x / max_size_doubled.x,
+        body1.body.space.position.y / max_size_doubled.y,
+    };
+
+    return std::abs(broad0.x - broad1.x) < 1.0f && std::abs(broad0.y - broad1.y) < 1.0f;
+}
+
 static vec2_f32 vec2_f32_reflect(const vec2_f32 normal, const vec2_f32 v) {
     const float dot = v.x * normal.x + v.y * normal.y;
     return vec2_f32{
@@ -331,6 +349,6 @@ collision_response_pairs collision_body_resolve(
 
     return collision_response_pairs{
         .penetration_responses = {body0_penetration_response, body1_penetration_response},
-        .velocity_responses = {body0_restitution_response, body1_restitution_response},
+        .restitution_responses = {body0_restitution_response, body1_restitution_response},
     };
 }

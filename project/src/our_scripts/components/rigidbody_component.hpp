@@ -36,6 +36,7 @@ struct collisionable : public ecs::Component {
     Transform &transform;
     rigidbody_component &rigidbody;
     rect_component &rect;
+    bool trigger;
 };
 
 

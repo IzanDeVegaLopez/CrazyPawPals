@@ -36,6 +36,9 @@ public:
 	Vector2D& getPos() {
 		return _pos;
 	}
+	Vector2D get_previous_position() {
+		return previous_position;
+	}
 	Vector2D& getDir() {
 		return _dir;
 	}

@@ -2,6 +2,9 @@
 
 #include "Manager.h"
 #include "../our_scripts/components/render_ordering.hpp"
+#include "../our_scripts/components/rigidbody_component.hpp"
+#include "../physics/collision.hpp"
+#include <cstdlib>
 
 namespace ecs {
 
@@ -28,9 +31,153 @@ Manager::~Manager() {
 	}
 }
 
-void Manager::render(sceneId_t sId){
-	
-	auto& _entity = getEntitiesByScene(sId);
+static position2_f32 position2_f32_from_vec2(const Vector2D vec) {
+	return position2_f32{
+		.x = vec.getX(),
+		.y = vec.getY(),
+	};
+}
+static collision_body collision_body_from_collisionable(const collisionable c) {
+	return collision_body{
+		.body{
+			.body = c.rect.rect,
+			.space{
+				.position = position2_f32_from_vec2(c.transform.getPos()),
+				.previous_position = position2_f32_from_vec2(c.transform.get_previous_position()),
+			},
+			.mass_rcp = c.rigidbody.inverse_mass,
+		},
+		.restitution = c.rigidbody.restitution_coefficient,
+	};
+}
+
+enum collision_response_options {
+	collision_response_option_none = 0,
+	collision_response_option_body0_trigger = 1 << 0,
+	collision_response_option_body1_trigger = 1 << 1,
+};
+typedef uint8_t collision_response_flags;
+
+static void manager_handle_collision_bodies(
+	Manager &manager,
+	const ecs::entity_t entity0,
+	const ecs::entity_t entity1,
+	collision_body body0,
+	collision_body body1,
+	const collision_response_flags flags
+) {
+	if (!collision_body_check_broad(body0, body1)) {
+		return;
+	}
+
+	collision_contact contact;
+	if (collision_body_check(body0, body1, contact)) {
+		const collision_response_pairs responses = collision_body_resolve(body0, body1, seconds_f32{0.0f}, contact);
+		auto &response0_separation = responses.penetration_responses[0];
+		auto &response1_separation = responses.penetration_responses[1];
+
+		auto &response0_restitution = responses.restitution_responses[0];
+		auto &response1_restitution = responses.restitution_responses[1];
+
+		auto &space0 = body0.body.space;
+		auto &space1 = body1.body.space;
+
+		switch (flags & (collision_response_option_body0_trigger | collision_response_option_body1_trigger)) {
+		case collision_response_option_none: {
+			space0.position.x += response0_separation.separation.x;
+			space0.position.y += response0_separation.separation.y;
+
+			space1.position.x += response1_separation.separation.x;
+			space1.position.y += response1_separation.separation.y;
+
+			space0.previous_position.x -= response0_restitution.restitution_displacement.x;
+			space0.previous_position.y -= response1_restitution.restitution_displacement.y;
+			
+			space1.previous_position.x -= response1_restitution.restitution_displacement.x;
+			space1.previous_position.y -= response1_restitution.restitution_displacement.y;
+			break;
+		}
+		case collision_response_option_body0_trigger: {
+			// TODO: trigger body0
+			break;
+		}
+		case collision_response_option_body1_trigger: {
+			// TODO: trigger body1
+			break;
+		}
+		case collision_response_option_body0_trigger | collision_response_option_body1_trigger: {
+			// TODO: trigger body0 and body1
+			break;
+		}
+		default: {
+			assert(false && "unreachable");
+			std::exit(EXIT_FAILURE);
+		}
+		}
+	}
+}
+
+static void manager_update_collisions(Manager &manager, const std::vector<ecs::entity_t> &entities, const uint32_t delta_time_milliseconds) {
+	switch (entities.size()) {
+	case 0:
+		break;
+	case 1:
+		break;
+	default: {
+		const float delta_time_seconds = delta_time_milliseconds / 1000.0f;
+		for (size_t i = 0; i < entities.size(); i++) {
+			auto entity = entities[i];
+			auto entity_collisionable = manager.getComponent<collisionable>(entity);
+			if (entity_collisionable != nullptr) {
+				const collision_body body = collision_body_from_collisionable(*entity_collisionable);
+
+				for (size_t j = i + 1; j < entities.size(); j++) {
+					auto other_entity = entities[j];
+					auto other_collisionable = manager.getComponent<collisionable>(other_entity);
+					if (other_collisionable != nullptr) {
+						const collision_body other_body = collision_body_from_collisionable(*other_collisionable);
+
+						manager_handle_collision_bodies(manager, entity, other_entity, body, other_body, (
+							entity_collisionable->trigger | (other_collisionable->trigger << 1)
+						));
+
+						entity_collisionable->transform.getPos() = Vector2D{
+							body.body.space.position.x,
+							body.body.space.position.y,
+						};
+						other_collisionable->transform.getPos() = Vector2D{
+							other_body.body.space.position.x,
+							other_body.body.space.position.y,
+						};
+
+						entity_collisionable->transform.getDir() = Vector2D{
+							(body.body.space.position.x - body.body.space.previous_position.x) / delta_time_seconds,
+							(body.body.space.position.y - body.body.space.previous_position.y) / delta_time_seconds,
+						};
+						other_collisionable->transform.getDir() = Vector2D{
+							(other_body.body.space.position.x - other_body.body.space.previous_position.x) / delta_time_seconds,
+							(other_body.body.space.position.y - other_body.body.space.previous_position.y) / delta_time_seconds,
+						};
+					}
+				}
+			}
+		}
+	}
+	}
+}
+
+void Manager::update(sceneId_t sId, Uint32 dt) {
+	auto& entities = getEntitiesByScene(sId);
+	for (auto &ents : entities) {
+		update(ents, dt);
+	}
+	manager_update_collisions(*this, entities, dt);
+}
+
+void Manager::render(sceneId_t sId)
+{
+
+    auto& _entity = getEntitiesByScene(sId);
 	switch (_entity.size()) {
 	case 0:
 		break;
