@@ -40,6 +40,7 @@
 #include "../our_scripts/components/render_ordering.hpp"
 #include "../our_scripts/components/rect_component.hpp"
 #include "../our_scripts/components/StopOnBorder.h"
+#include "../our_scripts/components/HUD.h"
 
 #include "../our_scripts/components/render_ordering.hpp"
 #include "../our_scripts/card_system/PlayableCards.hpp"
@@ -123,7 +124,8 @@ ecs::entity_t GameScene::create_player()
 		new ManaComponent(),
 		new MovementController(0.1f,5.0f,20.0f),
 		new Deck(c),
-		new StopOnBorder(camera, 1.5f, 2.0f)
+		new StopOnBorder(camera, 1.5f, 2.0f),
+		new HUD()
 		);
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::PLAYER, player);
 	return player;

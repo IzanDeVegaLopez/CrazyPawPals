@@ -12,6 +12,7 @@ public:
 	void heal(int health);
 	void setMaxHeatlh(int h);
 	int getHealth() const;
+	int getMaxHealth() const;
 	void takeShield(int s);
 	void update(uint32_t delta_time) override;
 
