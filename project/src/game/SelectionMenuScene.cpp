@@ -113,7 +113,7 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
     auto e = create_button(bp);
     auto buttonComp = mngr->getComponent<Button>(e);
     auto player = mngr->getHandler(ecs::hdlr::PLAYER);
-    buttonComp->connectClick([buttonComp, &mngr, wt, player]() {
+    buttonComp->connectClick([buttonComp, &mngr, wt, player, this]() {
         if (buttonComp->clicked()) return;
         buttonComp->set_clicked(true);
         //std::cout << "left click-> button" << std::endl;
@@ -139,8 +139,8 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
         default:
             break;
         }
-
-        //Game::Instance()->change_Scene(Game::GAMESCENE);
+        _weapon_selected = true;
+        if (_deck_selected) Game::Instance()->change_Scene(Game::GAMESCENE);
         });
 
     buttonComp->connectHover([buttonComp]() {
@@ -164,21 +164,20 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
             cl.push_back(new Recover());
             break;
         case GameStructs::TWO: 
-            cl = { new Recover(), new Fireball(), new CardSpray(), new Lighting(), new Minigun(), new Kunai(), new EldritchBlast() };
+            cl = { new Fireball(), new CardSpray(), new Lighting(), new Minigun(), new Kunai(), new EldritchBlast() };
             break;
         case GameStructs::THREE:
-            cl = { new Recover(), new Fireball(), new CardSpray(), new Lighting(), new Minigun(), new Kunai(), new EldritchBlast() };
+            cl = { new CardSpray(), new Lighting(), new Minigun(), new Kunai(), new EldritchBlast() };
             break;
         case GameStructs::FOUR:
-            cl = { new Recover(), new Fireball(), new CardSpray(), new Lighting(), new Minigun(), new Kunai(), new EldritchBlast() };
+            cl = { new Lighting(), new Minigun(), new Kunai(), new EldritchBlast() };
             break;
         default:
             break;
         }
         mngr->addComponent<Deck>(player, cl);
-        //Game::Instance()->change_Scene(Game::GAMESCENE);
-
         _deck_selected = true;
+        if (_weapon_selected) Game::Instance()->change_Scene(Game::GAMESCENE);
         });
 
     buttonComp->connectHover([buttonComp]() {
