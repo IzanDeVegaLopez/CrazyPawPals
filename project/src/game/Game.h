@@ -37,6 +37,12 @@ public:
 	void change_Scene(State);
 	std::pair<int,int> get_world_half_size() const;
 
+	//bool para salir del bucle principal
+	bool exit;
+	inline void set_exit(bool b) { exit = b; }
+	bool get_exit() { return exit; }
+
+
 private:
 	int _current_scene_index = -1;
 	std::vector<Scene*> _scenes;

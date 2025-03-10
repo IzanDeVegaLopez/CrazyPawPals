@@ -101,7 +101,7 @@ bool Game::init() {
 void Game::start() {
 
 	// a boolean to exit the loop
-	bool exit = false;
+	exit = false;
 
 	auto& ihdlr = ih();
 	//delta time
