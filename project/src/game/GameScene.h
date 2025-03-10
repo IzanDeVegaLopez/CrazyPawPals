@@ -1,10 +1,13 @@
 #pragma once
 
 #include "Scene.h"
+class Weapon;
+class Transform;
 class GameScene : public Scene
 {
 	[[maybe_unused]]
-	ecs::entity_t _player;
+
+	ecs::entity_t create_enemy(Transform* tr, const std::string& spriteKey, Weapon* weapon, float health, float width, float height);
 public:
 	GameScene();
 	~GameScene() {};
@@ -13,7 +16,7 @@ public:
 	void exitScene() override;
 
 	//Methods of entities to spawn
-	ecs::entity_t spawnPlayer();
+	ecs::entity_t create_player();
 
 	void spawn_sarno_rata(Vector2D posVec);
 	void spawn_michi_mafioso(Vector2D posVec);

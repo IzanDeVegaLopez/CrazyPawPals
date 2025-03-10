@@ -29,7 +29,9 @@
 	DYN_IMAGE, \
 	OFFSET_DYN_IMAGE, \
 	RIGIDBODY, \
-	COLLISIONABLE
+	COLLISIONABLE, \
+	STATEMACHINE
+
 
 
 
@@ -49,6 +51,7 @@
 #define _SCENE_LIST_ \
 	GAMESCENE,\
 	MAINMENUSCENE,\
+	CONTROLSSCENE,\
 	SELECTIONMENUSCENE
 
 // Handlers list - must have at least one element

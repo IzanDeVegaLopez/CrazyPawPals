@@ -62,6 +62,14 @@
     },
     {
       "id": "p_boom",
+      "file": "resources/images/projectiles/p_boom.png"
+    },
+    {
+      "id": "p_lightbringer",
+      "file": "resources/images/projectiles/SDL_logo.png"
+    },
+    {
+      "id": "p_lightbringer_amp",
       "file": "resources/images/projectiles/SDL_logo.png"
     },
     {
@@ -102,6 +110,30 @@
     },
     {
       "id": "card_primordia",
+      "file": "resources/images/cards/carta.png"
+    },
+    {
+      "id": "card_commune",
+      "file": "resources/images/cards/card_commune.png"
+    },
+    {
+      "id": "card_evoke",
+      "file": "resources/images/cards/carta.png"
+    },
+    {
+      "id": "card_fulgur",
+      "file": "resources/images/cards/carta.png"
+    },
+    {
+      "id": "card_placeholder",
+      "file": "resources/images/cards/carta.png"
+    },
+    {
+      "id": "card_quick_feet",
+      "file": "resources/images/cards/carta.png"
+    },
+    {
+      "id": "card_recover",
       "file": "resources/images/cards/carta.png"
     },
     {
@@ -153,12 +185,20 @@
       "file": "resources/images/ui/pump_shotgun_b.png"
     },
     {
+      "id": "lightbringer_button",
+      "file": "resources/images/projectiles/SDL_logo.png"
+    },
+    {
       "id": "play_button",
       "file": "resources/images/ui/play.png"
     },
     {
       "id": "start",
       "file": "resources/images/enviroment/start.png"
+    },
+    {
+      "id": "controls",
+      "file": "resources/images/enviroment/controls.png"
     }
 
   ],

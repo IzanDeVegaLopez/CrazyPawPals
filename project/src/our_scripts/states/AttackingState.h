@@ -1,24 +1,21 @@
 #include "State.h"
 
+#include <functional>
 class Transform;
-class Health;
 class Weapon;
-class EnemyStateMachine;
 class AttackingState : public State
 {
-protected:
-	Transform* _tr;
-	Health* _health;
-	Weapon* _weapon;
-	EnemyStateMachine* _stateMachine;
-	Transform* _playerTr;
-	float _dist;
-
 public:
-	AttackingState(float dist, Transform* tr,
-		Health* health, Weapon* weapon,
-		EnemyStateMachine* stateMachine, Transform* playerTr);
+	using OnAttackCallback = std::function<void()>;
+
+	AttackingState(Transform* tr, Transform* playerTr, Weapon* weapon, OnAttackCallback onAttackCallback = nullptr);
 	void enter() override;
 	void update(uint32_t delta_time) override;
 	void exit() override;
+
+protected:
+	Transform* _tr;
+	Transform* _playerTr;
+	Weapon* _weapon;
+	OnAttackCallback _onAttackCallback;
 };

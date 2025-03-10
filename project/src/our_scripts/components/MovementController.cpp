@@ -4,7 +4,8 @@
 #include "../../sdlutils/SDLUtils.h"
 #include "../../game/Game.h"
 
-MovementController::MovementController() : _tr(nullptr) {
+MovementController::MovementController(float max_speed, float acceleration, float decceleration) 
+	: _tr(nullptr), _max_speed(max_speed), _acceleration(acceleration), _decceleration(decceleration) {
 }
 
 MovementController::~MovementController() {
@@ -22,7 +23,7 @@ void MovementController::set_input(Vector2D vec) {
 
 void MovementController::update(uint32_t delta_time)
 {
-	Vector2D expected_speed = _input * _maxSpeed;
+	Vector2D expected_speed = _input * _max_speed;
 
 	Vector2D speed_dif = expected_speed - _tr->getDir();
 	//calculamos si usar aceleraci�n o deceleraci�n

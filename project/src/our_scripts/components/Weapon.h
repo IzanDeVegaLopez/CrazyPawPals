@@ -25,12 +25,12 @@ public:
 	__CMPID_DECL__(ecs::cmp::WEAPON);
 	Weapon(int d, float cd, float dis, float s, const std::string& t, float w, float h);
 	virtual ~Weapon();
-	void initComponent() override;
+	virtual void initComponent() override;
 	//NECCESARY, ALL TYPE OF WEAPON NEED TO CALL THIS METHOD TO INITIALIZE ATTRIBUTES
 	//void init(int d, float cd, float dis, float s, const std::string& t);
 	//not neccesary (50x50 as default value)
 	void set_attack_size(float w, float h);
-	void shoot(const Vector2D& target);
+	bool shoot(const Vector2D& target);
 	inline int damage() { return _damage; };
 	inline float cooldown() { return _cooldown; };
 	inline float distance() { return _distance; };

@@ -6,20 +6,24 @@
 class Transform;
 class MovementController : public ecs::Component
 {
+private:
+	float _max_speed = 0.1f;
+	float _acceleration = 3.5f;
+	float _decceleration = 1.0f;
+	Vector2D _input;
+	Transform* _tr;
+
 public:
 	__CMPID_DECL__(ecs::cmp::MOVEMENTCONTROLLER);
-	MovementController();
+	MovementController(float max_speed = 0.1f, float acceleration = 5.0f, float decceleration = 20.0f);
 	virtual ~MovementController();
 	void initComponent() override;
 	void update(uint32_t delta_time) override;
 	void accelerate();
 	void set_input(Vector2D);
 
-private:
-	float _maxSpeed = 0.1f;
-	float _acceleration = 3.5f;
-	float _decceleration = 1.0f;
-	Vector2D _input;
-	Transform* _tr;
+	float& get_max_speed() { return _max_speed; }
+	float& get_acceleration() { return _acceleration; }
+
 
 };
