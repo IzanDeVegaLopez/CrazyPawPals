@@ -26,7 +26,6 @@ private:
 public:
     rigidbody_component(mass_f32 mass, float restitution_coefficient);
     rigidbody_component(inverse_mass_f32 inverse_mass, float restitution_coefficient);
-
 };
 
 
@@ -37,6 +36,11 @@ struct collisionable : public ecs::Component {
     rigidbody_component &rigidbody;
     rect_component &rect;
     bool trigger;
+
+    collisionable(Transform &transform, rigidbody_component &rigidbody, rect_component &rect, bool trigger)
+        : transform(transform), rigidbody(rigidbody), rect(rect), trigger(trigger) {
+
+    }
 };
 
 

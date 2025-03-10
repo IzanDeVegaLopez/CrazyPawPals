@@ -171,7 +171,7 @@ void Manager::update(sceneId_t sId, Uint32 dt) {
 	for (auto &ents : entities) {
 		update(ents, dt);
 	}
-	manager_update_collisions(*this, entities, dt);
+	// manager_update_collisions(*this, entities, dt);
 }
 
 void Manager::render(sceneId_t sId)

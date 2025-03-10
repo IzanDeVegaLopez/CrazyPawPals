@@ -42,6 +42,8 @@
 #include "../our_scripts/components/render_ordering.hpp"
 #include "../our_scripts/card_system/PlayableCards.hpp"
 
+#include "../our_scripts/components/rigidbody_component.hpp"
+
 #include <iostream>
 #include <string>
 
@@ -103,6 +105,8 @@ ecs::entity_t GameScene::spawnPlayer()
 	
 	auto &&player_transform = *new Transform({ 0.0f, 0.0f }, { 0.0f,0.0f }, 0.0f, 2.0f);
 	auto &&player_rect = *new rect_component{0, 0, 1.5f, 2.0f};
+	auto &&player_rigidbody = *new rigidbody_component{mass_f32{7.0f}, 0.75f};
+	auto &&player_collisionable = *new collisionable{player_transform, player_rigidbody, player_rect, false};
 	ecs::entity_t player = create_entity(
 		ecs::grp::PLAYER,
 		ecs::scene::GAMESCENE,
@@ -120,7 +124,9 @@ ecs::entity_t GameScene::spawnPlayer()
 		new ManaComponent(),
 		new MovementController(),
 		new Deck(c),
-		new StopOnBorder(camera, 1.5f, 2.0f)
+		new StopOnBorder(camera, 1.5f, 2.0f),
+		&player_rigidbody,
+		&player_collisionable
 		);
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::PLAYER, player);
 	return player;
@@ -134,6 +140,9 @@ void GameScene::spawn_sarno_rata(Vector2D posVec)
 	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 	auto &&rect = *new rect_component{0, 0, 1.5f * randSize, 2.0f * randSize};
 	auto manager = Game::Instance()->get_mngr();
+
+	auto &&rigidbody = *new rigidbody_component{mass_f32{3.0f}, 0.35f};
+	auto &&col = *new collisionable{tr, rigidbody, rect, false};
 
 	//std::cout << posVec << std::endl;
 	auto e = create_entity(
@@ -149,7 +158,9 @@ void GameScene::spawn_sarno_rata(Vector2D posVec)
 			tr
 		),
 		new Health(2),
-		weapon
+		weapon,
+		&rigidbody,
+		&col
 	);
 	auto state = manager->addComponent<EnemyStateMachine>(e, 1);
 	state->setState(EnemyStateMachine::StateType::WALKING);
