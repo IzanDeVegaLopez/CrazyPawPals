@@ -190,7 +190,7 @@
     },
     {
       "id": "lightbringer_button",
-      "file": "resources/images/projectiles/SDL_logo.png"
+      "file": "resources/images/ui/rampage_b.png"
     },
     {
       "id": "play_button",
@@ -199,8 +199,31 @@
     {
       "id": "start",
       "file": "resources/images/enviroment/start.png"
+    },
+    {
+      "id": "controls",
+      "file": "resources/images/enviroment/controls.png"
+    },
+    {
+      "id": "selection",
+      "file": "resources/images/ui/selection.png"
+    },
+    {
+      "id": "deck1_button",
+      "file": "resources/images/ui/play.png"
+    },
+    {
+      "id": "deck2_button",
+      "file": "resources/images/ui/play.png"
+    },
+    {
+      "id": "deck3_button",
+      "file": "resources/images/ui/play.png"
+    },
+    {
+      "id": "deck4_button",
+      "file": "resources/images/ui/play.png"
     }
-
   ],
   
   "messages" : [

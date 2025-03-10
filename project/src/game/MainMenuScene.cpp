@@ -9,13 +9,29 @@
 MainMenuScene::MainMenuScene() : Scene(ecs::scene::MAINMENUSCENE)
 {
 	auto* mngr = Game::Instance()->get_mngr();
+
 	_background = &sdlutils().images().at("start");
+
     GameStructs::ButtonProperties buttonPropTemplate = { {550, 200},
        500.0f, 125.0f, 0.0f, ""
     };
+
+    //Boton start
     GameStructs::ButtonProperties startB = buttonPropTemplate;
     startB.sprite_key = "play_button";
     create_start_button(startB);
+
+    //Boton controls
+    buttonPropTemplate.pos.set(550, 400);
+    GameStructs::ButtonProperties controlsB = buttonPropTemplate;
+    controlsB.sprite_key = "play_button";
+    create_controls_button(controlsB);
+
+    //Boton exit
+    buttonPropTemplate.pos.set(550, 600);
+    GameStructs::ButtonProperties exitB = buttonPropTemplate;
+    exitB.sprite_key = "play_button";
+    create_exit_button(exitB);
 }
 
 MainMenuScene::~MainMenuScene()
@@ -55,4 +71,40 @@ void MainMenuScene::create_start_button(const GameStructs::ButtonProperties& bp)
     buttonComp->connectHover([buttonComp]() {
         (void)buttonComp;
         });
+}
+
+void MainMenuScene::create_controls_button(const GameStructs::ButtonProperties& bp)
+{
+    auto* mngr = Game::Instance()->get_mngr();
+    auto e = create_button(bp);
+    auto buttonComp = mngr->getComponent<Button>(e);
+    buttonComp->connectClick([buttonComp, &mngr]() {
+        if (buttonComp->clicked()) return;
+        buttonComp->set_clicked(true);
+        std::cout << "left click -> controls button" << std::endl;
+        Game::Instance()->change_Scene(Game::CONTROLSSCENE);
+        buttonComp->set_clicked(false);
+        });
+
+    buttonComp->connectHover([buttonComp]() {
+        (void)buttonComp;
+        });
+}
+
+void MainMenuScene::create_exit_button(const GameStructs::ButtonProperties& bp)
+{
+    auto* mngr = Game::Instance()->get_mngr();
+    auto e = create_button(bp);
+    auto buttonComp = mngr->getComponent<Button>(e);
+    buttonComp->connectClick([buttonComp, &mngr]() {
+        if (buttonComp->clicked()) return;
+        buttonComp->set_clicked(true);
+        std::cout << "left click -> exit button" << std::endl;
+        Game::Instance()->set_exit(true);
+
+        buttonComp->connectHover([buttonComp]() {
+            (void)buttonComp;
+            });
+        }
+    );
 }

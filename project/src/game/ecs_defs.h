@@ -28,7 +28,8 @@
 	RECT, \
 	DYN_IMAGE, \
 	OFFSET_DYN_IMAGE,\
-	STATEMACHINE
+	STATEMACHINE, \
+	HUD
 
 
 
@@ -38,6 +39,8 @@
 	BULLET,\
 	PLAYER,\
 	UI,\
+    WEAPONBUTTON, \
+    DECKBUTTON,\
 	ENEMY,\
 	PLAYERBULLETS,\
     ENEMYBULLETS
@@ -48,6 +51,7 @@
 #define _SCENE_LIST_ \
 	GAMESCENE,\
 	MAINMENUSCENE,\
+	CONTROLSSCENE,\
 	SELECTIONMENUSCENE
 
 // Handlers list - must have at least one element
