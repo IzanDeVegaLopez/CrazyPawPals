@@ -10,6 +10,13 @@ namespace GameStructs {
 		LIGHTBRINGER,
 		LAST_WEAPON,
 	};
+	enum DeckType {
+		ONE,
+		TWO,
+		THREE,
+		FOUR,
+		LAST_DECK,
+	};
 	struct BulletProperties {
 		Vector2D init_pos;
 		Vector2D dir;

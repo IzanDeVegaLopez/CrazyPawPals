@@ -186,7 +186,7 @@
     },
     {
       "id": "lightbringer_button",
-      "file": "resources/images/projectiles/SDL_logo.png"
+      "file": "resources/images/ui/rampage_b.png"
     },
     {
       "id": "play_button",
@@ -195,6 +195,10 @@
     {
       "id": "start",
       "file": "resources/images/enviroment/start.png"
+    },
+    {
+      "id": "selection",
+      "file": "resources/images/ui/selection.png"
     }
 
   ],
