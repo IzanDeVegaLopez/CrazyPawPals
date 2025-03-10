@@ -119,14 +119,10 @@ void Kunai::on_play(Deck& d, const Vector2D* player_position, const Vector2D* ta
 #pragma endregion
 
 #pragma region Recover
-Recover::Recover() :Card("card_recover", Resources(1)){
+Recover::Recover() :Card("card_recover", Resources(1,2)){
 }
 void 
 Recover::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position) {
-	auto&& manager = *Game::Instance()->get_mngr();
-	auto&& playerHealth = manager.getComponent<Health>(manager.getHandler(ecs::hdlr::PLAYER));
-	playerHealth->takeDamage(2);
-
 	d.move_discard_to_draw();
 }
 #pragma endregion
