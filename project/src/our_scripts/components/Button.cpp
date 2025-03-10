@@ -7,7 +7,7 @@
 
 using namespace ecs;
 
-Button::Button(): _current_state(EMPTY), _clicked(false) {
+Button::Button(): _current_state(EMPTY) {
 }
 
 Button::~Button() {}
