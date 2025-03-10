@@ -13,8 +13,9 @@ class Game: public Singleton<Game>  {
 public:
 	enum State {
 		MAINMENU,
-		GAMESCENE,
+		CONTROLSSCENE,
 		SELECTIONMENU,
+		GAMESCENE,
 		NUM_SCENE,
 	};
 	friend Singleton<Game>;

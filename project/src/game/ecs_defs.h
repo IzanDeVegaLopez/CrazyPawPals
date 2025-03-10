@@ -48,6 +48,7 @@
 #define _SCENE_LIST_ \
 	GAMESCENE,\
 	MAINMENUSCENE,\
+	CONTROLSSCENE,\
 	SELECTIONMENUSCENE
 
 // Handlers list - must have at least one element
