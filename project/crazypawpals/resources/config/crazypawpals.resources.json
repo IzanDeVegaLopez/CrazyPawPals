@@ -177,16 +177,40 @@
       "file": "resources/images/ui/revolver_b.png"
     },
     {
+      "id": "revolver_button_selected",
+      "file": "resources/images/ui/weapon_selected_b.png"
+    },
+    {
       "id": "rampage_button",
       "file": "resources/images/ui/rampage_b.png"
+    },
+    {
+      "id": "rampage_button_selected",
+      "file": "resources/images/ui/weapon_selected_b.png"
     },
     {
       "id": "pump_shotgun_button",
       "file": "resources/images/ui/pump_shotgun_b.png"
     },
     {
+      "id": "pump_shotgun_button_selected",
+      "file": "resources/images/ui/weapon_selected_b.png"
+    },
+    {
+      "id": "ramp_canon_button",
+      "file": "resources/images/ui/rampage_b.png"
+    },
+    {
+      "id": "ramp_canon_button_selected",
+      "file": "resources/images/ui/weapon_selected_b.png"
+    },
+    {
       "id": "lightbringer_button",
       "file": "resources/images/ui/rampage_b.png"
+    },
+    {
+      "id": "lightbringer_button_selected",
+      "file": "resources/images/ui/weapon_selected_b.png"
     },
     {
       "id": "play_button",

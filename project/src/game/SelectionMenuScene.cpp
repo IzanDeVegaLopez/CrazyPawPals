@@ -15,12 +15,14 @@
 #include "../our_scripts/card_system/Card.hpp"
 #include "../our_scripts/card_system/PlayableCards.hpp"
 #include "../our_scripts/components/Deck.hpp"
+#include "../our_scripts/components/Image.h"
+#include "../our_scripts/components/ImageForButton.h"
 #include <iostream>
 #include <string>
 #include <list>
 
 
-SelectionMenuScene::SelectionMenuScene(): Scene(ecs::scene::SELECTIONMENUSCENE), _weapon_selected(false), _deck_selected(false)
+SelectionMenuScene::SelectionMenuScene(): Scene(ecs::scene::SELECTIONMENUSCENE), _weapon_selected(false), _deck_selected(false), _last_weapon_button(nullptr)
 {
 }
 
@@ -52,7 +54,7 @@ void SelectionMenuScene::create_weapon_buttons() {
     create_weapon_button(GameStructs::PUMP_SHOTGUN, pump_shotgun_B);
 
     GameStructs::ButtonProperties ramp_canon_B = buttonPropTemplate;
-    ramp_canon_B.sprite_key = "pump_shotgun_button";
+    ramp_canon_B.sprite_key = "ramp_canon_button";
     h = sdlutils().height() * thrust * i++ + umbral;
     ramp_canon_B.pos.setY(h);
     create_weapon_button(GameStructs::RAMP_CANON, ramp_canon_B);
@@ -112,8 +114,12 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
     auto* mngr = Game::Instance()->get_mngr();
     auto e = create_button(bp);
     auto buttonComp = mngr->getComponent<Button>(e);
+    //used for change the sprite once a button is clicked
+    auto imgComp = mngr->addComponent<ImageForButton>(e, 
+        &sdlutils().images().at(bp.sprite_key),
+        &sdlutils().images().at(bp.sprite_key + "_selected"));
     auto player = mngr->getHandler(ecs::hdlr::PLAYER);
-    buttonComp->connectClick([buttonComp, &mngr, wt, player, this]() {
+    buttonComp->connectClick([buttonComp, imgComp, &mngr, wt, player, this]() {
         if (buttonComp->clicked()) return;
         buttonComp->set_clicked(true);
         //std::cout << "left click-> button" << std::endl;
@@ -140,6 +146,17 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
             break;
         }
         _weapon_selected = true;
+
+        //swap the actual buttons textures
+        imgComp->swap_textures();
+
+        //register the last clicked button
+        if (_last_weapon_button != nullptr && _last_weapon_button != imgComp) {
+            _last_weapon_button->swap_textures();
+        }
+        _last_weapon_button = imgComp;
+
+
         if (_deck_selected) Game::Instance()->change_Scene(Game::GAMESCENE);
         });
 
@@ -177,6 +194,7 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
         }
         mngr->addComponent<Deck>(player, cl);
         _deck_selected = true;
+
         if (_weapon_selected) Game::Instance()->change_Scene(Game::GAMESCENE);
         });
 

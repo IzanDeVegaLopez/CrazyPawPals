@@ -2,6 +2,7 @@
 #include "Scene.h"
 
 class Texture;
+class ImageForButton;
 class SelectionMenuScene : public Scene
 {
 public:
@@ -23,4 +24,6 @@ private:
 	//flags to control if both has been selected
 	bool _weapon_selected;
 	bool _deck_selected;
+
+	ImageForButton* _last_weapon_button;
 };
