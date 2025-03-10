@@ -20,7 +20,7 @@
 #include <list>
 
 
-SelectionMenuScene::SelectionMenuScene(): Scene(ecs::scene::SELECTIONMENUSCENE)
+SelectionMenuScene::SelectionMenuScene(): Scene(ecs::scene::SELECTIONMENUSCENE), _weapon_selected(false), _deck_selected(false)
 {
 }
 
@@ -30,9 +30,10 @@ SelectionMenuScene::~SelectionMenuScene()
 void SelectionMenuScene::create_weapon_buttons() {
     int i = 0;
     float thrust = 0.175f;
-    float h = sdlutils().height() * thrust * i++;
-    GameStructs::ButtonProperties buttonPropTemplate = { {sdlutils().width() * 1.2f, h},
-        100.0f, 100.0f, 0.0f, ""
+    float umbral = 50.0f;
+    float h = sdlutils().height() * thrust * i++ + umbral;
+    GameStructs::ButtonProperties buttonPropTemplate = { {sdlutils().width() * 1.4f, h},
+        100.0f, 100.0f, 0.0f, "", ecs::grp::WEAPONBUTTON
     };
     GameStructs::ButtonProperties revolverB = buttonPropTemplate;
     revolverB.sprite_key = "revolver_button";
@@ -40,31 +41,63 @@ void SelectionMenuScene::create_weapon_buttons() {
 
     GameStructs::ButtonProperties rampageB = buttonPropTemplate;
     rampageB.sprite_key = "rampage_button";
-    h = sdlutils().height() * thrust * i++;
+    h = sdlutils().height() * thrust * i++ + umbral;
     rampageB.pos.setY(h);
     create_weapon_button(GameStructs::RAMPAGE, rampageB);
 
     GameStructs::ButtonProperties pump_shotgun_B = buttonPropTemplate;
     pump_shotgun_B.sprite_key = "pump_shotgun_button";
-    h = sdlutils().height() * thrust * i++;
+    h = sdlutils().height() * thrust * i++ + umbral;
     pump_shotgun_B.pos.setY(h);
     create_weapon_button(GameStructs::PUMP_SHOTGUN, pump_shotgun_B);
 
     GameStructs::ButtonProperties ramp_canon_B = buttonPropTemplate;
     ramp_canon_B.sprite_key = "pump_shotgun_button";
-    h = sdlutils().height() * thrust * i++;
+    h = sdlutils().height() * thrust * i++ + umbral;
     ramp_canon_B.pos.setY(h);
     create_weapon_button(GameStructs::RAMP_CANON, ramp_canon_B);
 
     GameStructs::ButtonProperties lightbringerB = buttonPropTemplate;
     lightbringerB.sprite_key = "lightbringer_button";
-    h = sdlutils().height() * thrust * i++;
+    h = sdlutils().height() * thrust * i++ + umbral;
     lightbringerB.pos.setY(h);
     create_weapon_button(GameStructs::LIGHTBRINGER, lightbringerB);
+}
+
+void SelectionMenuScene::create_deck_buttons() {
+    int i = 0;
+    float thrust = 0.15f;
+    float umbral = 30.0f;
+    float w = sdlutils().width() * thrust * i++ + umbral;
+    GameStructs::ButtonProperties buttonPropTemplate = { {w, 50.0f},
+        125.0f, 125.0f, 0.0f, "", ecs::grp::DECKBUTTON
+    };
+    GameStructs::ButtonProperties deck1B = buttonPropTemplate;
+    deck1B.sprite_key = "deck1_button";
+    create_deck_button(GameStructs::ONE, deck1B);
+
+    GameStructs::ButtonProperties deck2B = buttonPropTemplate;
+    deck2B.sprite_key = "deck2_button";
+    w = sdlutils().width() * thrust * i++ + umbral;
+    deck2B.pos.setX(w);
+    create_deck_button(GameStructs::TWO, deck2B);
+
+    GameStructs::ButtonProperties deck3B = buttonPropTemplate;
+    deck3B.sprite_key = "deck3_button";
+    w = sdlutils().width() * thrust * i++ + umbral;
+    deck3B.pos.setX(w);
+    create_deck_button(GameStructs::THREE, deck3B);
+
+    GameStructs::ButtonProperties deck4B = buttonPropTemplate;
+    deck4B.sprite_key = "deck4_button";
+    w = sdlutils().width() * thrust * i++ + umbral;
+    deck4B.pos.setX(w);
+    create_deck_button(GameStructs::FOUR, deck4B);
 }
 void SelectionMenuScene::initScene() {
     _selection = &sdlutils().images().at("selection");
     create_weapon_buttons();
+    create_deck_buttons();
 }
 void SelectionMenuScene::enterScene()
 {
@@ -119,15 +152,15 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
     auto e = create_button(bp);
     auto buttonComp = mngr->getComponent<Button>(e);
     auto player = mngr->getHandler(ecs::hdlr::PLAYER);
-    std::list<Card*> cl;
-    buttonComp->connectClick([buttonComp, &mngr, player, dt, &cl]() {
+    std::list<Card*> cl = {};
+    buttonComp->connectClick([buttonComp, &mngr, player, dt, &cl, this]() {
         if (buttonComp->clicked()) return;
         buttonComp->set_clicked(true);
         
         switch (dt)
         {
         case GameStructs::ONE:
-            cl = { new Recover(), new Fireball(), new CardSpray(), new Lighting(), new Minigun(), new Kunai(), new EldritchBlast()};
+            cl.push_back(new Recover());
             break;
         case GameStructs::TWO: 
             cl = { new Recover(), new Fireball(), new CardSpray(), new Lighting(), new Minigun(), new Kunai(), new EldritchBlast() };
@@ -143,6 +176,8 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
         }
         mngr->addComponent<Deck>(player, cl);
         //Game::Instance()->change_Scene(Game::GAMESCENE);
+
+        _deck_selected = true;
         });
 
     buttonComp->connectHover([buttonComp]() {

@@ -92,6 +92,9 @@ void GameScene::enterScene()
 
 	w->initComponent();
 	mngr->addComponent<KeyboardPlayerCtrl>(player);
+
+	auto d = mngr->getComponent<Deck>(player);
+	d->initComponent();
 }
 
 void GameScene::exitScene()
@@ -100,7 +103,6 @@ void GameScene::exitScene()
 
 ecs::entity_t GameScene::create_player()
 {
-	std::list<Card*> c = {new Recover, new Fireball(), new CardSpray(), new Lighting(), new Minigun(), new Kunai(), new EldritchBlast()};
 	auto &&manager = *Game::Instance()->get_mngr();
 	auto &&camera = manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam;
 	
@@ -122,7 +124,6 @@ ecs::entity_t GameScene::create_player()
 		new Health(100),
 		new ManaComponent(),
 		new MovementController(0.1f,5.0f,20.0f),
-		new Deck(c),
 		new StopOnBorder(camera, 1.5f, 2.0f)
 		);
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::PLAYER, player);

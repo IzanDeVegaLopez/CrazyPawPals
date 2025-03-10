@@ -1,5 +1,6 @@
 #pragma once
 #include "../utils/Vector2D.h"
+#include "../ecs/ecs.h"
 
 namespace GameStructs {
 	enum WeaponType {
@@ -34,5 +35,6 @@ namespace GameStructs {
 		float height = 40.0f;
 		float rot = 0.0f;
 		std::string sprite_key;
+		ecs::grpId_t ID;
 	};
 }

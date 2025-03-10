@@ -199,8 +199,23 @@
     {
       "id": "selection",
       "file": "resources/images/ui/selection.png"
+    },
+    {
+      "id": "deck1_button",
+      "file": "resources/images/ui/play.png"
+    },
+    {
+      "id": "deck2_button",
+      "file": "resources/images/ui/play.png"
+    },
+    {
+      "id": "deck3_button",
+      "file": "resources/images/ui/play.png"
+    },
+    {
+      "id": "deck4_button",
+      "file": "resources/images/ui/play.png"
     }
-
   ],
   
   "messages" : [
