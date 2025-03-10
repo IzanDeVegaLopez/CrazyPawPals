@@ -54,7 +54,7 @@ void ControlsScene::create_mainmenu_button(const GameStructs::ButtonProperties& 
     buttonComp->connectClick([buttonComp, &mngr]() {
         if (buttonComp->clicked()) return;
         buttonComp->set_clicked(true);
-        std::cout << "left click -> main menu button" << std::endl;
+        //std::cout << "left click -> main menu button" << std::endl;
         Game::Instance()->change_Scene(Game::MAINMENU);
         buttonComp->set_clicked(false);
         });

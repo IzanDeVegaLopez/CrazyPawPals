@@ -25,6 +25,7 @@
 #include "ControlsScene.h"
 #include "SelectionMenuScene.h"
 #include "GameScene.h"
+#include "RewardScene.h"
 
 
 using namespace std;
@@ -95,7 +96,10 @@ bool Game::init() {
 	_scenes[SELECTIONMENU] = new SelectionMenuScene();
 	_scenes[SELECTIONMENU]->initScene();
 
-	_current_scene_index = MAINMENU;
+	_scenes[REWARDSCENE] = new RewardScene();
+	_scenes[REWARDSCENE]->initScene();
+
+	_current_scene_index = REWARDSCENE;
 	return true;
 }
 
