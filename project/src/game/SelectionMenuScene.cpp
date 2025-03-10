@@ -181,7 +181,7 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
         });
 
     buttonComp->connectHover([buttonComp]() {
-        (void)buttonComp;
+
         });
 }
 void SelectionMenuScene::render() {
