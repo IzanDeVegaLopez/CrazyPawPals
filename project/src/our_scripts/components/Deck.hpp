@@ -2,6 +2,7 @@
 #include "../card_system/CardList.h"
 #include "../card_system/Card.hpp"
 #include "Mana.h"
+#include "Health.h"
 #include "../../utils/Vector2D.h"
 #include "../components/camera_component.hpp"
 #include "ecs/Component.h"
@@ -28,6 +29,7 @@ protected:
 	Card* _hand;
 	Card* _last_milled_card = nullptr;
 	ManaComponent* _mana;
+	Health* _health;
 	Transform* _tr;
 	const camera_component* _camera;
 	bool _is_reloading = false;

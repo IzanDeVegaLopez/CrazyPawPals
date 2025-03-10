@@ -14,6 +14,7 @@ public:
 	int getHealth() const;
 	int getMaxHealth() const;
 	void takeShield(int s);
+	void payHealth(int cost);
 	void update(uint32_t delta_time) override;
 
 protected:

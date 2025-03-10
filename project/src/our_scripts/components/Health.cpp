@@ -3,6 +3,7 @@
 #include "../../sdlutils/Font.h"
 #include "../../ecs/Manager.h"
 #include "../../game/Game.h"
+#include <algorithm>
 
 Health::Health(int maxHealth) 
 	: _currentHealth(maxHealth), _maxHealth(maxHealth),_shield(0),_shieldTime(0) {};
@@ -38,6 +39,10 @@ int Health::getMaxHealth() const { return _maxHealth; }
 void 
 Health::takeShield(int s) {
 	_shield = s;
+}
+void Health::payHealth(int cost)
+{
+	_currentHealth = std::max(1, _currentHealth - cost);
 }
 void
 Health::update(uint32_t delta_time) {
