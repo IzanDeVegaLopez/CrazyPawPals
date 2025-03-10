@@ -96,6 +96,7 @@ void GameScene::enterScene()
 
 	auto d = mngr->getComponent<Deck>(player);
 	d->initComponent();
+	mngr->addComponent<HUD>(player);
 }
 
 void GameScene::exitScene()
@@ -125,8 +126,7 @@ ecs::entity_t GameScene::create_player()
 		new Health(100),
 		new ManaComponent(),
 		new MovementController(0.1f,5.0f,20.0f),
-		new StopOnBorder(camera, 1.5f, 2.0f),
-		new HUD()
+		new StopOnBorder(camera, 1.5f, 2.0f)
 		);
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::PLAYER, player);
 	return player;
