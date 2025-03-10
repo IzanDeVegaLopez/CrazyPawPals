@@ -8,7 +8,7 @@ WeaponRataBasurera::WeaponRataBasurera() : Weapon(0, 5000, 0.0f, 0.0f, "", 0.0f,
 WeaponRataBasurera::~WeaponRataBasurera() {}
 
 void
-WeaponRataBasurera::callback(Vector2D shootPos) {
+WeaponRataBasurera::callback(Vector2D shootPos, Vector2D shootDir) {
 
 	int _randomNum = sdlutils().rand().nextInt(0, 10);
 
