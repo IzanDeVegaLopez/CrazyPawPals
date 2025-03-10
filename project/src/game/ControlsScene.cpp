@@ -11,7 +11,7 @@ ControlsScene::ControlsScene() : Scene(ecs::scene::CONTROLSSCENE)
 {
     auto* mngr = Game::Instance()->get_mngr();
 
-    //_background = &sdlutils().images().at("start");
+    _background = &sdlutils().images().at("controls");
 
     //Boton back to main menu
     GameStructs::ButtonProperties buttonPropTemplate = { {30, 30},
@@ -43,7 +43,7 @@ void ControlsScene::exitScene()
 
 }
 void ControlsScene::render() {
-    //_background->render(0, 0);
+    _background->render(200, 300);
     Scene::render();
 }
 
