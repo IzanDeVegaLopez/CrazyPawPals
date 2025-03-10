@@ -1,0 +1,11 @@
+#pragma once
+#include "Weapon.h"
+
+class WeaponRataBasurera : public Weapon {
+protected:
+	void callback(Vector2D shootPos) override;
+public:
+	__CMPID_DECL__(ecs::cmp::WEAPON);
+	WeaponRataBasurera();
+	virtual ~WeaponRataBasurera();
+};
