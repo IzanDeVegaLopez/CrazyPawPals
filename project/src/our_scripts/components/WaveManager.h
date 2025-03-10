@@ -3,6 +3,8 @@
 #include "../../ecs/Component.h"
 #include "../../sdlutils/SDLUtils.h"
 
+class Fog;
+
 class WaveManager : public ecs::Component {
     // _waves es un vector de pares (int, vector<int>)
     // Los 0 son espacios extra
@@ -50,12 +52,12 @@ public:
 
 private:
     Uint32 _currentWaveTime = 0; //tiempo actual (post calculo, inicial en constructor)
+    Uint32 _currentWaveInitTime; // cuándo empezó la oleada
     Uint32 _waveTime; // cuánto dura la oleada (CONSTRUCTOR)
 
     int _currentWave = 0;
 
     bool _waveActive = false;
-    bool _fogActive = false;
 
     int _numEnemies; // enemigos total en la oleada (post calculo)
     int _enemiesSpawned; // número de enemigos spawneados (post calculo)
@@ -67,4 +69,7 @@ private:
     // tiempo de spawn del siguiente enemigo (post calculo)
     float _min_time;
     float _op_time;
+
+
+    Fog fog;
 };
