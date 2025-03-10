@@ -46,8 +46,6 @@ void MainMenuScene::create_start_button(const GameStructs::ButtonProperties& bp)
     auto e = create_button(bp);
     auto buttonComp = mngr->getComponent<Button>(e);
     buttonComp->connectClick([buttonComp, &mngr]() {
-        if (buttonComp->clicked()) return;
-        buttonComp->set_clicked(true);
         //std::cout << "left click-> button" << std::endl;
         Game::Instance()->change_Scene(Game::SELECTIONMENU);
         });

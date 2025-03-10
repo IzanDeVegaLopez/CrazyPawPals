@@ -120,8 +120,6 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
         &sdlutils().images().at(bp.sprite_key + "_selected"));
     auto player = mngr->getHandler(ecs::hdlr::PLAYER);
     buttonComp->connectClick([buttonComp, imgComp, &mngr, wt, player, this]() {
-        if (buttonComp->clicked()) return;
-        buttonComp->set_clicked(true);
         //std::cout << "left click-> button" << std::endl;
 
         switch (wt) {
@@ -172,8 +170,6 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
 
     buttonComp->connectClick([buttonComp, &mngr, player, dt, this]() {
         std::list<Card*> cl = {};
-        if (buttonComp->clicked()) return;
-        buttonComp->set_clicked(true);
         
         switch (dt)
         {
