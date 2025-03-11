@@ -3,38 +3,47 @@
 #include "../../ecs/Component.h"
 #include "../../sdlutils/SDLUtils.h"
 
+enum enemyType {
+    none = 0,
+    sarno_rata = 1,
+    michi_mafioso = 2,
+    plim_plim = 3,
+    boom = 4,
+    ratatouille = 5
+};
+
 class WaveManager : public ecs::Component {
     // _waves es un vector de pares (int, vector<int>)
     // Los 0 son espacios extra
-    std::vector<std::pair<int, std::vector<int>>> _waves = {
+    std::vector<std::pair<Uint32, std::vector<enemyType>>> _waves = {
         { 10000,{
-            1, 0, 
-            1, 1, 0, 
-            1, 2, 0, 0, 
-            2, 1, 1, 0, 0, 
-            2, 2 }
+            sarno_rata, none,
+            sarno_rata, sarno_rata, none,
+            sarno_rata, michi_mafioso, none, none,
+            michi_mafioso, sarno_rata, sarno_rata, none, none,
+            michi_mafioso, michi_mafioso }
         },
         { 15000,{
-            1, 2, 0,
-            2, 3, 0,
-            1, 1, 3, 0, 0,
-            2, 3, 3 }
+            sarno_rata, michi_mafioso, none,
+            michi_mafioso, plim_plim, none,
+            sarno_rata, sarno_rata, plim_plim, none, none,
+            michi_mafioso, plim_plim, plim_plim }
         },
         { 15000,{
-            2, 2, 2, 2, 2, 0, 0, 0,
-            1, 1, 3, 0, 0, 
-            3, 3 }
+            michi_mafioso, michi_mafioso, michi_mafioso, michi_mafioso, michi_mafioso, none, none, none,
+            sarno_rata, sarno_rata, plim_plim, none, none,
+            plim_plim, plim_plim }
         },
         { 15000,{
-            3, 2, 2, 0,
-            4, 3, 0,
-            4, 2, 1, 0, 0,
-            4, 4 }
+            plim_plim, michi_mafioso, michi_mafioso, none,
+            boom, plim_plim, none,
+            boom, michi_mafioso, sarno_rata, none, none,
+            boom, boom }
         },
         { 15000,{
-            4, 4, 4, 0,
-            4, 4, 4, 4, 0, 0, 0,
-            4, 4, 4, 1, 1, 1, 1 }
+            boom, boom, boom, none,
+            boom, boom, boom, boom, none, none, none,
+            boom, boom, boom, sarno_rata, sarno_rata, sarno_rata, sarno_rata }
         }
     };
 public:
