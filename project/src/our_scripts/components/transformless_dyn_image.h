@@ -1,0 +1,50 @@
+#pragma once
+
+#include "../../ecs/Component.h"
+#include "../../rendering/rect.hpp"
+#include "../../sdlutils/Texture.h"
+#include "../../rendering/camera.hpp"
+#include "../components/camera_component.hpp"
+class Texture;
+class camera_screen;
+
+
+struct transformless_dyn_image : public ecs::Component {
+
+	__CMPID_DECL__(ecs::cmp::TRANSFORMLESS_DYN_IMAGE);
+	Texture& texture;
+	//takes 0 to 1 values on viewport
+	rect_f32 destination_rect;
+	const camera_screen& my_camera_screen;
+	float my_rotation;
+
+
+	transformless_dyn_image(
+		const rect_f32 subrect,
+		float rotation,
+		const camera_screen& camera,
+		Texture& texture
+	) : destination_rect(subrect), my_camera_screen(camera), texture(texture), my_rotation(rotation)
+	{
+	}
+
+
+
+	inline virtual void render() override {
+		rect_f32 rect = rect_f32_screen_rect_from_viewport(destination_rect, my_camera_screen.screen);
+		const SDL_Rect destination = { rect.position.x,rect.position.y,rect.size.x,rect.size.y }; //SDL_Rect_screen_rect_from_global(destination_rect, my_camera_screen);
+		const SDL_Rect source = { 0, 0, texture.width(), texture.height() };
+		/*
+		//card_texture.render(source, destination, angle, nullptr, flip);
+		const SDL_Rect subsource = {
+			int(source_subrect.position.x * source.w),
+			int(source_subrect.position.y * source.h),
+			int(source_subrect.size.x * source.w),
+			int(source_subrect.size.y * source.h)
+		};
+		//card_texture.render(subsource, destination, my_rotation, nullptr, flip);
+	//}*/
+		texture.render(source, destination, my_rotation, nullptr);
+	}
+
+};

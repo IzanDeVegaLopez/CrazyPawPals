@@ -9,6 +9,7 @@ enum enemyType {
     michi_mafioso = 2,
     plim_plim = 3,
     boom = 4,
+    ratatouille = 5
 };
 
 class WaveManager : public ecs::Component {
@@ -57,7 +58,7 @@ public:
     void enterRewardsMenu();
 
 private:
-    Uint32 _currentWaveTime = 0u; //tiempo actual (post calculo, inicial en constructor)
+    Uint32 _currentWaveTime = 0; //tiempo actual (post calculo, inicial en constructor)
     Uint32 _waveTime; // cuánto dura la oleada (CONSTRUCTOR)
 
     int _currentWave = 0;
