@@ -79,18 +79,18 @@ WaveManager::spawnWave() {
             // FIXME: define enum values
             switch (_waves[_currentWave].second[_enemiesSpawned])
             {
-                case 0:
+                case none:
                     break;
-		        case 1:
+		        case sarno_rata:
                     static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_sarno_rata(posVec);
 			        break;
-                case 2:
+                case michi_mafioso:
                     static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_michi_mafioso(posVec);
 			        break;
-		        case 3:
+		        case plim_plim:
                     static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_plim_plim(posVec);
                     break;
-                case 4:
+                case boom:
                     static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_boom(posVec);
 			        break;
                 case 5:
