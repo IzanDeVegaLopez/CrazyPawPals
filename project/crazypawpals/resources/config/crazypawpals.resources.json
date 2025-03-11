@@ -234,19 +234,35 @@
     },
     {
       "id": "deck1_button",
-      "file": "resources/images/ui/play.png"
+      "file": "resources/images/ui/deck1_b.png"
+    },
+    {
+      "id": "deck1_button_selected",
+      "file": "resources/images/ui/deck_selected_b.png"
     },
     {
       "id": "deck2_button",
-      "file": "resources/images/ui/play.png"
+      "file": "resources/images/ui/deck1_b.png"
+    },
+    {
+      "id": "deck2_button_selected",
+      "file": "resources/images/ui/deck_selected_b.png"
     },
     {
       "id": "deck3_button",
-      "file": "resources/images/ui/play.png"
+      "file": "resources/images/ui/deck1_b.png"
+    },
+    {
+      "id": "deck3_button_selected",
+      "file": "resources/images/ui/deck_selected_b.png"
     },
     {
       "id": "deck4_button",
-      "file": "resources/images/ui/play.png"
+      "file": "resources/images/ui/deck1_b.png"
+    },
+    {
+      "id": "deck4_button_selected",
+      "file": "resources/images/ui/deck_selected_b.png"
     }
   ],
   
