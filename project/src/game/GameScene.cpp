@@ -14,6 +14,7 @@
 #include "../our_scripts/states/Conditions.h"
 #include "../our_scripts/states/WalkingState.h"
 #include "../our_scripts/states/AttackingState.h"
+#include "../our_scripts/states/WaitingState.h"
 
 #include "../our_scripts/components/KeyboardPlayerCtrl.h"
 #include "../our_scripts/components/SimpleMove.h"
@@ -159,7 +160,73 @@ GameScene::create_enemy(Transform* tr, const std::string& spriteKey, Weapon* wea
 	return e;
 }
 
-void GameScene::spawn_sarno_rata(Vector2D posVec)
+
+void 
+GameScene::spawn_catkuza(Vector2D posVec) {
+	auto&& manager = *Game::Instance()->get_mngr();
+	auto&& weapon = *new WeaponSarnoRata();
+	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
+
+	auto e = create_enemy(&tr, "sarno_rata", static_cast<Weapon*>(&weapon), 2, 1.5f, 2.0f);
+	auto&& mc = *manager.getComponent<MovementController>(e);
+
+
+	ConditionManager conditionManager;
+
+	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
+
+	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
+
+	auto state = manager.addComponent<StateMachine>(e, conditionManager);
+
+	// Crear estados
+	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
+	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon);
+	auto waitingState = std::make_shared<WaitingState>();
+
+
+	//poner los estado a la state
+	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
+	state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));
+	state->add_state("Waiting", std::static_pointer_cast<State>(waitingState));
+
+	// Condiciones de cada estado
+	// De: Walking a: Attacking, Condición: Jugador cerca
+	state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr]() {
+		return conditionManager.isPlayerNear(_p_tr, &tr, 5.0f);
+	});
+
+	// De: Attacking a: Walking, Condición: Jugador lejos
+	state->add_transition("Attacking", "Walking", [&conditionManager, _p_tr, &tr]() {
+		return !conditionManager.isPlayerNear(_p_tr, &tr, 5.0f);
+	});
+	
+	state->add_transition("Walking", "Waiting", [&conditionManager, _p_tr, &tr]() {
+		return conditionManager.isPlayerNear(_p_tr, &tr, 5.0f);
+	});
+
+	// De: Attacking a: Walking, Condición: Jugador lejos
+	state->add_transition("Attacking", "Waiting", [&conditionManager, _p_tr, &tr]() {
+		return !conditionManager.isPlayerNear(_p_tr, &tr, 5.0f);
+	});
+
+
+	state->add_transition("Waiting", "Walking", [&conditionManager, _p_tr, &tr]() {
+		return conditionManager.isPlayerNear(_p_tr, &tr, 5.0f);
+	});
+
+	// De: Attacking a: Walking, Condición: Jugador lejos
+	state->add_transition("Waiting", "Attacking", [&conditionManager, _p_tr, &tr]() {
+		return !conditionManager.isPlayerNear(_p_tr, &tr, 5.0f);
+	});
+
+	// Estado inicial
+	state->set_initial_state("Walking");
+}
+
+
+void 
+GameScene::spawn_sarno_rata(Vector2D posVec)
 {
 	auto&& manager = *Game::Instance()->get_mngr();
 	auto &&weapon = *new WeaponSarnoRata();
@@ -179,10 +246,12 @@ void GameScene::spawn_sarno_rata(Vector2D posVec)
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc); 
-	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon); 
+	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon);
+
+
 	//poner los estado a la state
 	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
-    state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));
+	state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));
 
     // Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador cerca
@@ -195,6 +264,7 @@ void GameScene::spawn_sarno_rata(Vector2D posVec)
         return !conditionManager.isPlayerNear(_p_tr, &tr, 5.0f); 
     });
 
+	
     // Estado inicial
     state->set_initial_state("Walking");
 }
@@ -284,7 +354,7 @@ void GameScene::spawn_plim_plim(Vector2D posVec)
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc); 
-	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon); 
+	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon);
 	//poner los estado a la state
 	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
     state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));
