@@ -22,7 +22,7 @@ public:
 	void initComponent() override;
 	void render() override;
 
-private:
+protected:
 	Transform *_tr;
 	Texture *_tex;
 };

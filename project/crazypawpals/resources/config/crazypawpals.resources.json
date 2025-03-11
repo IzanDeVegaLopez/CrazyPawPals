@@ -153,6 +153,10 @@
       "file": "resources/images/enemies/michi_mafioso.png"
     },
     {
+      "id": "ratatouille",
+      "file": "resources/images/enemies/ratatouille.png"
+    },
+    {
       "id": "heart",
       "file": "resources/images/ui/heart.png"
     },
@@ -177,16 +181,40 @@
       "file": "resources/images/ui/revolver_b.png"
     },
     {
+      "id": "revolver_button_selected",
+      "file": "resources/images/ui/weapon_selected_b.png"
+    },
+    {
       "id": "rampage_button",
       "file": "resources/images/ui/rampage_b.png"
+    },
+    {
+      "id": "rampage_button_selected",
+      "file": "resources/images/ui/weapon_selected_b.png"
     },
     {
       "id": "pump_shotgun_button",
       "file": "resources/images/ui/pump_shotgun_b.png"
     },
     {
+      "id": "pump_shotgun_button_selected",
+      "file": "resources/images/ui/weapon_selected_b.png"
+    },
+    {
+      "id": "ramp_canon_button",
+      "file": "resources/images/ui/rampage_b.png"
+    },
+    {
+      "id": "ramp_canon_button_selected",
+      "file": "resources/images/ui/weapon_selected_b.png"
+    },
+    {
       "id": "lightbringer_button",
-      "file": "resources/images/projectiles/SDL_logo.png"
+      "file": "resources/images/ui/rampage_b.png"
+    },
+    {
+      "id": "lightbringer_button_selected",
+      "file": "resources/images/ui/weapon_selected_b.png"
     },
     {
       "id": "play_button",
@@ -199,8 +227,27 @@
     {
       "id": "controls",
       "file": "resources/images/enviroment/controls.png"
+    },
+    {
+      "id": "selection",
+      "file": "resources/images/ui/selection.png"
+    },
+    {
+      "id": "deck1_button",
+      "file": "resources/images/ui/play.png"
+    },
+    {
+      "id": "deck2_button",
+      "file": "resources/images/ui/play.png"
+    },
+    {
+      "id": "deck3_button",
+      "file": "resources/images/ui/play.png"
+    },
+    {
+      "id": "deck4_button",
+      "file": "resources/images/ui/play.png"
     }
-
   ],
   
   "messages" : [

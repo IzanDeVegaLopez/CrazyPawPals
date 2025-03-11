@@ -14,6 +14,7 @@
 #include "../our_scripts/states/Conditions.h"
 #include "../our_scripts/states/WalkingState.h"
 #include "../our_scripts/states/AttackingState.h"
+#include "../our_scripts/states/RotatingState.h"
 
 #include "../our_scripts/components/KeyboardPlayerCtrl.h"
 #include "../our_scripts/components/SimpleMove.h"
@@ -40,6 +41,7 @@
 #include "../our_scripts/components/render_ordering.hpp"
 #include "../our_scripts/components/rect_component.hpp"
 #include "../our_scripts/components/StopOnBorder.h"
+#include "../our_scripts/components/HUD.h"
 
 #include "../our_scripts/components/render_ordering.hpp"
 #include "../our_scripts/card_system/PlayableCards.hpp"
@@ -96,6 +98,10 @@ void GameScene::enterScene()
 
 	w->initComponent();
 	mngr->addComponent<KeyboardPlayerCtrl>(player);
+
+	auto d = mngr->getComponent<Deck>(player);
+	d->initComponent();
+	mngr->addComponent<HUD>(player);
 }
 
 void GameScene::exitScene()
@@ -104,7 +110,6 @@ void GameScene::exitScene()
 
 ecs::entity_t GameScene::create_player()
 {
-	std::list<Card*> c = {new Recover, new Fireball(), new CardSpray(), new Lighting(), new Minigun(), new Kunai(), new EldritchBlast()};
 	auto &&manager = *Game::Instance()->get_mngr();
 	auto &&camera = manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam;
 	
@@ -142,8 +147,8 @@ ecs::entity_t
 GameScene::create_enemy(Transform* tr, const std::string& spriteKey, Weapon* weapon, float health, float width, float height){
 	auto&& manager = *Game::Instance()->get_mngr();
 
-	
-	float randSize = float(sdlutils().rand().nextInt(6, 14)) / 10.0f;
+
+	float randSize = float(sdlutils().rand().nextInt(6, 10)) / 10.0f;
 	auto&& rect = *new rect_component{ 0, 0, width * randSize, height * randSize };
 	auto &&rigidbody = *new rigidbody_component{mass_f32{3.0f}, 0.05f};
 	auto &&col = *new collisionable{*tr, rigidbody, rect, collisionable_option_none};
@@ -152,7 +157,6 @@ GameScene::create_enemy(Transform* tr, const std::string& spriteKey, Weapon* wea
 		ecs::scene::GAMESCENE,
 		tr,
 		&rect,
-		new MovementController(),
 		new dyn_image(
 			rect_f32{ {0,0},{1,1} },
 			rect,
@@ -165,6 +169,7 @@ GameScene::create_enemy(Transform* tr, const std::string& spriteKey, Weapon* wea
 		&rigidbody,
 		&col
 	);
+	if (weapon != nullptr)manager.addExistingComponent<Weapon>(e, weapon);
 
 	return e;
 }
@@ -175,8 +180,8 @@ void GameScene::spawn_sarno_rata(Vector2D posVec)
 	auto &&weapon = *new WeaponSarnoRata();
 	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 1.0f);
 
-	auto e = create_enemy(&tr, "sarno_rata", static_cast<Weapon*>(&weapon), 2, 1.5f, 2.0f);
-	auto&& mc = *manager.getComponent<MovementController>(e);
+	auto e = create_enemy(&tr, "sarno_rata", static_cast<Weapon*>(&weapon), 2, 1.125f, 1.5f);
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.05));
 
 
 	ConditionManager conditionManager;
@@ -196,13 +201,13 @@ void GameScene::spawn_sarno_rata(Vector2D posVec)
 
     // Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador cerca
-    // state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr]() {
-    //     return conditionManager.isPlayerNear(_p_tr, &tr, 5.0f);  
-    // });
+    state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr]() {
+        return conditionManager.isPlayerNear(_p_tr, &tr, 1.0f);  
+    });
 
 	// De: Attacking a: Walking, Condición: Jugador lejos
     state->add_transition("Attacking", "Walking", [&conditionManager, _p_tr, &tr]() {
-        return !conditionManager.isPlayerNear(_p_tr, &tr, 5.0f); 
+        return !conditionManager.isPlayerNear(_p_tr, &tr, 3.0f); 
     });
 
     // Estado inicial
@@ -216,7 +221,7 @@ void GameScene::spawn_michi_mafioso(Vector2D posVec)
 	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
 	auto e = create_enemy(&tr, "michi_mafioso", static_cast<Weapon*>(&weapon), 2, 1.0f, 1.125f);
-	auto&& mc = *manager.getComponent<MovementController>(e);
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.01));
 
 	ConditionManager conditionManager;
 
@@ -236,8 +241,8 @@ void GameScene::spawn_michi_mafioso(Vector2D posVec)
     state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));
     state->add_state("Backing", std::static_pointer_cast<State>(backingState));
 
-	float dist_to_attack=10.0f;
-	float dist_to_fallback=6.0f;
+	float dist_to_attack=6.0f;
+	float dist_to_fallback=4.0f;
 
     // Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador cerca
@@ -281,7 +286,7 @@ void GameScene::spawn_plim_plim(Vector2D posVec)
 	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
 	auto e = create_enemy(&tr, "plim_plim", static_cast<Weapon*>(&weapon), 2, 1.0f, 1.0f);
-	auto&& mc = *manager.getComponent<MovementController>(e);
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.02));
 
 	ConditionManager conditionManager;
 
@@ -302,12 +307,12 @@ void GameScene::spawn_plim_plim(Vector2D posVec)
     // Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador cerca
     state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr]() {
-        return conditionManager.isPlayerNear(_p_tr, &tr, 5.0f);  
+        return conditionManager.isPlayerNear(_p_tr, &tr, 4.0f);  
     });
 
 	// De: Attacking a: Walking, Condición: Jugador lejos
     state->add_transition("Attacking", "Walking", [&conditionManager, _p_tr, &tr]() {
-        return !conditionManager.isPlayerNear(_p_tr, &tr, 10.0f); 
+        return !conditionManager.isPlayerNear(_p_tr, &tr, 6.0f); 
     });
 
     // Estado inicial
@@ -321,8 +326,7 @@ void GameScene::spawn_boom(Vector2D posVec)
 	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
 	auto e = create_enemy(&tr, "boom", static_cast<Weapon*>(&weapon), 2, 1.8f, 1.8f);
-	auto&& mc = *manager.getComponent<MovementController>(e);
-
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.08));
 
 	ConditionManager conditionManager;
 
@@ -351,6 +355,48 @@ void GameScene::spawn_boom(Vector2D posVec)
     state->set_initial_state("Walking");
 }
 
+void GameScene::spawn_ratatouille(Vector2D posVec)
+{
+	auto&& manager = *Game::Instance()->get_mngr();
+	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
+
+	auto e = create_enemy(&tr, "ratatouille", nullptr, 2, 1.0f, 1.0f);
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.06));
+
+	ConditionManager conditionManager;
+
+	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
+
+	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
+
+	//	StateMachine(ConditionManager& conditionManager, Transform* playerTransform, Transform* enemyTransform, float dist);
+	auto state = manager.addComponent<StateMachine>(e, conditionManager);
+
+	// Crear estados
+	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
+	auto rotatingState = std::make_shared<RotatingState>(&tr, _p_tr, &mc);
+
+	//poner los estado a la state
+	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
+	state->add_state("Rotating", std::static_pointer_cast<State>(rotatingState));
+
+	float dist_to_rotate = 4.0f;
+
+	// Condiciones de cada estado
+	// De: Walking a: Rotating, Condición: Jugador cerca
+	state->add_transition("Walking", "Rotating", [&conditionManager, _p_tr, &tr, dist_to_rotate]() {
+		return conditionManager.isPlayerNear(_p_tr, &tr, dist_to_rotate);
+		});
+
+	// De: Rotating a: Walking, Condición: Jugador lejos
+	state->add_transition("Rotating", "Walking", [&conditionManager, _p_tr, &tr, dist_to_rotate]() {
+		return !conditionManager.isPlayerNear(_p_tr, &tr, dist_to_rotate * 2);
+		});
+
+
+	// Estado inicial
+	state->set_initial_state("Walking");
+}
 
 void GameScene::spawn_wave_manager()
 {
