@@ -3,6 +3,7 @@
 
 class Texture;
 class ImageForButton;
+using LastButton = ImageForButton*;
 class SelectionMenuScene : public Scene
 {
 public:
@@ -25,5 +26,6 @@ private:
 	bool _weapon_selected;
 	bool _deck_selected;
 
-	ImageForButton* _last_weapon_button;
+	LastButton _last_weapon_button;
+	LastButton _last_deck_button;
 };

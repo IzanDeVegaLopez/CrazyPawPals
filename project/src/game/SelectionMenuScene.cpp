@@ -22,7 +22,8 @@
 #include <list>
 
 
-SelectionMenuScene::SelectionMenuScene(): Scene(ecs::scene::SELECTIONMENUSCENE), _weapon_selected(false), _deck_selected(false), _last_weapon_button(nullptr)
+SelectionMenuScene::SelectionMenuScene(): Scene(ecs::scene::SELECTIONMENUSCENE), _weapon_selected(false), _deck_selected(false), 
+_last_weapon_button(nullptr), _last_deck_button(nullptr)
 {
 }
 
@@ -154,7 +155,7 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
         }
         _last_weapon_button = imgComp;
 
-
+        //condition to start the game
         if (_deck_selected) Game::Instance()->change_Scene(Game::GAMESCENE);
         });
 
@@ -167,8 +168,12 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
     auto e = create_button(bp);
     auto buttonComp = mngr->getComponent<Button>(e);
     auto player = mngr->getHandler(ecs::hdlr::PLAYER);
+    //used for change the sprite once a button is clicked
+    auto imgComp = mngr->addComponent<ImageForButton>(e,
+        &sdlutils().images().at(bp.sprite_key),
+        &sdlutils().images().at(bp.sprite_key + "_selected"));
 
-    buttonComp->connectClick([buttonComp, &mngr, player, dt, this]() {
+    buttonComp->connectClick([buttonComp, imgComp, &mngr, player, dt, this]() {
         std::list<Card*> cl = {};
         
         switch (dt)
@@ -191,6 +196,15 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
         mngr->addComponent<Deck>(player, cl);
         _deck_selected = true;
 
+        //swap the actual buttons textures
+        imgComp->swap_textures();
+
+        //register the last clicked button
+        if (_last_deck_button != nullptr && _last_deck_button != imgComp) {
+            _last_deck_button->swap_textures();
+        }
+        _last_deck_button = imgComp;
+        //condition to start the game
         if (_weapon_selected) Game::Instance()->change_Scene(Game::GAMESCENE);
         });
 
