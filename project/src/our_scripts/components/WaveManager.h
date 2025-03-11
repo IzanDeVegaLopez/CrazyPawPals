@@ -11,6 +11,7 @@ enum enemyType {
     michi_mafioso = 2,
     plim_plim = 3,
     boom = 4,
+    ratatouille = 5
 };
 
 class WaveManager : public ecs::Component {

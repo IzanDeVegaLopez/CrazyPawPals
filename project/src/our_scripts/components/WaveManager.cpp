@@ -93,7 +93,7 @@ WaveManager::spawnWave() {
                 case boom:
                     static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_boom(posVec);
 			        break;
-                case 5:
+                case ratatouille:
                     static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_ratatouille(posVec);
                         break;
                 default: {

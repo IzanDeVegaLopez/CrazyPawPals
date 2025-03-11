@@ -263,6 +263,10 @@
     {
       "id": "deck4_button_selected",
       "file": "resources/images/ui/deck_selected_b.png"
+    },
+    {
+      "id": "event_letters",
+      "file": "resources/images/enviroment/event_letters.png"
     }
   ],
   
