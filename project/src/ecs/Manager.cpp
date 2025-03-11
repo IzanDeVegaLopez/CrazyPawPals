@@ -4,6 +4,7 @@
 #include "../our_scripts/components/render_ordering.hpp"
 #include "../our_scripts/components/rigidbody_component.hpp"
 #include "../physics/collision.hpp"
+#include "../our_scripts/components/camera_component.hpp"
 #include <cstdlib>
 
 namespace ecs {
@@ -58,21 +59,115 @@ enum collision_response_options {
 };
 typedef uint8_t collision_response_flags;
 
-static void manager_handle_collision_bodies(
+static SDL_Rect dbg_rect_col[256] = {0};
+static size_t dbg_rect_col_size = 0;
+
+static position2_f32 dbg_pos[2][256] = {0};
+static size_t dbg_pos_size = {0};
+
+static bool manager_handle_collision_bodies(
 	Manager &manager,
 	const ecs::entity_t entity0,
 	const ecs::entity_t entity1,
-	collision_body body0,
-	collision_body body1,
+	collision_body &body0,
+	collision_body &body1,
+	seconds_f32 delta_time,
 	const collision_response_flags flags
 ) {
+	(void)entity0;
+	(void)entity1;
+
+	auto &&camera = *manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA));
+
+	assert(dbg_rect_col_size < sizeof(dbg_rect_col) / sizeof(dbg_rect_col[0]));
+	dbg_rect_col[dbg_rect_col_size] = SDL_Rect_screen_rect_from_global(
+		rect_f32{
+			.position = {
+				.x = body0.body.body.position.x + body0.body.space.position.x - body0.body.body.size.x * 0.5f,
+				.y = body0.body.body.position.y + body0.body.space.position.y + body0.body.body.size.y * 0.5f,
+			},
+			.size = {
+				.x = body0.body.body.size.x,
+				.y = body0.body.body.size.y,
+			},
+		},
+		camera.cam
+	);
+	++dbg_rect_col_size;
+	dbg_rect_col[dbg_rect_col_size] = SDL_Rect_screen_rect_from_global(
+		rect_f32{
+			.position = {
+				.x = body1.body.body.position.x + body1.body.space.position.x - body1.body.body.size.x * 0.5f,
+				.y = body1.body.body.position.y + body1.body.space.position.y + body1.body.body.size.y * 0.5f,
+			},
+			.size = {
+				.x = body1.body.body.size.x,
+				.y = body1.body.body.size.y,
+			},
+		},
+		camera.cam
+	);
+	++dbg_rect_col_size;
+
+	dbg_rect_col[dbg_rect_col_size] = SDL_Rect_screen_rect_from_global(
+		rect_f32{
+			.position = {
+				.x = body1.body.body.position.x + body1.body.space.position.x - (body1.body.body.size.x + body0.body.body.size.x) * 0.5f,
+				.y = body1.body.body.position.y + body1.body.space.position.y + (body1.body.body.size.y + body0.body.body.size.y) * 0.5f,
+			},
+			.size = {
+				.x = body1.body.body.size.x + body0.body.body.size.x,
+				.y = body1.body.body.size.y + body0.body.body.size.y,
+			},
+		},
+		camera.cam
+	);
+	++dbg_rect_col_size;
+
+	dbg_rect_col[dbg_rect_col_size] = SDL_Rect_screen_rect_from_global(
+		rect_f32{
+			.position = {
+				.x = - (body1.body.body.size.x + body0.body.body.size.x) * 0.5f,
+				.y = + (body1.body.body.size.y + body0.body.body.size.y) * 0.5f,
+			},
+			.size = {
+				.x = body1.body.body.size.x + body0.body.body.size.x,
+				.y = body1.body.body.size.y + body0.body.body.size.y,
+			},
+		},
+		camera.cam
+	);
+	++dbg_rect_col_size;
+
+	dbg_rect_col[dbg_rect_col_size] = SDL_Rect_screen_rect_from_global(
+		rect_f32{
+			.position = {
+				.x = (body0.body.space.previous_position.x + body0.body.body.position.x - (body1.body.body.position.x + body1.body.space.previous_position.x)),
+				.y = (body0.body.space.previous_position.y + body0.body.body.position.y - (body1.body.body.position.y + body1.body.space.previous_position.y)),
+			},
+			.size = {
+				.x = 0.0f,
+				.y = 0.0f,
+			},
+		},
+		camera.cam
+	);
+	++dbg_rect_col_size;
+	
 	if (!collision_body_check_broad(body0, body1)) {
-		return;
+		return false;
 	}
 
 	collision_contact contact;
-	if (collision_body_check(body0, body1, contact)) {
-		const collision_response_pairs responses = collision_body_resolve(body0, body1, seconds_f32{0.0f}, contact);
+	if (collision_body_check(body0, body1, delta_time, contact)) {
+		dbg_pos[0][dbg_pos_size] = body0.body.space.position;
+		dbg_pos[1][dbg_pos_size] = position2_f32{
+			.x = body0.body.space.position.x + contact.penetration.penetration.x * 20.0f,
+			.y = body0.body.space.position.y + contact.penetration.penetration.y * 20.0f,
+		};
+		++dbg_pos_size;
+
+		const collision_response_pairs responses = collision_body_resolve(body0, body1, contact);
 		auto &response0_separation = responses.penetration_responses[0];
 		auto &response1_separation = responses.penetration_responses[1];
 
@@ -90,11 +185,26 @@ static void manager_handle_collision_bodies(
 			space1.position.x += response1_separation.separation.x;
 			space1.position.y += response1_separation.separation.y;
 
-			space0.previous_position.x -= response0_restitution.restitution_displacement.x;
-			space0.previous_position.y -= response1_restitution.restitution_displacement.y;
+			// dbg_pos[0][dbg_pos_size] = body0.body.space.position;
+			// dbg_pos[1][dbg_pos_size] = position2_f32{
+			// 	.x = body0.body.space.position.x + response0_restitution.restitution_displacement.x,
+			// 	.y = body0.body.space.position.y + response0_restitution.restitution_displacement.y,
+			// };
+			// ++dbg_pos_size;
+
+			space0.previous_position.x = space0.position.x - response0_restitution.restitution_displacement.x;
+			space0.previous_position.y = space0.position.y - response0_restitution.restitution_displacement.y;
 			
-			space1.previous_position.x -= response1_restitution.restitution_displacement.x;
-			space1.previous_position.y -= response1_restitution.restitution_displacement.y;
+			space1.previous_position.x = space1.position.x - response1_restitution.restitution_displacement.x;
+			space1.previous_position.y = space1.position.y - response1_restitution.restitution_displacement.y;
+			
+			// std::cout << "body 0 penetration: " << contact.penetration.penetration.x << ", " << contact.penetration.penetration.y << std::endl;
+			// std::cout << "response 0 separation: " << response0_separation.separation.x << ", " << response0_separation.separation.y << std::endl;
+			
+			// std::cout << std::endl;
+
+			// std::cout << "body 1 penetration: " << contact.penetration.penetration.x << ", " << contact.penetration.penetration.y << std::endl;
+			// std::cout << "response 1 separation: " << response1_separation.separation.x << ", " << response1_separation.separation.y << std::endl;
 			break;
 		}
 		case collision_response_option_body0_trigger: {
@@ -114,6 +224,9 @@ static void manager_handle_collision_bodies(
 			std::exit(EXIT_FAILURE);
 		}
 		}
+		return true;
+	} else {
+		return false;
 	}
 }
 
@@ -129,35 +242,38 @@ static void manager_update_collisions(Manager &manager, const std::vector<ecs::e
 			auto entity = entities[i];
 			auto entity_collisionable = manager.getComponent<collisionable>(entity);
 			if (entity_collisionable != nullptr) {
-				const collision_body body = collision_body_from_collisionable(*entity_collisionable);
+				collision_body body = collision_body_from_collisionable(*entity_collisionable);
 
 				for (size_t j = i + 1; j < entities.size(); j++) {
 					auto other_entity = entities[j];
 					auto other_collisionable = manager.getComponent<collisionable>(other_entity);
 					if (other_collisionable != nullptr) {
-						const collision_body other_body = collision_body_from_collisionable(*other_collisionable);
+						collision_body other_body = collision_body_from_collisionable(*other_collisionable);
 
-						manager_handle_collision_bodies(manager, entity, other_entity, body, other_body, (
-							entity_collisionable->trigger | (other_collisionable->trigger << 1)
+						bool collided = manager_handle_collision_bodies(manager, entity, other_entity, body, other_body, delta_time_seconds, (
+							((entity_collisionable->options & collisionable_option_trigger) != 0)
+								| (((other_collisionable->options & collisionable_option_trigger) != 0) << 1)
 						));
 
-						entity_collisionable->transform.getPos() = Vector2D{
-							body.body.space.position.x,
-							body.body.space.position.y,
-						};
-						other_collisionable->transform.getPos() = Vector2D{
-							other_body.body.space.position.x,
-							other_body.body.space.position.y,
-						};
-
-						entity_collisionable->transform.getDir() = Vector2D{
-							(body.body.space.position.x - body.body.space.previous_position.x) / delta_time_seconds,
-							(body.body.space.position.y - body.body.space.previous_position.y) / delta_time_seconds,
-						};
-						other_collisionable->transform.getDir() = Vector2D{
-							(other_body.body.space.position.x - other_body.body.space.previous_position.x) / delta_time_seconds,
-							(other_body.body.space.position.y - other_body.body.space.previous_position.y) / delta_time_seconds,
-						};
+						if (collided) {
+							entity_collisionable->transform.getPos() = Vector2D{
+								body.body.space.position.x,
+								body.body.space.position.y,
+							};
+							other_collisionable->transform.getPos() = Vector2D{
+								other_body.body.space.position.x,
+								other_body.body.space.position.y,
+							};
+	
+							entity_collisionable->transform.getPos() += Vector2D{
+								(body.body.space.position.x - body.body.space.previous_position.x),
+								(body.body.space.position.y - body.body.space.previous_position.y),
+							};
+							other_collisionable->transform.getPos() += Vector2D{
+								(other_body.body.space.position.x - other_body.body.space.previous_position.x),
+								(other_body.body.space.position.y - other_body.body.space.previous_position.y),
+							};
+						}
 					}
 				}
 			}
@@ -171,12 +287,10 @@ void Manager::update(sceneId_t sId, Uint32 dt) {
 	for (auto &ents : entities) {
 		update(ents, dt);
 	}
-	// manager_update_collisions(*this, entities, dt);
+	manager_update_collisions(*this, entities, dt);
 }
 
-void Manager::render(sceneId_t sId)
-{
-
+void Manager::render(sceneId_t sId) {
     auto& _entity = getEntitiesByScene(sId);
 	switch (_entity.size()) {
 	case 0:
@@ -208,6 +322,52 @@ void Manager::render(sceneId_t sId)
 		render(last_ordered_entity);
 	}
 	}
+
+	for (size_t i = 0; i < dbg_rect_col_size; i++) {
+		SDL_SetRenderDrawColor(sdlutils().renderer(), 255, 0, 0, 255);
+		SDL_RenderDrawRect(sdlutils().renderer(), &dbg_rect_col[i]);
+	}
+	dbg_rect_col_size = 0;
+
+	const camera_screen &camera = getComponent<camera_component>(getHandler(ecs::hdlr::CAMERA))->cam;
+	for (size_t i = 0; i < dbg_pos_size; i++) {
+		SDL_SetRenderDrawColor(sdlutils().renderer(), 0, 255, 0, 255);
+
+		auto a =SDL_Rect_screen_rect_from_global(
+			rect_f32{
+				.position = {
+					.x = dbg_pos[0][i].x,
+					.y = dbg_pos[0][i].y,
+				},
+				.size = {
+					.x = 0.1f,
+					.y = 0.1f,
+				},
+			},
+			camera
+		);
+		auto b = SDL_Rect_screen_rect_from_global(
+			rect_f32{
+				.position = {
+					.x = dbg_pos[1][i].x,
+					.y = dbg_pos[1][i].y,
+				},
+				.size = {
+					.x = 0.1f,
+					.y = 0.1f,
+				},
+			},
+			camera
+		);
+		SDL_RenderDrawLine(
+			sdlutils().renderer(),
+			a.x,
+			a.y,
+			b.x,
+			b.y
+		);
+	}
+	dbg_pos_size = 0;
 }
 
 void Manager::refresh()

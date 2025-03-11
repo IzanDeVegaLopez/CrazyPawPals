@@ -9,7 +9,7 @@ rigidbody_component::rigidbody_component(mass_f32 mass, float restitution_coeffi
     assert(restitution_coefficient <= 1.0f && "error: restitution must be less or equal to one if the RIGIDBODY_COMPONENT_DEGEN_RESTITUTION flag is enabled");
 #endif
     inverse_mass = {1.0f / mass.value};
-    restitution_coefficient = restitution_coefficient;
+    this->restitution_coefficient = restitution_coefficient;
 }
 
 rigidbody_component::rigidbody_component(inverse_mass_f32 inverse_mass, float restitution_coefficient) 
@@ -18,5 +18,5 @@ rigidbody_component::rigidbody_component(inverse_mass_f32 inverse_mass, float re
 #if !RIGIDBODY_COMPONENT_DEGEN_RESTITUTION
     assert(restitution_coefficient <= 1.0f && "error: restitution must be less or equal to one if the RIGIDBODY_COMPONENT_DEGEN_RESTITUTION flag is enabled");
 #endif
-    restitution_coefficient = restitution_coefficient;
+    this->restitution_coefficient = restitution_coefficient;
 }

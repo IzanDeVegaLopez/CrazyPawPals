@@ -82,8 +82,10 @@ void GameScene::initScene() {
 		.semi_reach_time = 2.5f
 	}, *manager.getComponent<camera_component>(camera), *manager.getComponent<Transform>(player));
 
+	manager.refresh();
 	create_environment();
-	spawn_wave_manager();
+	spawn_sarno_rata(Vector2D{5.0f, 0.0f});
+	//spawn_wave_manager();
 }
 
 void GameScene::enterScene()
@@ -108,8 +110,8 @@ ecs::entity_t GameScene::create_player()
 	
 	auto &&player_transform = *new Transform({ 0.0f, 0.0f }, { 0.0f,0.0f }, 0.0f, 2.0f);
 	auto &&player_rect = *new rect_component{0, 0, 1.5f, 2.0f};
-	auto &&player_rigidbody = *new rigidbody_component{mass_f32{7.0f}, 0.75f};
-	auto &&player_collisionable = *new collisionable{player_transform, player_rigidbody, player_rect, false};
+	auto &&player_rigidbody = *new rigidbody_component{mass_f32{7.0f}, 1.0f};
+	auto &&player_collisionable = *new collisionable{player_transform, player_rigidbody, player_rect, collisionable_option_none};
 	ecs::entity_t player = create_entity(
 		ecs::grp::PLAYER,
 		ecs::scene::GAMESCENE,
@@ -143,8 +145,8 @@ GameScene::create_enemy(Transform* tr, const std::string& spriteKey, Weapon* wea
 	
 	float randSize = float(sdlutils().rand().nextInt(6, 14)) / 10.0f;
 	auto&& rect = *new rect_component{ 0, 0, width * randSize, height * randSize };
-	auto &&rigidbody = *new rigidbody_component{mass_f32{3.0f}, 0.35f};
-	auto &&col = *new collisionable{*tr, rigidbody, rect, false};
+	auto &&rigidbody = *new rigidbody_component{mass_f32{3.0f}, 0.05f};
+	auto &&col = *new collisionable{*tr, rigidbody, rect, collisionable_option_none};
 	auto e = create_entity(
 		ecs::grp::ENEMY,
 		ecs::scene::GAMESCENE,
@@ -171,7 +173,7 @@ void GameScene::spawn_sarno_rata(Vector2D posVec)
 {
 	auto&& manager = *Game::Instance()->get_mngr();
 	auto &&weapon = *new WeaponSarnoRata();
-	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
+	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 1.0f);
 
 	auto e = create_enemy(&tr, "sarno_rata", static_cast<Weapon*>(&weapon), 2, 1.5f, 2.0f);
 	auto&& mc = *manager.getComponent<MovementController>(e);
@@ -194,9 +196,9 @@ void GameScene::spawn_sarno_rata(Vector2D posVec)
 
     // Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador cerca
-    state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr]() {
-        return conditionManager.isPlayerNear(_p_tr, &tr, 5.0f);  
-    });
+    // state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr]() {
+    //     return conditionManager.isPlayerNear(_p_tr, &tr, 5.0f);  
+    // });
 
 	// De: Attacking a: Walking, Condición: Jugador lejos
     state->add_transition("Attacking", "Walking", [&conditionManager, _p_tr, &tr]() {

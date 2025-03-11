@@ -25,11 +25,13 @@ struct collision_penetration {
 struct collision_contact {
     collision_penetration penetration;
     vec2_f32 normal;
+    float delta_of_collision_normalised;
 };
 
 bool collision_body_check(
     const collision_body &body0,
     const collision_body &body1,
+    const seconds_f32 delta_time,
     collision_contact &out_contact
 );
 
@@ -55,7 +57,6 @@ struct collision_response_pairs {
 collision_response_pairs collision_body_resolve(
     const collision_body &body0,
     const collision_body &body1,
-    const seconds_f32 delta_time,
     const collision_contact &contact
 );
 

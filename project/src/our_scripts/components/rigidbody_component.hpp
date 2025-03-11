@@ -2,6 +2,7 @@
 #define RIGIDBODY_COMPONENT_HPP
 
 #include "../../ecs/Component.h"
+#include "../../ecs/ecs.h"
 #include "../../physics/rigidbody.hpp"
 #include "Transform.h"
 #include "rect_component.hpp"
@@ -29,16 +30,23 @@ public:
 };
 
 
+enum collisionable_option {
+    collisionable_option_none = 0,
+    collisionable_option_trigger = 1 << 0,
+};
+
+typedef uint8_t collisionable_flags;
+
 struct collisionable : public ecs::Component {
     __CMPID_DECL__(ecs::cmp::COLLISIONABLE);
 
     Transform &transform;
     rigidbody_component &rigidbody;
     rect_component &rect;
-    bool trigger;
+    collisionable_flags options;
 
-    collisionable(Transform &transform, rigidbody_component &rigidbody, rect_component &rect, bool trigger)
-        : transform(transform), rigidbody(rigidbody), rect(rect), trigger(trigger) {
+    collisionable(Transform &transform, rigidbody_component &rigidbody, rect_component &rect, collisionable_option options)
+        : transform(transform), rigidbody(rigidbody), rect(rect), options(options) {
 
     }
 };
