@@ -5,7 +5,6 @@
 #include "../sdlutils/InputHandler.h"
 #include "../sdlutils/SDLUtils.h"
 #include "../utils/Vector2D.h"
-#include "../utils/Collisions.h"
 
 #include "../our_scripts/components/Image.h"
 #include "../our_scripts/components/Transform.h"
@@ -394,7 +393,7 @@ void GameScene::spawn_wave_manager()
 			{ {0.2,0.1},{0.6,0.2} },
 			0,
 			Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam,
-			sdlutils().images().at("event_letters")
+			&sdlutils().images().at("event_letters")
 		)
 	);
 }

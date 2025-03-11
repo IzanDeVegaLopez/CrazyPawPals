@@ -116,9 +116,14 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
     auto e = create_button(bp);
     auto buttonComp = mngr->getComponent<Button>(e);
     //used for change the sprite once a button is clicked
-    auto imgComp = mngr->addComponent<ImageForButton>(e, 
+    auto imgComp = mngr->addComponent<ImageForButton>(e,
         &sdlutils().images().at(bp.sprite_key),
-        &sdlutils().images().at(bp.sprite_key + "_selected"));
+        &sdlutils().images().at(bp.sprite_key + "_selected"),
+        rect_f32({ 0.2f,0.1f }, { 0.6f,0.2f }),
+        0,
+        Game::Instance()->get_mngr()->getComponent<camera_component>(
+            Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
+    );
     auto player = mngr->getHandler(ecs::hdlr::PLAYER);
     buttonComp->connectClick([buttonComp, imgComp, &mngr, wt, player, this]() {
         //std::cout << "left click-> button" << std::endl;
@@ -171,8 +176,12 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
     //used for change the sprite once a button is clicked
     auto imgComp = mngr->addComponent<ImageForButton>(e,
         &sdlutils().images().at(bp.sprite_key),
-        &sdlutils().images().at(bp.sprite_key + "_selected"));
-
+        &sdlutils().images().at(bp.sprite_key + "_selected"),
+        rect_f32( {0.2f,0.1f},{0.6f,0.2f} ),
+        0,
+        Game::Instance()->get_mngr()->getComponent<camera_component>(
+            Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
+    );
     buttonComp->connectClick([buttonComp, imgComp, &mngr, player, dt, this]() {
         std::list<Card*> cl = {};
         
@@ -215,4 +224,8 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
 void SelectionMenuScene::render() {
     //_selection->render(0,0); 
     Scene::render();
+}
+void SelectionMenuScene::show_concrete_deck_info() {
+    
+
 }
