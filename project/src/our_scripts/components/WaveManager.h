@@ -3,6 +3,8 @@
 #include "../../ecs/Component.h"
 #include "../../sdlutils/SDLUtils.h"
 
+typedef Uint32 time;
+
 enum enemyType {
     none = 0,
     sarno_rata = 1,
@@ -14,7 +16,7 @@ enum enemyType {
 class WaveManager : public ecs::Component {
     // _waves es un vector de pares (int, vector<int>)
     // Los 0 son espacios extra
-    std::vector<std::pair<int, std::vector<int>>> _waves = {
+    std::vector<std::pair<time, std::vector<enemyType>>> _waves = {
         { 10000,{
             sarno_rata, none,
             sarno_rata, sarno_rata, none,
@@ -57,8 +59,8 @@ public:
     void enterRewardsMenu();
 
 private:
-    Uint32 _currentWaveTime = 0; //tiempo actual (post calculo, inicial en constructor)
-    Uint32 _waveTime; // cuánto dura la oleada (CONSTRUCTOR)
+    time _currentWaveTime = 0; //tiempo actual (post calculo, inicial en constructor)
+    time _waveTime; // cuánto dura la oleada (CONSTRUCTOR)
 
     int _currentWave = 0;
 
