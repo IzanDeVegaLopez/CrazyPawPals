@@ -59,6 +59,7 @@ public:
     void enterRewardsMenu();
 
 private:
+    void choose_new_event();
     Uint32 _currentWaveTime = 0; //tiempo actual (post calculo, inicial en constructor)
     Uint32 _waveTime; // cuánto dura la oleada (CONSTRUCTOR)
 

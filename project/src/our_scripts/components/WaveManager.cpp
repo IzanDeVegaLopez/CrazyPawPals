@@ -144,6 +144,9 @@ WaveManager::enterRewardsMenu() {
     //std::cout << "Active time: " << sdlutils().virtualTimer().currRealTime() << std::endl;
     //std::cout << "Todos los enemigos eliminados. Entrando al menu de recompensas..." << std::endl;
     _current_wave_event->end_wave_callback();
+
+
+
     // Esto tiene que ir después del menu de recompensas
     _currentWave++;
     _currentWaveTime = 0;
@@ -156,5 +159,10 @@ WaveManager::enterRewardsMenu() {
 	for (int i : _waves[_currentWave].second) {
 		if (i != 0) _numEnemies++;
 	}
+}
+
+void WaveManager::choose_new_event()
+{
+    //TODO elegir evento y llamar a la función de iniciar
 }
 
