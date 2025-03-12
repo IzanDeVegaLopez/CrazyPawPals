@@ -59,12 +59,6 @@ enum collision_response_options {
 };
 typedef uint8_t collision_response_flags;
 
-static SDL_Rect dbg_rect_col[256] = {0};
-static size_t dbg_rect_col_size = 0;
-
-static position2_f32 dbg_pos[2][256] = {0};
-static size_t dbg_pos_size = {0};
-
 static bool manager_handle_collision_bodies(
 	Manager &manager,
 	const ecs::entity_t entity0,
@@ -78,133 +72,36 @@ static bool manager_handle_collision_bodies(
 	(void)entity1;
 
 	auto &&camera = *manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA));
-
-	assert(dbg_rect_col_size < sizeof(dbg_rect_col) / sizeof(dbg_rect_col[0]));
-	dbg_rect_col[dbg_rect_col_size] = SDL_Rect_screen_rect_from_global(
-		rect_f32{
-			.position = {
-				.x = body0.body.body.position.x + body0.body.space.position.x - body0.body.body.size.x * 0.5f,
-				.y = body0.body.body.position.y + body0.body.space.position.y + body0.body.body.size.y * 0.5f,
-			},
-			.size = {
-				.x = body0.body.body.size.x,
-				.y = body0.body.body.size.y,
-			},
-		},
-		camera.cam
-	);
-	++dbg_rect_col_size;
-	dbg_rect_col[dbg_rect_col_size] = SDL_Rect_screen_rect_from_global(
-		rect_f32{
-			.position = {
-				.x = body1.body.body.position.x + body1.body.space.position.x - body1.body.body.size.x * 0.5f,
-				.y = body1.body.body.position.y + body1.body.space.position.y + body1.body.body.size.y * 0.5f,
-			},
-			.size = {
-				.x = body1.body.body.size.x,
-				.y = body1.body.body.size.y,
-			},
-		},
-		camera.cam
-	);
-	++dbg_rect_col_size;
-
-	dbg_rect_col[dbg_rect_col_size] = SDL_Rect_screen_rect_from_global(
-		rect_f32{
-			.position = {
-				.x = body1.body.body.position.x + body1.body.space.position.x - (body1.body.body.size.x + body0.body.body.size.x) * 0.5f,
-				.y = body1.body.body.position.y + body1.body.space.position.y + (body1.body.body.size.y + body0.body.body.size.y) * 0.5f,
-			},
-			.size = {
-				.x = body1.body.body.size.x + body0.body.body.size.x,
-				.y = body1.body.body.size.y + body0.body.body.size.y,
-			},
-		},
-		camera.cam
-	);
-	++dbg_rect_col_size;
-
-	dbg_rect_col[dbg_rect_col_size] = SDL_Rect_screen_rect_from_global(
-		rect_f32{
-			.position = {
-				.x = - (body1.body.body.size.x + body0.body.body.size.x) * 0.5f,
-				.y = + (body1.body.body.size.y + body0.body.body.size.y) * 0.5f,
-			},
-			.size = {
-				.x = body1.body.body.size.x + body0.body.body.size.x,
-				.y = body1.body.body.size.y + body0.body.body.size.y,
-			},
-		},
-		camera.cam
-	);
-	++dbg_rect_col_size;
-
-	dbg_rect_col[dbg_rect_col_size] = SDL_Rect_screen_rect_from_global(
-		rect_f32{
-			.position = {
-				.x = (body0.body.space.previous_position.x + body0.body.body.position.x - (body1.body.body.position.x + body1.body.space.previous_position.x)),
-				.y = (body0.body.space.previous_position.y + body0.body.body.position.y - (body1.body.body.position.y + body1.body.space.previous_position.y)),
-			},
-			.size = {
-				.x = 0.0f,
-				.y = 0.0f,
-			},
-		},
-		camera.cam
-	);
-	++dbg_rect_col_size;
-	
 	if (!collision_body_check_broad(body0, body1)) {
 		return false;
 	}
 
 	collision_contact contact;
 	if (collision_body_check(body0, body1, delta_time, contact)) {
-		dbg_pos[0][dbg_pos_size] = body0.body.space.position;
-		dbg_pos[1][dbg_pos_size] = position2_f32{
-			.x = body0.body.space.position.x + contact.penetration.penetration.x * 20.0f,
-			.y = body0.body.space.position.y + contact.penetration.penetration.y * 20.0f,
-		};
-		++dbg_pos_size;
-
-		const collision_response_pairs responses = collision_body_resolve(body0, body1, contact);
-		auto &response0_separation = responses.penetration_responses[0];
-		auto &response1_separation = responses.penetration_responses[1];
-
-		auto &response0_restitution = responses.restitution_responses[0];
-		auto &response1_restitution = responses.restitution_responses[1];
-
-		auto &space0 = body0.body.space;
-		auto &space1 = body1.body.space;
-
 		switch (flags & (collision_response_option_body0_trigger | collision_response_option_body1_trigger)) {
 		case collision_response_option_none: {
-			space0.position.x += response0_separation.separation.x;
-			space0.position.y += response0_separation.separation.y;
-
-			space1.position.x += response1_separation.separation.x;
-			space1.position.y += response1_separation.separation.y;
-
-			// dbg_pos[0][dbg_pos_size] = body0.body.space.position;
-			// dbg_pos[1][dbg_pos_size] = position2_f32{
-			// 	.x = body0.body.space.position.x + response0_restitution.restitution_displacement.x,
-			// 	.y = body0.body.space.position.y + response0_restitution.restitution_displacement.y,
-			// };
-			// ++dbg_pos_size;
-
-			space0.previous_position.x = space0.position.x - response0_restitution.restitution_displacement.x;
-			space0.previous_position.y = space0.position.y - response0_restitution.restitution_displacement.y;
-			
-			space1.previous_position.x = space1.position.x - response1_restitution.restitution_displacement.x;
-			space1.previous_position.y = space1.position.y - response1_restitution.restitution_displacement.y;
-			
-			// std::cout << "body 0 penetration: " << contact.penetration.penetration.x << ", " << contact.penetration.penetration.y << std::endl;
-			// std::cout << "response 0 separation: " << response0_separation.separation.x << ", " << response0_separation.separation.y << std::endl;
-			
-			// std::cout << std::endl;
-
-			// std::cout << "body 1 penetration: " << contact.penetration.penetration.x << ", " << contact.penetration.penetration.y << std::endl;
-			// std::cout << "response 1 separation: " << response1_separation.separation.x << ", " << response1_separation.separation.y << std::endl;
+			const collision_response_pairs responses = collision_body_resolve(body0, body1, contact);
+			auto &response0_separation = responses.penetration_responses[0];
+			auto &response1_separation = responses.penetration_responses[1];
+	
+			auto &response0_restitution = responses.restitution_responses[0];
+			auto &response1_restitution = responses.restitution_responses[1];
+			{
+				auto &space0 = body0.body.space;
+				auto &space1 = body1.body.space;
+				
+				space0.position.x += response0_separation.separation.x;
+				space0.position.y += response0_separation.separation.y;
+	
+				space1.position.x += response1_separation.separation.x;
+				space1.position.y += response1_separation.separation.y;
+	
+				space0.previous_position.x = space0.position.x - response0_restitution.restitution_displacement.x;
+				space0.previous_position.y = space0.position.y - response0_restitution.restitution_displacement.y;
+				
+				space1.previous_position.x = space1.position.x - response1_restitution.restitution_displacement.x;
+				space1.previous_position.y = space1.position.y - response1_restitution.restitution_displacement.y;
+			}
 			break;
 		}
 		case collision_response_option_body0_trigger: {
