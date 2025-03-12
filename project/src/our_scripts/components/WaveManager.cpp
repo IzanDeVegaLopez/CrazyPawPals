@@ -5,16 +5,18 @@
 #include "game/Game.h"
 #include "game/GameScene.h"
 #include "sdlutils/SDLUtils.h"
+#include "../wave_events/no_event.hpp"
 
 // 1 segundo = 1000 ticks (ms)
-WaveManager::WaveManager() : 
+WaveManager::WaveManager() :
     _currentWaveTime(0),
     _waveTime(60000),
-	_currentWave(0),
+    _currentWave(0),
     _waveActive(false), _fogActive(false),
     _enemiesSpawned(0),
     _enemiesKilled(0),
-    _totalSpawnTime(7500.0f)
+    _totalSpawnTime(7500.0f),
+    _current_wave_event(new no_event(this))
 {
 }
 
@@ -27,7 +29,12 @@ WaveManager::update(uint32_t delta_time) {
     //_currentTime = sdlutils().virtualTimer().currRealTime();
 	_currentWaveTime += delta_time;
 
-    if (areAllEnemiesDead()) enterRewardsMenu();
+    if(_current_wave_event != nullptr)
+        _current_wave_event->update(delta_time);
+
+    if (areAllEnemiesDead()) {
+        enterRewardsMenu();
+    }
 
     if (_waveActive) {
         // Verificar si ha pasado un minuto de oleada
@@ -103,21 +110,11 @@ WaveManager::spawnWave() {
 			        //std::cout << "Enemigo no existe" << std::endl;
                 }
             }
-            // DEBUG
-            //std::cout << "Enemy " << _waves[_currentWave].second[_enemiesSpawned] << std::endl;
-            //std::cout << "Spawned at(" << posVec.getX() << ", " << posVec.getY() << ") with " << rAng << "º + " << (_min_distance + _op_dist) << "m, rn = " << rn << std::endl;
-            //std::cout << "Time: " << _currentWaveTime << std::endl;
-            //std::cout << "Active time: " << sdlutils().virtualTimer().currRealTime() << std::endl;
-            //std::cout << "Time: " << _currentWaveTime << "/" << _nextSpawn << std::endl;
-            //std::cout << std::endl;
-
             // Tiempo
             _min_time = _totalSpawnTime / _numEnemies;
             _op_time = _min_time * rn;
             _nextSpawn = _currentWaveTime + (_min_time + _op_time);
 
-            //std::cout << "Enemy " << _waves[_currentWave].second[_enemiesSpawned] << " spawned at: " << posVec.getX() << ", " << posVec.getY() << std::endl;
-		    //std::cout << std::endl;
             _enemiesSpawned++;
         }
     }
@@ -146,7 +143,7 @@ void
 WaveManager::enterRewardsMenu() {
     //std::cout << "Active time: " << sdlutils().virtualTimer().currRealTime() << std::endl;
     //std::cout << "Todos los enemigos eliminados. Entrando al menu de recompensas..." << std::endl;
-
+    _current_wave_event->end_wave_callback();
     // Esto tiene que ir después del menu de recompensas
     _currentWave++;
     _currentWaveTime = 0;

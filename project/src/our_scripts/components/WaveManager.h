@@ -2,6 +2,7 @@
 
 #include "../../ecs/Component.h"
 #include "../../sdlutils/SDLUtils.h"
+#include "../wave_events/wave_event.hpp"
 
 enum enemyType {
     none = 0,
@@ -49,7 +50,7 @@ class WaveManager : public ecs::Component {
 public:
     __CMPID_DECL__(ecs::cmp::WAVEMANAGER)
     WaveManager();
-    virtual ~WaveManager();
+    virtual ~WaveManager() override;
 
     void update(uint32_t delta_time) override;
     void spawnWave();
@@ -62,6 +63,7 @@ private:
     Uint32 _waveTime; // cuánto dura la oleada (CONSTRUCTOR)
 
     int _currentWave = 0;
+    std::unique_ptr<wave_event> _current_wave_event;
 
     bool _waveActive = false;
     bool _fogActive = false;
