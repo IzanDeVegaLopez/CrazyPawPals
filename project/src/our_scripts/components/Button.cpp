@@ -7,7 +7,7 @@
 
 using namespace ecs;
 
-Button::Button(): _current_state(EMPTY) {
+Button::Button(): _current_state(EMPTY), _clicked(false) {
 }
 
 Button::~Button() {}
@@ -32,7 +32,7 @@ void Button::update(uint32_t delta_time) {
         _current_state = EMPTY;
     }
 
-    if (ih().mouseButtonDownEvent() && ih().getMouseButtonState(InputHandler::LEFT)) {
+    if (ih().getMouseButtonState(InputHandler::LEFT)) {
         leftClickDown();
     }
     else {

@@ -17,7 +17,7 @@ public:
 	virtual void enterScene() = 0;
 	virtual void exitScene() = 0;
 
-    virtual void update(uint32_t delta_time);
+    void update(uint32_t delta_time);
 	virtual void render();
 
 	template <typename ... Cmps>

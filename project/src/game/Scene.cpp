@@ -6,7 +6,6 @@
 
 #include "../our_scripts/components/Transform.h"
 #include "../our_scripts/components/Image.h"
-#include "../our_scripts/components/ImageForButton.h"
 #include "../our_scripts/components/Button.h"
 #include <string>
 Scene::Scene(ecs::sceneId_t id) : _scene_ID(id) {}
@@ -69,7 +68,7 @@ ecs::entity_t
 Scene::create_button(const GameStructs::ButtonProperties& bp) {
     auto b = new Button();
     ecs::entity_t e = create_entity(
-                        bp.ID,
+                        ecs::grp::UI,
                         _scene_ID,
                         new Transform(bp.pos, { 0.0f,0.0f }, bp.rot, 0.0f, bp.width, bp.height),
                         new Image(&sdlutils().images().at(bp.sprite_key)),

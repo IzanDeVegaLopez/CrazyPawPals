@@ -92,10 +92,8 @@ WaveManager::spawnWave() {
                     break;
                 case 4:
                     static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_boom(posVec);
+                    std::cout << "Boom" << std::endl;
 			        break;
-                case 5:
-                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_ratatouille(posVec);
-                        break;
                 default: {
                     assert(false && "unreachable");
                     exit(EXIT_FAILURE);

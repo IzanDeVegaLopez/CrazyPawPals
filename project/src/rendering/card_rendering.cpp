@@ -38,22 +38,10 @@ SDL_Rect card_rendering_descriptor_render(
         int(destination.w * descriptor.mana_cost_subrect.size.x),
         int(destination.h * descriptor.mana_cost_subrect.size.y)
     };
-
     
     Font &font = sdlutils().fonts().at(descriptor.mana_cost_font_key.data());
     Texture mana_cost{&renderer, std::to_string(descriptor.mana_cost).c_str(), font, descriptor.mana_cost_color};
     mana_cost.render(mana_cost_destination);
-
-    if (descriptor.health_cost > 0) {
-        const SDL_Rect health_cost_destination = {
-        int(destination.x + destination.w * descriptor.health_cost_subrect.position.x),
-        int(destination.y + destination.h * descriptor.health_cost_subrect.position.y),
-        int(destination.w * descriptor.health_cost_subrect.size.x),
-        int(destination.h * descriptor.health_cost_subrect.size.y)
-        };
-        Texture health_cost{ &renderer, std::to_string(descriptor.health_cost).c_str(), font, descriptor.health_cost_color };
-        health_cost.render(health_cost_destination);
-    }
 
     return destination;
 }
