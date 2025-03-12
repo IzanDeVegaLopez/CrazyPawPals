@@ -338,16 +338,11 @@ collision_response_pairs collision_body_resolve(
     };
 
     const seconds_f32 delta_of_collision_complement = 1.0f - contact.delta_of_collision_normalised;
-    const float inverse_restitution_body0 = 1.0f / (1.0f + body0.restitution);
-    const float inverse_restitution_body1 = 1.0f / (1.0f + body1.restitution);
-    const float inverse_restitution_sum = inverse_restitution_body0 + inverse_restitution_body1;
-
+    const float restitution_sum = body0.restitution + body1.restitution;
     const float max_restitution = (std::max)(body0.restitution, body1.restitution);
-    const float restitution_body0_coefficient = (inverse_restitution_body0 / inverse_restitution_sum) * max_restitution;
-    const float restitution_body1_coefficient = (inverse_restitution_body1 / inverse_restitution_sum) * max_restitution;
 
-    std::cout << "inverse_restitution_body0_coefficient: " << restitution_body0_coefficient << std::endl;
-    std::cout << "inverse_restitution_body1_coefficient: " << restitution_body1_coefficient << std::endl;
+    const float restitution_body0_coefficient = (body0.restitution / restitution_sum) * max_restitution;
+    const float restitution_body1_coefficient = (body1.restitution / restitution_sum) * max_restitution;
 
     const vec2_f32 displacement_body0{
         .x = body0.body.space.position.x - body0.body.space.previous_position.x,

@@ -102,18 +102,22 @@ static bool manager_handle_collision_bodies(
 				space1.previous_position.x = space1.position.x - response1_restitution.restitution_displacement.x;
 				space1.previous_position.y = space1.position.y - response1_restitution.restitution_displacement.y;
 			}
+
+			manager.addComponent<contact_manifold>(entity0, contact, entity0, entity1);
+			manager.addComponent<contact_manifold>(entity1, contact, entity0, entity1);
 			break;
 		}
 		case collision_response_option_body0_trigger: {
-			// TODO: trigger body0
+			manager.addComponent<trigger_manifold>(entity0, contact, entity0, entity1);
 			break;
 		}
 		case collision_response_option_body1_trigger: {
-			// TODO: trigger body1
+			manager.addComponent<trigger_manifold>(entity1, contact, entity0, entity1);
 			break;
 		}
 		case collision_response_option_body0_trigger | collision_response_option_body1_trigger: {
-			// TODO: trigger body0 and body1
+			manager.addComponent<trigger_manifold>(entity0, contact, entity0, entity1);
+			manager.addComponent<trigger_manifold>(entity1, contact, entity0, entity1);
 			break;
 		}
 		default: {
@@ -219,52 +223,6 @@ void Manager::render(sceneId_t sId) {
 		render(last_ordered_entity);
 	}
 	}
-
-	for (size_t i = 0; i < dbg_rect_col_size; i++) {
-		SDL_SetRenderDrawColor(sdlutils().renderer(), 255, 0, 0, 255);
-		SDL_RenderDrawRect(sdlutils().renderer(), &dbg_rect_col[i]);
-	}
-	dbg_rect_col_size = 0;
-
-	const camera_screen &camera = getComponent<camera_component>(getHandler(ecs::hdlr::CAMERA))->cam;
-	for (size_t i = 0; i < dbg_pos_size; i++) {
-		SDL_SetRenderDrawColor(sdlutils().renderer(), 0, 255, 0, 255);
-
-		auto a =SDL_Rect_screen_rect_from_global(
-			rect_f32{
-				.position = {
-					.x = dbg_pos[0][i].x,
-					.y = dbg_pos[0][i].y,
-				},
-				.size = {
-					.x = 0.1f,
-					.y = 0.1f,
-				},
-			},
-			camera
-		);
-		auto b = SDL_Rect_screen_rect_from_global(
-			rect_f32{
-				.position = {
-					.x = dbg_pos[1][i].x,
-					.y = dbg_pos[1][i].y,
-				},
-				.size = {
-					.x = 0.1f,
-					.y = 0.1f,
-				},
-			},
-			camera
-		);
-		SDL_RenderDrawLine(
-			sdlutils().renderer(),
-			a.x,
-			a.y,
-			b.x,
-			b.y
-		);
-	}
-	dbg_pos_size = 0;
 }
 
 void Manager::refresh()

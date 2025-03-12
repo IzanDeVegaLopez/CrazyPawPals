@@ -52,8 +52,9 @@ struct collisionable : public ecs::Component {
     }
 };
 
+template <ecs::cmp::cmpId COMPONENT_ID>
 struct collision_manifold : public ecs::Component {
-    __CMPID_DECL__(ecs::cmp::COLLISION_MANIFOLD);
+    __CMPID_DECL__(COMPONENT_ID);
 
     collision_contact contact;
     ecs::entity_t body0;
@@ -63,15 +64,17 @@ struct collision_manifold : public ecs::Component {
         : contact(contact), body0(body0), body1(body1) {
     }
 };
+using contact_manifold = collision_manifold<ecs::cmp::CONTACT_MANIFOLD>;
+using trigger_manifold = collision_manifold<ecs::cmp::TRIGGER_MANIFOLD>;
 
 template <typename OnCollisionComponent>
 struct on_collision : public ecs::Component {
     using collision_callback = OnCollisionComponent::on_contact;
     void update(uint32_t delta_time) override {
         auto &&manager = *Game::Instance()->get_mngr();
-        collision_manifold *manifold = manager.getComponent<collision_manifold>(_ent);
+        contact_manifold *manifold = manager.getComponent<contact_manifold>(_ent);
         if (manifold != nullptr) {
-            collision_callback(manifold);
+            collision_callback(*manifold);
             manager.removeComponent<collision_manifold>(_ent);
         }
     }
@@ -82,14 +85,29 @@ struct on_trigger : public ecs::Component {
     using trigger_callback = OnTriggerComponent::on_contact;
     void update(uint32_t delta_time) override {
         auto &&manager = *Game::Instance()->get_mngr();
-        collision_manifold *manifold = manager.getComponent<collision_manifold>(_ent);
+        trigger_manifold *manifold = manager.getComponent<trigger_manifold>(_ent);
         if (manifold != nullptr) {
-            trigger_callback(manifold);
+            trigger_callback(*manifold);
             manager.removeComponent<collision_manifold>(_ent);
         }
     }
 };
 
+// DOC!
+
+// class test_collision_callback : public on_collision<test_collision_callback> {
+//     __CMPID_DECL__(ecs::cmp::/*COMP_ID*/);
+//     void on_contact(const contact_manifold &manifold) {
+//         // Collision event code here
+//     }
+// };
+
+// class test_trigger_callback : public on_trigger<test_trigger_callback> {
+//     __CMPID_DECL__(ecs::cmp::/*COMP_ID*/);
+//     void on_contact(const trigger_manifold &manifold) {
+//         // Triiger event code here
+//     }
+// };
 
 #endif
 
