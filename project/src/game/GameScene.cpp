@@ -37,6 +37,7 @@
 #include "../our_scripts/components/EnemyStateMachine.h"
 #include "../our_scripts/components/StateMachine.h"
 #include "../our_scripts/components/dyn_image.hpp"
+#include "../our_scripts/components/transformless_dyn_image.h"
 #include "../our_scripts/components/render_ordering.hpp"
 #include "../our_scripts/components/rect_component.hpp"
 #include "../our_scripts/components/StopOnBorder.h"
@@ -357,7 +358,13 @@ void GameScene::spawn_wave_manager()
 	create_entity(
 		ecs::hdlr::WAVE,
 		ecs::scene::GAMESCENE,
-		new WaveManager()
+		new WaveManager(),
+		new transformless_dyn_image(
+			{ {0.2,0.1},{0.6,0.2} },
+			0,
+			Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam,
+			sdlutils().images().at("event_letters")
+		)
 	);
 }
 
