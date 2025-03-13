@@ -14,10 +14,10 @@ ControlsScene::ControlsScene() : Scene(ecs::scene::CONTROLSSCENE)
     _background = &sdlutils().images().at("controls");
 
     //Boton back to main menu
-    GameStructs::ButtonProperties buttonPropTemplate = { {30, 30},
-       30.0f, 30.0f, 0.0f, ""
+    GameStructs::ButtonProperties mainMenuB = {
+        { {0.1f, 0.1f},{0.1f, 0.1f} },
+        0.0f, ""
     };
-    GameStructs::ButtonProperties mainMenuB = buttonPropTemplate;
     mainMenuB.sprite_key = "heart";
     create_mainmenu_button(mainMenuB);
 

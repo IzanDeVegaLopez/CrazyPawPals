@@ -42,7 +42,7 @@ struct transformless_dyn_image : public ecs::Component {
 			int(rect.size.x),
 			int(rect.size.y)
 		}; //SDL_Rect_screen_rect_from_global(destination_rect, my_camera_screen);
-		const SDL_Rect source = { 0, 0, texture.width(), texture.height() };
+		const SDL_Rect source = { 0, 0, texture->width(), texture->height() };
 		/*
 		//card_texture.render(source, destination, angle, nullptr, flip);
 		const SDL_Rect subsource = {

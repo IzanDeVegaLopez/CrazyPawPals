@@ -13,7 +13,7 @@ MainMenuScene::MainMenuScene() : Scene(ecs::scene::MAINMENUSCENE)
 	_background = &sdlutils().images().at("start");
 
     GameStructs::ButtonProperties buttonPropTemplate = { 
-        { {0.2f, 0.1f},{0.6f, 0.2f} },
+        { {0.5f, 0.3f},{0.6f, 0.2f} },
         0.0f, ""
     };
 
@@ -23,13 +23,13 @@ MainMenuScene::MainMenuScene() : Scene(ecs::scene::MAINMENUSCENE)
     create_start_button(startB);
 
     //Boton controls
-    buttonPropTemplate.rect.position.y = 0.4f;
+    buttonPropTemplate.rect.position.y += 0.3f;
     GameStructs::ButtonProperties controlsB = buttonPropTemplate;
     controlsB.sprite_key = "play_button";
     create_controls_button(controlsB);
 
     //Boton exit
-    buttonPropTemplate.rect.position.y = 0.6f;
+    buttonPropTemplate.rect.position.y += 0.3f;
     GameStructs::ButtonProperties exitB = buttonPropTemplate;
     exitB.sprite_key = "play_button";
     create_exit_button(exitB);
