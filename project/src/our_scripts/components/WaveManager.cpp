@@ -163,6 +163,19 @@ WaveManager::enterRewardsMenu() {
 
 void WaveManager::choose_new_event()
 {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<int> rnd_gen(0,10);
+    switch(rnd_gen(gen)) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+        _current_wave_event = (std::unique_ptr<wave_event>)new no_event(this);
+    }
+
+    _current_wave_event->start_wave_callback();
     //TODO elegir evento y llamar a la función de iniciar
 }
 
