@@ -19,7 +19,6 @@ struct AnimationVars {
 	Uint32 _last_milled_card_time = 0;
 	Uint32 _mill_card_anim_duration = 500;
 };
-
 class Deck: public ecs::Component {
 protected:
 	int _reload_time = 1000;
@@ -76,6 +75,7 @@ public:
 
 	// Used for Primed cards to gain additional effects.
 	inline bool get_primed() { return _primed; }
+
 	MovementController* get_movement_controller();
 	void set_primed(bool);
 
@@ -90,5 +90,4 @@ public:
 	inline Card* hand() { return _hand; }
 	inline Card* last_milled_card() { return _last_milled_card; }
 	inline AnimationVars animation_vars() { return _av; }
-
 };

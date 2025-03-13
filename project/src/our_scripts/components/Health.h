@@ -13,8 +13,8 @@ public:
 	int getMaxHealth() const;
 	void setMaxHeatlh(int h);
 	int getHealth() const;
-	void payHealth(int cost);
 	void takeShield(int s);
+	void payHealth(int cost);
 	void update(uint32_t delta_time) override;
 
 protected:

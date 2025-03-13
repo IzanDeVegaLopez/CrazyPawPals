@@ -10,8 +10,6 @@ private:
 	int _max_mana; // Maximum amount of mana that can be stored.
 	int _mana_regen; // Mana gained per second.
 	int _mana_count; // Current amount of mana.
-	Texture* _tex_orb;
-	Texture* _tex_orb_empty;
 public:
 	__CMPID_DECL__(ecs::cmp::MANA);
 	ManaComponent(int max = 5000, int regen = 750) : _max_mana(max), _mana_regen(regen), _mana_count(0) {}
@@ -20,8 +18,7 @@ public:
 		_mana_count = std::min(_mana_count + int(_mana_regen*delta_time)/1000, _max_mana);
 		//std::cout << delta_time << std::endl;
 	}
-	/*
-	void render() override {
+	/*void render() override {
 		SDL_SetRenderDrawBlendMode(sdlutils().renderer(), SDL_BLENDMODE_NONE);
 
 		//bg
@@ -41,8 +38,9 @@ public:
 			if (_mana_count >= i * 1000) _tex_orb->render(output);
 			else _tex_orb_empty->render(output);
 		}
-	}
-	*/
+
+		//std::cout << _mana_count << std::endl;
+	}*/
 	
 	// Changes current mana by a given amount. Can be positive or negative, and cannot be lower than 0 or greater than _max_mana.
 	void change_mana(int delta) { _mana_count = std::max(0, std::min(_mana_count + (delta*1000), _max_mana)); }

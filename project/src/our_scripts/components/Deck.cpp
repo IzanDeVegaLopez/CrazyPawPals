@@ -167,7 +167,6 @@ void Deck::update(Uint32 deltaTime) noexcept
 	}
 }
 
-
 void Deck::add_card_to_deck(Card* c)
 {
 	assert(c != nullptr);
@@ -201,7 +200,6 @@ void Deck::move_discard_to_draw() {
 
 void Deck::initComponent()
 {
-	_prime_tex = &sdlutils().images().at("prime");
 	_mana = Game::Instance()->get_mngr()->getComponent<ManaComponent>(_ent);
 	assert(_mana!=nullptr);
 	_health = Game::Instance()->get_mngr()->getComponent<Health>(_ent);

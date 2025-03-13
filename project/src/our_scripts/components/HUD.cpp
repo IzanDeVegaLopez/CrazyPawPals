@@ -109,7 +109,7 @@ void HUD::render()
 	card_rendering_descriptor crd = card_rendering_descriptor();
 	//Position and scale for the cost --> both values from 0 to 1
 
-	//Función que calcula la posición de una carta según el tiempo
+	//Funciï¿½n que calcula la posiciï¿½n de una carta segï¿½n el tiempo
 	float percentual_time_to_card_in_position = (sdlutils().virtualTimer().currTime() - av._last_card_draw_time) / (float)av._card_draw_anim_duration;
 
 	crd.mana_cost_font_key = "ARIAL16";
@@ -152,7 +152,7 @@ void HUD::render()
 
 #pragma region milled_card
 	if (_deck->last_milled_card() != nullptr) {
-		//Función que calcula la posición de una carta según el tiempo
+		//Funciï¿½n que calcula la posiciï¿½n de una carta segï¿½n el tiempo
 		percentual_time_to_card_in_position = (sdlutils().virtualTimer().currTime() - av._last_milled_card_time) / (float)av._mill_card_anim_duration;
 
 		float scale = std::lerp(1.0f, 0.0f, std::max(0.0f, std::min((percentual_time_to_card_in_position - 0.75f) / 0.25f, 1.0f)));

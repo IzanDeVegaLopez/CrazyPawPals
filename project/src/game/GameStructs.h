@@ -1,5 +1,6 @@
 #pragma once
 #include "../utils/Vector2D.h"
+#include "../ecs/ecs.h"
 
 namespace GameStructs {
 	enum WeaponType {

@@ -6,6 +6,7 @@
 
 #include "../our_scripts/components/Transform.h"
 #include "../our_scripts/components/Image.h"
+#include "../our_scripts/components/ImageForButton.h"
 #include "../our_scripts/components/Button.h"
 #include <string>
 Scene::Scene(ecs::sceneId_t id) : _scene_ID(id) {}

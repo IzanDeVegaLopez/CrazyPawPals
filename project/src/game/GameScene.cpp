@@ -147,7 +147,6 @@ ecs::entity_t
 GameScene::create_enemy(Transform* tr, const std::string& spriteKey, Weapon* weapon, float health, float width, float height){
 	auto&& manager = *Game::Instance()->get_mngr();
 
-	
 	float randSize = float(sdlutils().rand().nextInt(6, 10)) / 10.0f;
 	auto&& rect = *new rect_component{ 0, 0, width * randSize, height * randSize };
 	auto &&rigidbody = *new rigidbody_component{mass_f32{3.0f}, 0.05f};
@@ -157,7 +156,6 @@ GameScene::create_enemy(Transform* tr, const std::string& spriteKey, Weapon* wea
 		ecs::scene::GAMESCENE,
 		tr,
 		&rect,
-		new MovementController(),
 		new dyn_image(
 			rect_f32{ {0,0},{1,1} },
 			rect,
@@ -170,7 +168,8 @@ GameScene::create_enemy(Transform* tr, const std::string& spriteKey, Weapon* wea
 		&rigidbody,
 		&col
 	);
-	if (weapon != nullptr)manager.addExistingComponent<Weapon>(e, weapon);
+	// BUG: ^^^^ justo ahí arriba se añade el weapon
+	// if (weapon != nullptr)manager.addExistingComponent<Weapon>(e, weapon);
 
 	return e;
 }
@@ -201,9 +200,9 @@ void GameScene::spawn_sarno_rata(Vector2D posVec)
 
     // Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador cerca
-    // state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr]() {
-    //     return conditionManager.isPlayerNear(_p_tr, &tr, 5.0f);  
-    // });
+    state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr]() {
+        return conditionManager.isPlayerNear(_p_tr, &tr, 1.0f);  
+    });
 
 	// De: Attacking a: Walking, Condición: Jugador lejos
     state->add_transition("Attacking", "Walking", [&conditionManager, _p_tr, &tr]() {
@@ -328,7 +327,6 @@ void GameScene::spawn_boom(Vector2D posVec)
 	auto e = create_enemy(&tr, "boom", static_cast<Weapon*>(&weapon), 2, 1.8f, 1.8f);
 	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.08));
 
-
 	ConditionManager conditionManager;
 
 	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
@@ -398,7 +396,6 @@ void GameScene::spawn_ratatouille(Vector2D posVec)
 	// Estado inicial
 	state->set_initial_state("Walking");
 }
-
 
 void GameScene::spawn_wave_manager()
 {
