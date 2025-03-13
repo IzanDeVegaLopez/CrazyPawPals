@@ -32,6 +32,174 @@ Manager::~Manager() {
 	}
 }
 
+
+#ifndef DBG_COLLISIONS
+#define DBG_COLLISIONS_DEFAULT true
+#define DBG_COLLISIONS DBG_COLLISIONS_DEFAULT
+#endif
+
+#if DBG_COLLISIONS
+struct dbg_collisions {
+	SDL_Rect dbg_rect_col[256];
+	size_t dbg_rect_col_size;
+
+	position2_f32 dbg_pos[2][256];
+	size_t dbg_pos_size;
+};
+
+static dbg_collisions dbg_col = {0};
+static void dbg_collision_fill_rect(ecs::Manager &manager, const collision_body &body0, const collision_body &body1) {
+	auto &&camera = *manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA));
+	
+	auto &&dbg_rect_col = dbg_col.dbg_rect_col;
+	auto &&dbg_rect_col_size = dbg_col.dbg_rect_col_size;
+	
+	assert(dbg_rect_col_size < sizeof(dbg_rect_col) / sizeof(dbg_rect_col[0]));
+	dbg_rect_col[dbg_rect_col_size] = SDL_Rect_screen_rect_from_global(
+		rect_f32{
+			.position = {
+				.x = body0.body.body.position.x + body0.body.space.position.x - body0.body.body.size.x * 0.5f,
+				.y = body0.body.body.position.y + body0.body.space.position.y + body0.body.body.size.y * 0.5f,
+			},
+			.size = {
+				.x = body0.body.body.size.x,
+				.y = body0.body.body.size.y,
+			},
+		},
+		camera.cam
+	);
+	++dbg_rect_col_size;
+	dbg_rect_col[dbg_rect_col_size] = SDL_Rect_screen_rect_from_global(
+		rect_f32{
+			.position = {
+				.x = body1.body.body.position.x + body1.body.space.position.x - body1.body.body.size.x * 0.5f,
+				.y = body1.body.body.position.y + body1.body.space.position.y + body1.body.body.size.y * 0.5f,
+			},
+			.size = {
+				.x = body1.body.body.size.x,
+				.y = body1.body.body.size.y,
+			},
+		},
+		camera.cam
+	);
+	++dbg_rect_col_size;
+
+	dbg_rect_col[dbg_rect_col_size] = SDL_Rect_screen_rect_from_global(
+		rect_f32{
+			.position = {
+				.x = body1.body.body.position.x + body1.body.space.position.x - (body1.body.body.size.x + body0.body.body.size.x) * 0.5f,
+				.y = body1.body.body.position.y + body1.body.space.position.y + (body1.body.body.size.y + body0.body.body.size.y) * 0.5f,
+			},
+			.size = {
+				.x = body1.body.body.size.x + body0.body.body.size.x,
+				.y = body1.body.body.size.y + body0.body.body.size.y,
+			},
+		},
+		camera.cam
+	);
+	++dbg_rect_col_size;
+
+	dbg_rect_col[dbg_rect_col_size] = SDL_Rect_screen_rect_from_global(
+		rect_f32{
+			.position = {
+				.x = - (body1.body.body.size.x + body0.body.body.size.x) * 0.5f,
+				.y = + (body1.body.body.size.y + body0.body.body.size.y) * 0.5f,
+			},
+			.size = {
+				.x = body1.body.body.size.x + body0.body.body.size.x,
+				.y = body1.body.body.size.y + body0.body.body.size.y,
+			},
+		},
+		camera.cam
+	);
+	++dbg_rect_col_size;
+
+	dbg_rect_col[dbg_rect_col_size] = SDL_Rect_screen_rect_from_global(
+		rect_f32{
+			.position = {
+				.x = (body0.body.space.previous_position.x + body0.body.body.position.x - (body1.body.body.position.x + body1.body.space.previous_position.x)),
+				.y = (body0.body.space.previous_position.y + body0.body.body.position.y - (body1.body.body.position.y + body1.body.space.previous_position.y)),
+			},
+			.size = {
+				.x = 0.0f,
+				.y = 0.0f,
+			},
+		},
+		camera.cam
+	);
+	++dbg_rect_col_size;
+}
+
+static void dbg_collsion_fill_point_pair(ecs::Manager &manager, const collision_contact &contact, const collision_body &body0, const collision_body &body1) {
+	(void)manager;
+	(void)body1;
+
+	auto &&dbg_pos = dbg_col.dbg_pos;
+	auto &&dbg_pos_size = dbg_col.dbg_pos_size;
+
+	dbg_pos[0][dbg_pos_size] = body0.body.space.position;
+	dbg_pos[1][dbg_pos_size] = position2_f32{
+		.x = body0.body.space.position.x + contact.penetration.penetration.x * 20.0f,
+		.y = body0.body.space.position.y + contact.penetration.penetration.y * 20.0f,
+	};
+	++dbg_pos_size;
+}
+
+static void dbg_collision_render_drain(ecs::Manager &manager) {
+	auto &&dbg_rect_col = dbg_col.dbg_rect_col;
+	auto &&dbg_rect_col_size = dbg_col.dbg_rect_col_size;
+
+	auto &&dbg_pos = dbg_col.dbg_pos;
+	auto &&dbg_pos_size = dbg_col.dbg_pos_size;
+
+	for (size_t i = 0; i < dbg_rect_col_size; i++) {
+		SDL_SetRenderDrawColor(sdlutils().renderer(), 255, 0, 0, 255);
+		SDL_RenderDrawRect(sdlutils().renderer(), &dbg_rect_col[i]);
+	}
+	dbg_rect_col_size = 0;
+
+	const camera_screen &camera = manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam;
+	for (size_t i = 0; i < dbg_pos_size; i++) {
+		SDL_SetRenderDrawColor(sdlutils().renderer(), 0, 255, 0, 255);
+
+		auto a =SDL_Rect_screen_rect_from_global(
+			rect_f32{
+				.position = {
+					.x = dbg_pos[0][i].x,
+					.y = dbg_pos[0][i].y,
+				},
+				.size = {
+					.x = 0.1f,
+					.y = 0.1f,
+				},
+			},
+			camera
+		);
+		auto b = SDL_Rect_screen_rect_from_global(
+			rect_f32{
+				.position = {
+					.x = dbg_pos[1][i].x,
+					.y = dbg_pos[1][i].y,
+				},
+				.size = {
+					.x = 0.1f,
+					.y = 0.1f,
+				},
+			},
+			camera
+		);
+		SDL_RenderDrawLine(
+			sdlutils().renderer(),
+			a.x,
+			a.y,
+			b.x,
+			b.y
+		);
+	}
+	dbg_pos_size = 0;
+}
+#endif
+
 static position2_f32 position2_f32_from_vec2(const Vector2D vec) {
 	return position2_f32{
 		.x = vec.getX(),
@@ -68,19 +236,22 @@ static bool manager_handle_collision_bodies(
 	seconds_f32 delta_time,
 	const collision_response_flags flags
 ) {
-	(void)entity0;
-	(void)entity1;
-
-	auto &&camera = *manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA));
+#if DBG_COLLISIONS
+	dbg_collision_fill_rect(manager, body0, body1);
+#endif
 	if (!collision_body_check_broad(body0, body1)) {
 		return false;
 	}
 
 	collision_contact contact;
 	if (collision_body_check(body0, body1, delta_time, contact)) {
+#if DBG_COLLISIONS
+		dbg_collsion_fill_point_pair(manager, contact, body0, body1);
+#endif
 		switch (flags & (collision_response_option_body0_trigger | collision_response_option_body1_trigger)) {
 		case collision_response_option_none: {
-			const collision_response_pairs responses = collision_body_resolve(body0, body1, contact);
+			const collision_response_pairs responses = collision_body_resolve(body0, body1, contact);	
+
 			auto &response0_separation = responses.penetration_responses[0];
 			auto &response1_separation = responses.penetration_responses[1];
 	
@@ -223,6 +394,9 @@ void Manager::render(sceneId_t sId) {
 		render(last_ordered_entity);
 	}
 	}
+#if DBG_COLLISIONS
+	dbg_collision_render_drain(*this);
+#endif
 }
 
 void Manager::refresh()

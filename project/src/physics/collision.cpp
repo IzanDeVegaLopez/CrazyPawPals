@@ -337,39 +337,66 @@ collision_response_pairs collision_body_resolve(
         },
     };
 
+    constexpr static const auto dot = [](const vec2_f32 a, const vec2_f32 b) -> float {
+        return a.x * b.x + a.y * b.y;
+    };
+    const vec2_f32 displacement_body0{
+        .x = body0.body.space.position.x - body0.body.space.previous_position.x,
+        .y = body0.body.space.position.y - body0.body.space.previous_position.y,
+    };
+    const vec2_f32 displacement_body1{
+        .x = body1.body.space.position.x - body1.body.space.previous_position.x,
+        .y = body1.body.space.position.y - body1.body.space.previous_position.y,
+    };
     const seconds_f32 delta_of_collision_complement = 1.0f - contact.delta_of_collision_normalised;
+    const vec2_f32 remaining_displacement_body0{
+        .x = displacement_body0.x * delta_of_collision_complement,
+        .y = displacement_body0.y * delta_of_collision_complement,
+    };
+    const vec2_f32 remaining_displacement_body1{
+        .x = displacement_body1.x * delta_of_collision_complement,
+        .y = displacement_body1.y * delta_of_collision_complement,
+    };
+
     const float restitution_sum = body0.restitution + body1.restitution;
     const float max_restitution = (std::max)(body0.restitution, body1.restitution);
 
     const float restitution_body0_coefficient = (body0.restitution / restitution_sum) * max_restitution;
     const float restitution_body1_coefficient = (body1.restitution / restitution_sum) * max_restitution;
 
-    const vec2_f32 displacement_body0{
-        .x = body0.body.space.position.x - body0.body.space.previous_position.x,
-        .y = body0.body.space.position.y - body0.body.space.previous_position.y,
-    };
-    const vec2_f32 reflected_displacement_body0 = vec2_f32_reflect(contact.normal, displacement_body0);
+    const vec2_f32 reflected_displacement_body0 = vec2_f32_reflect(contact.normal, remaining_displacement_body0);
     const collision_restitution_response body0_restitution_response{
         .restitution_displacement = vec2_f32{
-            .x = reflected_displacement_body0.x * delta_of_collision_complement * restitution_body0_coefficient,
-            .y = reflected_displacement_body0.y * delta_of_collision_complement * restitution_body0_coefficient,
+            .x = reflected_displacement_body0.x * restitution_body0_coefficient,
+            .y = reflected_displacement_body0.y * restitution_body0_coefficient,
         },
     };
     
-    const vec2_f32 displacement_body1{
-        .x = body1.body.space.position.x - body1.body.space.previous_position.x,
-        .y = body1.body.space.position.y - body1.body.space.previous_position.y,
-    };
-    const vec2_f32 reflected_displacement_body1 = vec2_f32_reflect(contact.normal, displacement_body1);
+    const vec2_f32 reflected_displacement_body1 = vec2_f32_reflect(contact.normal, remaining_displacement_body1);
     const collision_restitution_response body1_restitution_response{
         .restitution_displacement = vec2_f32{
-            .x = reflected_displacement_body1.x * delta_of_collision_complement * restitution_body1_coefficient,
-            .y = reflected_displacement_body1.y * delta_of_collision_complement * restitution_body1_coefficient,
+            .x = reflected_displacement_body1.x * restitution_body1_coefficient,
+            .y = reflected_displacement_body1.y * restitution_body1_coefficient,
         },
     };
-
-    return collision_response_pairs{
-        .penetration_responses = {body0_penetration_response, body1_penetration_response},
-        .restitution_responses = {body0_restitution_response, body1_restitution_response},
-    };
+    
+    if (dot(remaining_displacement_body0, remaining_displacement_body1) > dot(body0_restitution_response.restitution_displacement, body1_restitution_response.restitution_displacement)) {
+        const collision_restitution_response r0 =
+            dot(remaining_displacement_body0, contact.normal) > 0.0f
+            ? collision_restitution_response{remaining_displacement_body0}
+            : body0_restitution_response;
+        const collision_restitution_response r1 =
+            dot(remaining_displacement_body1, contact.normal) < 0.0f
+            ? collision_restitution_response{remaining_displacement_body1}
+            : body1_restitution_response;
+        return collision_response_pairs{
+            .penetration_responses = {body0_penetration_response, body1_penetration_response},
+            .restitution_responses = {r0, r1},
+        };
+    } else {
+        return collision_response_pairs{
+            .penetration_responses = {body0_penetration_response, body1_penetration_response},
+            .restitution_responses = {body0_restitution_response, body1_restitution_response},
+        };
+    }
 }
