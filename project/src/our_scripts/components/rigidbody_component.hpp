@@ -4,6 +4,7 @@
 #include "../../ecs/Component.h"
 #include "../../ecs/ecs.h"
 #include "../../physics/rigidbody.hpp"
+#include "../../physics/collision.hpp"
 #include "Transform.h"
 #include "rect_component.hpp"
 #include "../../game/Game.h"

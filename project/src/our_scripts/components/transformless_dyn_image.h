@@ -6,7 +6,7 @@
 #include "../../rendering/camera.hpp"
 #include "../components/camera_component.hpp"
 class Texture;
-class camera_screen;
+struct camera_screen;
 
 
 struct transformless_dyn_image : public ecs::Component {
@@ -32,7 +32,12 @@ struct transformless_dyn_image : public ecs::Component {
 
 	inline virtual void render() override {
 		rect_f32 rect = rect_f32_screen_rect_from_viewport(destination_rect, my_camera_screen.screen);
-		const SDL_Rect destination = { rect.position.x,rect.position.y,rect.size.x,rect.size.y }; //SDL_Rect_screen_rect_from_global(destination_rect, my_camera_screen);
+		const SDL_Rect destination = {
+			int(rect.position.x),
+			int(rect.position.y),
+			int(rect.size.x),
+			int(rect.size.y)
+		}; //SDL_Rect_screen_rect_from_global(destination_rect, my_camera_screen);
 		const SDL_Rect source = { 0, 0, texture.width(), texture.height() };
 		/*
 		//card_texture.render(source, destination, angle, nullptr, flip);

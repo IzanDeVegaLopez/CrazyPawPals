@@ -165,7 +165,7 @@ void WaveManager::choose_new_event()
 {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<int> rnd_gen(0,10);
+    std::uniform_int_distribution<int> rnd_gen(0,10);
     switch(rnd_gen(gen)) {
     case 0:
     case 1:
