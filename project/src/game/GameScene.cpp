@@ -34,6 +34,7 @@
 #include "../our_scripts/components/WeaponPlimPlim.h"
 #include "../our_scripts/components/WeaponSarnoRata.h"
 #include "../our_scripts/components/WeaponBoom.h"
+#include "../our_scripts/components/WeaponCatKuza.h"
 #include "../our_scripts/components/Health.h"
 
 #include "../our_scripts/components/EnemyStateMachine.h"
@@ -164,10 +165,10 @@ GameScene::create_enemy(Transform* tr, const std::string& spriteKey, Weapon* wea
 void 
 GameScene::spawn_catkuza(Vector2D posVec) {
 	auto&& manager = *Game::Instance()->get_mngr();
-	auto&& weapon = *new WeaponSarnoRata();
+	auto&& weapon = *new WeaponCatKuza();
 	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
-	auto e = create_enemy(&tr, "sarno_rata", static_cast<Weapon*>(&weapon), 2, 1.5f, 2.0f);
+	auto e = create_enemy(&tr,"sarno_rata", static_cast<Weapon*>(&weapon), 2, 1.5f, 2.0f);
 	auto&& mc = *manager.getComponent<MovementController>(e);
 
 
@@ -181,43 +182,78 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
-	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon);
+	auto chargingState = std::make_shared<WaitingState>();
+
+	auto windAttackState = std::make_shared<AttackingState>(
+		&tr, _p_tr, &weapon,
+		[&weapon, &tr, _p_tr]() { 
+			Vector2D shootPos = tr.getPos(); // Posición del enemigo
+			Vector2D shootDir = (_p_tr->getPos() - shootPos).normalize(); // Dirección hacia el jugador
+			weapon.wind_attack(shootPos, shootDir); 
+		}
+	);
+	
+	auto dashAttackState = std::make_shared<AttackingState>(
+		&tr, _p_tr, &weapon,
+		[&weapon, &tr, _p_tr]() { 
+			Vector2D shootPos = tr.getPos(); // Posición del enemigo
+			Vector2D shootDir = (_p_tr->getPos() - shootPos).normalize(); // Dirección hacia el jugador
+			weapon.dash_attack(shootPos, shootDir); 
+		}
+	);
 	auto waitingState = std::make_shared<WaitingState>();
 
 
 	//poner los estado a la state
-	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
-	state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));
-	state->add_state("Waiting", std::static_pointer_cast<State>(waitingState));
+	state->add_state("Walking", walkingState);
+	state->add_state("Charging", chargingState);
+	state->add_state("WindAttack", windAttackState);
+	state->add_state("DashAttack", dashAttackState);
+	state->add_state("Waiting", waitingState);
 
-	// Condiciones de cada estado
-	// De: Walking a: Attacking, Condición: Jugador cerca
-	state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr]() {
+	// Transiciones Patrón 1
+	state->add_transition("Walking", "Charging", [&conditionManager, _p_tr, &tr]() {
 		return conditionManager.isPlayerNear(_p_tr, &tr, 5.0f);
 	});
 
-	// De: Attacking a: Walking, Condición: Jugador lejos
-	state->add_transition("Attacking", "Walking", [&conditionManager, _p_tr, &tr]() {
-		return !conditionManager.isPlayerNear(_p_tr, &tr, 5.0f);
-	});
-	
-	state->add_transition("Walking", "Waiting", [&conditionManager, _p_tr, &tr]() {
-		return conditionManager.isPlayerNear(_p_tr, &tr, 5.0f);
+	state->add_transition("Charging", "WindAttack", [&conditionManager]() {
+		return conditionManager.canUse("wind_attack", sdlutils().currRealTime());
 	});
 
-	// De: Attacking a: Walking, Condición: Jugador lejos
-	state->add_transition("Attacking", "Waiting", [&conditionManager, _p_tr, &tr]() {
-		return !conditionManager.isPlayerNear(_p_tr, &tr, 5.0f);
+	state->add_transition("WindAttack", "DashAttack", []() {
+		return true; 
 	});
 
-
-	state->add_transition("Waiting", "Walking", [&conditionManager, _p_tr, &tr]() {
-		return conditionManager.isPlayerNear(_p_tr, &tr, 5.0f);
+	state->add_transition("DashAttack", "WindAttack", []() {
+		return true; // Lanza otro abanico al otro lado
 	});
 
-	// De: Attacking a: Walking, Condición: Jugador lejos
-	state->add_transition("Waiting", "Attacking", [&conditionManager, _p_tr, &tr]() {
-		return !conditionManager.isPlayerNear(_p_tr, &tr, 5.0f);
+	state->add_transition("WindAttack", "Waiting", [&conditionManager]() {
+		static int attackCount = 0;
+		attackCount++;
+		if (attackCount >= 3) {
+			attackCount = 0; // Resetear el contador
+			conditionManager.resetCooldown("wind_attack", sdlutils().currRealTime());
+			return true;
+		}
+		return false;
+	});
+
+	state->add_transition("Waiting", "Walking", [&conditionManager]() {
+		return conditionManager.canUse("wind_attack", sdlutils().currRealTime());
+	});
+
+	// Transiciones Patrón 2
+	state->add_transition("Walking", "DashAttack", [&conditionManager, _p_tr, &tr]() {
+		return conditionManager.isPlayerNear(_p_tr, &tr, 2.0f); // Si está muy cerca
+	});
+
+	state->add_transition("DashAttack", "Waiting", []() {
+		return true; // Después del ataque, entra en cooldown
+	});
+
+	state->add_transition("Waiting", "Walking", [&conditionManager]() {
+		return conditionManager.canUse("dash_attack", sdlutils().currRealTime());
 	});
 
 	// Estado inicial

@@ -9,28 +9,45 @@ WeaponCatKuza::~WeaponCatKuza() {}
 
 void 
 WeaponCatKuza::callback(Vector2D shootPos, Vector2D shootDir) {
-	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
+	// GameStructs::BulletProperties bp = GameStructs::BulletProperties();
+	// bp.dir = shootDir;
+	// bp.init_pos = shootPos;
+
+	// callback_3_wind(bp);
+
+	// // switch (expression)
+	// // {
+	// // case constant expression:
+	
+	// // 	break;
+	
+	// // default:
+	// // 	break;
+	// // }
+
+
+	// float totalAngle = 60.0f;
+
+	// patrons::ShotgunPatron(bp, ecs::grp::BULLET, totalAngle, _state);
+
+}
+
+void WeaponCatKuza::wind_attack(Vector2D shootPos, Vector2D shootDir) {
+    GameStructs::BulletProperties bp = GameStructs::BulletProperties();
 	bp.dir = shootDir;
 	bp.init_pos = shootPos;
 
-	callback_3_wind(bp);
-
-	// switch (expression)
-	// {
-	// case constant expression:
-	
-	// 	break;
-	
-	// default:
-	// 	break;
-	// }
-
-
-	float totalAngle = 60.0f;
-
-	patrons::ShotgunPatron(bp, ecs::grp::BULLET, totalAngle, _state);
-
+    callback_3_wind(bp);
 }
+
+void WeaponCatKuza::dash_attack(Vector2D shootPos, Vector2D shootDir) {
+    GameStructs::BulletProperties bp = GameStructs::BulletProperties();
+    bp.dir = shootDir;
+	bp.init_pos = shootPos;
+	
+    callback_dash(bp);
+}
+
 
 void WeaponCatKuza::callback_3_wind(GameStructs::BulletProperties &bp){
 	bp.speed =_speed;
