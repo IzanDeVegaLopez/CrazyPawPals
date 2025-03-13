@@ -22,9 +22,9 @@
 #include <list>
 
 
-SelectionMenuScene::SelectionMenuScene(): Scene(ecs::scene::SELECTIONMENUSCENE), _weapon_selected(false), _deck_selected(false), 
-_last_weapon_button(nullptr), _last_deck_button(nullptr)
-{
+SelectionMenuScene::SelectionMenuScene() 
+    : Scene(ecs::scene::SELECTIONMENUSCENE), _weapon_selected(false), _deck_selected(false), _last_weapon_button(nullptr), _last_deck_button(nullptr) {
+
 }
 
 SelectionMenuScene::~SelectionMenuScene()
@@ -215,11 +215,11 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
         _last_deck_button = imgComp;
         //condition to start the game
         if (_weapon_selected) Game::Instance()->change_Scene(Game::GAMESCENE);
-        });
+    });
 
     buttonComp->connectHover([buttonComp]() {
-
-        });
+    }
+);
 }
 void SelectionMenuScene::render() {
     //_selection->render(0,0); 

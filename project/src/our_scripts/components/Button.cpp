@@ -33,6 +33,7 @@ void Button::update(uint32_t delta_time) {
         _current_state = EMPTY;
     }
 
+
     if (ih().mouseButtonDownEvent() && ih().getMouseButtonState(InputHandler::LEFT)) {
         leftClickDown();
     }

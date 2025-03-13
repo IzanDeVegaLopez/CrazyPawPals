@@ -203,7 +203,7 @@ void Deck::initComponent()
 	_mana = Game::Instance()->get_mngr()->getComponent<ManaComponent>(_ent);
 	assert(_mana!=nullptr);
 	_health = Game::Instance()->get_mngr()->getComponent<Health>(_ent);
-	assert(_health!=nullptr);
+	assert(_health != nullptr);
 	_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
 	assert(_tr!=nullptr);
 	_camera = Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA));

@@ -232,12 +232,7 @@ public:
 
 	// update all entities in a certain Scene (Group)
 	//
-	void update(sceneId_t sId,Uint32 dt) {
-		auto& _entity = getEntitiesByScene(sId);
-		for (auto &ents : _entity) {
-			update(ents, dt);
-		}
-	}
+	void update(sceneId_t sId,Uint32 dt);
 	// render all entities in a certain Scene (Group)
 	//
 	void render(sceneId_t sId);

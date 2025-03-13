@@ -18,15 +18,15 @@ public:
 	__CMPID_DECL__(ecs::cmp::TRANSFORM)
 
 	Transform() :
-			_pos(), _dir(), _rot(), _width(), _height() {
+			_pos(), previous_position(), _dir(), _rot(), _width(), _height() {
 	}
 
 	Transform(Vector2D pos, Vector2D dir, float r, float s) :
-			_pos(pos), _dir(dir), _rot(r), _width(), _height() {
+			_pos(pos), previous_position(pos), _dir(dir), _rot(r), _width(), _height() {
 		setSpeed(s);
 	}
 	Transform(Vector2D pos, Vector2D dir, float r, float s, int w, int h) :
-		_pos(pos), _dir(dir), _rot(r), _width(w), _height(h) {
+		_pos(pos), previous_position(pos), _dir(dir), _rot(r), _width(w), _height(h) {
 		setSpeed(s);
 	}
 
@@ -35,6 +35,9 @@ public:
 
 	Vector2D& getPos() {
 		return _pos;
+	}
+	Vector2D get_previous_position() {
+		return previous_position;
 	}
 	Vector2D& getDir() {
 		return _dir;
@@ -89,15 +92,16 @@ public:
 	inline void setHeight(int h) { _height = h; }
 
 	void update(uint32_t delta_time) override {
-		(void)delta_time;
-		//Movement
-		//std::cout << _pos << " + " << _dir << std::endl;
+		previous_position = _pos;
+		
+		// const float delta_time_seconds = (delta_time / 1000.0f);
+		// _pos = _pos + _dir * delta_time_seconds;
 		_pos = _pos + _dir;
-		//std::cout << "=>" << _pos << std::endl;
 	}
 
 private:
 	Vector2D _pos;
+	Vector2D previous_position;
 	Vector2D _dir;
 	float _rot;
 	int _width;

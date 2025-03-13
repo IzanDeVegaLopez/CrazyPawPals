@@ -10,6 +10,5 @@ public:
 	virtual ~ImageForButton() { };
 	void swap_textures();
 protected:
-	Texture *_selected_tex;
+	Texture* _selected_tex;
 };
-
