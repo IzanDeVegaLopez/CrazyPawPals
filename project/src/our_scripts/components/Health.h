@@ -10,8 +10,10 @@ public:
 	virtual ~Health();
 	void takeDamage(int damage);
 	void heal(int health);
+	int getMaxHealth() const;
 	void setMaxHeatlh(int h);
 	int getHealth() const;
+	void payHealth(int cost);
 	void takeShield(int s);
 	void update(uint32_t delta_time) override;
 

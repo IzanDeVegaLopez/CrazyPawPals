@@ -2,6 +2,7 @@
 #include "../card_system/CardList.h"
 #include "../card_system/Card.hpp"
 #include "Mana.h"
+#include "Health.h"
 #include "../../utils/Vector2D.h"
 #include "../components/camera_component.hpp"
 #include "ecs/Component.h"
@@ -11,22 +12,29 @@
 #include "../../utils/EventsSystem.hpp"
 class Transform;
 class MovementController;
-class Deck: public ecs::Component {
-protected:
-	int reload_time = 1000;
-#pragma region animation_vars
+
+struct AnimationVars {
 	Uint32 _last_card_draw_time = 0;
 	Uint32 _card_draw_anim_duration = 150;
 	Uint32 _last_milled_card_time = 0;
 	Uint32 _mill_card_anim_duration = 500;
+};
+
+class Deck: public ecs::Component {
+protected:
+	int _reload_time = 1000;
+#pragma region animation_vars
+	AnimationVars _av;
 #pragma endregion
+	//Uint32 _last_milled_card_time;
+	Texture* _prime_tex;
 	CardList _draw_pile;
 	CardList _discard_pile;
 	Card* _hand;
 	Card* _last_milled_card = nullptr;
 	ManaComponent* _mana;
+	Health* _health;
 	Transform* _tr;
-	Texture* _prime_tex;
 	const camera_component* _camera;
 	bool _is_reloading = false;
 	int _time_till_reload_finishes;
@@ -56,7 +64,6 @@ public:
 	//Then puts all cards on drawPile and shuffles
 	void reload() noexcept;
 	void update(Uint32 deltaTime) noexcept override;
-	void render() noexcept override;
 	friend std::ostream& operator << (std::ostream& os, const Deck& deck);
 
 	void add_card_to_deck(Card*);
@@ -77,4 +84,11 @@ public:
 	void move_discard_to_draw();
 
 	inline bool empty_hand() { return _hand == nullptr; }
+	inline bool is_reloading() { return _is_reloading; }
+	inline int reload_time() { return _reload_time; }
+	inline int time_till_reload_finishes() { return _time_till_reload_finishes; }
+	inline Card* hand() { return _hand; }
+	inline Card* last_milled_card() { return _last_milled_card; }
+	inline AnimationVars animation_vars() { return _av; }
+
 };

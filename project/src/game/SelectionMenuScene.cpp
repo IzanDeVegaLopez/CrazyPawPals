@@ -22,8 +22,8 @@
 #include <list>
 
 
-SelectionMenuScene::SelectionMenuScene(): Scene(ecs::scene::SELECTIONMENUSCENE), _weapon_selected(false), _deck_selected(false), 
-_last_weapon_button(nullptr), _last_deck_button(nullptr)
+SelectionMenuScene::SelectionMenuScene() 
+    : Scene(ecs::scene::SELECTIONMENUSCENE), _weapon_selected(false), _deck_selected(false), _last_weapon_button(nullptr)
 {
 }
 
