@@ -12,7 +12,7 @@ struct camera_screen;
 struct transformless_dyn_image : public ecs::Component {
 
 	__CMPID_DECL__(ecs::cmp::TRANSFORMLESS_DYN_IMAGE);
-	Texture& texture;
+	Texture* texture;
 	//takes 0 to 1 values on viewport
 	rect_f32 destination_rect;
 	const camera_screen& my_camera_screen;
@@ -23,12 +23,16 @@ struct transformless_dyn_image : public ecs::Component {
 		const rect_f32 subrect,
 		float rotation,
 		const camera_screen& camera,
-		Texture& texture
+		Texture* texture
 	) : destination_rect(subrect), my_camera_screen(camera), texture(texture), my_rotation(rotation)
 	{
 	}
 
-
+	inline SDL_Rect get_destination_rect() const {
+		rect_f32 rect = rect_f32_screen_rect_from_viewport(destination_rect, my_camera_screen.screen);
+		SDL_Rect destination = { rect.position.x,rect.position.y,rect.size.x,rect.size.y };
+		return destination;
+	};
 
 	inline virtual void render() override {
 		rect_f32 rect = rect_f32_screen_rect_from_viewport(destination_rect, my_camera_screen.screen);
@@ -38,7 +42,7 @@ struct transformless_dyn_image : public ecs::Component {
 			int(rect.size.x),
 			int(rect.size.y)
 		}; //SDL_Rect_screen_rect_from_global(destination_rect, my_camera_screen);
-		const SDL_Rect source = { 0, 0, texture.width(), texture.height() };
+		const SDL_Rect source = { 0, 0, texture->width(), texture->height() };
 		/*
 		//card_texture.render(source, destination, angle, nullptr, flip);
 		const SDL_Rect subsource = {
@@ -49,7 +53,7 @@ struct transformless_dyn_image : public ecs::Component {
 		};
 		//card_texture.render(subsource, destination, my_rotation, nullptr, flip);
 	//}*/
-		texture.render(source, destination, my_rotation, nullptr);
+		texture->render(source, destination, my_rotation, nullptr);
 	}
 
 };

@@ -8,6 +8,7 @@
 #include "Transform.h"
 #include "rect_component.hpp"
 #include "../../game/Game.h"
+#include "../../ecs/Manager.h"
 
 #ifndef RIGIDBODY_COMPONENT_DEGEN_RESTITUTION_OFF
 #define RIGIDBODY_COMPONENT_DEGEN_RESTITUTION true

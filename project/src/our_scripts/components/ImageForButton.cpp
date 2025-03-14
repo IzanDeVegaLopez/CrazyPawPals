@@ -8,16 +8,13 @@
 #include "Transform.h"
 #include "../../game/Game.h"
 
-
-ImageForButton::ImageForButton() : Image(), _selected_tex(nullptr) {
-}
-
-ImageForButton::ImageForButton(Texture* tex, Texture* stex) : Image(tex), _selected_tex(stex) {
+ImageForButton::ImageForButton(Texture* tex, Texture* stex, const rect_f32& viewportRect, float rotation, const camera_screen& cam)
+	: transformless_dyn_image(viewportRect, rotation, cam, tex), _selected_tex(stex) {
 	assert(stex != nullptr);
 }
 void
 ImageForButton::swap_textures() {
-	Texture* aux = _tex;
-	_tex = _selected_tex;
+	Texture* aux = texture;
+	texture = _selected_tex; 
 	_selected_tex = aux;
 }

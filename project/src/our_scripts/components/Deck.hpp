@@ -90,4 +90,7 @@ public:
 	inline Card* hand() { return _hand; }
 	inline Card* last_milled_card() { return _last_milled_card; }
 	inline AnimationVars animation_vars() { return _av; }
+
+	inline CardList DrawPile() const { return _draw_pile; };
+	
 };

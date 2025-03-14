@@ -3,6 +3,7 @@
 #include "../../ecs/Manager.h"
 #include "../../game/Game.h"
 #include "Transform.h"
+#include "transformless_dyn_image.h"
 #include <iostream>
 
 using namespace ecs;
@@ -14,10 +15,10 @@ Button::~Button() {}
 
 void Button::initComponent() {
     auto* mngr = Game::Instance()->get_mngr();
-    auto tr = mngr->getComponent<Transform>(_ent);
-    assert(tr != nullptr);
+    auto img = mngr->getComponent<transformless_dyn_image>(_ent);
+    assert(img != nullptr);
 
-    _button_collider = { (int)tr->getPos().getX(), (int)tr->getPos().getY(), (int)tr->getWidth(), (int)tr->getHeight() };
+    _button_collider = img->get_destination_rect();
 }
 
 void Button::update(uint32_t delta_time) {
