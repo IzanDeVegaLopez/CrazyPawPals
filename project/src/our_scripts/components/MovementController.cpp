@@ -6,6 +6,7 @@
 
 MovementController::MovementController(float max_speed, float acceleration, float decceleration) 
 	: _tr(nullptr), _max_speed(max_speed), _acceleration(acceleration), _decceleration(decceleration) {
+	event_system::event_manager::Instance()->suscribe_to_event(event_system::change_deccel, this, &event_system::event_receiver::event_callback0);
 }
 
 MovementController::~MovementController() {
@@ -19,6 +20,11 @@ MovementController::initComponent() {
 
 void MovementController::set_input(Vector2D vec) {
 	_input = vec.normalize();
+}
+
+void MovementController::event_callback0(const event_system::event_receiver::Msg& m)
+{
+	_decceleration *= m.float_value;
 }
 
 void MovementController::update(uint32_t delta_time)

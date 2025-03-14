@@ -57,6 +57,7 @@ public:
     bool areAllEnemiesDead();
     void activateFog();
     void enterRewardsMenu();
+    //void start_new_wave();
 
 private:
     void choose_new_event();

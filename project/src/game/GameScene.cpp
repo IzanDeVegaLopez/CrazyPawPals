@@ -53,7 +53,9 @@
 #include <string>
 
 
-GameScene::GameScene() : Scene(ecs::scene::GAMESCENE){}
+GameScene::GameScene() : Scene(ecs::scene::GAMESCENE){ 
+	event_system::event_manager::Instance()->suscribe_to_event(event_system::change_deccel, this, &event_system::event_receiver::event_callback0); 
+}
 
 static ecs::entity_t create_environment() {
 	auto&& manager = *Game::Instance()->get_mngr();
@@ -86,8 +88,8 @@ void GameScene::initScene() {
 
 	manager.refresh();
 	create_environment();
-	spawn_sarno_rata(Vector2D{5.0f, 0.0f});
-	//spawn_wave_manager();
+	//spawn_sarno_rata(Vector2D{5.0f, 0.0f});
+	spawn_wave_manager();
 }
 
 void GameScene::enterScene()
@@ -131,7 +133,7 @@ ecs::entity_t GameScene::create_player()
 		new render_ordering{1},
 		new Health(100),
 		new ManaComponent(),
-		new MovementController(0.1f,5.0f,20.0f),
+		new MovementController(0.1f,5.0f, deccel_spawned_creatures_multi*20.0f),
 		//new Deck(c),
 		new StopOnBorder(camera, 1.5f, 2.0f),
 		&player_rigidbody,
@@ -180,7 +182,7 @@ void GameScene::spawn_sarno_rata(Vector2D posVec)
 	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 1.0f);
 
 	auto e = create_enemy(&tr, "sarno_rata", static_cast<Weapon*>(&weapon), 2, 1.125f, 1.5f);
-	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.05));
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.05,5, 20*deccel_spawned_creatures_multi));
 
 	ConditionManager conditionManager;
 
@@ -219,7 +221,7 @@ void GameScene::spawn_michi_mafioso(Vector2D posVec)
 	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
 	auto e = create_enemy(&tr, "michi_mafioso", static_cast<Weapon*>(&weapon), 2, 1.0f, 1.125f);
-	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.01));
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.01, 5, 20 * deccel_spawned_creatures_multi));
 
 	ConditionManager conditionManager;
 
@@ -284,7 +286,7 @@ void GameScene::spawn_plim_plim(Vector2D posVec)
 	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
 	auto e = create_enemy(&tr, "plim_plim", static_cast<Weapon*>(&weapon), 2, 1.0f, 1.0f);
-	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.02));
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.02, 5, 20 * deccel_spawned_creatures_multi));
 
 	ConditionManager conditionManager;
 
@@ -324,7 +326,7 @@ void GameScene::spawn_boom(Vector2D posVec)
 	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
 	auto e = create_enemy(&tr, "boom", static_cast<Weapon*>(&weapon), 2, 1.8f, 1.8f);
-	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.08));
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.08, 5, 20 * deccel_spawned_creatures_multi));
 
 	ConditionManager conditionManager;
 
@@ -359,7 +361,7 @@ void GameScene::spawn_ratatouille(Vector2D posVec)
 	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
 	auto e = create_enemy(&tr, "ratatouille", nullptr, 2, 1.0f, 1.0f);
-	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.06));
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.06, 5, 20 * deccel_spawned_creatures_multi));
 
 	ConditionManager conditionManager;
 
@@ -483,4 +485,10 @@ void GameScene::check_collision() {
 			}
 		}
 	}
+}
+
+void GameScene::event_callback0(const event_system::event_receiver::Msg& m)
+{
+	//TODO: deccel all enemies
+	deccel_spawned_creatures_multi *= m.float_value;
 }

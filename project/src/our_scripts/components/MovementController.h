@@ -2,9 +2,10 @@
 
 #include "../../ecs/Component.h"
 #include "../../utils/Vector2D.h"
+#include "../../utils/EventsSystem.hpp"
 
 class Transform;
-class MovementController : public ecs::Component
+class MovementController : public event_system::event_receiver, public ecs::Component
 {
 private:
 	float _max_speed = 0.1f;
@@ -21,6 +22,7 @@ public:
 	void update(uint32_t delta_time) override;
 	void accelerate();
 	void set_input(Vector2D);
+	void event_callback0(const event_system::event_receiver::Msg&) override;
 
 	float& get_max_speed() { return _max_speed; }
 	float& get_acceleration() { return _acceleration; }

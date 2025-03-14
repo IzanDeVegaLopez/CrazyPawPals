@@ -3,7 +3,7 @@
 #include "Scene.h"
 class Weapon;
 class Transform;
-class GameScene : public Scene
+class GameScene : public event_system::event_receiver, public Scene
 {
 	[[maybe_unused]]
 
@@ -27,4 +27,7 @@ public:
 
 	void generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid);
 	void check_collision();
+	void event_callback0(const event_system::event_receiver::Msg& m) override;
+private:
+	float deccel_spawned_creatures_multi = 1;
 };
