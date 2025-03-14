@@ -34,7 +34,7 @@ Manager::~Manager() {
 
 
 #ifndef DBG_COLLISIONS
-#define DBG_COLLISIONS_DEFAULT false
+#define DBG_COLLISIONS_DEFAULT true
 #define DBG_COLLISIONS DBG_COLLISIONS_DEFAULT
 #endif
 
@@ -209,7 +209,16 @@ static position2_f32 position2_f32_from_vec2(const Vector2D vec) {
 static collision_body collision_body_from_collisionable(const collisionable c) {
 	return collision_body{
 		.body{
-			.body = c.rect.rect,
+			.body = rect_f32{
+				.position = position2_f32{
+					.x = c.rigidbody.rect.position.x + c.rect.rect.position.x,
+					.y = c.rigidbody.rect.position.y + c.rect.rect.position.y,
+				},
+				.size = size2_f32{
+					.x = c.rigidbody.rect.size.x * c.rect.rect.size.x,
+					.y = c.rigidbody.rect.size.y * c.rect.rect.size.y,
+				},
+			},
 			.space{
 				.position = position2_f32_from_vec2(c.transform.getPos()),
 				.previous_position = position2_f32_from_vec2(c.transform.get_previous_position()),

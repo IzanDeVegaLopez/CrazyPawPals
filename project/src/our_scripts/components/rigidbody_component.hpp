@@ -17,6 +17,7 @@
 
 struct rigidbody_component : public ecs::Component {
     __CMPID_DECL__(ecs::cmp::RIGIDBODY);
+    rect_f32 rect;
     inverse_mass_f32 inverse_mass;
     float restitution_coefficient;
 
@@ -27,8 +28,8 @@ private:
     }
 
 public:
-    rigidbody_component(mass_f32 mass, float restitution_coefficient);
-    rigidbody_component(inverse_mass_f32 inverse_mass, float restitution_coefficient);
+    rigidbody_component(const rect_f32 rect, const mass_f32 mass, const float restitution_coefficient);
+    rigidbody_component(const rect_f32 rect, const inverse_mass_f32 inverse_mass, const float restitution_coefficient);
 };
 
 
