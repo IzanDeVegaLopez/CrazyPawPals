@@ -1,8 +1,12 @@
 #pragma once
 #include "Scene.h"
+#include <vector>
+#include <string>
+#include <list>
 
 class Texture;
 class ImageForButton;
+class Card;
 using LastButton = ImageForButton*;
 class SelectionMenuScene : public Scene
 {
@@ -20,8 +24,9 @@ private:
 	void create_deck_button(GameStructs::DeckType dt,const GameStructs::ButtonProperties& bp);
 	void create_weapon_buttons();
 	void create_deck_buttons();
-	void show_concrete_deck_info();
-	void show_weapon_info();
+	void create_deck_info(const rect_f32& rect);
+	void create_deck_infos();
+	void set_concrete_deck_info(const std::list<Card*>& cl);
 	inline void weapon_selected() { _weapon_selected = true; };
 	inline void deck_selected() { _deck_selected = true; };
 	//flags to control if both has been selected
@@ -30,4 +35,6 @@ private:
 
 	LastButton _last_weapon_button;
 	LastButton _last_deck_button;
+
+	int _num_cards_of_deck;
 };

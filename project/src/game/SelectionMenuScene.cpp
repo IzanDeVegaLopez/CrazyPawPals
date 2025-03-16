@@ -17,14 +17,13 @@
 #include "../our_scripts/components/Deck.hpp"
 #include "../our_scripts/components/Image.h"
 #include "../our_scripts/components/ImageForButton.h"
+
 #include <iostream>
-#include <string>
-#include <list>
-
-
+#include <typeinfo>
+#include <algorithm>
 SelectionMenuScene::SelectionMenuScene() 
-    : Scene(ecs::scene::SELECTIONMENUSCENE), _weapon_selected(false), _deck_selected(false), _last_weapon_button(nullptr), _last_deck_button(nullptr) {
-
+    : Scene(ecs::scene::SELECTIONMENUSCENE), _weapon_selected(false), _deck_selected(false), _last_weapon_button(nullptr), _last_deck_button(nullptr), 
+    _num_cards_of_deck(6) {
 }
 
 SelectionMenuScene::~SelectionMenuScene()
@@ -93,6 +92,7 @@ void SelectionMenuScene::initScene() {
     _selection = &sdlutils().images().at("selection");
     create_weapon_buttons();
     create_deck_buttons();
+    create_deck_infos();
 }
 void SelectionMenuScene::enterScene()
 {
@@ -180,31 +180,37 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
         switch (dt)
         {
         case GameStructs::ONE:
-            cl.push_back(new Recover());
+            cl = { new Kunai, new EldritchBlast(), new Kunai(), new EldritchBlast(), new Kunai(), new EldritchBlast() }; 
             break;
         case GameStructs::TWO: 
             cl = { new Fireball(), new CardSpray(), new Lighting(), new Minigun(), new Kunai(), new EldritchBlast() };
             break;
         case GameStructs::THREE:
-            cl = { new CardSpray(), new Lighting(), new Minigun(), new Kunai(), new EldritchBlast() };
+            cl = { new CardSpray(), new Lighting(), new Minigun(), new Kunai(), new EldritchBlast(), new Recover() };
             break;
         case GameStructs::FOUR:
-            cl = { new Lighting(), new Minigun(), new Kunai(), new EldritchBlast() };
+            cl = { new Lighting(), new Minigun(), new Kunai(), new EldritchBlast(), new Commune(), new QuickFeet()};
             break;
         default:
             break;
         }
+
+        set_concrete_deck_info(cl);
+
         mngr->addComponent<Deck>(player, cl);
         _deck_selected = true;
 
         //swap the actual buttons textures
-        imgComp->swap_textures();
-
-        //register the last clicked button
-        if (_last_deck_button != nullptr && _last_deck_button != imgComp) {
+        if (_last_deck_button != nullptr &&_last_deck_button != imgComp) {
+            imgComp->swap_textures();
             _last_deck_button->swap_textures();
+            //register the clicked button
+        }
+        else if (_last_deck_button == nullptr) { //special case: first click
+            imgComp->swap_textures();
         }
         _last_deck_button = imgComp;
+
         //condition to start the game
         if (_weapon_selected) Game::Instance()->change_Scene(Game::GAMESCENE);
     });
@@ -213,11 +219,43 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
     }
 );
 }
+void SelectionMenuScene::create_deck_info(const rect_f32& rect) {
+    ecs::entity_t e = create_entity(
+        ecs::grp::DECKINFO,
+        ecs::scene::SELECTIONMENUSCENE,
+        new transformless_dyn_image
+        (rect, 
+        0,
+        Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam,
+        &sdlutils().images().at("initial_info"))
+    );
+}
+
+void SelectionMenuScene::create_deck_infos() {
+    rect_f32 r = {{ 0.075f, 0.4f }, { 0.5f, 0.175f }};
+    for (int i = 0; i < _num_cards_of_deck; ++i) {
+        create_deck_info(r); 
+        r.position.y += 0.17;
+    }
+}
+
 void SelectionMenuScene::render() {
     //_selection->render(0,0); 
     Scene::render();
 }
-void SelectionMenuScene::show_concrete_deck_info() {
-    
 
+void SelectionMenuScene::set_concrete_deck_info(const std::list<Card*>& cl) {
+    auto mngr = Game::Instance()->get_mngr();
+    auto infos = mngr->getEntities(ecs::grp::DECKINFO);
+
+    auto itInfo = infos.begin();
+    for (auto it = cl.begin(); it != cl.end() && itInfo != infos.end(); ++it, ++itInfo) {
+        auto img = mngr->getComponent<transformless_dyn_image>(*itInfo);
+        std::string typeName = typeid(**it).name();
+        std::string prefix = "class ";
+        if (typeName.find(prefix) == 0) {  // Si empieza con "class "
+            typeName = typeName.substr(prefix.size());  // Elimina "class "
+        }
+        img->set_texture(&sdlutils().images().at("card_" + typeName + "_info"));
+    }
 }

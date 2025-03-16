@@ -55,5 +55,5 @@ struct transformless_dyn_image : public ecs::Component {
 	//}*/
 		texture->render(source, destination, my_rotation, nullptr);
 	}
-
+	inline void set_texture(Texture* t) { texture = t; };
 };
