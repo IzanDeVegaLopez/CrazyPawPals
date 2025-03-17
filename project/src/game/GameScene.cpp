@@ -173,7 +173,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 
 
 	ConditionManager conditionManager;
-	Uint16 a = sdlutils().currRealTime();
+	Uint16 a = 3000;
 	conditionManager.set_cooldown("wind_attack", a);
 	conditionManager.set_cooldown("dash_attack", a);
 

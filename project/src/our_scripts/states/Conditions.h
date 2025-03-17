@@ -26,6 +26,7 @@ public:
 
     void set_cooldown(const std::string& state, uint32_t cooldown) {
         cooldowns[state] = cooldown;
+        std::cout << state<<"   " << cooldowns[state] << std::endl;
         last_used[state] = cooldown;
     }
     
@@ -36,7 +37,8 @@ public:
        /* for (auto e : cooldowns) {
             std::cout << e.first;
         }*/
-        if (cooldowns.find(action) == cooldowns.end()) {
+        auto e = cooldowns.end();
+        if (e == cooldowns.end()) {
             std::cout << "aaa" << std::endl;
             return true; // Si no tiene cooldown, siempre se puede usar
         }
