@@ -93,6 +93,7 @@ void SelectionMenuScene::initScene() {
     create_weapon_buttons();
     create_deck_buttons();
     create_deck_infos();
+    create_weapon_info();
 }
 void SelectionMenuScene::enterScene()
 {
@@ -119,28 +120,39 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
     auto player = mngr->getHandler(ecs::hdlr::PLAYER);
     buttonComp->connectClick([buttonComp, imgComp, &mngr, wt, player, this]() {
         //std::cout << "left click-> button" << std::endl;
+        std::string s;
+        auto info = mngr->getEntities(ecs::grp::WEAPONINFO);
+
+        auto infoImg = mngr->getComponent<transformless_dyn_image>(*info.begin());
 
         switch (wt) {
         case GameStructs::REVOLVER:
             //std::cout << "revolver chosen" << std::endl;
             mngr->addComponent<Revolver>(player);
+            s = "revolver_";
             break;
         case GameStructs::RAMPAGE:
             //std::cout << "rampage chosen" << std::endl;
             mngr->addComponent<Rampage>(player);
+            s = "rampage_";
             break;
         case GameStructs::PUMP_SHOTGUN:
             mngr->addComponent<PumpShotgun>(player);
+            s = "pump_shotgun_";
             break;
         case GameStructs::RAMP_CANON:
             mngr->addComponent<RampCanon>(player);
+            s = "ramp_canon_";
             break;
         case GameStructs::LIGHTBRINGER:
             mngr->addComponent<Lightbringer>(player);
+            s = "lightbringer_";
             break;
         default:
             break;
         }
+        s += "info";
+
         _weapon_selected = true;
 
         //swap the actual buttons textures
@@ -152,13 +164,12 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
         }
         _last_weapon_button = imgComp;
 
+        //weapon info
+        infoImg->set_texture(&sdlutils().images().at(s));
+
         //condition to start the game
         if (_deck_selected) Game::Instance()->change_Scene(Game::GAMESCENE);
         });
-
-    buttonComp->connectHover([buttonComp]() {
-        (void)buttonComp;
-    });
 }
 void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const GameStructs::ButtonProperties& bp) {
     auto* mngr = Game::Instance()->get_mngr();
@@ -238,7 +249,18 @@ void SelectionMenuScene::create_deck_infos() {
         r.position.y += 0.17;
     }
 }
-
+void SelectionMenuScene::create_weapon_info() {
+    rect_f32 rect = {{1.25f, 0.5f} ,{0.5f, 0.35f}};
+    ecs::entity_t e = create_entity(
+        ecs::grp::WEAPONINFO,
+        ecs::scene::SELECTIONMENUSCENE,
+        new transformless_dyn_image
+        (rect,
+            0,
+            Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam,
+            &sdlutils().images().at("initial_info"))
+    );
+}
 void SelectionMenuScene::render() {
     //_selection->render(0,0); 
     Scene::render();
