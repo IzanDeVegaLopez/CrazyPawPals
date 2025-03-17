@@ -1,9 +1,9 @@
-﻿#include "HUD.h"
+#include "HUD.h"
 #include "../../game/Game.h"
 #include "../../ecs/Manager.h"
 #include "../../sdlutils/SDLUtils.h"
 #include "../../rendering/card_rendering.hpp"
-HUD::HUD(): _tex_orb(&sdlutils().images().at("manaorb")), _tex_orb_empty(&sdlutils().images().at("manaorbempty")), _tex_prime(&sdlutils().images().at("prime"))
+HUD::HUD() : _tex_orb(&sdlutils().images().at("manaorb")), _tex_orb_empty(&sdlutils().images().at("manaorbempty")), _tex_prime(&sdlutils().images().at("prime"))
 {
 
 }
@@ -35,7 +35,7 @@ void HUD::render()
 
 	//bg
 	SDL_SetRenderDrawColor(sdlutils().renderer(), 80, 55, 60, 255);
-	SDL_Rect health1{ 200,sdlutils().height()-125,max_health * 2,20};
+	SDL_Rect health1{ 10,10,max_health * 2,20 };
 	SDL_RenderFillRect(sdlutils().renderer(), &health1);
 
 	//remaining
@@ -86,7 +86,7 @@ void HUD::render()
 
 		//progress
 		SDL_SetRenderDrawColor(sdlutils().renderer(), 220, 220, 220, 255);
-		rect_f32 baroutput2{ {_tr->getPos().getX() - 0.35f, _tr->getPos().getY() + 1.2f}, {(reload_time -time_till_reload_finishes) / 1000.0f, 0.2 } };
+		rect_f32 baroutput2{ {_tr->getPos().getX() - 0.35f, _tr->getPos().getY() + 1.2f}, {(reload_time - time_till_reload_finishes) / 1000.0f, 0.2 } };
 		SDL_Rect trueoutput2 = SDL_Rect_screen_rect_from_global(baroutput2, _camera->cam);
 		SDL_RenderFillRect(sdlutils().renderer(), &trueoutput2);
 	}
@@ -105,11 +105,11 @@ void HUD::render()
 
 #pragma region hand_card
 	//Mostrar carta en la mano
-	//Mostrar n� cartas draw_pile and discard_pile
+	//Mostrar n? cartas draw_pile and discard_pile
 	card_rendering_descriptor crd = card_rendering_descriptor();
 	//Position and scale for the cost --> both values from 0 to 1
 
-	//Función que calcula la posición de una carta según el tiempo
+	//Funci�n que calcula la posici�n de una carta seg�n el tiempo
 	float percentual_time_to_card_in_position = (sdlutils().virtualTimer().currTime() - av._last_card_draw_time) / (float)av._card_draw_anim_duration;
 
 	crd.mana_cost_font_key = "ARIAL16";
@@ -152,7 +152,7 @@ void HUD::render()
 
 #pragma region milled_card
 	if (_deck->last_milled_card() != nullptr) {
-		//Función que calcula la posición de una carta según el tiempo
+		//Funci�n que calcula la posici�n de una carta seg�n el tiempo
 		percentual_time_to_card_in_position = (sdlutils().virtualTimer().currTime() - av._last_milled_card_time) / (float)av._mill_card_anim_duration;
 
 		float scale = std::lerp(1.0f, 0.0f, std::max(0.0f, std::min((percentual_time_to_card_in_position - 0.75f) / 0.25f, 1.0f)));

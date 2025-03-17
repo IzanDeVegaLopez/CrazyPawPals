@@ -52,6 +52,7 @@ bool Deck::use_card(const Vector2D* target_pos) noexcept
 	if (_can_play_hand_card()) {
 		//Se pudo usar la carta
 		_mana->change_mana(-_hand->get_costs().get_mana());
+		_health->payHealth(_hand->get_costs().get_health());
 		_hand->on_play(*this, &_tr->getPos(), target_pos);
 		switch (_hand->get_play_destination()) {
 		case DISCARD_PILE:
@@ -201,6 +202,8 @@ void Deck::initComponent()
 {
 	_mana = Game::Instance()->get_mngr()->getComponent<ManaComponent>(_ent);
 	assert(_mana!=nullptr);
+	_health = Game::Instance()->get_mngr()->getComponent<Health>(_ent);
+	assert(_health != nullptr);
 	_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
 	assert(_tr!=nullptr);
 	_camera = Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA));
