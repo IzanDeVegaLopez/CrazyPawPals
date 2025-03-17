@@ -3,7 +3,7 @@
 class no_event : public wave_event {
 public:
 	inline no_event(WaveManager* wav) : wave_event(wav) {};
-	void start_wave_callback() override {};
+	void start_wave_callback() override { hide_event_anim(); };
 	void update(unsigned int) override {};
 	void end_wave_callback() override {};
 };
