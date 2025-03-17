@@ -1,12 +1,14 @@
 #include <functional>
 #include <string>
+#include <unordered_map>
+#include <iostream>
 
 #include "../components/Health.h"
 #include "../../sdlutils/SdlUtils.h"
 #include "../components/Transform.h"
 
 class ConditionManager {
-    private:
+private:
     std::unordered_map<std::string, uint32_t> last_used;  // Última vez que se uso el estado
     std::unordered_map<std::string, uint32_t> cooldowns; 
 
@@ -22,25 +24,34 @@ public:
         return _enemy->getHealth() <= 0;
     }
 
-    void setCooldown(const std::string& state, uint32_t cooldown) {
+    void set_cooldown(const std::string& state, uint32_t cooldown) {
         cooldowns[state] = cooldown;
+        last_used[state] = cooldown;
     }
     
     // Comprobar si se puede usar la accion
-    bool canUse(const std::string& action, uint32_t currentTime) {
-        if (cooldowns.find(action) == cooldowns.end()) return true; // Si no tiene cooldown, siempre se puede usar
+    bool can_use(const std::string& action, uint32_t currentTime) {
+        //std::cout << cooldowns.begin()->first << std::endl;
+
+       /* for (auto e : cooldowns) {
+            std::cout << e.first;
+        }*/
+        if (cooldowns.find(action) == cooldowns.end()) {
+            std::cout << "aaa" << std::endl;
+            return true; // Si no tiene cooldown, siempre se puede usar
+        }
         return (currentTime - last_used[action]) > cooldowns[action];
     }
 
     // Reiniciar cooldown cuando se usa la accion
-    void resetCooldown(const std::string& action, uint32_t currentTime) {
+    void reset_cooldown(const std::string& action, uint32_t currentTime) {
         last_used[action] = currentTime;
     }
 
     std::string chooseRandomPattern(uint32_t currentTime, const std::vector<std::string>& patterns) {
         std::vector<std::string> availablePatterns;
         for (const auto& pattern : patterns) {
-            if (canUse(pattern, currentTime)) { // si no esta en cooldown
+            if (can_use(pattern, currentTime)) { // si no esta en cooldown
                 availablePatterns.push_back(pattern);
             }
         }

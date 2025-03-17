@@ -169,10 +169,13 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
 	auto e = create_enemy(&tr,"sarno_rata", static_cast<Weapon*>(&weapon), 2, 1.5f, 2.0f);
-	auto&& mc = *manager.getComponent<MovementController>(e);
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.05));
 
 
 	ConditionManager conditionManager;
+	Uint16 a = sdlutils().currRealTime();
+	conditionManager.set_cooldown("wind_attack", a);
+	conditionManager.set_cooldown("dash_attack", a);
 
 	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
 
@@ -217,7 +220,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	});
 
 	state->add_transition("Charging", "WindAttack", [&conditionManager]() {
-		return conditionManager.canUse("wind_attack", sdlutils().currRealTime());
+		return conditionManager.can_use("wind_attack", sdlutils().currRealTime());
 	});
 
 	state->add_transition("WindAttack", "DashAttack", []() {
@@ -233,14 +236,14 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 		attackCount++;
 		if (attackCount >= 3) {
 			attackCount = 0; // Resetear el contador
-			conditionManager.resetCooldown("wind_attack", sdlutils().currRealTime());
+			conditionManager.reset_cooldown("wind_attack", sdlutils().currRealTime());
 			return true;
 		}
 		return false;
 	});
 
 	state->add_transition("Waiting", "Walking", [&conditionManager]() {
-		return conditionManager.canUse("wind_attack", sdlutils().currRealTime());
+		return conditionManager.can_use("wind_attack", sdlutils().currRealTime());
 	});
 
 	// Transiciones Patrón 2
@@ -253,7 +256,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	});
 
 	state->add_transition("Waiting", "Walking", [&conditionManager]() {
-		return conditionManager.canUse("dash_attack", sdlutils().currRealTime());
+		return conditionManager.can_use("dash_attack", sdlutils().currRealTime());
 	});
 
 	// Estado inicial
