@@ -35,7 +35,7 @@ void HUD::render()
 
 	//bg
 	SDL_SetRenderDrawColor(sdlutils().renderer(), 80, 55, 60, 255);
-	SDL_Rect health1{ 10,10,max_health * 2,20 };
+	SDL_Rect health1{ 200,sdlutils().height() - 125,max_health * 2,20 };
 	SDL_RenderFillRect(sdlutils().renderer(), &health1);
 
 	//remaining
