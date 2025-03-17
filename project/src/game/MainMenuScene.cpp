@@ -13,7 +13,7 @@ MainMenuScene::MainMenuScene() : Scene(ecs::scene::MAINMENUSCENE)
 	_background = &sdlutils().images().at("start");
 
     GameStructs::ButtonProperties buttonPropTemplate = { 
-        { {0.5f, 0.3f},{0.6f, 0.2f} },
+        { {1.25f, 0.5f},{0.6f, 0.2f} },
         0.0f, ""
     };
 

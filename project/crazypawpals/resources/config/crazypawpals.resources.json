@@ -250,7 +250,7 @@
     },
     {
       "id": "selection",
-      "file": "resources/images/ui/selection.png"
+      "file": "resources/images/enviroment/selection.jpg"
     },
     {
       "id": "deck1_button",
@@ -343,6 +343,10 @@
     {
       "id": "event_letters",
       "file": "resources/images/enviroment/event_letters.png"
+    },
+    {
+      "id": "enter_game",
+      "file": "resources/images/ui/enter_game.png"
     }
   ],
   

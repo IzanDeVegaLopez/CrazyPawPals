@@ -32,7 +32,7 @@ SelectionMenuScene::~SelectionMenuScene()
 void SelectionMenuScene::create_weapon_buttons() {
     float umbral = 0.15f;
     GameStructs::ButtonProperties buttonPropTemplate = {
-         { {1.25f, 0.1f},{0.075f, 0.15f} },
+         { {1.85f, 0.025f},{0.1f, 0.175f} },
          0.0f, ""
     };
 
@@ -66,7 +66,7 @@ void SelectionMenuScene::create_deck_buttons() {
     float umbral = 0.2f;
     //create the first button prop
     GameStructs::ButtonProperties buttonPropTemplate = {
-         { {0.05f, 0.1f},{0.2f, 0.3f} },
+         { {0.025f, 0.025f},{0.2f, 0.3f} },
          0.0f, ""
     };
     GameStructs::ButtonProperties deck1B = buttonPropTemplate;
@@ -90,10 +90,11 @@ void SelectionMenuScene::create_deck_buttons() {
 }
 void SelectionMenuScene::initScene() {
     _selection = &sdlutils().images().at("selection");
+    create_weapon_info();
     create_weapon_buttons();
     create_deck_buttons();
     create_deck_infos();
-    create_weapon_info();
+    create_enter_button();
 }
 void SelectionMenuScene::enterScene()
 {
@@ -118,12 +119,14 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
             Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
     );
     auto player = mngr->getHandler(ecs::hdlr::PLAYER);
-    buttonComp->connectClick([buttonComp, imgComp, &mngr, wt, player, this]() {
+
+    buttonComp->connectClick([buttonComp, imgComp, mngr, wt, player, this]() {
         //std::cout << "left click-> button" << std::endl;
         std::string s;
-        auto info = mngr->getEntities(ecs::grp::WEAPONINFO);
 
-        auto infoImg = mngr->getComponent<transformless_dyn_image>(*info.begin());
+        auto& info = mngr->getEntities(ecs::grp::WEAPONINFO);
+        assert(!info.empty());
+        auto infoImg = mngr->getComponent<transformless_dyn_image>(info[0]);
 
         switch (wt) {
         case GameStructs::REVOLVER:
@@ -167,9 +170,8 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
         //weapon info
         infoImg->set_texture(&sdlutils().images().at(s));
 
-        //condition to start the game
-        if (_deck_selected) Game::Instance()->change_Scene(Game::GAMESCENE);
-        });
+    });
+
 }
 void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const GameStructs::ButtonProperties& bp) {
     auto* mngr = Game::Instance()->get_mngr();
@@ -185,7 +187,7 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
         Game::Instance()->get_mngr()->getComponent<camera_component>(
             Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
     );
-    buttonComp->connectClick([buttonComp, imgComp, &mngr, player, dt, this]() {
+    buttonComp->connectClick([buttonComp, imgComp, mngr, player, dt, this]() {
         std::list<Card*> cl = {};
         
         switch (dt)
@@ -221,9 +223,6 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
             imgComp->swap_textures();
         }
         _last_deck_button = imgComp;
-
-        //condition to start the game
-        if (_weapon_selected) Game::Instance()->change_Scene(Game::GAMESCENE);
     });
 
     buttonComp->connectHover([buttonComp]() {
@@ -243,14 +242,14 @@ void SelectionMenuScene::create_deck_info(const rect_f32& rect) {
 }
 
 void SelectionMenuScene::create_deck_infos() {
-    rect_f32 r = {{ 0.075f, 0.4f }, { 0.5f, 0.175f }};
+    rect_f32 r = {{ 0.05f, 0.325f }, { 0.55f, 0.25f }};
     for (int i = 0; i < _num_cards_of_deck; ++i) {
         create_deck_info(r); 
-        r.position.y += 0.17;
+        r.position.y += 0.25f;
     }
 }
 void SelectionMenuScene::create_weapon_info() {
-    rect_f32 rect = {{1.25f, 0.5f} ,{0.5f, 0.35f}};
+    rect_f32 rect = {{1.3f, 0.25f} ,{0.75f, 0.5f}};
     ecs::entity_t e = create_entity(
         ecs::grp::WEAPONINFO,
         ecs::scene::SELECTIONMENUSCENE,
@@ -260,9 +259,12 @@ void SelectionMenuScene::create_weapon_info() {
             Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam,
             &sdlutils().images().at("initial_info"))
     );
+    auto i = Game::Instance()->get_mngr();
+    int ew = 0;
+
 }
 void SelectionMenuScene::render() {
-    //_selection->render(0,0); 
+    _selection->render(0, -60);
     Scene::render();
 }
 
@@ -280,4 +282,18 @@ void SelectionMenuScene::set_concrete_deck_info(const std::list<Card*>& cl) {
         }
         img->set_texture(&sdlutils().images().at("card_" + typeName + "_info"));
     }
+}
+void SelectionMenuScene::create_enter_button() {
+    GameStructs::ButtonProperties bp = {
+         { {0.875f, 0.05f},{0.3f, 0.125f} },
+         0.0f, "enter_game"
+    };
+    auto* mngr = Game::Instance()->get_mngr();
+    auto e = create_button(bp);
+    auto buttonComp = mngr->getComponent<Button>(e);
+
+    buttonComp->connectClick([buttonComp, mngr, this]() {
+        if (_weapon_selected &&_deck_selected)
+        Game::Instance()->change_Scene(Game::GAMESCENE);
+    }); 
 }

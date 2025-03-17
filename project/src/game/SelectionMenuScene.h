@@ -28,6 +28,7 @@ private:
 	void create_deck_infos();
 	void set_concrete_deck_info(const std::list<Card*>& cl);
 	void create_weapon_info();
+	void create_enter_button();
 	inline void weapon_selected() { _weapon_selected = true; };
 	inline void deck_selected() { _deck_selected = true; };
 	//flags to control if both has been selected
