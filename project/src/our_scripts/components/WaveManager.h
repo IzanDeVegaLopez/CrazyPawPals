@@ -47,6 +47,7 @@ public:
     bool areAllEnemiesDead();
     void activateFog();
     void enterRewardsMenu();
+    void newEnemy() { _numEnemies++; _enemiesSpawned++; };
 
 private:
     Uint32 _currentWaveTime = 0; //tiempo actual (post calculo, inicial en constructor)

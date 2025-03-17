@@ -2,7 +2,7 @@
 #include "../../game/Game.h"
 #include "../../game/GameScene.h"
 
-WeaponReyBasurero::WeaponReyBasurero() : Weapon(6, 8000, 25.0f, 0.02f, "", 1.5f, 1.5f){}
+WeaponReyBasurero::WeaponReyBasurero() : Weapon(6, 6000, 25.0f, 0.02f, "p_boom", 1.5f, 1.5f){}
 
 WeaponReyBasurero::~WeaponReyBasurero() {}
 
@@ -15,7 +15,7 @@ WeaponReyBasurero::callback(Vector2D shootPos, Vector2D shootDir) {
 	bp.damage = _damage;
 	bp.life_time = 2;
 	bp.width = _attack_width;
-	bp.sprite_key = "";
+	bp.sprite_key = "p_boom";
 	bp.height = _attack_height;
 
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
