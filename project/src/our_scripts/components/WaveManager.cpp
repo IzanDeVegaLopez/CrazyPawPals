@@ -9,7 +9,7 @@
 #include "../wave_events/ice_skating_event.hpp"
 
 // 1 segundo = 1000 ticks (ms)
-WaveManager::WaveManager() :
+WaveManager::WaveManager(transformless_dyn_image* tdi) :
     _currentWaveTime(0),
     _waveTime(60000),
     _currentWave(0),
@@ -17,7 +17,8 @@ WaveManager::WaveManager() :
     _enemiesSpawned(0),
     _enemiesKilled(0),
     _totalSpawnTime(7500.0f),
-    _current_wave_event(new no_event(this))
+    _current_wave_event(new no_event(this)), 
+    _tdi(tdi)
 {
     choose_new_event();
 }
@@ -161,6 +162,16 @@ WaveManager::enterRewardsMenu() {
 	for (int i : _waves[_currentWave].second) {
 		if (i != 0) _numEnemies++;
 	}
+}
+
+void WaveManager::show_wave_image()
+{
+    _tdi->set_active(true);
+}
+
+void WaveManager::hide_wave_image()
+{
+    _tdi->set_active(false);
 }
 
 void WaveManager::choose_new_event()

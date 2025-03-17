@@ -3,6 +3,7 @@
 #include "../../ecs/Component.h"
 #include "../../sdlutils/SDLUtils.h"
 #include "../wave_events/wave_event.hpp"
+#include "../components/transformless_dyn_image.h"
 
 enum enemyType {
     none = 0,
@@ -49,7 +50,7 @@ class WaveManager : public ecs::Component {
     };
 public:
     __CMPID_DECL__(ecs::cmp::WAVEMANAGER)
-    WaveManager();
+    WaveManager(transformless_dyn_image*);
     virtual ~WaveManager() override;
 
     void update(uint32_t delta_time) override;
@@ -57,12 +58,15 @@ public:
     bool areAllEnemiesDead();
     void activateFog();
     void enterRewardsMenu();
+    void show_wave_image();
+    void hide_wave_image();
     //void start_new_wave();
 
 private:
     void choose_new_event();
     Uint32 _currentWaveTime = 0; //tiempo actual (post calculo, inicial en constructor)
     Uint32 _waveTime; // cuánto dura la oleada (CONSTRUCTOR)
+
 
     int _currentWave = 0;
     std::unique_ptr<wave_event> _current_wave_event;
@@ -80,4 +84,5 @@ private:
     // tiempo de spawn del siguiente enemigo (post calculo)
     float _min_time;
     float _op_time;
+    transformless_dyn_image* _tdi;
 };

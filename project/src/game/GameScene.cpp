@@ -400,16 +400,17 @@ void GameScene::spawn_ratatouille(Vector2D posVec)
 
 void GameScene::spawn_wave_manager()
 {
+	auto my_transformless_dyn_image = new transformless_dyn_image(
+		{ {0.2,0.1},{0.6,0.2} },
+		0,
+		Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam,
+		&sdlutils().images().at("event_letters")
+	);
 	create_entity(
 		ecs::hdlr::WAVE,
 		ecs::scene::GAMESCENE,
-		new WaveManager(),
-		new transformless_dyn_image(
-			{ {0.2,0.1},{0.6,0.2} },
-			0,
-			Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam,
-			&sdlutils().images().at("event_letters")
-		)
+		my_transformless_dyn_image,
+		new WaveManager(my_transformless_dyn_image)
 	);
 }
 
