@@ -39,11 +39,12 @@ Manager::~Manager() {
 #endif
 
 #if DBG_COLLISIONS
+constexpr int dbg_collisions_size = 512;
 struct dbg_collisions {
-	SDL_Rect dbg_rect_col[256];
+	SDL_Rect dbg_rect_col[dbg_collisions_size];
 	size_t dbg_rect_col_size;
 
-	position2_f32 dbg_pos[2][256];
+	position2_f32 dbg_pos[2][dbg_collisions_size];
 	size_t dbg_pos_size;
 };
 
