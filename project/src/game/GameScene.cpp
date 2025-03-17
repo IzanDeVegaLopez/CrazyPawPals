@@ -116,7 +116,7 @@ ecs::entity_t GameScene::create_player()
 	
 	auto &&player_transform = *new Transform({ 0.0f, 0.0f }, { 0.0f,0.0f }, 0.0f, 2.0f);
 	auto &&player_rect = *new rect_component{0, 0, 1.5f, 2.0f};
-	auto &&player_rigidbody = *new rigidbody_component{mass_f32{7.0f}, 1.0f};
+	auto &&player_rigidbody = *new rigidbody_component{rect_f32{{0.15f, -0.125}, {0.5f, 0.75f}}, mass_f32{7.0f}, 1.0f};
 	auto &&player_collisionable = *new collisionable{player_transform, player_rigidbody, player_rect, collisionable_option_none};
 	ecs::entity_t player = create_entity(
 		ecs::grp::PLAYER,
@@ -150,7 +150,7 @@ GameScene::create_enemy(Transform* tr, const std::string& spriteKey, Weapon* wea
 
 	float randSize = float(sdlutils().rand().nextInt(6, 10)) / 10.0f;
 	auto&& rect = *new rect_component{ 0, 0, width * randSize, height * randSize };
-	auto &&rigidbody = *new rigidbody_component{mass_f32{3.0f}, 0.05f};
+	auto &&rigidbody = *new rigidbody_component{rect_f32{{0.0f, -0.15f}, {0.5f, 0.6f}}, mass_f32{3.0f}, 0.05f};
 	auto &&col = *new collisionable{*tr, rigidbody, rect, collisionable_option_none};
 	auto e = create_entity(
 		ecs::grp::ENEMY,
