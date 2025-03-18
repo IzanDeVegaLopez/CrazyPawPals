@@ -284,6 +284,12 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec)
 }
 
 
+void GameScene::add_transition(StateMachine& state, const std::string& from, const std::string& to,
+	const std::function<bool()>& condition) {
+	state.add_transition(from, to, [condition]() {
+		return condition();
+		});
+}
 
 void 
 GameScene::spawn_catkuza(Vector2D posVec) {
@@ -301,9 +307,9 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	auto conditionManager = std::make_shared<ConditionManager>();
 	
 	Uint16 a = 3000;
-	conditionManager->set_cooldown("wind_attack_duration", a);
-	conditionManager->set_cooldown("charging_duration", a);
-	conditionManager->set_cooldown("dash_attack_duration", a);
+	conditionManager->set_cooldown("wind_attack_duration", 1000);
+	conditionManager->set_cooldown("charging_duration", 500);
+	conditionManager->set_cooldown("dash_attack_duration", 1000);
 
 
 	auto&& state = *manager.addComponent<StateMachine>(e, conditionManager);
@@ -324,12 +330,17 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	
 	auto dashAttackState = std::make_shared<AttackingState>(
 		&tr, _p_tr, &weapon,
-		[&weapon, &tr, _p_tr]() { 
-			Vector2D shootPos = tr.getPos(); // Posición del enemigo
-			Vector2D shootDir = (_p_tr->getPos() - shootPos).normalize(); // Dirección hacia el jugador
-			weapon.dash_attack(shootPos, shootDir); 
+		[&weapon, &tr, _p_tr, &mc]() {
+			Vector2D shootPos = tr.getPos();
+			Vector2D shootDir = (_p_tr->getPos() - shootPos).normalize();
+			weapon.dash_attack(shootPos, shootDir);
+
+			Vector2D dash_target = _p_tr->getPos() + shootDir * 1.5;
+			std::cout << dash_target << std::endl;
+			mc.dash(dash_target, 1000);
 		}
 	);
+
 	auto waitingState = std::make_shared<WaitingState>();
 
 
@@ -342,50 +353,55 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	state.add_state("Waiting", waitingState);
 
 	// Transiciones Patrón 1
-	state.add_transition("Walking", "Charging", [state_cm, _p_tr, &tr]() {	
-		bool trans = state_cm->is_player_near(_p_tr, &tr, 5.0f);
-		if (trans) {
-			state_cm->reset_cooldown("charging_duration", sdlutils().currRealTime());
-			std::cout << "trancicion de Walking a Charging" << std::endl;
+	add_transition(state, "Walking", "Charging",
+		[state_cm, _p_tr, &tr]() {
+			bool trans = state_cm->is_player_near(_p_tr, &tr, 5.0f);
+			if (trans) {
+				state_cm->reset_cooldown("charging_duration", sdlutils().currRealTime());
+			}
+			return trans;
 		}
-		return trans;
-	});
+	);
 
-	state.add_transition("Charging", "WindAttack", [state_cm]() {
-		bool trans = state_cm->can_use("charging_duration", sdlutils().currRealTime());
-		if (trans) {
-			state_cm->reset_cooldown("wind_attack_duration", sdlutils().currRealTime());
-			std::cout << "trancicion de Charging a WindAttack" << std::endl;
+	add_transition(state, "Charging", "WindAttack",
+		[state_cm]() {
+			bool trans = state_cm->can_use("charging_duration", sdlutils().currRealTime());
+			if (trans) {
+				state_cm->reset_cooldown("wind_attack_duration", sdlutils().currRealTime());
+			}
+			return trans;
 		}
-		return trans;
-	});
+	);
 
-	state.add_transition("WindAttack", "DashAttack", [state_cm]() {
-		bool trans = state_cm->can_use("wind_attack_duration", sdlutils().currRealTime());
-		if (trans) {
-			state_cm->reset_cooldown("dash_attack_duration", sdlutils().currRealTime());
-			std::cout << "trancicion de WindAttack a DashAttack" << std::endl;
+	add_transition(state, "WindAttack", "DashAttack",
+		[state_cm]() {
+			bool trans = state_cm->can_use("wind_attack_duration", sdlutils().currRealTime());
+			if (trans) {
+				state_cm->reset_cooldown("dash_attack_duration", sdlutils().currRealTime());
+			}
+			return trans;
 		}
-		return trans;
-	});
+	);
 
-	state.add_transition("DashAttack", "WindAttack2", [state_cm]() {
-		bool trans = state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
-		if (trans) {
-			state_cm->reset_cooldown("wind_attack_duration", sdlutils().currRealTime());
-			std::cout << "trancicion de DashAttack a WindAttack2" << std::endl;
+	add_transition(state, "DashAttack", "WindAttack2",
+		[state_cm]() {
+			bool trans = state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
+			if (trans) {
+				state_cm->reset_cooldown("wind_attack_duration", sdlutils().currRealTime());
+			}
+			return trans;
 		}
-		return trans;
-	});
+	);
 
-	state.add_transition("WindAttack2", "Waiting", [state_cm]() {
-		bool trans = state_cm->can_use("wind_attack_duration", sdlutils().currRealTime());
-		if (trans) {
-			state_cm->reset_cooldown("wind_attack_duration", sdlutils().currRealTime());
-			std::cout << "trancicion de WindAttack2 a Waiting" << std::endl;
+	add_transition(state, "WindAttack2", "Waiting",
+		[state_cm]() {
+			bool trans = state_cm->can_use("wind_attack_duration", sdlutils().currRealTime());
+			if (trans) {
+				state_cm->reset_cooldown("wind_attack_duration", sdlutils().currRealTime());
+			}
+			return trans;
 		}
-		return trans;
-	});
+	);
 
 	//state.add_transition("Waiting", "Walking", [state_cm]() {
 	//	return state_cm->can_use("wind_attack_duration", sdlutils().currRealTime());
@@ -643,8 +659,6 @@ void GameScene::spawn_ratatouille(Vector2D posVec)
 	state->set_initial_state("Walking");
 }
 
-
-
 void GameScene::spawn_wave_manager()
 {
 	create_entity(
@@ -659,8 +673,8 @@ void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs
 	auto manager = Game::Instance()->get_mngr();
 	(void)gid;
 	//std::cout << std::endl << atan2(bp.dir.getY(), bp.dir.getX()) << " = " << atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI << std::endl;
-	auto &&transform = *new Transform(bp.init_pos, bp.dir, (atan2(-bp.dir.getY(), bp.dir.getX())+M_PI/2) * 180.0f / M_PI, bp.speed);
-	auto &&rect = *new rect_component{0, 0, bp.width, bp.height};
+	auto&& transform = *new Transform(bp.init_pos, bp.dir, (atan2(-bp.dir.getY(), bp.dir.getX()) + M_PI / 2) * 180.0f / M_PI, bp.speed);
+	auto&& rect = *new rect_component{ 0, 0, bp.width, bp.height };
 	//std::cout << bp.speed << std::endl;
 	create_entity(
 		gid,
@@ -698,7 +712,7 @@ void GameScene::check_collision() {
 			if (mngr->isAlive(e)) {
 				//actual enemy transform
 				auto eTR = mngr->getComponent<Transform>(e);
-				auto &&eRT = *mngr->getComponent<rect_component>(e);
+				auto&& eRT = *mngr->getComponent<rect_component>(e);
 				for (auto b : pBullets) {
 					auto bTR = mngr->getComponent<Transform>(b);
 					if (Collisions::collides(eTR->getPos(), eRT.rect.size.x, eRT.rect.size.y, //
@@ -716,7 +730,7 @@ void GameScene::check_collision() {
 		for (auto b : eBullets) {
 			if (mngr->isAlive(b)) {
 				auto bTR = mngr->getComponent<Transform>(b);
-				auto &&bRT = *mngr->getComponent<rect_component>(b);
+				auto&& bRT = *mngr->getComponent<rect_component>(b);
 				if (Collisions::collides(pTR->getPos(), bRT.rect.size.x, bRT.rect.size.y, //
 					bTR->getPos(), bRT.rect.size.x, bRT.rect.size.y)) {
 					auto pHealth = mngr->getComponent<Health>(player);
