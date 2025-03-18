@@ -97,6 +97,9 @@ WaveManager::spawnWave() {
                 case 5:
                     static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_super_michi_mafioso(posVec);
                         break;
+                case 6:
+                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_catkuza(posVec);
+                    break;
                 default: {
                     assert(false && "unreachable");
                     exit(EXIT_FAILURE);

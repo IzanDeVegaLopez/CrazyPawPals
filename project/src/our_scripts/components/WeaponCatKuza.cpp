@@ -28,7 +28,7 @@ WeaponCatKuza::callback(Vector2D shootPos, Vector2D shootDir) {
 
 	// float totalAngle = 60.0f;
 
-	// patrons::ShotgunPatron(bp, ecs::grp::BULLET, totalAngle, _state);
+	 //patrons::ShotgunPatron(bp, ecs::grp::BULLET, totalAngle, _state);
 
 }
 
@@ -46,6 +46,7 @@ void WeaponCatKuza::dash_attack(Vector2D shootPos, Vector2D shootDir) {
 	bp.init_pos = shootPos;
 	
     callback_dash(bp);
+
 }
 
 
@@ -57,6 +58,10 @@ void WeaponCatKuza::callback_3_wind(GameStructs::BulletProperties &bp){
 	bp.height = _attack_height * 0.5f;
 
 	bp.sprite_key = "p_plimplim";
+
+	float totalAngle = 60.0f;
+
+	patrons::ShotgunPatron(bp, ecs::grp::BULLET, totalAngle, _wind_p);
 }
 
 void WeaponCatKuza::callback_area(GameStructs::BulletProperties &bp){
@@ -77,4 +82,8 @@ void WeaponCatKuza::callback_dash(GameStructs::BulletProperties &bp){
 	bp.height = _attack_height * 0.5f;
 
 	bp.sprite_key = "p_plimplim";
+
+	float totalAngle = 60.0f;
+
+	patrons::ShotgunPatron(bp, ecs::grp::BULLET, totalAngle, _state);
 }

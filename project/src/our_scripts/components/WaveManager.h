@@ -8,6 +8,7 @@ class WaveManager : public ecs::Component {
     // Los 0 son espacios extra
     std::vector<std::pair<int, std::vector<int>>> _waves = {
         { 10000, {4, 4, 4, 4,4} },
+        { 30000, {6} },
         { 15000,{5, 5, 5, 5, 5} },
         { 15000,{
             2, 2, 2, 2, 2, 0, 0, 0,
