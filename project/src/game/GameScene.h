@@ -22,6 +22,7 @@ public:
 	void spawn_michi_mafioso(Vector2D posVec);
 	void spawn_plim_plim(Vector2D posVec);
 	void spawn_boom(Vector2D posVec);
+	void spawn_catkuza(Vector2D posVec);
 	void spawn_ratatouille(Vector2D posVec);
 	void spawn_super_michi_mafioso(Vector2D posVec);
 

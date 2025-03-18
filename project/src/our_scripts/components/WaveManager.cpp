@@ -75,6 +75,7 @@ WaveManager::spawnWave() {
             //DEBUG
             // Medio de la pantalla + angulo * distancia
             Vector2D posVec = Vector2D(Game::Instance()->get_world_half_size().first + cos(rAng) * (_min_distance + _op_dist), Game::Instance()->get_world_half_size().second + sin(rAng) * (_min_distance + _op_dist));
+
             
             // FIXME: define enum values
             switch (_waves[_currentWave].second[_enemiesSpawned])

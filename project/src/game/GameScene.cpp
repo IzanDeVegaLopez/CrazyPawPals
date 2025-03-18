@@ -14,6 +14,7 @@
 #include "../our_scripts/states/Conditions.h"
 #include "../our_scripts/states/WalkingState.h"
 #include "../our_scripts/states/AttackingState.h"
+#include "../our_scripts/states/WaitingState.h"
 #include "../our_scripts/states/RotatingState.h"
 #include "../our_scripts/states/SuperMichiMafiosoAttack.h"
 #include "../our_scripts/components/WeaponSuperMichiMafioso.h"
@@ -35,6 +36,7 @@
 #include "../our_scripts/components/WeaponPlimPlim.h"
 #include "../our_scripts/components/WeaponSarnoRata.h"
 #include "../our_scripts/components/WeaponBoom.h"
+#include "../our_scripts/components/WeaponCatKuza.h"
 #include "../our_scripts/components/Health.h"
 
 #include "../our_scripts/components/StateMachine.h"
@@ -326,10 +328,12 @@ GameScene::spawn_sarno_rata(Vector2D posVec)
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc); 
-	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon); 
+	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon);
+
+
 	//poner los estado a la state
 	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
-    state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));
+	state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));
 
     // Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador cerca
@@ -342,6 +346,7 @@ GameScene::spawn_sarno_rata(Vector2D posVec)
         return !conditionManager->isPlayerNear(_p_tr, &tr, 3.0f); 
     });
 
+	
     // Estado inicial
     state->set_initial_state("Walking");
 }
@@ -431,7 +436,7 @@ void GameScene::spawn_plim_plim(Vector2D posVec)
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc); 
-	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon); 
+	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon);
 	//poner los estado a la state
 	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
     state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));

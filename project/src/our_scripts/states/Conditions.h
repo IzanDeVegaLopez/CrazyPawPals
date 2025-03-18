@@ -1,10 +1,17 @@
 #include <functional>
 #include <string>
+#include <unordered_map>
+#include <iostream>
 
 #include "../components/Health.h"
+#include "../../sdlutils/SdlUtils.h"
 #include "../components/Transform.h"
 
 class ConditionManager {
+private:
+    std::unordered_map<std::string, uint32_t> last_used;  // Última vez que se uso el estado
+    std::unordered_map<std::string, uint32_t> cooldowns; 
+
 public:
 
     // Métodos para evaluar condiciones
@@ -18,6 +25,12 @@ public:
         return _enemy->getHealth() <= 0;
     }
 
+    void set_cooldown(const std::string& state, uint32_t cooldown) {
+        cooldowns[state] = cooldown;
+        std::cout << state<<"   " << cooldowns[state] << std::endl;
+        last_used[state] = cooldown;
+    }
+    
     // Comprobar si se puede usar la accion
     bool can_use(const std::string& action, uint32_t currentTime) {
         //std::cout << cooldowns.begin()->first << std::endl;
