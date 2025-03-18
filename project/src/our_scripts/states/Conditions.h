@@ -15,7 +15,7 @@ private:
     };
 
     std::unordered_map<std::string, Timers> timers; //temporizadores de los estados, cuanto duran
-
+    std::unordered_map<std::string, int> counters;
 public:
 
     // Métodos para evaluar condiciones
@@ -66,5 +66,14 @@ public:
         }
 
         return "";  // Si todos estan en cooldown, devuelve vacío
+    }
+
+    void increment_counter(const std::string& key) { counters[key]++; }
+
+    void reset_counter(const std::string& key) { counters[key] = 0; }
+
+    int get_counter(const std::string& key) const {
+        auto it = counters.find(key);
+        return (it != counters.end()) ? it->second : 0;
     }
 };

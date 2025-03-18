@@ -4,24 +4,11 @@
 #include "Transform.h"
 
 
-WeaponSuperMichiMafioso::WeaponSuperMichiMafioso(Transform* playerTr) : Weapon(4, 2500, 20.0f, 0.1f, "p_michi_mafioso", 1.0f, 1.0f), _currentPattern(ATTACK1), _player_tr(playerTr){ }
+WeaponSuperMichiMafioso::WeaponSuperMichiMafioso(Transform* playerTr) 
+	: Weapon(4, 200, 20.0f, 0.1f, "p_michi_mafioso", 1.0f, 1.0f), _currentPattern(ATTACK1), _player_tr(playerTr),_warning(false){ }
 
 WeaponSuperMichiMafioso::~WeaponSuperMichiMafioso() {}
-
-void WeaponSuperMichiMafioso::attack1(Vector2D shootDir) {
-
-	create_area(_last_shootPos, shootDir, "p_super_michi_mafioso", 0, 0, 1.0f, 2);
-}
-void WeaponSuperMichiMafioso::warning(Vector2D shootDir) {
-
-	create_area(_player_tr->getPos(), shootDir, "attack_warning", 0, 0, 1.0f, 2);
-	_last_shootPos = _player_tr->getPos();
-
-}
-void WeaponSuperMichiMafioso::attack2(Vector2D shootPos, Vector2D shootDir) {
-	create_area(shootPos, shootDir, "p_super_michi_mafioso", _damage, _speed, 2.0f);
-}
-void WeaponSuperMichiMafioso::create_area(Vector2D shootPos, Vector2D shootDir, const std::string& key_name, int damage, float speed,float life_t, float scale){
+void WeaponSuperMichiMafioso::create_area(Vector2D shootPos, Vector2D shootDir, const std::string& key_name, int damage, float speed, float life_t, float scale) {
 
 	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
 	bp.dir = shootDir;
@@ -36,6 +23,22 @@ void WeaponSuperMichiMafioso::create_area(Vector2D shootPos, Vector2D shootDir, 
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::ENEMYBULLETS);
 
 }
+
+void WeaponSuperMichiMafioso::attack1(Vector2D shootDir) {
+	if (_warning) {
+		create_area(_last_shootPos, shootDir, "p_super_michi_mafioso", 0, 0, 1.0f, 2);
+		_warning = false;
+	}
+	else {
+		create_area(_player_tr->getPos(), shootDir, "attack_warning", 0, 0, 1.0f, 2);
+		_last_shootPos = _player_tr->getPos();
+		_warning = true;
+	}
+}
+void WeaponSuperMichiMafioso::attack2(Vector2D shootPos, Vector2D shootDir) {
+	create_area(shootPos, shootDir, "p_super_michi_mafioso", _damage, _speed, 2.0f);
+}
+
 void WeaponSuperMichiMafioso::attack3(Vector2D shootPos, Vector2D shootDir) {
 	const int numAreas = 5;
 	const float radius = 2.0f; 
@@ -68,11 +71,6 @@ void
 WeaponSuperMichiMafioso::callback(Vector2D shootPos, Vector2D shootDir) {
 
 	switch (_currentPattern) {
-		case NONE:
-			break;
-		case WARNING:
-			warning(shootDir);
-			break;
 		case ATTACK1: 
 			attack1(shootDir); 
 			break;
@@ -84,6 +82,8 @@ WeaponSuperMichiMafioso::callback(Vector2D shootPos, Vector2D shootDir) {
 			break;
 		case SPAWN_MICHI_MAFIOSO: 
 			generate_michi_mafioso(); 
+			break;
+		default:
 			break;
 	}
 }

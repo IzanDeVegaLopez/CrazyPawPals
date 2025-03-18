@@ -136,9 +136,7 @@ ecs::entity_t GameScene::create_player()
 	return player;
 }
 
-
-ecs::entity_t 
-GameScene::create_enemy(Transform* tr, const std::string& spriteKey, Weapon* weapon, float health, float width, float height){
+ecs::entity_t GameScene::create_enemy(Transform* tr, const std::string& spriteKey, Weapon* weapon, float health, float width, float height){
 	auto&& manager = *Game::Instance()->get_mngr();
 
 	float randSize = float(sdlutils().rand().nextInt(6, 10)) / 10.0f;
@@ -161,6 +159,7 @@ GameScene::create_enemy(Transform* tr, const std::string& spriteKey, Weapon* wea
 
 	return e;
 }
+
 void GameScene::spawn_super_michi_mafioso(Vector2D posVec)
 {
 	auto&& manager = *Game::Instance()->get_mngr();
@@ -174,14 +173,15 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec)
 	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.01, 3.0f, 15.0f));
 
 	auto conditionManager = std::make_shared<ConditionManager>();
-	Uint16 a = 3000;
-	conditionManager->set_cooldown("area_attack", 300);
-	conditionManager->set_cooldown("large_area_attack", a);
-	conditionManager->set_cooldown("shot_attack", a);
-	conditionManager->set_cooldown("spawn_michi", 2000);
+	conditionManager->set_cooldown("area_attack_duration", 400);
+	conditionManager->set_cooldown("large_area_attack_duration", 5000);
+	conditionManager->set_cooldown("shot_attack_duration", 300);
+	conditionManager->set_cooldown("spawn_michi", 8000);
 
 	//	StateMachine(ConditionManager& conditionManager, Transform* playerTransform, Transform* enemyTransform, float dist);
 	auto state = manager.addComponent<StateMachine>(e, conditionManager);
+	auto state_cm = state->getConditionManager();
+
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
@@ -201,9 +201,6 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec)
 		&tr, _p_tr, &weapon,[&weapon]() {weapon.setAttackPattern(WeaponSuperMichiMafioso::SPAWN_MICHI_MAFIOSO);}
 	);
 
-	auto attackWarningState = std::make_shared<SuperMichiMafiosoAttack>(
-		&tr, _p_tr, &weapon,[&weapon]() {weapon.setAttackPattern(WeaponSuperMichiMafioso::WARNING);}
-	);
 	auto waitingState = std::make_shared<WaitingState>();
 
 	//poner los estado a la state
@@ -212,70 +209,83 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec)
 	state->add_state("ShotAttack", shotAttackState);
 	state->add_state("LargeAreaAttack", largeAreaAttackState);
 	state->add_state("SpawnMichi", spawnMichiState);
-	state->add_state("AttackWarning", attackWarningState);
 	state->add_state("Waiting", waitingState);
 
-
-	auto state_cm = state->getConditionManager();
 
 	float dist_to_attack = 5.0f;
 
 	// Condiciones de cada estado
 	// Patron1: cuando se acerca al player empieza el p1
-	state->add_transition("Walking", "AttackWarning", [state_cm, _p_tr, &tr, dist_to_attack]() {
-		return state_cm->can_use("area_attack", sdlutils().virtualTimer().currTime()) &&
-			state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
-	});
-
-	state->add_transition("AttackWarning", "AreaAttack", [state_cm]() {
-
-		uint32_t currentTime = sdlutils().virtualTimer().currTime();
-
-		/*static bool timerStarted = false;
-		if (!timerStarted) {
-			state_cm->start_timer("warning", currentTime, 50);
-			timerStarted = true;
-		}
-
-		if (state_cm->is_timer_ends("warning", currentTime)) {
-			timerStarted = false;
-			return true;
-		}*/
-		return false;
+	state->add_transition("Walking", "AreaAttack", [state_cm, _p_tr, &tr, dist_to_attack]() {
+		return state_cm->can_use("area_attack_duration", sdlutils().virtualTimer().currTime()) && state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
 	});
 
 	state->add_transition("AreaAttack", "Waiting", [state_cm, _p_tr, &tr, dist_to_attack]() {
+		uint32_t currentTime = sdlutils().virtualTimer().currTime();
+		bool trans = state_cm->can_use("area_attack_duration", currentTime);
+		if (trans) {
+			state_cm->reset_cooldown("area_attack_duration", currentTime);
+			state_cm->increment_counter("AreaAttack");
+		}
+		return trans;  
+	});
+	state->add_transition("Waiting", "AreaAttack", [state_cm, _p_tr, &tr, dist_to_attack]() {
+		return state_cm->can_use("area_attack_duration", sdlutils().virtualTimer().currTime()) 
+				&& state_cm->is_player_near(_p_tr, &tr, dist_to_attack)
+				&& state_cm->get_counter("AreaAttack") < 3;
+	});
 
-		static int attackCount = 0;
-		attackCount++;
-		if (attackCount >= 1) {
-			attackCount = 0; // Resetear el contador
-			state_cm->reset_cooldown("area_attack", sdlutils().currRealTime());
+	//patron2: cuando ataque 3 veces p1, pasa a 2 si el player no se aleja mucho
+	state->add_transition("Waiting", "ShotAttack", [state_cm, _p_tr, &tr, dist_to_attack]() {
+		uint32_t currentTime = sdlutils().virtualTimer().currTime();
+		bool trans = state_cm->can_use("shot_attack_duration", currentTime)&& state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
+		
+		if (trans && state_cm->get_counter("AreaAttack") >= 3) {
+			state_cm->reset_counter("AreaAttack"); 
+			state_cm->reset_cooldown("shot_attack_duration", currentTime);
 			return true;
 		}
 		return false;
 	});
-	state->add_transition("Waiting", "AttackWarning", [state_cm, _p_tr, &tr, dist_to_attack]() {
-		return state_cm->can_use("area_attack", sdlutils().virtualTimer().currTime()) && 
-			state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
+
+	state->add_transition("ShotAttack", "Waiting", [state_cm, _p_tr, &tr, dist_to_attack]() {
+		uint32_t currentTime = sdlutils().virtualTimer().currTime();
+		bool trans = state_cm->can_use("shot_attack_duration", currentTime);
+		if (trans) {
+			state_cm->reset_cooldown("shot_attack_duration", currentTime);
+		}
+		return trans;
+	});
+
+	//spawn
+	state->add_transition("Waiting", "SpawnMichi", [state_cm]() {
+		uint32_t currentTime = sdlutils().virtualTimer().currTime();
+		bool trans = state_cm->can_use("spawn_michi", currentTime);
+		if (trans) {
+			state_cm->reset_cooldown("spawn_michi", currentTime);
+		}
+		return trans;
+	});
+	state->add_transition("SpawnMichi", "Waiting", [state_cm]() {
+		return true; 
+	});
+
+	//patron 3
+	state->add_transition("Waiting", "LargeAreaAttack", [state_cm, _p_tr, &tr]() {
+		uint32_t currentTime = sdlutils().virtualTimer().currTime();
+		bool trans = state_cm->can_use("large_area_attack_duration", currentTime)&& state_cm->is_player_near(_p_tr, &tr, 3.0f);;
+		if (trans) {
+			state_cm->reset_cooldown("large_area_attack_duration", currentTime);
+		}
+		return trans;
 		});
+	state->add_transition("LargeAreaAttack", "Waiting", []() {
+		return true;
+	});
 
 
-	////patron2: cuando ataque 3 veces p1, pasa a 2 si el player no se aleja mucho
-	//state->add_transition("AreaAttack", "ShotAttack", [&conditionManager, _p_tr, &tr, dist_to_attack]() {
-	//	static int attackCount = 0;
-	//	attackCount++;
-	//	if (attackCount >= 3) {
-	//		attackCount = 0;
-	//		conditionManager->reset_cooldown("area_attack", sdlutils().currRealTime());
-	//		return true;
-	//	}
-	//	return false;
-	//	});
-
-
-	// De: Attacking a: Walking, Condición: Jugador lejos
-	state->add_transition("AreaAttack", "Walking", [state_cm, _p_tr, &tr, dist_to_attack]() {
+	// A walking si el player se aleja
+	state->add_transition("Waiting", "Walking", [state_cm, _p_tr, &tr, dist_to_attack]() {
 		return !state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
 		});
 
