@@ -11,6 +11,8 @@ class ConditionManager {
 private:
     std::unordered_map<std::string, uint32_t> last_used;  // Última vez que se uso el estado
     std::unordered_map<std::string, uint32_t> cooldowns; 
+    std::unordered_map<std::string, uint32_t> timers; //temporizadores de los estados
+    std::unordered_map<std::string, uint32_t> timerDurations;
 
 public:
 
@@ -33,17 +35,13 @@ public:
     
     // Comprobar si se puede usar la accion
     bool can_use(const std::string& action, uint32_t currentTime) {
-        //std::cout << cooldowns.begin()->first << std::endl;
 
-       /* for (auto e : cooldowns) {
-            std::cout << e.first;
-        }*/
         auto it = cooldowns.find(action);
-        std::cout << it->first << std::endl;
         if (it == cooldowns.end()) {
             std::cout << "aaa" << std::endl;
             return true; // Si no tiene cooldown, siempre se puede usar
         }
+
         return (currentTime - last_used[action]) > cooldowns[action];
     }
 
@@ -66,5 +64,19 @@ public:
         }
 
         return "";  // Si todos estan en cooldown, devuelve vacío
+    }
+
+    void start_timer(const std::string& action, uint32_t startTime, uint32_t duration) {
+        timers[action] = startTime;
+        timerDurations[action] = duration;
+    }
+
+    bool is_timer_ends(const std::string& action, uint32_t currentTime) {
+        auto it = timers.find(action);
+        if (it != timers.end()) {
+            uint32_t duration = timerDurations[action];
+            return (currentTime - it->second) >= duration;
+        }
+        return false;
     }
 };

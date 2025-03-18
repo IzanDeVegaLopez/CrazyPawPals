@@ -1,38 +1,39 @@
-#include "WeaponSuperMichiMafioso.h"
+﻿#include "WeaponSuperMichiMafioso.h"
 #include "../../game/Game.h"
 #include "../../game/GameScene.h"
 #include "Transform.h"
 
-WeaponSuperMichiMafioso::WeaponSuperMichiMafioso() : Weapon(4, 2500, 20.0f, 0.1f, "p_michi_mafioso", 1.0f, 1.0f), _currentPattern(ATTACK1){ }
+
+WeaponSuperMichiMafioso::WeaponSuperMichiMafioso(Transform* playerTr) : Weapon(4, 2500, 20.0f, 0.1f, "p_michi_mafioso", 1.0f, 1.0f), _currentPattern(ATTACK1), _player_tr(playerTr){ }
 
 WeaponSuperMichiMafioso::~WeaponSuperMichiMafioso() {}
 
-void WeaponSuperMichiMafioso::attack1(Vector2D shootPos, Vector2D shootDir) {
-	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
-	bp.dir = shootDir;
-	bp.init_pos = shootPos + shootDir * 2;
-	bp.speed = 0;
-	bp.damage = _damage;
-	bp.life_time = 1;
-	bp.width = _attack_width * 2;
-	bp.height = _attack_height * 2;
-	bp.sprite_key = "p_super_michi_mafioso";
+void WeaponSuperMichiMafioso::attack1(Vector2D shootDir) {
 
-	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
+	create_area(_last_shootPos, shootDir, "p_super_michi_mafioso", 0, 0, 1.0f, 2);
+}
+void WeaponSuperMichiMafioso::warning(Vector2D shootDir) {
+
+	create_area(_player_tr->getPos(), shootDir, "attack_warning", 0, 0, 1.0f, 2);
+	_last_shootPos = _player_tr->getPos();
 
 }
 void WeaponSuperMichiMafioso::attack2(Vector2D shootPos, Vector2D shootDir) {
+	create_area(shootPos, shootDir, "p_super_michi_mafioso", _damage, _speed, 2.0f);
+}
+void WeaponSuperMichiMafioso::create_area(Vector2D shootPos, Vector2D shootDir, const std::string& key_name, int damage, float speed,float life_t, float scale){
+
 	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
 	bp.dir = shootDir;
 	bp.init_pos = shootPos;
-	bp.speed = _speed;
-	bp.damage = _damage;
-	bp.life_time = 1;
-	bp.width = _attack_width;
-	bp.height = _attack_height;
-	bp.sprite_key = "p_super_michi_mafioso";
+	bp.speed = speed;
+	bp.damage = damage;
+	bp.life_time = life_t;
+	bp.width = _attack_width * scale;
+	bp.height = _attack_height * scale;
+	bp.sprite_key = key_name;
 
-	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
+	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::ENEMYBULLETS);
 
 }
 void WeaponSuperMichiMafioso::attack3(Vector2D shootPos, Vector2D shootDir) {
@@ -67,8 +68,13 @@ void
 WeaponSuperMichiMafioso::callback(Vector2D shootPos, Vector2D shootDir) {
 
 	switch (_currentPattern) {
+		case NONE:
+			break;
+		case WARNING:
+			warning(shootDir);
+			break;
 		case ATTACK1: 
-			attack1(shootPos, shootDir); 
+			attack1(shootDir); 
 			break;
 		case ATTACK2: 
 			attack2(shootPos, shootDir); 

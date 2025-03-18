@@ -27,6 +27,8 @@ public:
 
     void transitionTo(const std::string& name);
 
+	inline std::shared_ptr<ConditionManager> getConditionManager() { return _condition_manager; };
+
     void enter();
 
     void exit();

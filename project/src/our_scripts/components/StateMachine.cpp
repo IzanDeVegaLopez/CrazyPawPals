@@ -8,7 +8,7 @@
 #include <iostream>
 
 StateMachine::StateMachine(std::shared_ptr<ConditionManager> conditionManager)
-	: _condition_manager(conditionManager) {}
+	: _condition_manager(std::move(conditionManager)) {}
 
 
 void StateMachine::add_state(const std::string& name, StatePtr state) {

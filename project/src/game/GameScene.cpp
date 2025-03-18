@@ -164,39 +164,119 @@ GameScene::create_enemy(Transform* tr, const std::string& spriteKey, Weapon* wea
 void GameScene::spawn_super_michi_mafioso(Vector2D posVec)
 {
 	auto&& manager = *Game::Instance()->get_mngr();
-	auto&& weapon = *new WeaponSuperMichiMafioso();
+	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
+	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
+	
+	auto&& weapon = *new WeaponSuperMichiMafioso(_p_tr);
 	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
 	auto e = create_enemy(&tr, "super_michi_mafioso", static_cast<Weapon*>(&weapon), 2, 1.0f, 1.125f);
 	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.01, 3.0f, 15.0f));
 
-	ConditionManager conditionManager;
-
-	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
-
-	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
+	auto conditionManager = std::make_shared<ConditionManager>();
+	Uint16 a = 3000;
+	conditionManager->set_cooldown("area_attack", 300);
+	conditionManager->set_cooldown("large_area_attack", a);
+	conditionManager->set_cooldown("shot_attack", a);
+	conditionManager->set_cooldown("spawn_michi", 2000);
 
 	//	StateMachine(ConditionManager& conditionManager, Transform* playerTransform, Transform* enemyTransform, float dist);
 	auto state = manager.addComponent<StateMachine>(e, conditionManager);
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
-	auto attackingState = std::make_shared<SuperMichiMafiosoAttack>(&tr, _p_tr, &weapon, &mc);
-	//poner los estado a la state
-	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
-	state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));
 
-	float dist_to_attack = 6.0f;
+	auto areaAttackState = std::make_shared<SuperMichiMafiosoAttack>(
+		&tr, _p_tr, &weapon,[&weapon]() {weapon.setAttackPattern(WeaponSuperMichiMafioso::ATTACK1);}
+	);
+
+	auto shotAttackState = std::make_shared<SuperMichiMafiosoAttack>(
+		&tr, _p_tr, &weapon,[&weapon]() {weapon.setAttackPattern(WeaponSuperMichiMafioso::ATTACK2);}
+	);
+
+	auto largeAreaAttackState = std::make_shared<SuperMichiMafiosoAttack>(
+		&tr, _p_tr, &weapon,[&weapon]() {weapon.setAttackPattern(WeaponSuperMichiMafioso::ATTACK3);}
+	);
+	auto spawnMichiState = std::make_shared<SuperMichiMafiosoAttack>(
+		&tr, _p_tr, &weapon,[&weapon]() {weapon.setAttackPattern(WeaponSuperMichiMafioso::SPAWN_MICHI_MAFIOSO);}
+	);
+
+	auto attackWarningState = std::make_shared<SuperMichiMafiosoAttack>(
+		&tr, _p_tr, &weapon,[&weapon]() {weapon.setAttackPattern(WeaponSuperMichiMafioso::WARNING);}
+	);
+	auto waitingState = std::make_shared<WaitingState>();
+
+	//poner los estado a la state
+	state->add_state("Walking", walkingState);
+	state->add_state("AreaAttack", areaAttackState);
+	state->add_state("ShotAttack", shotAttackState);
+	state->add_state("LargeAreaAttack", largeAreaAttackState);
+	state->add_state("SpawnMichi", spawnMichiState);
+	state->add_state("AttackWarning", attackWarningState);
+	state->add_state("Waiting", waitingState);
+
+
+	auto state_cm = state->getConditionManager();
+
+	float dist_to_attack = 5.0f;
 
 	// Condiciones de cada estado
-	// De: Walking a: Attacking, Condición: Jugador cerca
-	state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr, dist_to_attack]() {
-		return conditionManager.isPlayerNear(_p_tr, &tr, dist_to_attack);
+	// Patron1: cuando se acerca al player empieza el p1
+	state->add_transition("Walking", "AttackWarning", [state_cm, _p_tr, &tr, dist_to_attack]() {
+		return state_cm->can_use("area_attack", sdlutils().virtualTimer().currTime()) &&
+			state_cm->isPlayerNear(_p_tr, &tr, dist_to_attack);
+	});
+
+	state->add_transition("AttackWarning", "AreaAttack", [state_cm]() {
+
+		uint32_t currentTime = sdlutils().virtualTimer().currTime();
+
+		static bool timerStarted = false;
+		if (!timerStarted) {
+			state_cm->start_timer("warning", currentTime, 50);
+			timerStarted = true;
+		}
+
+		if (state_cm->is_timer_ends("warning", currentTime)) {
+			timerStarted = false;
+			return true;
+		}
+		return false;
+	});
+
+	state->add_transition("AreaAttack", "Waiting", [state_cm, _p_tr, &tr, dist_to_attack]() {
+
+		static int attackCount = 0;
+		attackCount++;
+		if (attackCount >= 1) {
+			attackCount = 0; // Resetear el contador
+			state_cm->reset_cooldown("area_attack", sdlutils().currRealTime());
+			return true;
+		}
+		return false;
+	});
+	state->add_transition("Waiting", "AttackWarning", [state_cm, _p_tr, &tr, dist_to_attack]() {
+		return state_cm->can_use("area_attack", sdlutils().virtualTimer().currTime()) && 
+			state_cm->isPlayerNear(_p_tr, &tr, dist_to_attack);
 		});
 
+
+	////patron2: cuando ataque 3 veces p1, pasa a 2 si el player no se aleja mucho
+	//state->add_transition("AreaAttack", "ShotAttack", [&conditionManager, _p_tr, &tr, dist_to_attack]() {
+	//	static int attackCount = 0;
+	//	attackCount++;
+	//	if (attackCount >= 3) {
+	//		attackCount = 0;
+	//		conditionManager->reset_cooldown("area_attack", sdlutils().currRealTime());
+	//		return true;
+	//	}
+	//	return false;
+	//	});
+
+
 	// De: Attacking a: Walking, Condición: Jugador lejos
-	state->add_transition("Attacking", "Walking", [&conditionManager, _p_tr, &tr, dist_to_attack]() {
-		return !conditionManager.isPlayerNear(_p_tr, &tr, dist_to_attack);
+	state->add_transition("AreaAttack", "Walking", [state_cm, _p_tr, &tr, dist_to_attack]() {
+		return !state_cm->isPlayerNear(_p_tr, &tr, dist_to_attack);
 		});
 
 	// Estado inicial
@@ -225,6 +305,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
 
 	auto state = manager.addComponent<StateMachine>(e, conditionManager);
+	auto state_cm = state->getConditionManager();
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
@@ -258,12 +339,12 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	state->add_state("Waiting", waitingState);
 
 	// Transiciones Patrón 1
-	state->add_transition("Walking", "Charging", [&conditionManager, _p_tr, &tr]() {
-		return conditionManager->isPlayerNear(_p_tr, &tr, 5.0f);
+	state->add_transition("Walking", "Charging", [state_cm, _p_tr, &tr]() {
+		return state_cm->isPlayerNear(_p_tr, &tr, 5.0f);
 	});
 
-	state->add_transition("Charging", "WindAttack", [&conditionManager]() {
-		return conditionManager->can_use("wind_attack", sdlutils().currRealTime());
+	state->add_transition("Charging", "WindAttack", [state_cm]() {
+		return state_cm->can_use("wind_attack", sdlutils().currRealTime());
 	});
 
 	state->add_transition("WindAttack", "DashAttack", []() {
@@ -274,32 +355,32 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 		return true; // Lanza otro abanico al otro lado
 	});
 
-	state->add_transition("WindAttack", "Waiting", [&conditionManager]() {
+	state->add_transition("WindAttack", "Waiting", [state_cm]() {
 		static int attackCount = 0;
 		attackCount++;
 		if (attackCount >= 3) {
 			attackCount = 0; // Resetear el contador
-			conditionManager->reset_cooldown("wind_attack", sdlutils().currRealTime());
+			state_cm->reset_cooldown("wind_attack", sdlutils().currRealTime());
 			return true;
 		}
 		return false;
 	});
 
-	state->add_transition("Waiting", "Walking", [&conditionManager]() {
-		return conditionManager->can_use("wind_attack", sdlutils().currRealTime());
+	state->add_transition("Waiting", "Walking", [state_cm]() {
+		return state_cm->can_use("wind_attack", sdlutils().currRealTime());
 	});
 
 	// Transiciones Patrón 2
-	state->add_transition("Walking", "DashAttack", [&conditionManager, _p_tr, &tr]() {
-		return conditionManager->isPlayerNear(_p_tr, &tr, 2.0f); // Si está muy cerca
+	state->add_transition("Walking", "DashAttack", [state_cm, _p_tr, &tr]() {
+		return state_cm->isPlayerNear(_p_tr, &tr, 2.0f); // Si está muy cerca
 	});
 
 	state->add_transition("DashAttack", "Waiting", []() {
 		return true; // Después del ataque, entra en cooldown
 	});
 
-	state->add_transition("Waiting", "Walking", [&conditionManager]() {
-		return conditionManager->can_use("dash_attack", sdlutils().currRealTime());
+	state->add_transition("Waiting", "Walking", [state_cm]() {
+		return state_cm->can_use("dash_attack", sdlutils().currRealTime());
 	});
 
 	// Estado inicial
@@ -325,6 +406,7 @@ GameScene::spawn_sarno_rata(Vector2D posVec)
 	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
 	
 	auto state = manager.addComponent<StateMachine>(e, conditionManager);
+	auto state_cm = state->getConditionManager();
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc); 
@@ -337,13 +419,13 @@ GameScene::spawn_sarno_rata(Vector2D posVec)
 
     // Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador cerca
-    state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr]() {
-        return conditionManager->isPlayerNear(_p_tr, &tr, 1.0f);  
+    state->add_transition("Walking", "Attacking", [state_cm, _p_tr, &tr]() {
+        return state_cm->isPlayerNear(_p_tr, &tr, 1.0f);
     });
 
 	// De: Attacking a: Walking, Condición: Jugador lejos
-    state->add_transition("Attacking", "Walking", [&conditionManager, _p_tr, &tr]() {
-        return !conditionManager->isPlayerNear(_p_tr, &tr, 3.0f); 
+    state->add_transition("Attacking", "Walking", [state_cm, _p_tr, &tr]() {
+        return !state_cm->isPlayerNear(_p_tr, &tr, 3.0f);
     });
 
 	
@@ -368,6 +450,7 @@ void GameScene::spawn_michi_mafioso(Vector2D posVec)
 	
 //	StateMachine(ConditionManager& conditionManager, Transform* playerTransform, Transform* enemyTransform, float dist);
 	auto state = manager.addComponent<StateMachine>(e, conditionManager);
+	auto state_cm = state->getConditionManager();
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc); 
@@ -383,33 +466,33 @@ void GameScene::spawn_michi_mafioso(Vector2D posVec)
 
     // Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador cerca
-    state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr, dist_to_attack]() {
-        return conditionManager->isPlayerNear(_p_tr, &tr, dist_to_attack);  
+    state->add_transition("Walking", "Attacking", [state_cm, _p_tr, &tr, dist_to_attack]() {
+        return state_cm->isPlayerNear(_p_tr, &tr, dist_to_attack);
     });
 
 	// De: Attacking a: Walking, Condición: Jugador lejos
-    state->add_transition("Attacking", "Walking", [&conditionManager, _p_tr, &tr, dist_to_attack]() {
-        return !conditionManager->isPlayerNear(_p_tr, &tr, dist_to_attack); 
+    state->add_transition("Attacking", "Walking", [state_cm, _p_tr, &tr, dist_to_attack]() {
+        return !state_cm->isPlayerNear(_p_tr, &tr, dist_to_attack);
     });
 
 	// De: Walking a: Backing, Condición: Jugador cerca
-	state->add_transition("Walking", "Backing", [&conditionManager, _p_tr, &tr, dist_to_fallback]() {
-		return conditionManager->isPlayerNear(_p_tr, &tr, dist_to_fallback);  
+	state->add_transition("Walking", "Backing", [state_cm, _p_tr, &tr, dist_to_fallback]() {
+		return state_cm->isPlayerNear(_p_tr, &tr, dist_to_fallback);
 	});
 	
 	// De: Backing a: Walking, Condición: Jugador lejos y Jugador lejos de ataque
-	state->add_transition("Backing", "Walking", [&conditionManager, _p_tr, &tr, dist_to_fallback, dist_to_attack]() {
-		return !conditionManager->isPlayerNear(_p_tr, &tr, dist_to_fallback) && !conditionManager->isPlayerNear(_p_tr, &tr, dist_to_attack);  
+	state->add_transition("Backing", "Walking", [state_cm, _p_tr, &tr, dist_to_fallback, dist_to_attack]() {
+		return !state_cm->isPlayerNear(_p_tr, &tr, dist_to_fallback) && !state_cm->isPlayerNear(_p_tr, &tr, dist_to_attack);
 	});
 
 	// De: Attacking a: Backing, Condición: Jugador cerca
-	state->add_transition("Attacking", "Backing", [&conditionManager, _p_tr, &tr, dist_to_fallback]() {
-		return conditionManager->isPlayerNear(_p_tr, &tr, dist_to_fallback);  
+	state->add_transition("Attacking", "Backing", [state_cm, _p_tr, &tr, dist_to_fallback]() {
+		return state_cm->isPlayerNear(_p_tr, &tr, dist_to_fallback);
 	});
 
 	// De: Backing a: Attacking, Condición: Jugador lejos
-	state->add_transition("Backing", "Attacking", [&conditionManager, _p_tr, &tr, dist_to_fallback]() {
-		return !conditionManager->isPlayerNear(_p_tr, &tr, dist_to_fallback);  
+	state->add_transition("Backing", "Attacking", [state_cm, _p_tr, &tr, dist_to_fallback]() {
+		return !state_cm->isPlayerNear(_p_tr, &tr, dist_to_fallback);
 	});
 
     // Estado inicial
@@ -433,6 +516,7 @@ void GameScene::spawn_plim_plim(Vector2D posVec)
 
 //	StateMachine(ConditionManager& conditionManager, Transform* playerTransform, Transform* enemyTransform, float dist);
 	auto state = manager.addComponent<StateMachine>(e, conditionManager);
+	auto state_cm = state->getConditionManager();
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc); 
@@ -443,13 +527,13 @@ void GameScene::spawn_plim_plim(Vector2D posVec)
 
     // Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador cerca
-    state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr]() {
-        return conditionManager->isPlayerNear(_p_tr, &tr, 4.0f);  
+    state->add_transition("Walking", "Attacking", [state_cm, _p_tr, &tr]() {
+        return state_cm->isPlayerNear(_p_tr, &tr, 4.0f);
     });
 
 	// De: Attacking a: Walking, Condición: Jugador lejos
-    state->add_transition("Attacking", "Walking", [&conditionManager, _p_tr, &tr]() {
-        return !conditionManager->isPlayerNear(_p_tr, &tr, 6.0f); 
+    state->add_transition("Attacking", "Walking", [state_cm, _p_tr, &tr]() {
+        return !state_cm->isPlayerNear(_p_tr, &tr, 6.0f);
     });
 
     // Estado inicial
@@ -474,6 +558,7 @@ void GameScene::spawn_boom(Vector2D posVec)
 	
 //	StateMachine(ConditionManager& conditionManager, Transform* playerTransform, Transform* enemyTransform, float dist);
 	auto state = manager.addComponent<StateMachine>(e, conditionManager);
+	auto state_cm = state->getConditionManager();
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc); 
@@ -485,8 +570,8 @@ void GameScene::spawn_boom(Vector2D posVec)
 
     // Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador cerca
-    state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr]() {
-        return conditionManager->isPlayerNear(_p_tr, &tr, 1.0f);  
+    state->add_transition("Walking", "Attacking", [state_cm, _p_tr, &tr]() {
+        return state_cm->isPlayerNear(_p_tr, &tr, 1.0f);
     });
 
     // Estado inicial
@@ -509,6 +594,7 @@ void GameScene::spawn_ratatouille(Vector2D posVec)
 
 	//	StateMachine(ConditionManager& conditionManager, Transform* playerTransform, Transform* enemyTransform, float dist);
 	auto state = manager.addComponent<StateMachine>(e, conditionManager);
+	auto state_cm = state->getConditionManager();
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
@@ -522,13 +608,13 @@ void GameScene::spawn_ratatouille(Vector2D posVec)
 
 	// Condiciones de cada estado
 	// De: Walking a: Rotating, Condición: Jugador cerca
-	state->add_transition("Walking", "Rotating", [&conditionManager, _p_tr, &tr, dist_to_rotate]() {
-		return conditionManager->isPlayerNear(_p_tr, &tr, dist_to_rotate);
+	state->add_transition("Walking", "Rotating", [state_cm, _p_tr, &tr, dist_to_rotate]() {
+		return state_cm->isPlayerNear(_p_tr, &tr, dist_to_rotate);
 		});
 
 	// De: Rotating a: Walking, Condición: Jugador lejos
-	state->add_transition("Rotating", "Walking", [&conditionManager, _p_tr, &tr, dist_to_rotate]() {
-		return !conditionManager->isPlayerNear(_p_tr, &tr, dist_to_rotate * 2);
+	state->add_transition("Rotating", "Walking", [state_cm, _p_tr, &tr, dist_to_rotate]() {
+		return !state_cm->isPlayerNear(_p_tr, &tr, dist_to_rotate * 2);
 		});
 
 
