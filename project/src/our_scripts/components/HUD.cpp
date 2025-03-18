@@ -35,12 +35,12 @@ void HUD::render()
 
 	//bg
 	SDL_SetRenderDrawColor(sdlutils().renderer(), 80, 55, 60, 255);
-	SDL_Rect health1{ 10,10,max_health * 2,20 };
+	SDL_Rect health1{ 200,sdlutils().height() - 140,max_health * 2,20 };
 	SDL_RenderFillRect(sdlutils().renderer(), &health1);
 
 	//remaining
 	SDL_SetRenderDrawColor(sdlutils().renderer(), 200, 80, 100, 255);
-	SDL_Rect health2{ 10,10,health * 2,20 };
+	SDL_Rect health2{ 200,sdlutils().height()-140,health * 2,20 };
 	SDL_RenderFillRect(sdlutils().renderer(), &health2);
 
 #pragma endregion
@@ -51,18 +51,18 @@ void HUD::render()
 
 	//bg
 	SDL_SetRenderDrawColor(sdlutils().renderer(), 60, 55, 80, 255);
-	SDL_Rect mana1{ 10,40,200,16 };
+	SDL_Rect mana1{ 200,sdlutils().height() - 110,200,16 };
 	SDL_RenderFillRect(sdlutils().renderer(), &mana1);
 
 	//progress
 	SDL_SetRenderDrawColor(sdlutils().renderer(), 81, 100, 222, 255);
-	SDL_Rect mana2{ 10,40,(mana_count % 1000) / 5,16 };
+	SDL_Rect mana2{ 200,sdlutils().height() - 110,(mana_count % 1000) / 5,16 };
 	SDL_RenderFillRect(sdlutils().renderer(), &mana2);
 
 	// full mana orbs
 	int display = max_mana / 1000;
 	for (int i = 1; i <= display; i++) {
-		SDL_Rect output{ 42 * (i - 1) + 10,66,32,32 };
+		SDL_Rect output{ 42 * (i - 1) + 200,sdlutils().height() - 84,32,32 };
 		if (mana_count >= i * 1000) _tex_orb->render(output);
 		else _tex_orb_empty->render(output);
 	}
@@ -192,7 +192,7 @@ void HUD::render()
 
 #pragma region prime
 	if (_deck->get_primed()) {
-		SDL_Rect primerect{ 10,71,31,32 };
+		SDL_Rect primerect{ 200,sdlutils().height() - 47,31,32 };
 		_tex_prime->render(primerect);
 	}
 #pragma endregion

@@ -193,7 +193,7 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
         switch (dt)
         {
         case GameStructs::ONE:
-            cl = { new Kunai, new EldritchBlast(), new Kunai(), new EldritchBlast(), new Kunai(), new EldritchBlast() }; 
+            cl = { new Prime(), new Primordia(), new Prime(), new Prime(), new Prime(), new Prime() };
             break;
         case GameStructs::TWO: 
             cl = { new Fireball(), new CardSpray(), new Lighting(), new Minigun(), new Kunai(), new EldritchBlast() };
