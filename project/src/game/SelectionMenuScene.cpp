@@ -160,7 +160,7 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
         
 
     });
-    buttonComp->connectHover([buttonComp, mngr, wt]() {
+    buttonComp->connectHover([buttonComp, imgComp, mngr, wt]() {
         std::string s;
         auto& info = mngr->getEntities(ecs::grp::WEAPONINFO);
         assert(!info.empty());
@@ -186,12 +186,14 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
         }
         s += "info";
         infoImg->set_texture(&sdlutils().images().at(s));
+        imgComp->apply_filter(128,128,128);
     });
-    buttonComp->connectExit([buttonComp, mngr]() {
+    buttonComp->connectExit([buttonComp, imgComp,mngr]() {
         auto& info = mngr->getEntities(ecs::grp::WEAPONINFO);
         assert(!info.empty());
         auto infoImg = mngr->getComponent<transformless_dyn_image>(info[0]);
         infoImg->set_texture(&sdlutils().images().at("initial_info"));
+        imgComp->apply_filter(255, 255, 255);
     });
 }
 void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const GameStructs::ButtonProperties& bp) {
@@ -246,9 +248,12 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
         _last_deck_button = imgComp;
     });
 
-    buttonComp->connectHover([buttonComp]() {
-    }
-);
+    buttonComp->connectHover([buttonComp, imgComp]() {
+        imgComp->apply_filter(128, 128, 128);
+        });
+    buttonComp->connectExit([buttonComp, imgComp]() {
+        imgComp->apply_filter(255, 255, 255);
+        });
 }
 void SelectionMenuScene::create_deck_info(const rect_f32& rect) {
     ecs::entity_t e = create_entity(
@@ -307,7 +312,7 @@ void SelectionMenuScene::set_concrete_deck_info(const std::list<Card*>& cl) {
 }
 void SelectionMenuScene::create_enter_button() {
     GameStructs::ButtonProperties bp = {
-         { {0.875f, 0.05f},{0.3f, 0.125f} },
+         { {0.5f, 0.5f},{0.3f, 0.125f} },
          0.0f, "enter_game"
     };
     auto* mngr = Game::Instance()->get_mngr();

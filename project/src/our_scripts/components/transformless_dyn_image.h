@@ -55,4 +55,6 @@ struct transformless_dyn_image : public ecs::Component {
 		texture->render(source, destination, my_rotation, nullptr);
 	}
 	inline void set_texture(Texture* t) { texture = t; };
+
+	inline void apply_filter(int r, int g, int b) { SDL_SetTextureColorMod(&texture->get_texture(), r, g, b); };
 };
