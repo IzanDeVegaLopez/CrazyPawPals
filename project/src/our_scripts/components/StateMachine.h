@@ -25,6 +25,8 @@ public:
 
     void set_initial_state(const std::string& name);
 
+    void transitionTo(const std::string& name);
+
     void enter();
 
     void exit();

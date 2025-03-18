@@ -3,7 +3,6 @@
 #include "../../game/GameScene.h"
 #include "../components/Health.h"
 #include "../components/Transform.h"
-#include "../components/EnemyStateMachine.h"
 #include "../components/Weapon.h"
 
 

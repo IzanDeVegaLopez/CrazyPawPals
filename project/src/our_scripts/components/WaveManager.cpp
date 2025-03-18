@@ -82,19 +82,19 @@ WaveManager::spawnWave() {
                 case 0:
                     break;
 		        case 1:
-                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_catkuza(posVec);
+                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_super_michi_mafioso(posVec);
 			        break;
                 case 2:
-                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_catkuza(posVec);
+                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_super_michi_mafioso(posVec);
 			        break;
 		        case 3:
-                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_catkuza(posVec);
+                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_super_michi_mafioso(posVec);
                     break;
                 case 4:
-                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_catkuza(posVec);
+                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_super_michi_mafioso(posVec);
 			        break;
                 case 5:
-                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_ratatouille(posVec);
+                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_super_michi_mafioso(posVec);
                         break;
                 default: {
                     assert(false && "unreachable");

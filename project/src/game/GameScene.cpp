@@ -15,6 +15,8 @@
 #include "../our_scripts/states/WalkingState.h"
 #include "../our_scripts/states/AttackingState.h"
 #include "../our_scripts/states/RotatingState.h"
+#include "../our_scripts/states/SuperMichiMafiosoAttack.h"
+#include "../our_scripts/components/WeaponSuperMichiMafioso.h"
 
 #include "../our_scripts/components/KeyboardPlayerCtrl.h"
 #include "../our_scripts/components/SimpleMove.h"
@@ -35,7 +37,6 @@
 #include "../our_scripts/components/WeaponBoom.h"
 #include "../our_scripts/components/Health.h"
 
-#include "../our_scripts/components/EnemyStateMachine.h"
 #include "../our_scripts/components/StateMachine.h"
 #include "../our_scripts/components/dyn_image.hpp"
 #include "../our_scripts/components/render_ordering.hpp"
@@ -158,6 +159,48 @@ GameScene::create_enemy(Transform* tr, const std::string& spriteKey, Weapon* wea
 
 	return e;
 }
+void GameScene::spawn_super_michi_mafioso(Vector2D posVec)
+{
+	auto&& manager = *Game::Instance()->get_mngr();
+	auto&& weapon = *new WeaponSuperMichiMafioso();
+	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
+
+	auto e = create_enemy(&tr, "super_michi_mafioso", static_cast<Weapon*>(&weapon), 2, 1.0f, 1.125f);
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.01, 3.0f, 15.0f));
+
+	ConditionManager conditionManager;
+
+	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
+
+	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
+
+	//	StateMachine(ConditionManager& conditionManager, Transform* playerTransform, Transform* enemyTransform, float dist);
+	auto state = manager.addComponent<StateMachine>(e, conditionManager);
+
+	// Crear estados
+	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
+	auto attackingState = std::make_shared<SuperMichiMafiosoAttack>(&tr, _p_tr, &weapon, &mc);
+	//poner los estado a la state
+	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
+	state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));
+
+	float dist_to_attack = 6.0f;
+
+	// Condiciones de cada estado
+	// De: Walking a: Attacking, Condición: Jugador cerca
+	state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr, dist_to_attack]() {
+		return conditionManager.isPlayerNear(_p_tr, &tr, dist_to_attack);
+		});
+
+	// De: Attacking a: Walking, Condición: Jugador lejos
+	state->add_transition("Attacking", "Walking", [&conditionManager, _p_tr, &tr, dist_to_attack]() {
+		return !conditionManager.isPlayerNear(_p_tr, &tr, dist_to_attack);
+		});
+
+	// Estado inicial
+	state->set_initial_state("Walking");
+}
+
 
 
 void 
@@ -408,6 +451,7 @@ void GameScene::spawn_plim_plim(Vector2D posVec)
     state->set_initial_state("Walking");
 }
 
+
 void GameScene::spawn_boom(Vector2D posVec)
 {
 	auto&& manager = *Game::Instance()->get_mngr();
@@ -486,6 +530,8 @@ void GameScene::spawn_ratatouille(Vector2D posVec)
 	// Estado inicial
 	state->set_initial_state("Walking");
 }
+
+
 
 void GameScene::spawn_wave_manager()
 {

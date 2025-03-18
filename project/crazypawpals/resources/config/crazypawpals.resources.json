@@ -65,6 +65,10 @@
       "file": "resources/images/projectiles/p_boom.png"
     },
     {
+      "id": "p_super_michi_mafioso",
+      "file": "resources/images/projectiles/p_super_michi_mafioso.png"
+    },
+    {
       "id": "p_lightbringer",
       "file": "resources/images/projectiles/SDL_logo.png"
     },
@@ -151,6 +155,10 @@
     {
       "id": "michi_mafioso",
       "file": "resources/images/enemies/michi_mafioso.png"
+    },    
+    {
+      "id": "super_michi_mafioso",
+      "file": "resources/images/enemies/super_michi_mafioso.png"
     },
     {
       "id": "ratatouille",

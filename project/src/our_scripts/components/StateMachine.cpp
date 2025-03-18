@@ -26,6 +26,13 @@ void StateMachine::set_initial_state(const std::string& name) {
 	}
 }
 
+void StateMachine::transitionTo(const std::string& name) {
+	_currentState = name;
+	if (_states.count(_currentState)) {
+		_states[_currentState]->enter();
+	}
+}
+
 void StateMachine::update(uint32_t delta_time) {
 	if (_states.count(_currentState)) {
 		_states[_currentState]->update(delta_time);
