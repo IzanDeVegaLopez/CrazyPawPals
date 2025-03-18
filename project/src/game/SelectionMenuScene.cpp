@@ -30,9 +30,9 @@ SelectionMenuScene::~SelectionMenuScene()
 {
 }
 void SelectionMenuScene::create_weapon_buttons() {
-    float umbral = 0.15f;
+    float umbral = 0.25f;
     GameStructs::ButtonProperties buttonPropTemplate = {
-         { {1.85f, 0.025f},{0.1f, 0.175f} },
+         { {0.85f, 0.025f},{0.1f, 0.175f} },
          0.0f, ""
     };
 
@@ -124,37 +124,27 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
         //std::cout << "left click-> button" << std::endl;
         std::string s;
 
-        auto& info = mngr->getEntities(ecs::grp::WEAPONINFO);
-        assert(!info.empty());
-        auto infoImg = mngr->getComponent<transformless_dyn_image>(info[0]);
-
         switch (wt) {
         case GameStructs::REVOLVER:
             //std::cout << "revolver chosen" << std::endl;
             mngr->addComponent<Revolver>(player);
-            s = "revolver_";
             break;
         case GameStructs::RAMPAGE:
             //std::cout << "rampage chosen" << std::endl;
             mngr->addComponent<Rampage>(player);
-            s = "rampage_";
             break;
         case GameStructs::PUMP_SHOTGUN:
             mngr->addComponent<PumpShotgun>(player);
-            s = "pump_shotgun_";
             break;
         case GameStructs::RAMP_CANON:
             mngr->addComponent<RampCanon>(player);
-            s = "ramp_canon_";
             break;
         case GameStructs::LIGHTBRINGER:
             mngr->addComponent<Lightbringer>(player);
-            s = "lightbringer_";
             break;
         default:
             break;
         }
-        s += "info";
 
         _weapon_selected = true;
 
@@ -167,11 +157,42 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
         }
         _last_weapon_button = imgComp;
 
-        //weapon info
-        infoImg->set_texture(&sdlutils().images().at(s));
+        
 
     });
-
+    buttonComp->connectHover([buttonComp, mngr, wt]() {
+        std::string s;
+        auto& info = mngr->getEntities(ecs::grp::WEAPONINFO);
+        assert(!info.empty());
+        auto infoImg = mngr->getComponent<transformless_dyn_image>(info[0]);
+        switch (wt) {
+        case GameStructs::REVOLVER:
+            s = "revolver_";
+            break;
+        case GameStructs::RAMPAGE:
+            s = "rampage_";
+            break;
+        case GameStructs::PUMP_SHOTGUN:
+            s = "pump_shotgun_";
+            break;
+        case GameStructs::RAMP_CANON:
+            s = "ramp_canon_";
+            break;
+        case GameStructs::LIGHTBRINGER:
+            s = "lightbringer_";
+            break;
+        default:
+            break;
+        }
+        s += "info";
+        infoImg->set_texture(&sdlutils().images().at(s));
+    });
+    buttonComp->connectExit([buttonComp, mngr]() {
+        auto& info = mngr->getEntities(ecs::grp::WEAPONINFO);
+        assert(!info.empty());
+        auto infoImg = mngr->getComponent<transformless_dyn_image>(info[0]);
+        infoImg->set_texture(&sdlutils().images().at("initial_info"));
+    });
 }
 void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const GameStructs::ButtonProperties& bp) {
     auto* mngr = Game::Instance()->get_mngr();
@@ -249,7 +270,8 @@ void SelectionMenuScene::create_deck_infos() {
     }
 }
 void SelectionMenuScene::create_weapon_info() {
-    rect_f32 rect = {{1.3f, 0.25f} ,{0.75f, 0.5f}};
+   // rect_f32 rect = {{1.3f, 0.25f} ,{0.75f, 0.5f}};
+    rect_f32 rect = { {1.0f, 0.25f} ,{0.75f, 0.5f} };
     ecs::entity_t e = create_entity(
         ecs::grp::WEAPONINFO,
         ecs::scene::SELECTIONMENUSCENE,

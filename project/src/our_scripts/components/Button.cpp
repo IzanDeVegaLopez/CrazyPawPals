@@ -23,22 +23,23 @@ void Button::initComponent() {
 
 void Button::update(uint32_t delta_time) {
     (void)delta_time;
+    _previous_state = _current_state;  // Guardamos el estado anterior
+
     if (mouseOver()) {
         if (_current_state != HOVER) {
             _current_state = HOVER;
-            emitHover(); 
+            emitHover();
         }
     }
     else {
+        if (_previous_state == HOVER) {  // Detectamos la salida del puntero
+            emitExit();
+        }
         _current_state = EMPTY;
     }
 
-
     if (ih().mouseButtonDownEvent() && ih().getMouseButtonState(InputHandler::LEFT)) {
         leftClickDown();
-    }
-    else {
-        leftClickUp();
     }
 }
 
@@ -79,6 +80,15 @@ void Button::emitClick() const {
 
 void Button::emitHover() const {
     for (const auto& callback : _hover_callbacks) {
+        callback();
+    }
+}
+void Button::connectExit(SDLEventCallback callback) {
+    _pointer_exit_callbacks.push_back(callback);
+}
+
+void Button::emitExit() const {
+    for (const auto& callback : _pointer_exit_callbacks) {
         callback();
     }
 }

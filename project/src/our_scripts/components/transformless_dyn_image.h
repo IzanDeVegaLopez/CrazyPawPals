@@ -7,8 +7,7 @@
 #include "../components/camera_component.hpp"
 class Texture;
 struct camera_screen;
-
-
+#include <iostream>
 struct transformless_dyn_image : public ecs::Component {
 
 	__CMPID_DECL__(ecs::cmp::TRANSFORMLESS_DYN_IMAGE);
