@@ -5,6 +5,7 @@
 class Weapon;
 class Transform;
 class StateMachine;
+class ConditionManager;
 class GameScene : public Scene
 {
 	[[maybe_unused]]
@@ -12,6 +13,7 @@ class GameScene : public Scene
 	ecs::entity_t create_enemy(Transform* tr, const std::string& spriteKey, Weapon* weapon, float health, float width, float height);
 
 	void add_transition(StateMachine& state, const std::string& from, const std::string& to, const std::function<bool()>& condition);
+	
 public:
 	GameScene();
 	~GameScene() {};

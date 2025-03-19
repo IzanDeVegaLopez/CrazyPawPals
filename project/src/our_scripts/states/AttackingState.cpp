@@ -27,5 +27,5 @@ void AttackingState::update(uint32_t delta_time) {
 }
 
 void AttackingState::exit() {
-	
+	_contador = 0;
 }

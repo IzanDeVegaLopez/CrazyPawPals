@@ -284,11 +284,10 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec)
 }
 
 
-void GameScene::add_transition(StateMachine& state, const std::string& from, const std::string& to,
-	const std::function<bool()>& condition) {
+void GameScene::add_transition(StateMachine& state, const std::string& from, const std::string& to, const std::function<bool()>& condition) {
 	state.add_transition(from, to, [condition]() {
 		return condition();
-		});
+	});
 }
 
 void 
@@ -323,8 +322,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 		&tr, _p_tr, &weapon,
 		[&weapon, &tr, _p_tr]() { 
 			Vector2D shootPos = tr.getPos(); // Posición del enemigo
-			Vector2D shootDir = (_p_tr->getPos() - shootPos).normalize(); // Dirección hacia el jugador
-			weapon.wind_attack(shootPos, shootDir); 
+			weapon.wind_attack(shootPos); 
 		}
 	);
 	
@@ -335,7 +333,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 			Vector2D shootDir = (_p_tr->getPos() - shootPos).normalize();
 			weapon.dash_attack(shootPos, shootDir);
 
-			Vector2D dash_target = _p_tr->getPos() + shootDir * 1.5;
+			Vector2D dash_target = _p_tr->getPos() + shootDir * 1.8;
 			std::cout << dash_target << std::endl;
 			mc.dash(dash_target, 1000);
 		}
@@ -354,10 +352,11 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 
 	// Transiciones Patrón 1
 	add_transition(state, "Walking", "Charging",
-		[state_cm, _p_tr, &tr]() {
+		[state_cm, _p_tr, &tr, &weapon]() {
 			bool trans = state_cm->is_player_near(_p_tr, &tr, 5.0f);
 			if (trans) {
 				state_cm->reset_cooldown("charging_duration", sdlutils().currRealTime());
+				weapon.set_player_pos(_p_tr->getPos());
 			}
 			return trans;
 		}
@@ -374,16 +373,17 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	);
 
 	add_transition(state, "WindAttack", "DashAttack",
-		[state_cm]() {
+		[state_cm, &weapon, _p_tr]() {
 			bool trans = state_cm->can_use("wind_attack_duration", sdlutils().currRealTime());
 			if (trans) {
 				state_cm->reset_cooldown("dash_attack_duration", sdlutils().currRealTime());
+				weapon.set_player_pos(_p_tr->getPos());
 			}
 			return trans;
 		}
 	);
 
-	add_transition(state, "DashAttack", "WindAttack2",
+	add_transition(state, "DashAttack", "Walking",
 		[state_cm]() {
 			bool trans = state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
 			if (trans) {
