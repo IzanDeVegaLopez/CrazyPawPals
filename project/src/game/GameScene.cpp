@@ -40,7 +40,6 @@
 #include "../our_scripts/components/transformless_dyn_image.h"
 #include "../our_scripts/components/render_ordering.hpp"
 #include "../our_scripts/components/rect_component.hpp"
-#include "../our_scripts/components/StopOnBorder.h"
 #include "../our_scripts/components/HUD.h"
 
 #include "../our_scripts/components/render_ordering.hpp"
@@ -66,14 +65,61 @@ static ecs::entity_t create_environment() {
 		{1.0, 1.0}
 	}, position2_f32{0.0f, 0.0f}, rect, manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam, sdlutils().images().at("floor"), tr);
 	manager.addComponent<render_ordering>(environment, 0);
+
+	std::array map_barriers{
+		manager.addEntity(ecs::scene::GAMESCENE),
+		manager.addEntity(ecs::scene::GAMESCENE),
+		manager.addEntity(ecs::scene::GAMESCENE),
+		manager.addEntity(ecs::scene::GAMESCENE)
+	};
+
+	constexpr static const auto transform_from_position_alloc = [](const position2_f32 position) -> Transform * {
+		return new Transform(Vector2D{
+			position.x, position.y
+		}, {0.0f, 0.0f}, 0.0f, 0.0f);
+	};
+	auto &&bounds = GameScene::default_scene_bounds;
+	std::array<Transform *, map_barriers.size()> map_barriers_transforms{
+		transform_from_position_alloc({bounds.position.x - bounds.size.x * 0.5f,	0.0f										}),
+		transform_from_position_alloc({bounds.position.x + bounds.size.x * 0.5f, 	0.0f										}),
+		transform_from_position_alloc({0.0f, 										bounds.position.y - bounds.size.y * 0.5f	}),
+		transform_from_position_alloc({0.0f, 										bounds.position.y + bounds.size.y * 0.5f	})
+	};
+
+	constexpr static const float barrier_thickness = 1.0f;
+	std::array<rect_component *, map_barriers.size()> map_barriers_rects{
+		new rect_component{0.0f, 0.0f, barrier_thickness,							bounds.size.y - barrier_thickness * 1.5f},
+		new rect_component{0.0f, 0.0f, barrier_thickness,							bounds.size.y - barrier_thickness * 1.5f},
+		new rect_component{0.0f, 0.0f, bounds.size.x - barrier_thickness * 1.5f,	barrier_thickness						},
+		new rect_component{0.0f, 0.0f, bounds.size.x - barrier_thickness * 1.5f,	barrier_thickness						}
+	};
+	std::array<rigidbody_component *, map_barriers.size()> map_barriers_rigidbodies{
+		new rigidbody_component{rect_f32{{0.0f, 0.0f}, {1.0f, 1.0f}}, inverse_mass_f32{0.0f}, 0.0f},
+		new rigidbody_component{rect_f32{{0.0f, 0.0f}, {1.0f, 1.0f}}, inverse_mass_f32{0.0f}, 0.0f},
+		new rigidbody_component{rect_f32{{0.0f, 0.0f}, {1.0f, 1.0f}}, inverse_mass_f32{0.0f}, 0.0f},
+		new rigidbody_component{rect_f32{{0.0f, 0.0f}, {1.0f, 1.0f}}, inverse_mass_f32{0.0f}, 0.0f}
+	};
+
+	std::array<collisionable *, map_barriers.size()> map_barriers_colliders{
+		new collisionable{*map_barriers_transforms[0], *map_barriers_rigidbodies[0], *map_barriers_rects[0], collisionable_option_none},
+		new collisionable{*map_barriers_transforms[1], *map_barriers_rigidbodies[1], *map_barriers_rects[1], collisionable_option_none},
+		new collisionable{*map_barriers_transforms[2], *map_barriers_rigidbodies[2], *map_barriers_rects[2], collisionable_option_none},
+		new collisionable{*map_barriers_transforms[3], *map_barriers_rigidbodies[3], *map_barriers_rects[3], collisionable_option_none}
+	};
+	for (size_t i = 0; i < map_barriers.size(); i++) {
+		manager.addExistingComponent(map_barriers[i], map_barriers_transforms[i]);
+		manager.addExistingComponent(map_barriers[i], map_barriers_rects[i]);
+		manager.addExistingComponent(map_barriers[i], map_barriers_rigidbodies[i]);
+		manager.addExistingComponent(map_barriers[i], map_barriers_colliders[i]);
+	}
 	return environment;
 }
 
 
 void GameScene::initScene() {
 	const rendering::camera_creation_descriptor_flags flags =
-		rendering::camera_creation_descriptor_options::camera_creation_descriptor_options_set_handler
-		| rendering::camera_creation_descriptor_options::camera_creation_descriptor_options_clamp;
+		rendering::camera_creation_descriptor_options::camera_creation_descriptor_options_set_handler;
+		//| rendering::camera_creation_descriptor_options::camera_creation_descriptor_options_clamp;
 	ecs::entity_t camera = rendering::create_camera(ecs::scene::GAMESCENE, flags, nullptr);
 	ecs::entity_t player = create_player();
 
@@ -133,7 +179,6 @@ ecs::entity_t GameScene::create_player()
 		new ManaComponent(),
 		new MovementController(0.1f,5.0f,20.0f),
 		//new Deck(c),
-		new StopOnBorder(camera, 1.5f, 2.0f),
 		&player_rigidbody,
 		&player_collisionable
 		);

@@ -51,13 +51,9 @@ ecs::entity_t Scene::rendering::create_camera(
         assert(follow != nullptr && "error: failed to add camera follow");
     }
 
-    constexpr static const ::rect_f32 default_bounds{
-        .position = {0.0, 0.0},
-        .size = {32.0, 18.0},
-    };
     if (flags & camera_creation_descriptor_options_clamp) {
         auto clamp = manager.addComponent<camera_clamp>(camera, camera_clamp_descriptor{
-            .bounds = default_bounds
+            .bounds = default_scene_bounds
         }, device);
         assert(clamp != nullptr && "error: failed to add camera clamp");
     }
