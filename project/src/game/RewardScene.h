@@ -15,4 +15,9 @@ public:
 private:
 	//Anadirle la textura
 	void create_reward_button(const GameStructs::ButtonProperties& bp);
+	void create_reward_buttons();
+
+	//methods to show your actual deck info
+	void create_my_deck_cards();
+	void create_a_deck_card();
 };

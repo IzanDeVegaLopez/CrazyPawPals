@@ -19,6 +19,20 @@ RewardScene::~RewardScene()
 }
 
 void RewardScene::initScene() {
+    create_reward_buttons();
+}
+void RewardScene::enterScene()
+{
+}
+
+void RewardScene::exitScene()
+{
+}
+void RewardScene::render() {
+
+    Scene::render();
+}
+void RewardScene::create_reward_buttons() {
     float umbral = 0.4f;
     GameStructs::ButtonProperties buttonPropTemplate = {
         { {0.5f, 0.2f}, {0.175f, 0.3f} },
@@ -38,29 +52,13 @@ void RewardScene::initScene() {
     reward3B.sprite_key = "card_back";
     reward3B.rect.position.x -= umbral;
     create_reward_button(reward3B);
-
 }
-void RewardScene::enterScene()
-{
-}
-
-void RewardScene::exitScene()
-{
-}
-void RewardScene::render() {
-
-    Scene::render();
-}
-
 void RewardScene::create_reward_button(const GameStructs::ButtonProperties& bp)
 {
     auto* mngr = Game::Instance()->get_mngr();
-
-    //SET TEXTURE
-
     auto e = create_button(bp);
     auto buttonComp = mngr->getComponent<Button>(e);
-    buttonComp->connectClick([buttonComp, &mngr]() {
+    buttonComp->connectClick([buttonComp, mngr]() {
         std::cout << "left click -> Reward button" << std::endl;
         Game::Instance()->change_Scene(Game::MAINMENU);
         });

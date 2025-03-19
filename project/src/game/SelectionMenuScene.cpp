@@ -148,8 +148,10 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
 
         _weapon_selected = true;
 
-        //swap the actual buttons textures
-        imgComp->swap_textures();
+        if (imgComp != _last_weapon_button) {
+            //swap the actual buttons textures
+            imgComp->swap_textures();
+        }
 
         //register the last clicked button
         if (_last_weapon_button != nullptr && _last_weapon_button != imgComp) {
