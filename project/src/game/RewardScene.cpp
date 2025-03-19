@@ -48,14 +48,10 @@ void RewardScene::create_reward_buttons() {
     reward1B.sprite_key = "reward_card";
     create_reward_button(reward1B);
 
-    std::cout << reward1B.rect.position.x << std::endl;
-
     GameStructs::ButtonProperties reward2B = buttonPropTemplate;
     reward2B.sprite_key = "reward_card";
     reward2B.rect.position.x += umbral;
     create_reward_button(reward2B);
-
-    std::cout << reward2B.rect.position.x << std::endl;
 
     GameStructs::ButtonProperties reward3B = buttonPropTemplate;
     reward3B.sprite_key = "reward_card";
@@ -81,17 +77,16 @@ void RewardScene::create_reward_button(const GameStructs::ButtonProperties& bp)
         std::cout << "left click -> Reward button" << std::endl;
         //swap the actual buttons textures
         imgComp->swap_textures();
-        //Game::Instance()->change_Scene(Game::MAINMENU);
         });
 
     buttonComp->connectHover([buttonComp, imgComp]() {
-        std::cout << "hover -> Reward button" << std::endl;
+        std::cout << "hover -> Reward button: " << std::endl;
         //filter
         imgComp->apply_filter(128, 128, 128);
         });
 
     buttonComp->connectExit([buttonComp, imgComp]() {
-        std::cout << "exit -> Reward button" << std::endl;
+        std::cout << "exit -> Reward button: " << std::endl;
         //filter
         imgComp->apply_filter(255, 255, 255);
         });
