@@ -8,10 +8,13 @@
 
 struct card_rendering_descriptor {
     rect_f32 mana_cost_subrect;
+    rect_f32 health_cost_subrect;
     std::string_view card_image_key;
     std::string_view mana_cost_font_key;
     SDL_Color mana_cost_color;
     uint16_t mana_cost;
+    SDL_Color health_cost_color;
+    uint16_t health_cost;
 };
 enum card_rendering_descriptor_options {
     card_rendering_descriptor_options_none = 0,

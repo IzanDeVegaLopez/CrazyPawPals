@@ -3,6 +3,7 @@
 #include "../../sdlutils/Font.h"
 #include "../../ecs/Manager.h"
 #include "../../game/Game.h"
+#include <algorithm>
 
 Health::Health(int maxHealth) 
 	: _currentHealth(maxHealth), _maxHealth(maxHealth),_shield(0),_shieldTime(0) {};
@@ -13,6 +14,7 @@ Health::heal(int health) {
 	if (_currentHealth + health < _maxHealth) _currentHealth += health;
 	else _currentHealth = _maxHealth;
 }
+int Health::getMaxHealth() const { return _maxHealth; }
 
 void
 Health::takeDamage(int damage) {
@@ -34,10 +36,13 @@ Health::setMaxHeatlh(int h) {
 }
 int
 Health::getHealth() const { return _currentHealth; }
-int Health::getMaxHealth() const { return _maxHealth; }
 void 
 Health::takeShield(int s) {
 	_shield = s;
+}
+void Health::payHealth(int cost)
+{
+	_currentHealth = std::max(1, _currentHealth - cost);
 }
 void
 Health::update(uint32_t delta_time) {

@@ -14,10 +14,10 @@ ControlsScene::ControlsScene() : Scene(ecs::scene::CONTROLSSCENE)
     _background = &sdlutils().images().at("controls");
 
     //Boton back to main menu
-    GameStructs::ButtonProperties buttonPropTemplate = { {30, 30},
-       30.0f, 30.0f, 0.0f, ""
+    GameStructs::ButtonProperties mainMenuB = {
+        { {0.1f, 0.1f},{0.1f, 0.1f} },
+        0.0f, ""
     };
-    GameStructs::ButtonProperties mainMenuB = buttonPropTemplate;
     mainMenuB.sprite_key = "heart";
     create_mainmenu_button(mainMenuB);
 
@@ -52,11 +52,9 @@ void ControlsScene::create_mainmenu_button(const GameStructs::ButtonProperties& 
     auto e = create_button(bp);
     auto buttonComp = mngr->getComponent<Button>(e);
     buttonComp->connectClick([buttonComp, &mngr]() {
-        if (buttonComp->clicked()) return;
-        buttonComp->set_clicked(true);
         //std::cout << "left click -> main menu button" << std::endl;
+
         Game::Instance()->change_Scene(Game::MAINMENU);
-        buttonComp->set_clicked(false);
         });
 
     buttonComp->connectHover([buttonComp]() {

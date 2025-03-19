@@ -52,7 +52,7 @@ public:
 	int mana_count() const { return _mana_count/1000; }
 
 
-	int raw_mana_count() const { return _mana_count; }
-	int max_mana() const { return _max_mana; }
+	inline int raw_mana_count() const { return _mana_count; }
+	inline int max_mana() const { return _max_mana; }
 
 };
