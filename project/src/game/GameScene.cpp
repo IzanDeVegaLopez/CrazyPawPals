@@ -5,7 +5,6 @@
 #include "../sdlutils/InputHandler.h"
 #include "../sdlutils/SDLUtils.h"
 #include "../utils/Vector2D.h"
-#include "../utils/Collisions.h"
 
 #include "../our_scripts/components/Image.h"
 #include "../our_scripts/components/Transform.h"
@@ -41,6 +40,7 @@
 
 #include "../our_scripts/components/StateMachine.h"
 #include "../our_scripts/components/dyn_image.hpp"
+#include "../our_scripts/components/transformless_dyn_image.h"
 #include "../our_scripts/components/render_ordering.hpp"
 #include "../our_scripts/components/rect_component.hpp"
 #include "../our_scripts/components/StopOnBorder.h"
@@ -49,6 +49,8 @@
 #include "../our_scripts/components/render_ordering.hpp"
 #include "../our_scripts/card_system/PlayableCards.hpp"
 #include "../our_scripts/card_system/CardUpgrade.hpp"
+
+#include "../our_scripts/components/rigidbody_component.hpp"
 
 #include <iostream>
 #include <string>
@@ -85,8 +87,10 @@ void GameScene::initScene() {
 		.semi_reach_time = 2.5f
 	}, *manager.getComponent<camera_component>(camera), *manager.getComponent<Transform>(player));
 
+	manager.refresh();
 	create_environment();
-	spawn_wave_manager();
+	spawn_sarno_rata(Vector2D{5.0f, 0.0f});
+	//spawn_wave_manager();
 }
 
 void GameScene::enterScene()
@@ -97,7 +101,6 @@ void GameScene::enterScene()
 
 	w->initComponent();
 	mngr->addComponent<KeyboardPlayerCtrl>(player);
-
 	auto d = mngr->getComponent<Deck>(player);
 	d->initComponent();
 	mngr->addComponent<HUD>(player);
@@ -113,7 +116,9 @@ ecs::entity_t GameScene::create_player()
 	auto &&camera = manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam;
 	
 	auto &&player_transform = *new Transform({ 0.0f, 0.0f }, { 0.0f,0.0f }, 0.0f, 2.0f);
-	auto &&player_rect = *new rect_component{0, 0, 1.125f, 1.5f};
+	auto &&player_rect = *new rect_component{0, 0, 1.5f, 2.0f};
+	auto &&player_rigidbody = *new rigidbody_component{rect_f32{{0.15f, -0.125}, {0.5f, 0.75f}}, mass_f32{7.0f}, 1.0f};
+	auto &&player_collisionable = *new collisionable{player_transform, player_rigidbody, player_rect, collisionable_option_none};
 	ecs::entity_t player = create_entity(
 		ecs::grp::PLAYER,
 		ecs::scene::GAMESCENE,
@@ -130,7 +135,10 @@ ecs::entity_t GameScene::create_player()
 		new Health(100),
 		new ManaComponent(),
 		new MovementController(0.1f,5.0f,20.0f),
-		new StopOnBorder(camera, 1.5f, 2.0f)
+		//new Deck(c),
+		new StopOnBorder(camera, 1.5f, 2.0f),
+		&player_rigidbody,
+		&player_collisionable
 		);
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::PLAYER, player);
 	return player;
@@ -143,6 +151,8 @@ GameScene::create_enemy(Transform* tr, const std::string& spriteKey, Weapon* wea
 
 	float randSize = float(sdlutils().rand().nextInt(6, 10)) / 10.0f;
 	auto&& rect = *new rect_component{ 0, 0, width * randSize, height * randSize };
+	auto &&rigidbody = *new rigidbody_component{rect_f32{{0.0f, -0.15f}, {0.5f, 0.6f}}, mass_f32{3.0f}, 0.05f};
+	auto &&col = *new collisionable{*tr, rigidbody, rect, collisionable_option_none};
 	auto e = create_entity(
 		ecs::grp::ENEMY,
 		ecs::scene::GAMESCENE,
@@ -155,9 +165,13 @@ GameScene::create_enemy(Transform* tr, const std::string& spriteKey, Weapon* wea
 			sdlutils().images().at(spriteKey),
 			*tr
 		),
-		new Health(health)
+		new Health(health),
+		weapon,
+		&rigidbody,
+		&col
 	);
-	if (weapon != nullptr)manager.addExistingComponent<Weapon>(e, weapon);
+	// BUG: ^^^^ justo ahí arriba se añade el weapon
+	// if (weapon != nullptr)manager.addExistingComponent<Weapon>(e, weapon);
 
 	return e;
 }
@@ -430,7 +444,7 @@ GameScene::spawn_sarno_rata(Vector2D posVec)
 {
 	auto&& manager = *Game::Instance()->get_mngr();
 	auto &&weapon = *new WeaponSarnoRata();
-	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
+	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 1.0f);
 
 	auto e = create_enemy(&tr, "sarno_rata", static_cast<Weapon*>(&weapon), 2, 1.125f, 1.5f);
 	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.05));
@@ -664,7 +678,13 @@ void GameScene::spawn_wave_manager()
 	create_entity(
 		ecs::hdlr::WAVE,
 		ecs::scene::GAMESCENE,
-		new WaveManager()
+		new WaveManager(),
+		new transformless_dyn_image(
+			{ {0.2,0.1},{0.6,0.2} },
+			0,
+			Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam,
+			&sdlutils().images().at("event_letters")
+		)
 	);
 }
 

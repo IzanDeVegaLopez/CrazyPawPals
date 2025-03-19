@@ -14,6 +14,7 @@ Health::heal(int health) {
 	if (_currentHealth + health < _maxHealth) _currentHealth += health;
 	else _currentHealth = _maxHealth;
 }
+int Health::getMaxHealth() const { return _maxHealth; }
 
 void
 Health::takeDamage(int damage) {
@@ -35,7 +36,6 @@ Health::setMaxHeatlh(int h) {
 }
 int
 Health::getHealth() const { return _currentHealth; }
-int Health::getMaxHealth() const { return _maxHealth; }
 void 
 Health::takeShield(int s) {
 	_shield = s;
