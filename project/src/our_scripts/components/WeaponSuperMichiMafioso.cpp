@@ -21,7 +21,6 @@ void WeaponSuperMichiMafioso::create_area(Vector2D shootPos, Vector2D shootDir, 
 	bp.sprite_key = key_name;
 
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::ENEMYBULLETS);
-
 }
 
 void WeaponSuperMichiMafioso::attack1(Vector2D shootDir) {
@@ -30,7 +29,7 @@ void WeaponSuperMichiMafioso::attack1(Vector2D shootDir) {
 		_warning = false;
 	}
 	else {
-		create_area(_player_tr->getPos(), shootDir, "attack_warning", 0, 0, 1.0f, 2);
+		create_area(_player_tr->getPos(), shootDir, "attack_warning", 1.0f, 0, 1.0f, 2);
 		_last_shootPos = _player_tr->getPos();
 		_warning = true;
 	}
@@ -41,7 +40,7 @@ void WeaponSuperMichiMafioso::attack2(Vector2D shootPos, Vector2D shootDir) {
 
 void WeaponSuperMichiMafioso::attack3(Vector2D shootPos, Vector2D shootDir) {
 	const int numAreas = 5;
-	const float radius = 2.0f; 
+	const float radius = 1.5f; 
 	const float angle = 40.0f;
 
 	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
@@ -59,12 +58,13 @@ void WeaponSuperMichiMafioso::attack3(Vector2D shootPos, Vector2D shootDir) {
 			initialRot.getX() * cos(angleOffset) - initialRot.getY() * sin(angleOffset),
 			initialRot.getX() * sin(angleOffset) + initialRot.getY() * cos(angleOffset)
 		);
-		bp.init_pos = shootPos + rotatedDir*1.5;
+		bp.init_pos = shootPos + rotatedDir * 2;
 		static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 	}
 }
 void WeaponSuperMichiMafioso::generate_michi_mafioso() {
-	static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_michi_mafioso(_tr->getPos());
+	Vector2D posRandom = _tr->getPos() + Vector2D{ (float)sdlutils().rand().nextInt(1, 5), (float)sdlutils().rand().nextInt(1, 5) };
+	static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_michi_mafioso(posRandom);
 }
 
 void

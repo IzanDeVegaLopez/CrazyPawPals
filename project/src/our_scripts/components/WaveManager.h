@@ -11,7 +11,8 @@ enum enemyType {
     plim_plim = 3,
     boom = 4,
     ratatouille = 5,
-    catkuza = 6
+    catkuza = 6,
+    super_michi_mafioso = 7
 };
 
 class WaveManager : public ecs::Component {
@@ -22,7 +23,7 @@ class WaveManager : public ecs::Component {
             catkuza, catkuza}
         },
         { 10000,{
-            catkuza, catkuza }
+            super_michi_mafioso, catkuza }
         }
     };
 public:
