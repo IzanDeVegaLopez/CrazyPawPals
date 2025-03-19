@@ -30,7 +30,7 @@ public:
 
     void set_cooldown(const std::string& state, uint32_t cooldown) {
         timers[state].duration = cooldown;
-        std::cout << state<<"   " << timers[state].duration << std::endl;
+        //std::cout << state<<"   " << timers[state].duration << std::endl;
         timers[state].last_used = 0;
     }
     

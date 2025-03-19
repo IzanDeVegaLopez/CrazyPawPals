@@ -51,6 +51,8 @@
 
 #include "../../our_scripts/components/rigidbody_component.hpp"
 
+#include "../../our_scripts/components/Fog.h"
+
 #include <iostream>
 #include <string>
 
@@ -661,6 +663,17 @@ void GameScene::spawn_wave_manager()
 		)
 	);
 }
+void GameScene::spawn_fog()
+{
+	auto ent = create_entity(
+		ecs::grp::DEFAULT,
+		ecs::scene::GAMESCENE,
+		new Fog()
+	);
+	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::FOGGROUP, ent);
+}
+
+
 
 void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid)
 {
