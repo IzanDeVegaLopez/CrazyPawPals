@@ -15,7 +15,8 @@ public:
 	using StatePtr = std::shared_ptr<State>;
     using TransitionCondition = std::function<bool()>;
 
-	StateMachine(ConditionManager& conditionManager);
+	StateMachine();
+
 	//StateMachine(ConditionManager& conditionManager, Transform* playerTransform, Transform* enemyTransform, float dist);
 
 	void add_state(const std::string& name, StatePtr state);
@@ -23,6 +24,10 @@ public:
 	void add_transition(const std::string& from, const std::string& to, TransitionCondition condition);
 
     void set_initial_state(const std::string& name);
+
+    void transitionTo(const std::string& name);
+
+	inline ConditionManager* getConditionManager() { return _condition_manager; };
 
     void enter();
 
@@ -47,6 +52,6 @@ protected:
     };
 
     std::unordered_map<std::string, std::vector<Transition>> _transitions; // Transiciones
-	ConditionManager& _condition_manager;       
+	ConditionManager* _condition_manager;
 };
 

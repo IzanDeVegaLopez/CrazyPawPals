@@ -34,7 +34,7 @@ Manager::~Manager() {
 
 
 #ifndef DBG_COLLISIONS
-#define DBG_COLLISIONS_DEFAULT true
+#define DBG_COLLISIONS_DEFAULT false
 #define DBG_COLLISIONS DBG_COLLISIONS_DEFAULT
 #endif
 
