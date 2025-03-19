@@ -2,6 +2,7 @@
 #define CAMERA_FOLLOW_HPP
 
 #include "camera.hpp"
+#include "units.hpp"
 
 struct camera_follow_descriptor {
     position2_f32 previous_position;
@@ -9,8 +10,6 @@ struct camera_follow_descriptor {
     float semi_reach_time;
 };
 
-using seconds_f32 = float;
-using seconds_f64 = double;
 
 template <typename Numeric>
 struct displacement2 {
