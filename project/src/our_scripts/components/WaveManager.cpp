@@ -28,7 +28,7 @@ WaveManager::~WaveManager() {
 
 void
 WaveManager::initComponent() {
-    fog = Game::Instance()->get_mngr()->getComponent<Fog>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::FOGGROUP));
+	fog = Game::Instance()->get_mngr()->getComponent<Fog>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::FOGGROUP));
 }
 
 void 

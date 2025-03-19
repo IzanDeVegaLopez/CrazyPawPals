@@ -415,11 +415,13 @@ void GameScene::spawn_wave_manager()
 
 void GameScene::spawn_fog()
 {
-	create_entity(
-		ecs::hdlr::FOGGROUP,
+	auto ent = create_entity(
+		ecs::grp::DEFAULT,
 		ecs::scene::GAMESCENE,
 		new Fog()
 	);
+
+	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::FOGGROUP, ent);
 }
 
 void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid)
