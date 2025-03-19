@@ -347,6 +347,14 @@
     {
       "id": "enter_game",
       "file": "resources/images/ui/enter_game.png"
+    },
+    {
+      "id": "reward_card",
+      "file": "resources/images/ui/reward.png"
+    },
+    {
+      "id": "reward_card_selected",
+      "file": "resources/images/ui/reward_selected.png"
     }
   ],
   

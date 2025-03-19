@@ -13,7 +13,6 @@ public:
 	void render() override;
 
 private:
-	//Anadirle la textura
 	void create_reward_button(const GameStructs::ButtonProperties& bp);
 	void create_reward_buttons();
 
