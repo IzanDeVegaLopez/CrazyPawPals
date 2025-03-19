@@ -24,21 +24,21 @@ public:
     // link methods
     void connectClick(SDLEventCallback callback);
     void connectHover(SDLEventCallback callback);
-    inline bool clicked() const { return _clicked; };
-    inline void set_clicked(bool s) { _clicked = s; };
+    void connectExit(SDLEventCallback callback);
 private:
     // Button states
     enum ButtonState { EMPTY, HOVER, CLICK };
     ButtonState _current_state;
+    ButtonState _previous_state;
 
     // Callbacks
     std::list<SDLEventCallback> _click_callbacks;  
     std::list<SDLEventCallback> _hover_callbacks;  
+    std::list<SDLEventCallback> _pointer_exit_callbacks;
 
     void emitClick() const;
     void emitHover() const; 
+    void emitExit() const;
 
     SDL_Rect _button_collider;
-
-    bool _clicked;
 };

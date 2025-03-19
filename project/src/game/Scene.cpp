@@ -5,7 +5,7 @@
 #include "../our_scripts/components/camera_component.hpp"
 
 #include "../our_scripts/components/Transform.h"
-#include "../our_scripts/components/Image.h"
+#include "../our_scripts/components/transformless_dyn_image.h"
 #include "../our_scripts/components/Button.h"
 #include <string>
 Scene::Scene(ecs::sceneId_t id) : _scene_ID(id) {}
@@ -70,8 +70,9 @@ Scene::create_button(const GameStructs::ButtonProperties& bp) {
     ecs::entity_t e = create_entity(
                         bp.ID,
                         _scene_ID,
-                        new Transform(bp.pos, { 0.0f,0.0f }, bp.rot, 0.0f, bp.width, bp.height),
-                        new Image(&sdlutils().images().at(bp.sprite_key)),
+                        new transformless_dyn_image( bp.rect, 0,
+                        Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam,
+                        &sdlutils().images().at(bp.sprite_key)),
                         b
                     );
     b->initComponent();
