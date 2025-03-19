@@ -19,9 +19,10 @@ RewardScene::~RewardScene()
 }
 
 void RewardScene::initScene() {
-
-    GameStructs::ButtonProperties buttonPropTemplate = { {sdlutils().width() / 2.0f - 100, sdlutils().height() / 4.0f + 100},
-        200.0f, 200.0f, 0.0f, ""
+    float umbral = 0.4f;
+    GameStructs::ButtonProperties buttonPropTemplate = {
+        { {0.5f, 0.2f}, {0.175f, 0.3f} },
+        0.0f, ""
     };
 
     GameStructs::ButtonProperties reward1B = buttonPropTemplate;
@@ -30,12 +31,12 @@ void RewardScene::initScene() {
 
     GameStructs::ButtonProperties reward2B = buttonPropTemplate;
     reward2B.sprite_key = "card_back";
-    reward2B.pos.setX(2*(sdlutils().width() / 2.0f) - 100);
+    reward2B.rect.position.x += umbral;
     create_reward_button(reward2B);
 
     GameStructs::ButtonProperties reward3B = buttonPropTemplate;
     reward3B.sprite_key = "card_back";
-    reward3B.pos.setX(3 * (sdlutils().width() / 2.0f) - 100);
+    reward3B.rect.position.x -= umbral;
     create_reward_button(reward3B);
 
 }
@@ -60,11 +61,8 @@ void RewardScene::create_reward_button(const GameStructs::ButtonProperties& bp)
     auto e = create_button(bp);
     auto buttonComp = mngr->getComponent<Button>(e);
     buttonComp->connectClick([buttonComp, &mngr]() {
-        if (buttonComp->clicked()) return;
-        buttonComp->set_clicked(true);
         std::cout << "left click -> Reward button" << std::endl;
         Game::Instance()->change_Scene(Game::MAINMENU);
-        buttonComp->set_clicked(false);
         });
 
     buttonComp->connectHover([buttonComp]() {
