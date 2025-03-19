@@ -22,6 +22,10 @@ public:
 private:
 	Transform* _playerTr;
 	SDL_Texture* _fogTex;
+
+	int texWidth, texHeight;
+	int worldWidth, worldHeight;
+
 	bool fogActive = false;
 	float fogPercentage = 0;
 
