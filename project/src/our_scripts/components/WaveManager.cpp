@@ -82,7 +82,6 @@ WaveManager::spawnWave() {
             //DEBUG
             // Medio de la pantalla + angulo * distancia
             Vector2D posVec = Vector2D(Game::Instance()->get_world_half_size().first + cos(rAng) * (_min_distance + _op_dist), Game::Instance()->get_world_half_size().second + sin(rAng) * (_min_distance + _op_dist));
-
             
             // FIXME: define enum values
             switch (_waves[_currentWave].second[_enemiesSpawned])
@@ -92,19 +91,19 @@ WaveManager::spawnWave() {
 		        case sarno_rata:
                     static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_sarno_rata(posVec);
 			        break;
-                case 2:
-                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_plim_plim(posVec);
-			        break;
-		        case 3:
+                case michi_mafioso:
                     static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_michi_mafioso(posVec);
-                    break;
-                case 4:
-                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_ratatouille(posVec);
 			        break;
-                case 5:
-                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_super_michi_mafioso(posVec);
-                        break;
-                case 6:
+		        case plim_plim:
+                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_plim_plim(posVec);
+                    break;
+                case boom:
+                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_boom(posVec);
+			        break;
+                case ratatouille:
+                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_ratatouille(posVec);
+                    break;
+                case catkuza:
                     static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_catkuza(posVec);
                     break;
                 default: {

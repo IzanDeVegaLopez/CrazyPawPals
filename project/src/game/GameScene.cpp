@@ -89,8 +89,8 @@ void GameScene::initScene() {
 
 	manager.refresh();
 	create_environment();
-	spawn_sarno_rata(Vector2D{5.0f, 0.0f});
-	//spawn_wave_manager();
+	//spawn_catkuza(Vector2D{5.0f, 0.0f});
+	spawn_wave_manager();
 }
 
 void GameScene::enterScene()
@@ -311,7 +311,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	auto&& weapon = *new WeaponCatKuza();
 	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
-	auto e = create_enemy(&tr,"sarno_rata", static_cast<Weapon*>(&weapon), 2, 1.5f, 2.0f);
+	auto e = create_enemy(&tr,"catkuza", static_cast<Weapon*>(&weapon), 2, 1.5f, 2.0f);
 	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.05));
 
 	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);

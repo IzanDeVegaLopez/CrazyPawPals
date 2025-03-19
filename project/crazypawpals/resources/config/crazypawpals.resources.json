@@ -155,6 +155,10 @@
       "file": "resources/images/enemies/boom.png"
     },
     {
+      "id": "catkuza",
+      "file": "resources/images/enemies/catkuza.png"
+    },
+    {
       "id": "sarno_rata",
       "file": "resources/images/enemies/sarno_rata.png"
     },
