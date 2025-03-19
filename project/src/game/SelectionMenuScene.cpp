@@ -33,7 +33,7 @@ void SelectionMenuScene::create_weapon_buttons() {
     float umbral = 0.25f;
     GameStructs::ButtonProperties buttonPropTemplate = {
          { {0.85f, 0.025f},{0.1f, 0.175f} },
-         0.0f, ""
+         0.0f, "",  ecs::grp::WEAPONBUTTON
     };
 
     GameStructs::ButtonProperties revolverB = buttonPropTemplate;
@@ -67,7 +67,7 @@ void SelectionMenuScene::create_deck_buttons() {
     //create the first button prop
     GameStructs::ButtonProperties buttonPropTemplate = {
          { {0.025f, 0.025f},{0.2f, 0.3f} },
-         0.0f, ""
+         0.0f, "", ecs::grp::DECKBUTTON
     };
     GameStructs::ButtonProperties deck1B = buttonPropTemplate;
     deck1B.sprite_key = "deck1_button";
@@ -315,7 +315,7 @@ void SelectionMenuScene::set_concrete_deck_info(const std::list<Card*>& cl) {
 void SelectionMenuScene::create_enter_button() {
     GameStructs::ButtonProperties bp = {
          { {0.5f, 0.5f},{0.3f, 0.125f} },
-         0.0f, "enter_game"
+         0.0f, "enter_game", ecs::grp::UI
     };
     auto* mngr = Game::Instance()->get_mngr();
     auto e = create_button(bp);
@@ -323,6 +323,6 @@ void SelectionMenuScene::create_enter_button() {
 
     buttonComp->connectClick([buttonComp, mngr, this]() {
         if (_weapon_selected &&_deck_selected)
-        Game::Instance()->change_Scene(Game::GAMESCENE);
+        Game::Instance()->change_Scene(Game::REWARDSCENE);
     }); 
 }

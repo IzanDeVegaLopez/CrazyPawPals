@@ -13,7 +13,7 @@
 
 #include <iostream>
 #include <string>
-
+#include <list>
 
 RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE)
 {
@@ -25,6 +25,7 @@ RewardScene::~RewardScene()
 
 void RewardScene::initScene() {
     create_reward_buttons();
+    create_my_deck_cards();
 }
 void RewardScene::enterScene()
 {
@@ -91,4 +92,50 @@ void RewardScene::create_reward_button(const GameStructs::ButtonProperties& bp)
         imgComp->apply_filter(255, 255, 255);
         });
 
+}
+void RewardScene::create_a_deck_card(const GameStructs::ButtonProperties& bp) {
+    auto* mngr = Game::Instance()->get_mngr();
+
+    auto e = create_button(bp);
+    auto buttonComp = mngr->getComponent<Button>(e);
+    buttonComp->connectClick([buttonComp, bp] {
+        std::cout << "carta " + bp.sprite_key + "seleccionada" << std::endl;
+    });
+    auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
+    buttonComp->connectHover([buttonComp, imgComp]() {
+        std::cout << "hover -> Reward button: " << std::endl;
+        //filter
+        imgComp->apply_filter(128, 128, 128);
+    });
+
+    buttonComp->connectExit([buttonComp, imgComp]() {
+        std::cout << "exit -> Reward button: " << std::endl;
+        //filter
+        imgComp->apply_filter(255, 255, 255);
+    });
+}
+void RewardScene::create_my_deck_cards() {
+    float umbral = 0.25f;
+    GameStructs::ButtonProperties propTemplate = {
+        { {0.15f, 0.7f}, {0.175f, 0.3f} },
+        0.0f, "piu", ecs::grp::UI
+    };
+    auto* mngr = Game::Instance()->get_mngr();
+
+    ////GET PLAYERS DECK REFERENCE
+    //auto player = mngr->getHandler(ecs::hdlr::PLAYER);
+    //auto pDeck = mngr->getComponent<Deck>(player);
+    //
+    //auto pDraw= pDeck->DrawPile().card_list(); 
+    //auto pCardList = pDeck->Discard().card_list();
+
+    ////merge these lists
+    //pCardList.merge(pDraw);
+
+    create_a_deck_card(propTemplate);
+
+    propTemplate.rect.position.x += umbral;
+    propTemplate.sprite_key = "mimi";
+
+    create_a_deck_card(propTemplate);
 }

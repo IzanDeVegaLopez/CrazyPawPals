@@ -21,7 +21,7 @@ public:
 	bool empty();
 	void shuffle();
 	void update(uint32_t);
-	inline std::list<Card*> card_list() const { return _my_card_list; };
+	inline std::list<Card*> card_list() { return _my_card_list; };
 	friend std::ostream& operator << (std::ostream& os, const CardList& card_list);
 
 };

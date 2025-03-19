@@ -3,6 +3,7 @@
 #include "../ecs/ecs.h"
 #include "../rendering/rect.hpp"
 
+
 namespace GameStructs {
 	enum WeaponType {
 		REVOLVER,

@@ -105,6 +105,7 @@ void GameScene::enterScene()
 
 void GameScene::exitScene()
 {
+
 }
 
 ecs::entity_t GameScene::create_player()

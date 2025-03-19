@@ -18,5 +18,6 @@ private:
 
 	//methods to show your actual deck info
 	void create_my_deck_cards();
-	void create_a_deck_card();
+	void create_a_deck_card(const GameStructs::ButtonProperties& bp);
+
 };

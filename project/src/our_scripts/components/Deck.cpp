@@ -25,16 +25,22 @@ Deck::Deck(std::list<Card*>& starterDeck) noexcept
 	_hand = nullptr;
 	//_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
 	_draw_pile = CardList(starterDeck);
+	_register_names(starterDeck);
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
 }
-
+void Deck::_register_names(std::list<Card*>& starterDeck) {
+	for (auto it : starterDeck) {
+		_cards_names.push_back(it->get_name());
+	}
+}
 Deck::Deck(CardList&& starterDeck) noexcept
 {
 	_discard_pile = CardList();
 	_hand = nullptr;
 	//_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
 	_draw_pile = starterDeck;
+	_register_names(*starterDeck);
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
 }

@@ -99,7 +99,7 @@ bool Game::init() {
 	_scenes[REWARDSCENE] = new RewardScene();
 	_scenes[REWARDSCENE]->initScene();
 
-	_current_scene_index = REWARDSCENE;
+	_current_scene_index = MAINMENU;
 	return true;
 }
 

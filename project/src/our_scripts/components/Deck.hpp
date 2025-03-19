@@ -8,7 +8,7 @@
 #include "ecs/Component.h"
 #include <list>
 #include <cassert>
-
+#include <string>
 #include "../../utils/EventsSystem.hpp"
 class Transform;
 class MovementController;
@@ -34,6 +34,7 @@ protected:
 	ManaComponent* _mana;
 	Health* _health;
 	Transform* _tr;
+	std::list<std::string> _cards_names;
 	const camera_component* _camera;
 	bool _is_reloading = false;
 	int _time_till_reload_finishes;
@@ -43,6 +44,8 @@ protected:
 	bool _can_play_hand_card();
 	// Used for Primed cards to gain additional effects.
 	bool _primed = false;
+
+	void _register_names(std::list<Card*>& starterDeck);
 public:
 	__CMPID_DECL__(ecs::cmp::DECK)
 	//Creates a starter with a list of cards
@@ -90,7 +93,6 @@ public:
 	inline Card* hand() { return _hand; }
 	inline Card* last_milled_card() { return _last_milled_card; }
 	inline AnimationVars animation_vars() { return _av; }
-
-	inline CardList DrawPile() const { return _draw_pile; };
+	inline std::list<char[]> card_names() const { return _cards_names; }
 	
 };
