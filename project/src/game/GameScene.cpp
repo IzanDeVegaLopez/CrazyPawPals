@@ -90,7 +90,8 @@ void GameScene::initScene() {
 	manager.refresh();
 	create_environment();
 	//spawn_catkuza(Vector2D{5.0f, 0.0f});
-	spawn_wave_manager();
+	spawn_super_michi_mafioso(Vector2D{5.0f, 0.0f});
+	//spawn_wave_manager();
 }
 
 void GameScene::enterScene()
@@ -116,7 +117,7 @@ ecs::entity_t GameScene::create_player()
 	auto &&camera = manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam;
 	
 	auto &&player_transform = *new Transform({ 0.0f, 0.0f }, { 0.0f,0.0f }, 0.0f, 2.0f);
-	auto &&player_rect = *new rect_component{0, 0, 1.5f, 2.0f};
+	auto &&player_rect = *new rect_component{0, 0, 1.125f, 1.5f};
 	auto &&player_rigidbody = *new rigidbody_component{rect_f32{{0.15f, -0.125}, {0.5f, 0.75f}}, mass_f32{7.0f}, 1.0f};
 	auto &&player_collisionable = *new collisionable{player_transform, player_rigidbody, player_rect, collisionable_option_none};
 	ecs::entity_t player = create_entity(

@@ -21,7 +21,8 @@ WaveManager::WaveManager() :
 {
     _currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
 
-    // New fog
+    // New 
+
     Game::Instance()->get_mngr()->addComponent<Fog>(_ent);
     fog = Game::Instance()->get_mngr()->getComponent<Fog>(_ent);
     
