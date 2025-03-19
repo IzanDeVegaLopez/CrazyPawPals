@@ -2,27 +2,33 @@
 
 #include "../../ecs/Component.h"
 #include "../../sdlutils/SDLUtils.h"
+#include "../wave_events/wave_event.hpp"
+
+enum enemyType {
+    none = 0,
+    sarno_rata = 1,
+    michi_mafioso = 2,
+    plim_plim = 3,
+    boom = 4,
+    ratatouille = 5,
+    catkuza = 6
+};
 
 class WaveManager : public ecs::Component {
     // _waves es un vector de pares (int, vector<int>)
     // Los 0 son espacios extra
-    std::vector<std::pair<int, std::vector<int>>> _waves = {
-        { 10000, {0} },
-        { 1000,{5} },
-        { 15000,{
-           0 }
+    std::vector<std::pair<Uint32, std::vector<enemyType>>> _waves = {
+        { 10000,{
+            catkuza, catkuza}
         },
-        { 15000,{
-            0}
-        },
-        { 15000,{
-            0 }
+        { 10000,{
+            catkuza, catkuza }
         }
     };
 public:
     __CMPID_DECL__(ecs::cmp::WAVEMANAGER)
     WaveManager();
-    virtual ~WaveManager();
+    virtual ~WaveManager() override;
 
     void update(uint32_t delta_time) override;
     void spawnWave();
@@ -31,10 +37,12 @@ public:
     void enterRewardsMenu();
 
 private:
+    void choose_new_event();
     Uint32 _currentWaveTime = 0; //tiempo actual (post calculo, inicial en constructor)
     Uint32 _waveTime; // cuánto dura la oleada (CONSTRUCTOR)
 
     int _currentWave = 0;
+    std::unique_ptr<wave_event> _current_wave_event;
 
     bool _waveActive = false;
     bool _fogActive = false;

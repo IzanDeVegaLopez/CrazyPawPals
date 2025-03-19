@@ -4,6 +4,15 @@
 #include <cstdint>
 
 template <typename Numeric>
+struct vec2 {
+    Numeric x;
+    Numeric y;
+};
+
+using vec2_f32 = vec2<float>;
+using vec2_i32 = vec2<int32_t>;
+
+template <typename Numeric>
 struct position2 {
     Numeric x;
     Numeric y;

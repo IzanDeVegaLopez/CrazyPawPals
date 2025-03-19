@@ -1,13 +1,17 @@
 #pragma once
 
 #include "Scene.h"
+#include <functional>
 class Weapon;
 class Transform;
+class StateMachine;
 class GameScene : public Scene
 {
 	[[maybe_unused]]
 
 	ecs::entity_t create_enemy(Transform* tr, const std::string& spriteKey, Weapon* weapon, float health, float width, float height);
+
+	void add_transition(StateMachine& state, const std::string& from, const std::string& to, const std::function<bool()>& condition);
 public:
 	GameScene();
 	~GameScene() {};
@@ -27,7 +31,7 @@ public:
 	void spawn_super_michi_mafioso(Vector2D posVec);
 
 	void spawn_wave_manager();
-
+	
 	void generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid);
 	void check_collision();
 };
