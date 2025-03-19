@@ -28,6 +28,7 @@
 #include "../utils/Collisions.h" 
 
 #include "../our_scripts/components/WaveManager.h"
+#include "../our_scripts/components/Fog.h"
 #include "../our_scripts/components/WeaponMichiMafioso.h"
 #include "../our_scripts/components/WeaponPlimPlim.h"
 #include "../our_scripts/components/WeaponSarnoRata.h"
@@ -86,8 +87,9 @@ void GameScene::initScene() {
 
 	manager.refresh();
 	create_environment();
-	spawn_sarno_rata(Vector2D{5.0f, 0.0f});
-	//spawn_wave_manager();
+	//spawn_sarno_rata(Vector2D{5.0f, 0.0f});
+	spawn_fog();
+	spawn_wave_manager();
 }
 
 void GameScene::enterScene()
@@ -408,6 +410,15 @@ void GameScene::spawn_wave_manager()
 			Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam,
 			&sdlutils().images().at("event_letters")
 		)
+	);
+}
+
+void GameScene::spawn_fog()
+{
+	create_entity(
+		ecs::hdlr::FOGGROUP,
+		ecs::scene::GAMESCENE,
+		new Fog()
 	);
 }
 

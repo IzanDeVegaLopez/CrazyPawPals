@@ -3,7 +3,6 @@
 #include "../../ecs/Component.h"
 #include "../../sdlutils/SDLUtils.h"
 #include "../wave_events/wave_event.hpp"
-#include "../components/Fog.h"
 
 enum enemyType {
     none = 0,
@@ -56,6 +55,7 @@ public:
     virtual ~WaveManager() override;
 
     void update(uint32_t delta_time) override;
+    void initComponent() override;
     void spawnWave();
     bool areAllEnemiesDead();
     void activateFog();

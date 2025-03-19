@@ -5,7 +5,7 @@
 #include "game/Game.h"
 #include "game/GameScene.h"
 #include "sdlutils/SDLUtils.h"
-#include "Fog.h"
+#include "../components/Fog.h"
 #include "../wave_events/no_event.hpp"
 
 // 1 segundo = 1000 ticks (ms)
@@ -19,16 +19,16 @@ WaveManager::WaveManager() :
     _totalSpawnTime(10000.0f),
     _current_wave_event(new no_event(this))
 {
-    _currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
-
-    // New fog
-    Game::Instance()->get_mngr()->addComponent<Fog>(_ent);
-    fog = Game::Instance()->get_mngr()->getComponent<Fog>(_ent);
-    
+    _currentWaveInitTime = sdlutils().virtualTimer().currRealTime();    
 }
 
 WaveManager::~WaveManager() {
 
+}
+
+void
+WaveManager::initComponent() {
+    fog = Game::Instance()->get_mngr()->getComponent<Fog>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::FOGGROUP));
 }
 
 void 

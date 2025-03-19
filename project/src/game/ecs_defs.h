@@ -68,5 +68,6 @@
     PLAYER, \
     WAVE, \
 	GAMEINFO, \
-	CAMERA
+	CAMERA, \
+	FOGGROUP
 

@@ -24,6 +24,7 @@ public:
 	void spawn_boom(Vector2D posVec);
 	void spawn_ratatouille(Vector2D posVec);
 	void spawn_wave_manager();
+	void spawn_fog();
 
 	void generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid);
 	void check_collision();
