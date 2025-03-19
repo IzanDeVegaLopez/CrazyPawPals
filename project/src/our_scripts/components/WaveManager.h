@@ -10,7 +10,9 @@ enum enemyType {
     michi_mafioso = 2,
     plim_plim = 3,
     boom = 4,
-    ratatouille = 5
+    ratatouille = 5,
+    catkuza = 6,
+    super_michi_mafioso = 7
 };
 
 class Fog;

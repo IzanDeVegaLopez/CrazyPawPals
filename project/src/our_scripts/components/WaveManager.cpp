@@ -3,7 +3,7 @@
 #include "WaveManager.h"
 #include "ecs/Manager.h"
 #include "game/Game.h"
-#include "game/GameScene.h"
+#include "game/scenes/GameScene.h"
 #include "sdlutils/SDLUtils.h"
 #include "../components/Fog.h"
 #include "../wave_events/no_event.hpp"
@@ -108,7 +108,13 @@ WaveManager::spawnWave() {
 			        break;
                 case ratatouille:
                     static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_ratatouille(posVec);
-                        break;
+                    break;
+                case catkuza:
+                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_catkuza(posVec);
+                    break;
+                case super_michi_mafioso:
+                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_super_michi_mafioso(posVec);
+                    break;
                 default: {
                     assert(false && "unreachable");
                     exit(EXIT_FAILURE);

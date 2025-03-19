@@ -3,12 +3,12 @@
 #include "../states/Conditions.h"
 #include "../states/AttackingState.h"
 #include "../states/WalkingState.h"
-#include "../components/Transform.h"
+#include "../components/movement/Transform.h"
 
 #include <iostream>
 
-StateMachine::StateMachine(ConditionManager& conditionManager): _condition_manager(conditionManager) {
-	
+StateMachine::StateMachine() {
+	_condition_manager = new ConditionManager();
 }
 
 
@@ -27,10 +27,17 @@ void StateMachine::set_initial_state(const std::string& name) {
 	}
 }
 
+void StateMachine::transitionTo(const std::string& name) {
+	_currentState = name;
+	if (_states.count(_currentState)) {
+		_states[_currentState]->enter();
+	}
+}
+
 void StateMachine::update(uint32_t delta_time) {
 	if (_states.count(_currentState)) {
 		_states[_currentState]->update(delta_time);
-
+		std::cout << _currentState << std::endl;
 		for (const auto& transition : _transitions[_currentState]) {
 			if (transition.condition()) {
 				_states[_currentState]->exit();

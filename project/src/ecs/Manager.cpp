@@ -1,10 +1,10 @@
 // This file is part of the course TPV2@UCM - Samir Genaim
 
 #include "Manager.h"
-#include "../our_scripts/components/render_ordering.hpp"
+#include "../our_scripts/components/rendering/render_ordering.hpp"
 #include "../our_scripts/components/rigidbody_component.hpp"
 #include "../physics/collision.hpp"
-#include "../our_scripts/components/camera_component.hpp"
+#include "../our_scripts/components/rendering/camera_component.hpp"
 #include <cstdlib>
 
 namespace ecs {
@@ -34,7 +34,7 @@ Manager::~Manager() {
 
 
 #ifndef DBG_COLLISIONS
-#define DBG_COLLISIONS_DEFAULT true
+#define DBG_COLLISIONS_DEFAULT false
 #define DBG_COLLISIONS DBG_COLLISIONS_DEFAULT
 #endif
 
