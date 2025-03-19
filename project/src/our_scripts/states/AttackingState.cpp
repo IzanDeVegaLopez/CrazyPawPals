@@ -2,8 +2,8 @@
 
 #include "../../game/scenes/GameScene.h"
 #include "../components/Health.h"
-#include "../components/Transform.h"
-#include "../components/Weapon.h"
+#include "../components/movement/Transform.h"
+#include "../components/weapons/Weapon.h"
 
 
 AttackingState::AttackingState(Transform* tr, Transform* playerTr, Weapon* weapon, OnAttackCallback onAttackCallback, int attact_times) :

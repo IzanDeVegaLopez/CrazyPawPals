@@ -1,6 +1,6 @@
 #include "PlayableCards.hpp"
 #include "CardUpgrade.hpp"
-#include "../components/MovementController.h"
+#include "../components/movement/MovementController.h"
 #include "../../game/Game.h"
 #include "../../game/scenes/GameScene.h"
 #include "ShootPatrons.hpp"

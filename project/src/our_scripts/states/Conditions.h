@@ -5,7 +5,7 @@
 
 #include "../components/Health.h"
 #include "../../sdlutils/SdlUtils.h"
-#include "../components/Transform.h"
+#include "../components/movement/Transform.h"
 
 class ConditionManager {
 private:

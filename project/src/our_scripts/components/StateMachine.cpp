@@ -3,7 +3,7 @@
 #include "../states/Conditions.h"
 #include "../states/AttackingState.h"
 #include "../states/WalkingState.h"
-#include "../components/Transform.h"
+#include "../components/movement/Transform.h"
 
 #include <iostream>
 
