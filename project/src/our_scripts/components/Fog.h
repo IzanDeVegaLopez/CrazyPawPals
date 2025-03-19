@@ -1,6 +1,7 @@
 #pragma once
 #include "../../ecs/Component.h"
 #include "../../sdlutils/SDLUtils.h"
+#include <SDL.h> // Add this include to resolve the incomplete type error
 
 class Transform;
 class Texture;
@@ -20,7 +21,7 @@ public:
 
 private:
 	Transform* _playerTr;
-	Texture* _fogTex;
+	SDL_Texture* _fogTex;
 	bool fogActive = false;
 	float fogPercentage = 0;
 

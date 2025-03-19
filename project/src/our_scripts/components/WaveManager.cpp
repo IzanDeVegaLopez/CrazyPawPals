@@ -13,7 +13,7 @@ WaveManager::WaveManager() :
     _currentWaveTime(0),
     _waveTime(60000),
     _currentWave(0),
-    _waveActive(false), _fogActive(false),
+    _waveActive(false),
     _enemiesSpawned(0),
     _enemiesKilled(0),
     _totalSpawnTime(10000.0f),
@@ -22,7 +22,8 @@ WaveManager::WaveManager() :
     _currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
 
     // New fog
-    fog = Game::Instance()->get_mngr()->addComponent<Fog>(_ent);
+    Game::Instance()->get_mngr()->addComponent<Fog>(_ent);
+    fog = Game::Instance()->get_mngr()->getComponent<Fog>(_ent);
     
 }
 
@@ -52,7 +53,7 @@ WaveManager::update(uint32_t delta_time) {
             _waveActive = false; // Finalizar la oleada, (post oleada, matar enemigos restantes, aparece niebla)
         }
     }
-    else if (!_waveActive && fog.getFogActive() == false){
+    else if (!_waveActive && fog->getFogActive() == false){
         // Iniciar una nueva oleada
         spawnWave();
     }
@@ -139,7 +140,7 @@ WaveManager::areAllEnemiesDead() {
 //Activa la niebla
 void 
 WaveManager::activateFog() {
-    fog.setFog(true);
+    fog->setFog(true);
     std::cout << "Niebla activada!" << std::endl;
 }
 
@@ -159,7 +160,7 @@ WaveManager::enterRewardsMenu() {
 	_enemiesSpawned = 0;
 	_enemiesKilled = 0;
     _numEnemies = 0;
-    fog.setFog(false);
+    fog->setFog(false);
 
 	for (int i : _waves[_currentWave].second) {
 		if (i != 0) _numEnemies++;

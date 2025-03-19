@@ -3,6 +3,7 @@
 #include "../../ecs/Component.h"
 #include "../../sdlutils/SDLUtils.h"
 #include "../wave_events/wave_event.hpp"
+#include "../components/Fog.h"
 
 enum enemyType {
     none = 0,
@@ -83,5 +84,5 @@ private:
     float _op_time;
 
 
-    Fog fog;
+    Fog* fog;
 };
