@@ -3,8 +3,9 @@
 #include "WaveManager.h"
 #include "ecs/Manager.h"
 #include "game/Game.h"
-#include "game/GameScene.h"
+#include "game/scenes/GameScene.h"
 #include "sdlutils/SDLUtils.h"
+#include "Fog.h"
 #include "../wave_events/no_event.hpp"
 
 // 1 segundo = 1000 ticks (ms)
@@ -12,12 +13,19 @@ WaveManager::WaveManager() :
     _currentWaveTime(0),
     _waveTime(60000),
     _currentWave(0),
-    _waveActive(false), _fogActive(false),
+    _waveActive(false),
     _enemiesSpawned(0),
     _enemiesKilled(0),
-    _totalSpawnTime(7500.0f),
+    _totalSpawnTime(10000.0f),
     _current_wave_event(new no_event(this))
 {
+    _currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
+
+    // New 
+
+    Game::Instance()->get_mngr()->addComponent<Fog>(_ent);
+    fog = Game::Instance()->get_mngr()->getComponent<Fog>(_ent);
+    
 }
 
 WaveManager::~WaveManager() {
@@ -26,8 +34,7 @@ WaveManager::~WaveManager() {
 
 void 
 WaveManager::update(uint32_t delta_time) {
-    //_currentTime = sdlutils().virtualTimer().currRealTime();
-	_currentWaveTime += delta_time;
+    _currentWaveTime = sdlutils().virtualTimer().currRealTime() - _currentWaveInitTime;
 
     if(_current_wave_event != nullptr)
         _current_wave_event->update(delta_time);
@@ -47,7 +54,7 @@ WaveManager::update(uint32_t delta_time) {
             _waveActive = false; // Finalizar la oleada, (post oleada, matar enemigos restantes, aparece niebla)
         }
     }
-    else if (!_waveActive && !_fogActive){
+    else if (!_waveActive && fog->getFogActive() == false){
         // Iniciar una nueva oleada
         spawnWave();
     }
@@ -102,7 +109,13 @@ WaveManager::spawnWave() {
 			        break;
                 case ratatouille:
                     static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_ratatouille(posVec);
-                        break;
+                    break;
+                case catkuza:
+                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_catkuza(posVec);
+                    break;
+                case super_michi_mafioso:
+                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_super_michi_mafioso(posVec);
+                    break;
                 default: {
                     assert(false && "unreachable");
                     exit(EXIT_FAILURE);
@@ -134,8 +147,8 @@ WaveManager::areAllEnemiesDead() {
 //Activa la niebla
 void 
 WaveManager::activateFog() {
-    _fogActive = true;
-    //std::cout << "Niebla activada!" << std::endl;
+    fog->setFog(true);
+    std::cout << "Niebla activada!" << std::endl;
 }
 
 
@@ -154,7 +167,7 @@ WaveManager::enterRewardsMenu() {
 	_enemiesSpawned = 0;
 	_enemiesKilled = 0;
     _numEnemies = 0;
-	_fogActive = false;
+    fog->setFog(false);
 
 	for (int i : _waves[_currentWave].second) {
 		if (i != 0) _numEnemies++;

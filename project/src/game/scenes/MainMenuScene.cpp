@@ -1,11 +1,11 @@
 #include "MainMenuScene.h"
-#include "../our_scripts/components/Button.h"
-#include "GameStructs.h"
-#include "../utils/Vector2D.h"
-#include "../sdlutils/SDLUtils.h"
-#include "../sdlutils/InputHandler.h"
-#include "../ecs/Entity.h"
-#include "../sdlutils/Texture.h"
+#include "../../our_scripts/components/Button.h"
+#include "../GameStructs.h"
+#include "../../utils/Vector2D.h"
+#include "../../sdlutils/SDLUtils.h"
+#include "../../sdlutils/InputHandler.h"
+#include "../../ecs/Entity.h"
+#include "../../sdlutils/Texture.h"
 MainMenuScene::MainMenuScene() : Scene(ecs::scene::MAINMENUSCENE)
 {
 	auto* mngr = Game::Instance()->get_mngr();

@@ -1,12 +1,12 @@
 #include "Scene.h"
 #include <cassert>
 
-#include "../our_scripts/components/Transform.h"
-#include "../our_scripts/components/camera_component.hpp"
+#include "../../our_scripts/components/Transform.h"
+#include "../../our_scripts/components/camera_component.hpp"
 
-#include "../our_scripts/components/Transform.h"
-#include "../our_scripts/components/transformless_dyn_image.h"
-#include "../our_scripts/components/Button.h"
+#include "../../our_scripts/components/Transform.h"
+#include "../../our_scripts/components/transformless_dyn_image.h"
+#include "../../our_scripts/components/Button.h"
 #include <string>
 Scene::Scene(ecs::sceneId_t id) : _scene_ID(id) {}
 
