@@ -2,7 +2,7 @@
 
 #pragma once
 #include "../../ecs/Component.h"
-#include "../../game/GameScene.h"
+#include "../../game/scenes/GameScene.h"
 #include "../components/Health.h"
 #include "../components/Transform.h"
 #include "../components/Weapon.h"

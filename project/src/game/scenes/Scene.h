@@ -1,11 +1,11 @@
 #pragma once
 #include <vector>
-#include "../ecs/Manager.h"
-#include "../ecs/Entity.h"
-#include "../ecs/Component.h"
-#include "GameStructs.h"
-#include "../ecs/ecs.h"
-#include "../game/Game.h"
+#include "../../ecs/Manager.h"
+#include "../../ecs/Entity.h"
+#include "../../ecs/Component.h"
+#include "../GameStructs.h"
+#include "../../ecs/ecs.h"
+#include "../Game.h"
 
 class Transform;
 class Scene {

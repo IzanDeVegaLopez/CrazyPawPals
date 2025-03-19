@@ -1,6 +1,6 @@
 #include "WalkingState.h"
 
-#include "../../game/GameScene.h"
+#include "../../game/scenes/GameScene.h"
 #include "../components/Health.h"
 #include "../components/Transform.h"
 #include "../components/MovementController.h"

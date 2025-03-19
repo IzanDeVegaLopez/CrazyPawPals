@@ -20,11 +20,11 @@
 #include "../our_scripts/components/Revolver.h"
 #include "../our_scripts/components/Rampage.h"
 //Scenes for SceneManager
-#include "Scene.h"
-#include "MainMenuScene.h"
-#include "ControlsScene.h"
-#include "SelectionMenuScene.h"
-#include "GameScene.h"
+#include "scenes/Scene.h"
+#include "scenes/MainMenuScene.h"
+#include "scenes/ControlsScene.h"
+#include "scenes/SelectionMenuScene.h"
+#include "scenes/GameScene.h"
 
 
 using namespace std;

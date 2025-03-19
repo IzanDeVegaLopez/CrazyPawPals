@@ -3,7 +3,7 @@
 #include "WaveManager.h"
 #include "ecs/Manager.h"
 #include "game/Game.h"
-#include "game/GameScene.h"
+#include "game/scenes/GameScene.h"
 #include "sdlutils/SDLUtils.h"
 #include "Fog.h"
 #include "../wave_events/no_event.hpp"

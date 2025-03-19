@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../ecs/Component.h"
-#include "../../game/GameScene.h"
+#include "../../game/scenes/GameScene.h"
 #include "../../our_scripts/states/State.h"
 #include <functional>
 

@@ -1,6 +1,6 @@
 #include "WeaponMichiMafioso.h"
 #include "../../game/Game.h"
-#include "../../game/GameScene.h"
+#include "../../game/scenes/GameScene.h"
 
 WeaponMichiMafioso::WeaponMichiMafioso() : Weapon(4, 5000, 20.0f, 0.1f, "p_michi_mafioso", 1.0f, 1.0f) { }
 

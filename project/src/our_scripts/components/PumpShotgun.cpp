@@ -1,6 +1,6 @@
 #include "PumpShotgun.h"
 #include "../../game/Game.h"
-#include "../../game/GameScene.h"
+#include "../../game/scenes/GameScene.h"
 
 
 PumpShotgun::PumpShotgun() : Weapon(1, 900.0f, 1.5f, 0.6f, "p_pump_shotgun",1.0f,1.0f), _has_mill(false) {

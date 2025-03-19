@@ -2,7 +2,7 @@
 #include "game/Game.h"
 #include "Deck.hpp"
 #include "ecs/Manager.h"
-#include "../../game/GameScene.h"
+#include "../../game/scenes/GameScene.h"
 
 Lightbringer::Lightbringer() : Weapon(2, 400.0f, 2.0f, 0.3f, "p_lightbringer", 1.0f, 1.0f), _base_damage(2), _amp_damage(4), _base_cooldown(400.0f), _amp_cooldown(200.0f), _base_tex("p_lightbringer"), _amp_tex("p_lightbringer_amp"), _offset(0.0f)
 {
