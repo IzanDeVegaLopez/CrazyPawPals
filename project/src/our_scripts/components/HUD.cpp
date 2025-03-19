@@ -199,8 +199,9 @@ void HUD::render()
 
 #pragma region prime
 	if (_deck->get_primed()) {
-		SDL_Rect primerect{ 200,sdlutils().height() - 47,31,32 };
-		_tex_prime->render(primerect);
+		rect_f32 prime = rect_f32_screen_rect_from_viewport(rect_f32({0.013,0.805 }, { 0.1,0.1 }), _camera->cam.screen);
+		SDL_Rect primetrue{ prime.position.x,prime.position.y,prime.size.x,prime.size.x };
+		_tex_prime->render(primetrue);
 	}
 #pragma endregion
 #pragma endregion
