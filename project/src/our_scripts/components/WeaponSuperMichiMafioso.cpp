@@ -1,6 +1,6 @@
 ﻿#include "WeaponSuperMichiMafioso.h"
 #include "../../game/Game.h"
-#include "../../game/GameScene.h"
+#include "../../game/scenes/GameScene.h"
 #include "Transform.h"
 
 

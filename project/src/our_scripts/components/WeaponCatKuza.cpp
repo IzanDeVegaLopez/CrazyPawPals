@@ -1,6 +1,6 @@
 #include "WeaponCatKuza.h"
 #include "../../game/Game.h"
-#include "../../game/GameScene.h"
+#include "../../game/scenes/GameScene.h"
 #include "../card_system/ShootPatrons.hpp"
 
 WeaponCatKuza::WeaponCatKuza() : Weapon(4, 5000, 20.0f, 0.1f, "p_plimplim", 1.0f, 1.0f), _state(0), _wind_p(3), _area_p(6), _dash_p(6) { }
