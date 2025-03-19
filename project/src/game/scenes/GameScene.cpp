@@ -31,6 +31,7 @@
 #include "../../utils/Collisions.h" 
 
 #include "../../our_scripts/components/WaveManager.h"
+#include "../../our_scripts/components/Fog.h"
 #include "../../our_scripts/components/weapons/enemies/WeaponMichiMafioso.h"
 #include "../../our_scripts/components/weapons/enemies/WeaponPlimPlim.h"
 #include "../../our_scripts/components/weapons/enemies/WeaponSarnoRata.h"
@@ -51,7 +52,6 @@
 
 #include "../../our_scripts/components/rigidbody_component.hpp"
 
-#include "../../our_scripts/components/Fog.h"
 
 #include <iostream>
 #include <string>
@@ -92,7 +92,8 @@ void GameScene::initScene() {
 	create_environment();
 	//spawn_catkuza(Vector2D{5.0f, 0.0f});
 	spawn_super_michi_mafioso(Vector2D{5.0f, 0.0f});
-	//spawn_wave_manager();
+	spawn_fog();
+	spawn_wave_manager();
 }
 
 void GameScene::enterScene()
