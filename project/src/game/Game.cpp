@@ -12,7 +12,7 @@
 #include "../our_scripts/components/KeyboardPlayerCtrl.h"
 #include "../our_scripts/components/MovementController.h"
 #include "../our_scripts/components/Mana.h"
-#include "../our_scripts/components/EnemyMovement.h"
+
 #include "../our_scripts/components/Deck.hpp"
 #include "../our_scripts/components/dyn_image.hpp"
 #include "../our_scripts/components/camera_component.hpp"
