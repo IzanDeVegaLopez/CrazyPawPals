@@ -19,6 +19,7 @@
 #include "../our_scripts/components/rect_component.hpp"
 #include "../our_scripts/components/Revolver.h"
 #include "../our_scripts/components/Rampage.h"
+#include "../our_scripts/components/bullet_collision_component.hpp"
 //Scenes for SceneManager
 #include "Scene.h"
 #include "MainMenuScene.h"

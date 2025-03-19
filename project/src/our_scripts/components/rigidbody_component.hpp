@@ -85,12 +85,12 @@ struct on_collision : public ecs::Component {
 
 template <typename OnTriggerComponent>
 struct on_trigger : public ecs::Component {
-    using trigger_callback = OnTriggerComponent::on_contact;
+    //using trigger_callback = OnTriggerComponent::on_contact;
     void update(uint32_t delta_time) override {
         auto &&manager = *Game::Instance()->get_mngr();
         trigger_manifold *manifold = manager.getComponent<trigger_manifold>(_ent);
         if (manifold != nullptr) {
-            trigger_callback(*manifold);
+            static_cast<OnTriggerComponent*>(this)->on_contact(*manifold);
             manager.removeComponent<collision_manifold>(_ent);
         }
     }
