@@ -5,7 +5,7 @@
 #include "../../game/GameStructs.h"
 #include "../../ecs/ecs.h"
 #include "../../game/Game.h"
-#include "../../game/GameScene.h"
+#include "../../game/scenes/GameScene.h"
 //#include "../../utils/Vector2D.h
 
 namespace patrons {

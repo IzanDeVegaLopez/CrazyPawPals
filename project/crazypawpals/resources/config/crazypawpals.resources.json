@@ -15,6 +15,8 @@
       "id": "piu",
       "file": "resources/images/characters/piu.png"
     },
+
+
     {
       "id": "p_revolver",
       "file": "resources/images/projectiles/revolver.png"
@@ -65,6 +67,18 @@
       "file": "resources/images/projectiles/p_boom.png"
     },
     {
+      "id": "fog",
+      "file": "resources/images/enviroment/fog.png"
+    },
+    {
+      "id": "p_super_michi_mafioso",
+      "file": "resources/images/projectiles/p_super_michi_mafioso.png"
+    },
+    {
+      "id": "attack_warning",
+      "file": "resources/images/projectiles/attack_warning.png"
+    },
+    {
       "id": "p_lightbringer",
       "file": "resources/images/projectiles/SDL_logo.png"
     },
@@ -72,6 +86,8 @@
       "id": "p_lightbringer_amp",
       "file": "resources/images/projectiles/SDL_logo.png"
     },
+
+
     {
       "id": "card_kunai",
       "file": "resources/images/cards/card_kunai.png"
@@ -136,9 +152,15 @@
       "id": "card_recover",
       "file": "resources/images/cards/carta.png"
     },
+
+
     {
       "id": "boom",
       "file": "resources/images/enemies/boom.png"
+    },
+    {
+      "id": "catkuza",
+      "file": "resources/images/enemies/catkuza.png"
     },
     {
       "id": "sarno_rata",
@@ -151,6 +173,10 @@
     {
       "id": "michi_mafioso",
       "file": "resources/images/enemies/michi_mafioso.png"
+    },
+    {
+      "id": "super_michi_mafioso",
+      "file": "resources/images/enemies/super_michi_mafioso.png"
     },
     {
       "id": "ratatouille",
@@ -181,12 +207,20 @@
       "file": "resources/images/ui/revolver_b.png"
     },
     {
+      "id": "revolver_info",
+      "file": "resources/images/ui/revolver_b_info.png"
+    },
+    {
       "id": "revolver_button_selected",
       "file": "resources/images/ui/weapon_selected_b.png"
     },
     {
       "id": "rampage_button",
       "file": "resources/images/ui/rampage_b.png"
+    },
+    {
+      "id": "rampage_info",
+      "file": "resources/images/ui/revolver_b_info.png"
     },
     {
       "id": "rampage_button_selected",
@@ -197,6 +231,10 @@
       "file": "resources/images/ui/pump_shotgun_b.png"
     },
     {
+      "id": "pump_shotgun_info",
+      "file": "resources/images/ui/revolver_b_info.png"
+    },
+    {
       "id": "pump_shotgun_button_selected",
       "file": "resources/images/ui/weapon_selected_b.png"
     },
@@ -205,12 +243,20 @@
       "file": "resources/images/ui/rampage_b.png"
     },
     {
+      "id": "ramp_canon_info",
+      "file": "resources/images/ui/revolver_b_info.png"
+    },
+    {
       "id": "ramp_canon_button_selected",
       "file": "resources/images/ui/weapon_selected_b.png"
     },
     {
       "id": "lightbringer_button",
       "file": "resources/images/ui/rampage_b.png"
+    },
+    {
+      "id": "lightbringer_info",
+      "file": "resources/images/ui/revolver_b_info.png"
     },
     {
       "id": "lightbringer_button_selected",
@@ -230,7 +276,7 @@
     },
     {
       "id": "selection",
-      "file": "resources/images/ui/selection.png"
+      "file": "resources/images/enviroment/selection.jpg"
     },
     {
       "id": "deck1_button",
@@ -242,7 +288,7 @@
     },
     {
       "id": "deck2_button",
-      "file": "resources/images/ui/deck1_b.png"
+      "file": "resources/images/ui/deck2_b.png"
     },
     {
       "id": "deck2_button_selected",
@@ -250,7 +296,7 @@
     },
     {
       "id": "deck3_button",
-      "file": "resources/images/ui/deck1_b.png"
+      "file": "resources/images/ui/deck3_b.png"
     },
     {
       "id": "deck3_button_selected",
@@ -258,15 +304,75 @@
     },
     {
       "id": "deck4_button",
-      "file": "resources/images/ui/deck1_b.png"
+      "file": "resources/images/ui/deck4_b.png"
     },
     {
       "id": "deck4_button_selected",
       "file": "resources/images/ui/deck_selected_b.png"
     },
     {
+      "id": "initial_info",
+      "file": "resources/images/ui/initial_info.png"
+    },
+    {
+      "id": "card_Kunai_info",
+      "file": "resources/images/ui/card_kunai_info.png"
+    },
+    {
+      "id": "card_EldritchBlast_info",
+      "file": "resources/images/ui/card_eldritch_blast_info.png"
+    },
+    {
+      "id": "card_Recover_info",
+      "file": "resources/images/ui/card_recover_info.png"
+    },
+    {
+      "id": "card_Fireball_info",
+      "file": "resources/images/ui/card_fireball_info.png"
+    },
+    {
+      "id": "card_Minigun_info",
+      "file": "resources/images/ui/card_minigun_info.png"
+    },
+    {
+      "id": "card_CardSpray_info",
+      "file": "resources/images/ui/card_spray_info.png"
+    },
+    {
+      "id": "card_Lighting_info",
+      "file": "resources/images/ui/card_lighting_info.png"
+    },
+    {
+      "id": "card_Primordia_info",
+      "file": "resources/images/ui/card_primordia_info.png"
+    },
+    {
+      "id": "card_Commune_info",
+      "file": "resources/images/ui/card_commune_info.png"
+    },
+    {
+      "id": "card_Evoke_info",
+      "file": "resources/images/ui/card_evoke_info.png"
+    },
+    {
+      "id": "card_Fulgur_info",
+      "file": "resources/images/ui/card_commune_info.png"
+    },
+    {
+      "id": "card_QuickFeet_info",
+      "file": "resources/images/ui/card_quickfeet_info.png"
+    },
+    {
+      "id": "card_Prime_info",
+      "file": "resources/images/ui/card_prime_info.png"
+    },
+    {
       "id": "event_letters",
       "file": "resources/images/enviroment/event_letters.png"
+    },
+    {
+      "id": "enter_game",
+      "file": "resources/images/ui/enter_game.png"
     }
   ],
   

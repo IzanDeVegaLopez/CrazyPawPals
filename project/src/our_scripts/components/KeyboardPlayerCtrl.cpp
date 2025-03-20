@@ -2,12 +2,12 @@
 #include "../../sdlutils/InputHandler.h"
 #include "../../game/Game.h"
 #include "../../ecs/Manager.h"
-#include "../components/camera_component.hpp"
+#include "../components/rendering/camera_component.hpp"
 
-#include "Deck.hpp"
-#include "Transform.h"
-#include "Weapon.h"
-#include "MovementController.h"
+#include "cards/Deck.hpp"
+#include "movement/Transform.h"
+#include "weapons/Weapon.h"
+#include "movement/MovementController.h"
 #include "Health.h"
 
 KeyboardPlayerCtrl::KeyboardPlayerCtrl()
