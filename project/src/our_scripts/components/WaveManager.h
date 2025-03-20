@@ -67,6 +67,7 @@ public:
     void start_new_wave();
 
     inline Uint32 get_wave_time() { return _currentWaveTime; }
+    inline int get_current_wave() { return _currentWave; }
 
 private:
     void choose_new_event();
