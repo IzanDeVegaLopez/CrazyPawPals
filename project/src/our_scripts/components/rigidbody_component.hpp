@@ -3,6 +3,7 @@
 
 #include "../../ecs/Component.h"
 #include "../../ecs/ecs.h"
+#include "../../ecs/Entity.h"
 #include "../../physics/rigidbody.hpp"
 #include "../../physics/collision.hpp"
 #include "Transform.h"
@@ -78,7 +79,7 @@ struct on_collision : public ecs::Component {
         contact_manifold *manifold = manager.getComponent<contact_manifold>(_ent);
         if (manifold != nullptr) {
             collision_callback(*manifold);
-            manager.removeComponent<collision_manifold>(_ent);
+            manager.removeComponent<contact_manifold>(_ent);
         }
     }
 };
@@ -91,7 +92,7 @@ struct on_trigger : public ecs::Component {
         trigger_manifold *manifold = manager.getComponent<trigger_manifold>(_ent);
         if (manifold != nullptr) {
             static_cast<OnTriggerComponent*>(this)->on_contact(*manifold);
-            manager.removeComponent<collision_manifold>(_ent);
+            manager.removeComponent<trigger_manifold>(ecs::entity_t(_ent));
         }
     }
 };

@@ -41,6 +41,7 @@
 #include "../our_scripts/components/render_ordering.hpp"
 #include "../our_scripts/components/rect_component.hpp"
 #include "../our_scripts/components/StopOnBorder.h"
+#include "../our_scripts/components/bullet_collision_component.hpp"
 #include "../our_scripts/components/HUD.h"
 
 #include "../our_scripts/components/render_ordering.hpp"
@@ -418,6 +419,10 @@ void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs
 	//std::cout << std::endl << atan2(bp.dir.getY(), bp.dir.getX()) << " = " << atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI << std::endl;
 	auto &&transform = *new Transform(bp.init_pos, bp.dir, (atan2(-bp.dir.getY(), bp.dir.getX())+M_PI/2) * 180.0f / M_PI, bp.speed);
 	auto &&rect = *new rect_component{0, 0, bp.width, bp.height};
+
+	auto &&rigidbody = *new rigidbody_component{rect_f32{{0.0f, -0.15f}, {0.5f, 0.6f}}, mass_f32{3.0f}, 0.05f};
+	auto &&col = *new collisionable{transform, rigidbody, rect, collisionable_option_trigger};
+	auto &&coll_response = *new bullet_collision_component{};
 	//std::cout << bp.speed << std::endl;
 	create_entity(
 		gid,
@@ -432,7 +437,10 @@ void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs
 			transform
 		),
 		new LifetimeTimer(bp.life_time),
-		new BulletData(bp.damage, bp.weapon_type)
+		new BulletData(bp.damage, bp.weapon_type),
+		&rigidbody,
+		&col,
+		&coll_response
 	);
 }
 
