@@ -45,7 +45,7 @@ void HUD::render()
 		sdlutils().renderer(),
 		wavetime < 10 ? "0" + std::to_string(std::max(wavetime,0)) : std::to_string(wavetime),
 		sdlutils().fonts().at("ARIAL16"),
-		SDL_Color(wavetime < 0 ? 200 : 50,50,50,255) };
+		SDL_Color(wavetime <= 0 ? 200 : 50,50,50,255) };
 	timertex.render(timertrue);
 #pragma endregion
 
