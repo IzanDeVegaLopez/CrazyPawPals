@@ -5,13 +5,14 @@
 
 class Transform;
 class Texture;
+class transformless_dyn_image;
 
 class Fog : public ecs::Component
 {
 public:
 	__CMPID_DECL__(ecs::cmp::FOG);
 
-	Fog() {};
+	Fog(int, transformless_dyn_image*);
 	virtual ~Fog() {};
 	void initComponent() override;
 	void update(uint32_t delta_time) override;
@@ -21,7 +22,7 @@ public:
 
 private:
 	Transform* _playerTr;
-	SDL_Texture* _fogTex;
+	Texture* _fogTex;
 
 	int texWidth, texHeight;
 	int worldWidth, worldHeight;
@@ -43,4 +44,6 @@ private:
 	float fogLeftOrigin;
 	float fogUpOrigin;
 	float fogDownOrigin;
+
+	int fogNum = 0;
 };

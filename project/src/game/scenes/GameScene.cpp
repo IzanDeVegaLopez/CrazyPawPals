@@ -31,6 +31,7 @@
 #include "../../utils/Collisions.h" 
 
 #include "../../our_scripts/components/WaveManager.h"
+#include "../../our_scripts/components/Fog.h"
 #include "../../our_scripts/components/weapons/enemies/WeaponMichiMafioso.h"
 #include "../../our_scripts/components/weapons/enemies/WeaponPlimPlim.h"
 #include "../../our_scripts/components/weapons/enemies/WeaponSarnoRata.h"
@@ -90,7 +91,8 @@ void GameScene::initScene() {
 	create_environment();
 	//spawn_catkuza(Vector2D{5.0f, 0.0f});
 	spawn_super_michi_mafioso(Vector2D{5.0f, 0.0f});
-	//spawn_wave_manager();
+	spawn_fog();
+	spawn_wave_manager();
 }
 
 void GameScene::enterScene()
@@ -660,6 +662,28 @@ void GameScene::spawn_wave_manager()
 			&sdlutils().images().at("event_letters")
 		)
 	);
+}
+void GameScene::spawn_fog()
+{
+	for (int i = 0; i < 4; i++) {
+		transformless_dyn_image* this_fog_image = new transformless_dyn_image(
+			{ {0.2,0.1},{0.6,0.2} },
+			0,
+			Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam,
+			&sdlutils().images().at("fog")
+		);
+		//auto&& transform = *new Transform(bp.init_pos, bp.dir, (atan2(-bp.dir.getY(), bp.dir.getX()) + M_PI / 2) * 180.0f / M_PI, bp.speed);
+		auto&& rect = *new rect_component{ 0.0f, 0.0f, static_cast<float>(this_fog_image->texture->width()), static_cast<float>(this_fog_image->texture->width()) };		Fog* this_fog = new Fog(i, this_fog_image);
+		auto ent = create_entity(
+			ecs::grp::DEFAULT,
+			ecs::scene::GAMESCENE,
+			//&transform,
+			&rect,
+			this_fog,
+			this_fog_image
+		);
+		Game::Instance()->get_mngr()->setHandler(ecs::hdlr::FOGGROUP, ent);
+	}
 }
 
 void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid)

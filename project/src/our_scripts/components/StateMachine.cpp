@@ -37,7 +37,7 @@ void StateMachine::transitionTo(const std::string& name) {
 void StateMachine::update(uint32_t delta_time) {
 	if (_states.count(_currentState)) {
 		_states[_currentState]->update(delta_time);
-		std::cout << _currentState << std::endl;
+		// std::cout << _currentState << std::endl;
 		for (const auto& transition : _transitions[_currentState]) {
 			if (transition.condition()) {
 				_states[_currentState]->exit();
