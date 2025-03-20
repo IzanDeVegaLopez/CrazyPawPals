@@ -1,19 +1,19 @@
-#include "HUD.h"
+#include "PlayerHUD.h"
 #include "../../../game/Game.h"
 #include "../../../ecs/Manager.h"
 #include "../../../sdlutils/SDLUtils.h"
 #include "../../../rendering/card_rendering.hpp"
 #include "../WaveManager.h"
-HUD::HUD() : _tex_orb(&sdlutils().images().at("manaorb")), _tex_orb_empty(&sdlutils().images().at("manaorbempty")), _tex_prime(&sdlutils().images().at("prime"))
+PlayerHUD::PlayerHUD() : _tex_orb(&sdlutils().images().at("manaorb")), _tex_orb_empty(&sdlutils().images().at("manaorbempty")), _tex_prime(&sdlutils().images().at("prime"))
 {
 
 }
 
-HUD::~HUD()
+PlayerHUD::~PlayerHUD()
 {
 }
 
-void HUD::initComponent()
+void PlayerHUD::initComponent()
 {
 	_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
 	_mana = Game::Instance()->get_mngr()->getComponent<ManaComponent>(_ent);
@@ -22,11 +22,11 @@ void HUD::initComponent()
 	_camera = Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA));
 }
 
-void HUD::update(uint32_t delta_time)
+void PlayerHUD::update(uint32_t delta_time)
 {
 }
 
-void HUD::render()
+void PlayerHUD::render()
 {
 	SDL_SetRenderDrawBlendMode(sdlutils().renderer(), SDL_BLENDMODE_NONE);
 
@@ -207,6 +207,7 @@ void HUD::render()
 #pragma endregion
 #pragma endregion
 #pragma region timer
+	//TODO: Move to general HUD component
 	//auto ent = Game::Instance()->get_mngr()->getHandler(ecs::hdlr::WAVE);
 	//WaveManager* wavemanager = Game::Instance()->get_mngr()->getComponent<WaveManager>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::WAVE));
 	/*if (Game::Instance()->get_mngr()->hasComponent<WaveManager>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::FOGGROUP))) {
@@ -215,11 +216,11 @@ void HUD::render()
 		SDL_Rect timertrue{ timer.position.x,timer.position.y,timer.size.x,timer.size.y };
 		Texture timertex{ sdlutils().renderer(),std::to_string(wavetime),sdlutils().fonts().at("ARIAL16"),{50,50,50,255} };
 		timertex.render(timertrue);
-	}*/
+	}
 	rect_f32 timer = rect_f32_screen_rect_from_viewport(rect_f32({ 0.4,0.01 }, { 0.2,0.15 }), _camera->cam.screen);
 	SDL_Rect timertrue{ timer.position.x,timer.position.y,timer.size.x,timer.size.y };
 	Texture timertex{ sdlutils().renderer(),std::to_string(60),sdlutils().fonts().at("ARIAL16"),{50,50,50,255} };
-	timertex.render(timertrue);
+	timertex.render(timertrue);*/
 #pragma endregion
 
 }
