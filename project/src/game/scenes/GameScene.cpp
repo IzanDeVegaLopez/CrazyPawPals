@@ -46,6 +46,7 @@
 #include "../../our_scripts/components/rendering/rect_component.hpp"
 #include "../../our_scripts/components/movement/StopOnBorder.h"
 #include "../../our_scripts/components/ui/PlayerHUD.h"
+#include "../../our_scripts/components/ui/HUD.h"
 
 #include "../../our_scripts/card_system/PlayableCards.hpp"
 #include "../../our_scripts/card_system/CardUpgrade.hpp"
