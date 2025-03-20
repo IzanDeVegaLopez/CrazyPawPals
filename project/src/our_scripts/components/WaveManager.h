@@ -66,6 +66,8 @@ public:
     void hide_wave_image();
     //void start_new_wave();
 
+    inline int get_wave_time() { return _currentWaveTime; }
+
 private:
     void choose_new_event();
     Uint32 _currentWaveTime = 0; //tiempo actual (post calculo, inicial en constructor)
