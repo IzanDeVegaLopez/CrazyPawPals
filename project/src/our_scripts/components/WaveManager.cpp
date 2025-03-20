@@ -7,6 +7,7 @@
 #include "sdlutils/SDLUtils.h"
 #include "../components/Fog.h"
 #include "../wave_events/no_event.hpp"
+#include "../wave_events/ice_skating_event.hpp"
 
 // 1 segundo = 1000 ticks (ms)
 WaveManager::WaveManager() :
@@ -17,9 +18,9 @@ WaveManager::WaveManager() :
     _enemiesSpawned(0),
     _enemiesKilled(0),
     _totalSpawnTime(10000.0f),
-    _current_wave_event(new no_event(this))
+    _current_wave_event(new no_event(this)),
+    _tdi(nullptr)
 {
-    _currentWaveInitTime = sdlutils().virtualTimer().currRealTime();    
 }
 
 WaveManager::~WaveManager() {
@@ -28,7 +29,14 @@ WaveManager::~WaveManager() {
 
 void
 WaveManager::initComponent() {
+    _tdi = Game::Instance()->get_mngr()->getComponent<transformless_dyn_image>(_ent);
+    assert(_tdi != nullptr);
+    //TODO: cambiar esto por _ent posiblemente
 	fog = Game::Instance()->get_mngr()->getComponent<Fog>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::FOGGROUP));
+    assert(fog != nullptr);
+
+    _currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
+    choose_new_event();
 }
 
 void 
@@ -157,7 +165,7 @@ WaveManager::enterRewardsMenu() {
     //std::cout << "Todos los enemigos eliminados. Entrando al menu de recompensas..." << std::endl;
     _current_wave_event->end_wave_callback();
 
-
+    choose_new_event();
 
     // Esto tiene que ir después del menu de recompensas
     _currentWave++;
@@ -173,19 +181,44 @@ WaveManager::enterRewardsMenu() {
 	}
 }
 
+void WaveManager::show_wave_image()
+{
+    _tdi->set_active(true);
+}
+
+void WaveManager::hide_wave_image()
+{
+    _tdi->set_active(false);
+}
+
 void WaveManager::choose_new_event()
 {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<int> rnd_gen(0,10);
-    switch(rnd_gen(gen)) {
+    int i = rnd_gen(gen);
+    std::cout << "wave number: " << (i) << std::endl;
+    switch(i) {
     case 0:
     case 1:
     case 2:
     case 3:
     case 4:
         _current_wave_event = (std::unique_ptr<wave_event>)new no_event(this);
+        break;
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+    case 9:
+    case 10:
+        _current_wave_event = (std::unique_ptr<wave_event>)new ice_skating_event(this);
+        break;
+    default:
+        std::cout << "event_choser_went_wrong" << std::endl;
     }
+
+    std::cout << i << std::endl;
 
     _current_wave_event->start_wave_callback();
     //TODO elegir evento y llamar a la función de iniciar
