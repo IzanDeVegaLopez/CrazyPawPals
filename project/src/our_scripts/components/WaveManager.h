@@ -64,9 +64,9 @@ public:
     void enterRewardsMenu();
     void show_wave_image();
     void hide_wave_image();
-    //void start_new_wave();
+    void start_new_wave();
 
-    inline int get_wave_time() { return _currentWaveTime; }
+    inline Uint32 get_wave_time() { return _currentWaveTime; }
 
 private:
     void choose_new_event();

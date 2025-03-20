@@ -30,6 +30,7 @@ public:
 	void spawn_catkuza(Vector2D posVec);
 	void spawn_ratatouille(Vector2D posVec);
 	void spawn_wave_manager();
+	void create_hud();
 	void spawn_fog();
 	void spawn_super_michi_mafioso(Vector2D posVec);
 

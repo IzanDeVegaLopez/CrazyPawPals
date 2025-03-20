@@ -35,13 +35,15 @@ WaveManager::initComponent() {
 	fog = Game::Instance()->get_mngr()->getComponent<Fog>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::FOGGROUP));
     assert(fog != nullptr);
 
-    _currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
-    choose_new_event();
+    //std::cout << sdlutils().virtualTimer().currRealTime() << std::endl;
+    //_currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
+    //choose_new_event();
 }
 
 void 
 WaveManager::update(uint32_t delta_time) {
     _currentWaveTime = sdlutils().virtualTimer().currRealTime() - _currentWaveInitTime;
+    //std::cout << sdlutils().virtualTimer().currRealTime()<< " / "<< _currentWaveInitTime << std::endl;
 
     if(_current_wave_event != nullptr)
         _current_wave_event->update(delta_time);
@@ -189,6 +191,12 @@ void WaveManager::show_wave_image()
 void WaveManager::hide_wave_image()
 {
     _tdi->set_active(false);
+}
+
+void WaveManager::start_new_wave()
+{
+    _currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
+    choose_new_event();
 }
 
 void WaveManager::choose_new_event()

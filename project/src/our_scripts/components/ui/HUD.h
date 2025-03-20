@@ -12,7 +12,7 @@ private:
 	WaveManager* _wm;
 	const camera_component* _camera;
 public:
-	__CMPID_DECL__(ecs::cmp::PLAYER_HUD);
+	__CMPID_DECL__(ecs::cmp::GENERAL_HUD);
 	HUD();
 	virtual ~HUD();
 	void initComponent() override;

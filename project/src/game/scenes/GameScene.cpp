@@ -97,6 +97,7 @@ void GameScene::initScene() {
 	spawn_super_michi_mafioso(Vector2D{5.0f, 0.0f});
 	spawn_fog();
 	spawn_wave_manager();
+	create_hud();
 }
 
 void GameScene::enterScene()
@@ -110,6 +111,8 @@ void GameScene::enterScene()
 	auto d = mngr->getComponent<Deck>(player);
 	d->initComponent();
 	mngr->addComponent<PlayerHUD>(player);
+
+	mngr->getComponent<WaveManager>(mngr->getHandler(ecs::hdlr::WAVE))->start_new_wave();
 }
 
 void GameScene::exitScene()
@@ -655,8 +658,8 @@ void GameScene::spawn_ratatouille(Vector2D posVec)
 
 void GameScene::spawn_wave_manager()
 {
-	create_entity(
-		ecs::hdlr::WAVE,
+	auto ent = create_entity(
+		ecs::grp::DEFAULT,
 		ecs::scene::GAMESCENE,
 		new transformless_dyn_image(
 			{ {0.2,0.1},{0.6,0.2} },
@@ -666,6 +669,7 @@ void GameScene::spawn_wave_manager()
 		),
 		new WaveManager()
 	);
+	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::WAVE, ent);
 }
 void GameScene::spawn_fog()
 {
@@ -675,6 +679,14 @@ void GameScene::spawn_fog()
 		new Fog()
 	);
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::FOGGROUP, ent);
+}
+void GameScene::create_hud()
+{
+	auto ent = create_entity(
+		ecs::grp::DEFAULT,
+		ecs::scene::GAMESCENE,
+		new HUD());
+	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::HUD_ENTITY, ent);
 }
 
 
