@@ -3,7 +3,7 @@
 #include "../../ecs/Component.h"
 #include "../../sdlutils/SDLUtils.h"
 #include "../wave_events/wave_event.hpp"
-#include "../components/transformless_dyn_image.h"
+#include "rendering/transformless_dyn_image.h"
 
 enum enemyType {
     none = 0,
@@ -54,9 +54,8 @@ class WaveManager : public ecs::Component {
     };
 public:
     __CMPID_DECL__(ecs::cmp::WAVEMANAGER)
-    WaveManager(transformless_dyn_image*);
+    WaveManager();
     virtual ~WaveManager() override;
-
     void update(uint32_t delta_time) override;
     void initComponent() override;
     void spawnWave();

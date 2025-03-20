@@ -6,6 +6,7 @@
 
 MovementController::MovementController(float max_speed, float acceleration, float decceleration) 
 	: _tr(nullptr), _max_speed(max_speed), _acceleration(acceleration), _decceleration(decceleration), _dashing(false), _time_remaining(0){
+	event_system::event_manager::Instance()->suscribe_to_event(event_system::change_deccel, this, &event_system::event_receiver::event_callback0);
 }
 
 MovementController::~MovementController() {
@@ -80,3 +81,6 @@ void MovementController::dash(Vector2D next_pos, uint32_t time) {
 	}
 }
 
+void MovementController::event_callback0(const event_system::event_receiver::Msg& m) {
+	_decceleration *= m.float_value;
+}

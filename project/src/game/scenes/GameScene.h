@@ -36,6 +36,6 @@ public:
 	void generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid);
 	void check_collision();
 	void event_callback0(const event_system::event_receiver::Msg& m) override;
-private:
+protected:
 	float deccel_spawned_creatures_multi = 1;
 };

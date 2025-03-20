@@ -10,7 +10,7 @@
 #include "../wave_events/ice_skating_event.hpp"
 
 // 1 segundo = 1000 ticks (ms)
-WaveManager::WaveManager(transformless_dyn_image* tdi) :
+WaveManager::WaveManager() :
     _currentWaveTime(0),
     _waveTime(60000),
     _currentWave(0),
@@ -18,11 +18,9 @@ WaveManager::WaveManager(transformless_dyn_image* tdi) :
     _enemiesSpawned(0),
     _enemiesKilled(0),
     _totalSpawnTime(10000.0f),
-    _current_wave_event(new no_event(this)), 
-    _current_wave_event(new no_event(this))
+    _current_wave_event(new no_event(this)),
+    _tdi(nullptr)
 {
-    _currentWaveInitTime = sdlutils().virtualTimer().currRealTime();    
-    choose_new_event();
 }
 
 WaveManager::~WaveManager() {
@@ -31,7 +29,14 @@ WaveManager::~WaveManager() {
 
 void
 WaveManager::initComponent() {
+    _tdi = Game::Instance()->get_mngr()->getComponent<transformless_dyn_image>(_ent);
+    assert(_tdi != nullptr);
+    //TODO: cambiar esto por _ent posiblemente
 	fog = Game::Instance()->get_mngr()->getComponent<Fog>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::FOGGROUP));
+    assert(fog != nullptr);
+
+    _currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
+    choose_new_event();
 }
 
 void 
@@ -192,6 +197,7 @@ void WaveManager::choose_new_event()
     std::mt19937 gen(rd());
     std::uniform_int_distribution<int> rnd_gen(0,10);
     int i = rnd_gen(gen);
+    std::cout << "wave number: " << (i) << std::endl;
     switch(i) {
     case 0:
     case 1:
