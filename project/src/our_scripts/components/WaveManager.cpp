@@ -3,20 +3,23 @@
 #include "WaveManager.h"
 #include "ecs/Manager.h"
 #include "game/Game.h"
-#include "game/GameScene.h"
+#include "game/scenes/GameScene.h"
 #include "sdlutils/SDLUtils.h"
+#include "../components/Fog.h"
 #include "../wave_events/no_event.hpp"
+#include "../wave_events/ice_skating_event.hpp"
 
 // 1 segundo = 1000 ticks (ms)
 WaveManager::WaveManager() :
     _currentWaveTime(0),
     _waveTime(60000),
     _currentWave(0),
-    _waveActive(false), _fogActive(false),
+    _waveActive(false),
     _enemiesSpawned(0),
     _enemiesKilled(0),
-    _totalSpawnTime(7500.0f),
-    _current_wave_event(new no_event(this))
+    _totalSpawnTime(10000.0f),
+    _current_wave_event(new no_event(this)),
+    _tdi(nullptr)
 {
 }
 
@@ -24,10 +27,23 @@ WaveManager::~WaveManager() {
 
 }
 
+void
+WaveManager::initComponent() {
+    _tdi = Game::Instance()->get_mngr()->getComponent<transformless_dyn_image>(_ent);
+    assert(_tdi != nullptr);
+    //TODO: cambiar esto por _ent posiblemente
+	fog = Game::Instance()->get_mngr()->getComponent<Fog>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::FOGGROUP));
+    assert(fog != nullptr);
+
+    //std::cout << sdlutils().virtualTimer().currRealTime() << std::endl;
+    //_currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
+    //choose_new_event();
+}
+
 void 
 WaveManager::update(uint32_t delta_time) {
-    //_currentTime = sdlutils().virtualTimer().currRealTime();
-	_currentWaveTime += delta_time;
+    _currentWaveTime = sdlutils().virtualTimer().currRealTime() - _currentWaveInitTime;
+    //std::cout << sdlutils().virtualTimer().currRealTime()<< " / "<< _currentWaveInitTime << std::endl;
 
     if(_current_wave_event != nullptr)
         _current_wave_event->update(delta_time);
@@ -47,7 +63,7 @@ WaveManager::update(uint32_t delta_time) {
             _waveActive = false; // Finalizar la oleada, (post oleada, matar enemigos restantes, aparece niebla)
         }
     }
-    else if (!_waveActive && !_fogActive){
+    else if (!_waveActive && fog->getFogActive() == false){
         // Iniciar una nueva oleada
         spawnWave();
     }
@@ -106,6 +122,9 @@ WaveManager::spawnWave() {
                 case catkuza:
                     static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_catkuza(posVec);
                     break;
+                case super_michi_mafioso:
+                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_super_michi_mafioso(posVec);
+                    break;
                 default: {
                     assert(false && "unreachable");
                     exit(EXIT_FAILURE);
@@ -137,8 +156,8 @@ WaveManager::areAllEnemiesDead() {
 //Activa la niebla
 void 
 WaveManager::activateFog() {
-    _fogActive = true;
-    //std::cout << "Niebla activada!" << std::endl;
+    fog->setFog(true);
+    std::cout << "Niebla activada!" << std::endl;
 }
 
 
@@ -148,7 +167,7 @@ WaveManager::enterRewardsMenu() {
     //std::cout << "Todos los enemigos eliminados. Entrando al menu de recompensas..." << std::endl;
     _current_wave_event->end_wave_callback();
 
-
+    choose_new_event();
 
     // Esto tiene que ir después del menu de recompensas
     _currentWave++;
@@ -157,11 +176,27 @@ WaveManager::enterRewardsMenu() {
 	_enemiesSpawned = 0;
 	_enemiesKilled = 0;
     _numEnemies = 0;
-	_fogActive = false;
+    fog->setFog(false);
 
 	for (int i : _waves[_currentWave].second) {
 		if (i != 0) _numEnemies++;
 	}
+}
+
+void WaveManager::show_wave_image()
+{
+    _tdi->set_active(true);
+}
+
+void WaveManager::hide_wave_image()
+{
+    _tdi->set_active(false);
+}
+
+void WaveManager::start_new_wave()
+{
+    _currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
+    choose_new_event();
 }
 
 void WaveManager::choose_new_event()
@@ -169,14 +204,29 @@ void WaveManager::choose_new_event()
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<int> rnd_gen(0,10);
-    switch(rnd_gen(gen)) {
+    int i = rnd_gen(gen);
+    std::cout << "wave number: " << (i) << std::endl;
+    switch(i) {
     case 0:
     case 1:
     case 2:
     case 3:
     case 4:
         _current_wave_event = (std::unique_ptr<wave_event>)new no_event(this);
+        break;
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+    case 9:
+    case 10:
+        _current_wave_event = (std::unique_ptr<wave_event>)new ice_skating_event(this);
+        break;
+    default:
+        std::cout << "event_choser_went_wrong" << std::endl;
     }
+
+    std::cout << i << std::endl;
 
     _current_wave_event->start_wave_callback();
     //TODO elegir evento y llamar a la función de iniciar

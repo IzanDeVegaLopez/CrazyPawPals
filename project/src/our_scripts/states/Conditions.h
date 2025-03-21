@@ -5,7 +5,7 @@
 
 #include "../components/Health.h"
 #include "../../sdlutils/SdlUtils.h"
-#include "../components/Transform.h"
+#include "../components/movement/Transform.h"
 
 class ConditionManager {
 private:
@@ -15,7 +15,6 @@ private:
     };
 
     std::unordered_map<std::string, Timers> timers; //temporizadores de los estados, cuanto duran
-
 public:
 
     // Métodos para evaluar condiciones
@@ -31,7 +30,7 @@ public:
 
     void set_cooldown(const std::string& state, uint32_t cooldown) {
         timers[state].duration = cooldown;
-        std::cout << state<<"   " << timers[state].duration << std::endl;
+        //std::cout << state<<"   " << timers[state].duration << std::endl;
         timers[state].last_used = 0;
     }
     
@@ -43,7 +42,6 @@ public:
             std::cout << "aaa" << std::endl;
             return true; // Si no tiene cooldown, siempre se puede usar
         }
-
         return (currentTime - timers[action].last_used) > timers[action].duration;
     }
 

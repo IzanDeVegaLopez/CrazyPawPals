@@ -3,14 +3,17 @@
 #include "../states/Conditions.h"
 #include "../states/AttackingState.h"
 #include "../states/WalkingState.h"
-#include "../components/Transform.h"
+#include "../components/movement/Transform.h"
 
 #include <iostream>
 
-StateMachine::StateMachine(std::shared_ptr<ConditionManager> conditionManager)
-	: _condition_manager(std::move(conditionManager)) {}
+StateMachine::StateMachine() {
+	_condition_manager = new ConditionManager();
+}
 
-
+StateMachine::~StateMachine() {
+	delete _condition_manager;
+}
 void StateMachine::add_state(const std::string& name, StatePtr state) {
 	_states[name] = state;
 }
@@ -36,7 +39,7 @@ void StateMachine::transitionTo(const std::string& name) {
 void StateMachine::update(uint32_t delta_time) {
 	if (_states.count(_currentState)) {
 		_states[_currentState]->update(delta_time);
-		std::cout << _currentState << std::endl;
+		//std::cout << _currentState << std::endl;
 		for (const auto& transition : _transitions[_currentState]) {
 			if (transition.condition()) {
 				_states[_currentState]->exit();

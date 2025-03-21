@@ -1,6 +1,6 @@
 #include "RotatingState.h"
-#include "../components/Transform.h"
-#include "../components/MovementController.h"
+#include "../components/movement/Transform.h"
+#include "../components/movement/MovementController.h"
 
 RotatingState::RotatingState(Transform* tr, Transform* playerTr, MovementController* mc)
     : _tr(tr), _movementController(mc), _playerTr(playerTr), _angle(0.0f), _center(), _radius(0.0f) {}

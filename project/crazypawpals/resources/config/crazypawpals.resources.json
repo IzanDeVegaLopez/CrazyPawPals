@@ -67,6 +67,10 @@
       "file": "resources/images/projectiles/p_boom.png"
     },
     {
+      "id": "fog",
+      "file": "resources/images/enviroment/fog.png"
+    },
+    {
       "id": "p_super_michi_mafioso",
       "file": "resources/images/projectiles/p_super_michi_mafioso.png"
     },
