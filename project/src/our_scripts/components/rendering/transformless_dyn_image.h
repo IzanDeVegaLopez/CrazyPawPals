@@ -16,7 +16,7 @@ struct transformless_dyn_image : public ecs::Component {
 	rect_f32 destination_rect;
 	const camera_screen& my_camera_screen;
 	float my_rotation;
-
+	bool active = true;
 
 	transformless_dyn_image(
 		const rect_f32 subrect,
@@ -34,6 +34,8 @@ struct transformless_dyn_image : public ecs::Component {
 	};
 
 	inline virtual void render() override {
+		if (!active) return;
+
 		rect_f32 rect = rect_f32_screen_rect_from_viewport(destination_rect, my_camera_screen.screen);
 		const SDL_Rect destination = {
 			int(rect.position.x),
@@ -56,5 +58,9 @@ struct transformless_dyn_image : public ecs::Component {
 	}
 	inline void set_texture(Texture* t) { texture = t; };
 
+	void set_active(bool v) {
+		active = v;
+	}
 	inline void apply_filter(int r, int g, int b) { SDL_SetTextureColorMod(&texture->get_texture(), r, g, b); };
+
 };

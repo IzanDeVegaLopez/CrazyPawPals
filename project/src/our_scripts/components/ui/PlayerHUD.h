@@ -1,20 +1,25 @@
 #pragma once
-#pragma once
 #include "../../../ecs/Component.h"
 #include "../cards/Mana.h"
 #include "../Health.h"
 #include "../cards/Deck.hpp"
 #include "../movement/Transform.h"
 #include "../rendering/camera_component.hpp"
-#include "../WaveManager.h"
-class HUD : public ecs::Component {
+class PlayerHUD : public ecs::Component {
 private:
-	WaveManager* _wm;
+	ManaComponent* _mana;
+	Health* _health;
+	Deck* _deck;
+	Transform* _tr;
 	const camera_component* _camera;
+
+	Texture* _tex_orb;
+	Texture* _tex_orb_empty;
+	Texture* _tex_prime;
 public:
-	__CMPID_DECL__(ecs::cmp::GENERAL_HUD);
-	HUD();
-	virtual ~HUD();
+	__CMPID_DECL__(ecs::cmp::PLAYER_HUD);
+	PlayerHUD();
+	virtual ~PlayerHUD();
 	void initComponent() override;
 	void update(uint32_t delta_time) override;
 	void render() override;

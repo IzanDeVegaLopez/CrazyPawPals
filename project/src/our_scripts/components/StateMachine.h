@@ -34,7 +34,7 @@ public:
     void exit();
 
 
-	virtual ~StateMachine() {};
+	virtual ~StateMachine();
 
 	void update(uint32_t delta_time) override;
 
