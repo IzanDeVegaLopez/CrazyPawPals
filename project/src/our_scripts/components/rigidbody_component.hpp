@@ -61,38 +61,67 @@ struct collision_manifold : public ecs::Component {
     __CMPID_DECL__(COMPONENT_ID);
 
     collision_contact contact;
+    uint64_t collision_tick;
     ecs::entity_t body0;
     ecs::entity_t body1;
 
-    collision_manifold(collision_contact contact, ecs::entity_t body0, ecs::entity_t body1)
-        : contact(contact), body0(body0), body1(body1) {
+    constexpr collision_manifold(collision_contact contact, uint64_t collision_tick, ecs::entity_t body0, ecs::entity_t body1)
+        : contact(contact), collision_tick(collision_tick), body0(body0), body1(body1) {
     }
 };
 using contact_manifold = collision_manifold<ecs::cmp::CONTACT_MANIFOLD>;
 using trigger_manifold = collision_manifold<ecs::cmp::TRIGGER_MANIFOLD>;
 
+template <ecs::cmp::cmpId COMPONENT_ID>
+static const collision_manifold uninitialized_manifold = collision_manifold<COMPONENT_ID>{collision_contact{
+    .penetration = {0.0f, 0.0f},
+    .normal = {0.0f, 0.0f},
+    .delta_of_collision_normalised = 0.0f
+}, 0, nullptr, nullptr};
+
 template <typename OnCollisionComponent>
 struct on_collision : public ecs::Component {
-    using collision_callback = OnCollisionComponent::on_contact;
+    const contact_manifold *manifold;
+    uint64_t last_collision_tick;
+        
+    on_collision() : manifold{nullptr}, last_collision_tick{0} {
+
+    }
+    void initComponent() override {
+        ecs::Component::initComponent();
+        manifold = Game::Instance()->get_mngr()->addComponent<contact_manifold>(
+            _ent, uninitialized_manifold<ecs::cmp::CONTACT_MANIFOLD>
+        );
+    }
+
     void update(uint32_t delta_time) override {
-        auto &&manager = *Game::Instance()->get_mngr();
-        contact_manifold *manifold = manager.getComponent<contact_manifold>(_ent);
-        if (manifold != nullptr) {
-            collision_callback(*manifold);
-            manager.removeComponent<contact_manifold>(_ent);
+        (void)delta_time;
+        if (manifold->collision_tick != last_collision_tick) {
+            static_cast<OnCollisionComponent*>(this)->on_contact(*manifold);
+            last_collision_tick = manifold->collision_tick;
         }
     }
 };
 
 template <typename OnTriggerComponent>
 struct on_trigger : public ecs::Component {
-    //using trigger_callback = OnTriggerComponent::on_contact;
+    const trigger_manifold *manifold;
+    uint64_t last_collision_tick;
+
+    on_trigger() : manifold{nullptr}, last_collision_tick{0} {
+
+    }
+    void initComponent() override {
+        ecs::Component::initComponent();
+        manifold = Game::Instance()->get_mngr()->addComponent<trigger_manifold>(
+            _ent, uninitialized_manifold<ecs::cmp::TRIGGER_MANIFOLD>
+        );
+    }
     void update(uint32_t delta_time) override {
-        auto &&manager = *Game::Instance()->get_mngr();
-        trigger_manifold *manifold = manager.getComponent<trigger_manifold>(_ent);
-        if (manifold != nullptr) {
+        (void)delta_time;
+        if (manifold->collision_tick != last_collision_tick) {
             static_cast<OnTriggerComponent*>(this)->on_contact(*manifold);
-            manager.removeComponent<trigger_manifold>(ecs::entity_t(_ent));
+            last_collision_tick = manifold->collision_tick;
         }
     }
 };

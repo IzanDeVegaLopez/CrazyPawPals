@@ -282,22 +282,59 @@ static bool manager_handle_collision_bodies(
 				space1.previous_position.x = space1.position.x - response1_restitution.restitution_displacement.x;
 				space1.previous_position.y = space1.position.y - response1_restitution.restitution_displacement.y;
 			}
-
-			manager.addComponent<contact_manifold>(entity0, contact, entity0, entity1);
-			manager.addComponent<contact_manifold>(entity1, contact, entity0, entity1);
+			
+			contact_manifold *contact0 = manager.getComponent<contact_manifold>(entity0);
+			contact_manifold *contact1 = manager.getComponent<contact_manifold>(entity1);
+			if (contact0 != nullptr) {
+				contact0->contact = contact;
+				contact0->collision_tick = sdlutils().virtualTimer().currTime();
+				contact0->body0 = entity0;
+				contact0->body1 = entity1;
+			}
+			if (contact1 != nullptr) {
+				contact1->contact = contact;
+				contact1->collision_tick = sdlutils().virtualTimer().currTime();
+				contact1->body0 = entity0;
+				contact1->body1 = entity1;
+			}
 			break;
 		}
 		case collision_response_option_body0_trigger: {
-			manager.addComponent<trigger_manifold>(entity0, contact, entity0, entity1);
+			trigger_manifold *trigger0 = manager.getComponent<trigger_manifold>(entity0);
+			if (trigger0 != nullptr) {
+				trigger0->contact = contact;
+				trigger0->collision_tick = sdlutils().virtualTimer().currTime();
+				trigger0->body0 = entity0;
+				trigger0->body1 = entity1;
+			}
 			break;
 		}
 		case collision_response_option_body1_trigger: {
-			manager.addComponent<trigger_manifold>(entity1, contact, entity0, entity1);
+			trigger_manifold *trigger1 = manager.getComponent<trigger_manifold>(entity1);
+			if (trigger1 != nullptr) {
+				trigger1->contact = contact;
+				trigger1->collision_tick = sdlutils().virtualTimer().currTime();
+				trigger1->body0 = entity0;
+				trigger1->body1 = entity1;
+			}
 			break;
 		}
 		case collision_response_option_body0_trigger | collision_response_option_body1_trigger: {
-			manager.addComponent<trigger_manifold>(entity0, contact, entity0, entity1);
-			manager.addComponent<trigger_manifold>(entity1, contact, entity0, entity1);
+			trigger_manifold *trigger0 = manager.getComponent<trigger_manifold>(entity0);
+			trigger_manifold *trigger1 = manager.getComponent<trigger_manifold>(entity1);
+
+			if (trigger0 != nullptr) {
+				trigger0->contact = contact;
+				trigger0->collision_tick = sdlutils().virtualTimer().currTime();
+				trigger0->body0 = entity0;
+				trigger0->body1 = entity1;
+			}
+			if (trigger1 != nullptr) {
+				trigger1->contact = contact;
+				trigger1->collision_tick = sdlutils().virtualTimer().currTime();
+				trigger1->body0 = entity0;
+				trigger1->body1 = entity1;
+			}
 			break;
 		}
 		default: {
