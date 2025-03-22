@@ -1,8 +1,8 @@
 #include "PlayableCards.hpp"
 #include "CardUpgrade.hpp"
-#include "../components/MovementController.h"
+#include "../components/movement/MovementController.h"
 #include "../../game/Game.h"
-#include "../../game/GameScene.h"
+#include "../../game/scenes/GameScene.h"
 #include "ShootPatrons.hpp"
 #include "../components/Health.h"
 #define PI 3.14159265358979323846
