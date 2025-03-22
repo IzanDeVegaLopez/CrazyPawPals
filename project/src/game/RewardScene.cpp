@@ -1,21 +1,23 @@
 #include "RewardScene.h"
-#include "../our_scripts/components/Button.h"
+
 #include "GameStructs.h"
+#include "../ecs/Entity.h"
 #include "../utils/Vector2D.h"
 #include "../sdlutils/SDLUtils.h"
 #include "../sdlutils/InputHandler.h"
-#include "../ecs/Entity.h"
 
 #include "../our_scripts/card_system/Card.hpp"
 #include "../our_scripts/card_system/PlayableCards.hpp"
+#include "../our_scripts/card_system/CardUpgrade.hpp"
 #include "../our_scripts/components/Deck.hpp"
+#include "../our_scripts/components/Button.h"
 #include "../our_scripts/components/ImageForButton.h"
 
 #include <iostream>
 #include <string>
 
 
-RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE), _reward_selected(false)
+RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE), _reward_selected(false), _card(false), _health(false)
 {
 }
 
@@ -32,14 +34,14 @@ void RewardScene::initScene() {
 
     //Reward 1
     GameStructs::ButtonProperties reward1B = buttonPropTemplate;
-    reward1B.sprite_key = "reward_card";
+    reward1B.sprite_key = "reward_life";
     create_reward_button(reward1B);
 
     //std::cout << reward1B.rect.position.x << std::endl;
 
     //Reward 2
     GameStructs::ButtonProperties reward2B = buttonPropTemplate;
-    reward2B.sprite_key = "reward_card";
+    reward2B.sprite_key = "reward_el_bl_x2";
     reward2B.rect.position.x += umbral;
     create_reward_button(reward2B);
 
@@ -76,6 +78,24 @@ void RewardScene::render() {
     Scene::render();
 }
 
+void RewardScene::select_rewards()
+{
+    //Picks randomly the rewards, between all the enum, minus the last one (health)
+    for (int i = 0; i < _rewVector->size(); i++)
+    {
+        RandomNumberGenerator rand;
+        int index = rand.nextInt(0, 3); //- 1
+        //_rewVector[i] = _rewards(index);
+    }
+
+    ////If health lower than 20%, rewVector[0] = _rewards.LIFE;
+    //Health* _healthComp = Game::Instance()->get_mngr()->getComponent<Health>(getHandler(ecs::hdlr::PLAYER);
+    //if (_healthComp->getHealth() <= _health->getMaxHealth() / 5)
+    //{
+    //    _rewVector[0] = _rewards[LIFE];
+    //}
+}
+
 void RewardScene::create_reward_button(const GameStructs::ButtonProperties& bp)
 {
     auto* mngr = Game::Instance()->get_mngr();
@@ -93,25 +113,25 @@ void RewardScene::create_reward_button(const GameStructs::ButtonProperties& bp)
     );
 
     buttonComp->connectClick([buttonComp, imgComp, this]() {
-        std::cout << "left click -> Reward button" << std::endl;
+        //std::cout << "left click -> Reward button" << std::endl;
         //swap the actual buttons textures
         imgComp->swap_textures();
 
         //reward has been selected
-        _reward_selected = !_reward_selected;
+        if (!_reward_selected) _reward_selected = true;
 
-        std::cout << _reward_selected << std::endl;
+        //std::cout << _reward_selected << std::endl;
 
     });
 
     buttonComp->connectHover([buttonComp, imgComp]() {
-        std::cout << "hover -> Reward button" << std::endl;
+        //std::cout << "hover -> Reward button" << std::endl;
         //filter
         imgComp->apply_filter(128, 128, 128);
     });
 
     buttonComp->connectExit([buttonComp, imgComp]() {
-        std::cout << "exit -> Reward button" << std::endl;
+        //std::cout << "exit -> Reward button" << std::endl;
         //filter
         imgComp->apply_filter(255, 255, 255);
     });
@@ -135,7 +155,7 @@ void RewardScene::create_next_round_button(const GameStructs::ButtonProperties& 
 
 
     buttonComp->connectClick([buttonComp, &mngr]() {
-        std::cout << "left click -> next scene button" << std::endl;
+        //std::cout << "left click -> next scene button" << std::endl;
 
         //Game::Instance()->change_Scene(Game::GAMESCENE);
     });
@@ -143,16 +163,6 @@ void RewardScene::create_next_round_button(const GameStructs::ButtonProperties& 
 
     buttonComp->connectHover([buttonComp, imgComp, this]() {
 
-        std::cout << "hover -> next scene button" << std::endl;
-        //if (_reward_selected)
-        //{
-        //    //swap the actual buttons textures
-        //    imgComp->swap_textures();
-        //}
-        //else
-        //{
-        //    //swap the actual buttons textures
-        //    imgComp->swap_textures();
-        //}
+        //std::cout << "hover -> next scene button" << std::endl;
     });
 }
