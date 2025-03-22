@@ -13,7 +13,7 @@
 
 #include <iostream>
 
-RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE)
+RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr)
 {
 }
 
@@ -102,8 +102,9 @@ void RewardScene::create_a_deck_card(const GameStructs::ButtonProperties& bp) {
     auto e = create_button(bp);
     auto buttonComp = mngr->getComponent<Button>(e);
     auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
-    buttonComp->connectClick([buttonComp, imgComp] {
+    buttonComp->connectClick([buttonComp, imgComp, this] {
         imgComp->destination_rect.size = { imgComp->_original_w,  imgComp->_original_h };
+        _selected_card = buttonComp;
     });
 
     buttonComp->connectHover([buttonComp, imgComp]() {
