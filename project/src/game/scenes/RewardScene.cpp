@@ -154,8 +154,13 @@ void RewardScene::refresh_my_deck_cards(const std::list<std::string>& cl) {
     auto infos = mngr->getEntities(ecs::grp::REWARDCARDS);
 
     auto itInfo = infos.begin();
-    for (auto it = cl.begin(); it != cl.end() && itInfo != infos.end(); ++it, ++itInfo) {
+    auto it = cl.begin();
+    for (; it != cl.end(); ++it, ++itInfo) {
         auto img = mngr->getComponent<transformless_dyn_image>(*itInfo);
         img->set_texture(&sdlutils().images().at(*it));
+    }
+    for (; itInfo != infos.end(); ++itInfo) {
+        auto img = mngr->getComponent<transformless_dyn_image>(*itInfo);
+        img->set_texture(&sdlutils().images().at("initial_info"));
     }
 }
