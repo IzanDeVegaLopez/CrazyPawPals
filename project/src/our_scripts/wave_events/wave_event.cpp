@@ -20,10 +20,12 @@ void wave_event::update(unsigned int delta_time)
 
 void wave_event::pronounce_event_anim()
 {
+	_wave_manager_ref->show_wave_image();
 	//TODO
 }
 
 void wave_event::hide_event_anim()
 {
+	_wave_manager_ref->hide_wave_image();
 	//TODO
 }

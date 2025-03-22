@@ -2,8 +2,8 @@
 
 #include "../../game/scenes/GameScene.h"
 #include "../components/Health.h"
-#include "../components/Transform.h"
-#include "../components/WeaponSuperMichiMafioso.h"
+#include "../components/movement/Transform.h"
+#include "../components/weapons/enemies/WeaponSuperMichiMafioso.h"
 
 
 SuperMichiMafiosoAttack::SuperMichiMafiosoAttack(Transform* tr, Transform* playerTr, WeaponSuperMichiMafioso* weapon, OnChangeAttack onChangeAttack) :

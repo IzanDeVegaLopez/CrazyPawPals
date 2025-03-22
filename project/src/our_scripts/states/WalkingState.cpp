@@ -2,8 +2,8 @@
 
 #include "../../game/scenes/GameScene.h"
 #include "../components/Health.h"
-#include "../components/Transform.h"
-#include "../components/MovementController.h"
+#include "../components/movement/Transform.h"
+#include "../components/movement/MovementController.h"
 
 WalkingState::WalkingState(Transform* tr, Transform* playerTr, MovementController* movementController, bool toDestination)
     : _tr(tr), _playerTr(playerTr), _movementController(movementController), _to_destination(toDestination) {}

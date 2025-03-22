@@ -1,5 +1,5 @@
 #include "ControlsScene.h"
-#include "../../our_scripts/components/Button.h"
+#include "../../our_scripts/components/ui/Button.h"
 #include "../GameStructs.h"
 #include "../../utils/Vector2D.h"
 #include "../../sdlutils/SDLUtils.h"

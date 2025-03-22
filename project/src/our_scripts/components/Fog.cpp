@@ -3,7 +3,7 @@
 #include "../../ecs/Manager.h"
 #include "../../game/Game.h"
 
-#include "Transform.h"
+#include "movement/Transform.h"
 
 void
 Fog::initComponent() {

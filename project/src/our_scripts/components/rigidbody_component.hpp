@@ -6,8 +6,8 @@
 #include "../../ecs/Entity.h"
 #include "../../physics/rigidbody.hpp"
 #include "../../physics/collision.hpp"
-#include "Transform.h"
-#include "rect_component.hpp"
+#include "movement/Transform.h"
+#include "rendering/rect_component.hpp"
 #include "../../game/Game.h"
 #include "../../ecs/Manager.h"
 

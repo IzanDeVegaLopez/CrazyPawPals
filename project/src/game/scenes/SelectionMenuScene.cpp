@@ -1,22 +1,22 @@
 #include "SelectionMenuScene.h"
-#include "../../our_scripts/components/Button.h"
+#include "../../our_scripts/components/ui/Button.h"
 #include "../GameStructs.h"
 #include "../../utils/Vector2D.h"
 #include "../../sdlutils/SDLUtils.h"
 #include "../../sdlutils/InputHandler.h"
 #include "../../ecs/Entity.h"
 
-#include "../../our_scripts/components/Revolver.h"
-#include "../../our_scripts/components/Rampage.h"
-#include "../../our_scripts/components/PumpShotgun.h"
-#include "../../our_scripts/components/RampCanon.h"
-#include "../../our_scripts/components/Lightbringer.h"
+#include "../../our_scripts/components/weapons/player/Revolver.h"
+#include "../../our_scripts/components/weapons/player/Rampage.h"
+#include "../../our_scripts/components/weapons/player/PumpShotgun.h"
+#include "../../our_scripts/components/weapons/player/RampCanon.h"
+#include "../../our_scripts/components/weapons/player/Lightbringer.h"
 
 #include "../../our_scripts/card_system/Card.hpp"
 #include "../../our_scripts/card_system/PlayableCards.hpp"
-#include "../../our_scripts/components/Deck.hpp"
-#include "../../our_scripts/components/Image.h"
-#include "../../our_scripts/components/ImageForButton.h"
+#include "../../our_scripts/components/cards/Deck.hpp"
+#include "../../our_scripts/components/rendering/Image.h"
+#include "../../our_scripts/components/rendering/ImageForButton.h"
 
 #include <iostream>
 #include <typeinfo>
