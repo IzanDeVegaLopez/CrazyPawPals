@@ -1,6 +1,6 @@
 #include "Revolver.h"
 #include "../../game/Game.h"
-#include "../../game/GameScene.h"
+#include "../../game/scenes/GameScene.h"
 
 Revolver::Revolver() : Weapon(4, 500.0f, 2.0f, 0.2f, "p_revolver", 1.0f, 1.0f) { }
 

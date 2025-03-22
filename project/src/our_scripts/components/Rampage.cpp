@@ -1,6 +1,6 @@
 #include "Rampage.h"
 #include "../../game/Game.h"
-#include "../../game/GameScene.h"
+#include "../../game/scenes/GameScene.h"
 #include "our_scripts/card_system/ShootPatrons.hpp"
 
 

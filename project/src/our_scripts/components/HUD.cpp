@@ -32,39 +32,46 @@ void HUD::render()
 #pragma region health
 	int health = _health->getHealth();
 	int max_health = _health->getMaxHealth();
+	static constexpr float health_scale = 0.0015;
 
 	//bg
 	SDL_SetRenderDrawColor(sdlutils().renderer(), 80, 55, 60, 255);
-	SDL_Rect health1{ 200,sdlutils().height() - 140,max_health * 2,20 };
-	SDL_RenderFillRect(sdlutils().renderer(), &health1);
+	rect_f32 health1 = rect_f32_screen_rect_from_viewport(rect_f32({ 0.13,0.82 }, { max_health * health_scale,0.03 }),_camera->cam.screen);
+	SDL_Rect health1true { health1.position.x,health1.position.y,health1.size.x,health1.size.y};
+	SDL_RenderFillRect(sdlutils().renderer(), &health1true);
 
 	//remaining
 	SDL_SetRenderDrawColor(sdlutils().renderer(), 200, 80, 100, 255);
-	SDL_Rect health2{ 200,sdlutils().height()-140,health * 2,20 };
-	SDL_RenderFillRect(sdlutils().renderer(), &health2);
+	rect_f32 health2 = rect_f32_screen_rect_from_viewport(rect_f32({ 0.13,0.82 }, { health * health_scale,0.03 }), _camera->cam.screen);
+	SDL_Rect health2true { health2.position.x,health2.position.y,health2.size.x,health2.size.y };
+	SDL_RenderFillRect(sdlutils().renderer(), &health2true);
 
 #pragma endregion
 
 #pragma region mana
 	int mana_count = _mana->raw_mana_count();
 	int max_mana = _mana->max_mana();
+	static constexpr float mana_scale = 0.000025;
 
 	//bg
 	SDL_SetRenderDrawColor(sdlutils().renderer(), 60, 55, 80, 255);
-	SDL_Rect mana1{ 200,sdlutils().height() - 110,200,16 };
-	SDL_RenderFillRect(sdlutils().renderer(), &mana1);
+	rect_f32 mana1 = rect_f32_screen_rect_from_viewport(rect_f32({ 0.13,0.86 }, { max_mana*mana_scale,0.024 }), _camera->cam.screen);
+	SDL_Rect mana1true{ mana1.position.x,mana1.position.y,mana1.size.x,mana1.size.y };
+	SDL_RenderFillRect(sdlutils().renderer(), &mana1true);
 
 	//progress
 	SDL_SetRenderDrawColor(sdlutils().renderer(), 81, 100, 222, 255);
-	SDL_Rect mana2{ 200,sdlutils().height() - 110,(mana_count % 1000) / 5,16 };
-	SDL_RenderFillRect(sdlutils().renderer(), &mana2);
+	rect_f32 mana2 = rect_f32_screen_rect_from_viewport(rect_f32({ 0.13,0.86 }, { (mana_count%1000)*5 * mana_scale,0.024 }), _camera->cam.screen);
+	SDL_Rect mana2true{ mana2.position.x,mana2.position.y,mana2.size.x,mana2.size.y };
+	SDL_RenderFillRect(sdlutils().renderer(), &mana2true);
 
 	// full mana orbs
 	int display = max_mana / 1000;
 	for (int i = 1; i <= display; i++) {
-		SDL_Rect output{ 42 * (i - 1) + 200,sdlutils().height() - 84,32,32 };
-		if (mana_count >= i * 1000) _tex_orb->render(output);
-		else _tex_orb_empty->render(output);
+		rect_f32 output = rect_f32_screen_rect_from_viewport(rect_f32({ 0.13+(0.024*(i-1)),0.894}, {0.022,0.022}), _camera->cam.screen);
+		SDL_Rect outputtrue{ output.position.x,output.position.y,output.size.x,output.size.x };
+		if (mana_count >= i * 1000) _tex_orb->render(outputtrue);
+		else _tex_orb_empty->render(outputtrue);
 	}
 
 	//std::cout << _mana_count << std::endl;
@@ -192,8 +199,9 @@ void HUD::render()
 
 #pragma region prime
 	if (_deck->get_primed()) {
-		SDL_Rect primerect{ 200,sdlutils().height() - 47,31,32 };
-		_tex_prime->render(primerect);
+		rect_f32 prime = rect_f32_screen_rect_from_viewport(rect_f32({0.013,0.805 }, { 0.1,0.1 }), _camera->cam.screen);
+		SDL_Rect primetrue{ prime.position.x,prime.position.y,prime.size.x,prime.size.x };
+		_tex_prime->render(primetrue);
 	}
 #pragma endregion
 #pragma endregion

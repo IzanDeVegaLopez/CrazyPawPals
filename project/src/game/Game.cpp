@@ -12,7 +12,7 @@
 #include "../our_scripts/components/KeyboardPlayerCtrl.h"
 #include "../our_scripts/components/MovementController.h"
 #include "../our_scripts/components/Mana.h"
-#include "../our_scripts/components/EnemyMovement.h"
+
 #include "../our_scripts/components/Deck.hpp"
 #include "../our_scripts/components/dyn_image.hpp"
 #include "../our_scripts/components/camera_component.hpp"
@@ -21,11 +21,11 @@
 #include "../our_scripts/components/Rampage.h"
 #include "../our_scripts/components/bullet_collision_component.hpp"
 //Scenes for SceneManager
-#include "Scene.h"
-#include "MainMenuScene.h"
-#include "ControlsScene.h"
-#include "SelectionMenuScene.h"
-#include "GameScene.h"
+#include "scenes/Scene.h"
+#include "scenes/MainMenuScene.h"
+#include "scenes/ControlsScene.h"
+#include "scenes/SelectionMenuScene.h"
+#include "scenes/GameScene.h"
 
 
 using namespace std;

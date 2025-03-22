@@ -1,15 +1,20 @@
 #pragma once
 #include <vector>
-#include "../ecs/Manager.h"
-#include "../ecs/Entity.h"
-#include "../ecs/Component.h"
-#include "GameStructs.h"
-#include "../ecs/ecs.h"
-#include "../game/Game.h"
+#include "../../ecs/Manager.h"
+#include "../../ecs/Entity.h"
+#include "../../ecs/Component.h"
+#include "../GameStructs.h"
+#include "../../ecs/ecs.h"
+#include "../Game.h"
 
 class Transform;
 class Scene {
 public:
+	constexpr static const ::rect_f32 default_scene_bounds{
+		.position = {0.0, 0.0},
+		.size = {32.0, 18.0},
+	};
+
 	Scene(ecs::sceneId_t id);
 	virtual ~Scene() {};
 	//Each scene

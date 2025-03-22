@@ -1,6 +1,6 @@
 #include "WeaponSarnoRata.h"
 #include "../../game/Game.h"
-#include "../../game/GameScene.h"
+#include "../../game/scenes/GameScene.h"
 
 WeaponSarnoRata::WeaponSarnoRata() : Weapon(4, 2000, 20.0f, 0.0f, "p_sarno_rata", 2.0f, 2.0f) { }
 
