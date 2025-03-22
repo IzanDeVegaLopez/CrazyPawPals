@@ -15,9 +15,23 @@ private:
     };
 
     std::unordered_map<std::string, Timers> timers; //temporizadores de los estados, cuanto duran
-public:
+    
+    std::vector<std::string> patterns;
+    std::unordered_map<std::string, int> patternCounters;
 
+    size_t currentPatternIndex = 0;
+
+    // Elegir patron aleatorio
+    size_t get_random_pattern() {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dis(0, patterns.size() - 1);
+        return dis(gen);
+    }
+
+public:
     // Métodos para evaluar condiciones
+
     bool is_player_near(Transform* _player, Transform* _enemy, float _dist) const {
 		if (!_player || !_enemy) return false;
         float distance = (_player->getPos() - _enemy->getPos()).magnitude();
@@ -33,7 +47,12 @@ public:
         //std::cout << state<<"   " << timers[state].duration << std::endl;
         timers[state].last_used = 0;
     }
-    
+
+    void add_pattern(const std::string& pattern, int maxStates) {
+        patterns.push_back(pattern);
+        patternCounters[pattern] = maxStates;
+    }
+
     // Comprobar si se puede usar la accion
     bool can_use(const std::string& action, uint32_t currentTime) {
 
@@ -50,19 +69,23 @@ public:
         timers[action].last_used = currentTime;
     }
 
-    std::string chooseRandomPattern(uint32_t currentTime, const std::vector<std::string>& patterns) {
-        std::vector<std::string> availablePatterns;
-        for (const auto& pattern : patterns) {
-            if (can_use(pattern, currentTime)) { // si no esta en cooldown
-                availablePatterns.push_back(pattern);
-            }
-        }
+    void switch_pattern() {
+        if (patterns.empty()) return;
 
-        if (!availablePatterns.empty()) {
-            int index =  sdlutils().rand().nextInt(0, availablePatterns.size()) % availablePatterns.size();
-            return availablePatterns[index];
-        }
+        std::string currentPattern = patterns[currentPatternIndex];
+        patternCounters[currentPattern]--;
 
-        return "";  // Si todos estan en cooldown, devuelve vacío
+        if (patternCounters[currentPattern] <= 0) {
+            // Seleccionar un patrón aleatorio
+            size_t newPatternIndex = get_random_pattern();
+            currentPatternIndex = newPatternIndex;
+            std::string nextPattern = patterns[currentPatternIndex];
+            patternCounters[nextPattern] = patternCounters[nextPattern];
+        }
+    }
+
+    std::string get_current_pattern() const {
+        if (patterns.empty()) return "";
+        return patterns[currentPatternIndex];
     }
 };

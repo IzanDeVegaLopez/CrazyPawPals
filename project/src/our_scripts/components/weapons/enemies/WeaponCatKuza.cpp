@@ -1,8 +1,9 @@
 #include "WeaponCatKuza.h"
 #include "../../../../game/Game.h"
 #include "../../../../game/scenes/GameScene.h"
+#include "../../../card_system/ShootPatrons.hpp"
 
-WeaponCatKuza::WeaponCatKuza() : Weapon(4, 5000, 20.0f, 0.1f, "p_plimplim", 1.0f, 1.0f), _player_pos(), _wind_p(3), _dash_p(6){ }
+WeaponCatKuza::WeaponCatKuza() : Weapon(4, 5000, 20.0f, 0.1f, "p_plimplim", 1.0f, 1.0f), _player_pos(), _wind_p(3), _dash_p(6), _area_p(5){ }
 
 WeaponCatKuza::~WeaponCatKuza() {}
 
@@ -76,3 +77,18 @@ void WeaponCatKuza::dash_attack(Vector2D shootPos, Vector2D shoot_end_pos) {
 	}
 }
 
+void
+WeaponCatKuza::area_attack(Vector2D shootPos) {
+	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
+	bp.init_pos = shootPos;
+	bp.speed = _speed;
+	bp.damage = _damage;
+	bp.life_time = 1;
+	bp.width = _attack_width;
+	bp.height = _attack_height;
+	bp.sprite_key = "p_sarno_rata";
+
+	for (int i = 0; i < _area_p; ++i) {
+		static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
+	}
+}
