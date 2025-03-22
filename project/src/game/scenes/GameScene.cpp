@@ -347,8 +347,8 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	state_cm->set_cooldown("delayed_slash_duration", 1200);
 
 
-	state_cm->add_pattern("PATTERN_1", 4);
-	state_cm->add_pattern("PATTERN_2", 4);
+	state_cm->add_pattern("PATTERN_1", 1);
+	state_cm->add_pattern("PATTERN_2", 1);
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
@@ -394,6 +394,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	state.add_state("Charging", chargingState);
 	state.add_state("Dash", dashState);
 	state.add_state("Dash2", dashState);
+	state.add_state("Dash3", dashState);
 	state.add_state("WindAttack", windAttackState);
 	state.add_state("WindAttack2", windAttackState);
 	state.add_state("DashAttack", dashAttackState);
@@ -404,7 +405,9 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	add_transition(state, "Walking", "Charging",
 		[state_cm, _p_tr, &tr, &weapon]() {
 			bool trans = state_cm->is_player_near(_p_tr, &tr, 5.0f) && state_cm->get_current_pattern() == "PATTERN_1";
-			if (trans ) {
+			if (trans) {
+				//std::cout << "PATTERN_1 Charging" << std::endl;
+
 				state_cm->reset_cooldown("charging_duration", sdlutils().currRealTime());
 				weapon.set_player_pos(_p_tr->getPos());
 			}
@@ -416,6 +419,8 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 		[state_cm, &weapon, _p_tr]() {
 			bool trans = state_cm->can_use("charging_duration", sdlutils().currRealTime());
 			if (trans) {
+				//std::cout << "PATTERN_1 WindAttack" << std::endl;
+
 				state_cm->reset_cooldown("wind_attack_duration", sdlutils().currRealTime());
 				weapon.set_player_pos(_p_tr->getPos());
 			}
@@ -427,26 +432,29 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 		[state_cm, &weapon, _p_tr]() {
 			bool trans = state_cm->can_use("wind_attack_duration", sdlutils().currRealTime());
 			if (trans ) {
+				//std::cout << "PATTERN_1 Dash" << std::endl;
 				state_cm->reset_cooldown("dash_attack_duration", sdlutils().currRealTime());
+
 				weapon.set_player_pos(_p_tr->getPos());
 			}
 			return trans;
 		}
 	);
 
-	add_transition(state, "Dash", "DashAttack",
+	/*add_transition(state, "Dash", "DashAttack",
 		[state_cm, &weapon, _p_tr]() {
-			
+			std::cout << "PATTERN_1 DashAttack" << std::endl;
 			state_cm->reset_cooldown("dash_attack_duration", sdlutils().currRealTime());
-			weapon.set_player_pos(_p_tr->getPos());
 			return true;
 		}
-	);
+	);*/
 
 	add_transition(state, "Dash", "WindAttack2",
 		[state_cm]() {
 			bool trans = state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
 			if (trans) {
+				//std::cout << "PATTERN_1 WindAttack2" << std::endl;
+
 				state_cm->reset_cooldown("wind_attack_duration", sdlutils().currRealTime());
 			}
 			return trans;
@@ -457,6 +465,8 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 		[state_cm]() {
 			bool trans = state_cm->can_use("wind_attack_duration", sdlutils().currRealTime());
 			if (trans) {
+				//std::cout << "SALIENDO PATTERN_1 Walking" << std::endl;
+
 				state_cm->reset_cooldown("wind_attack_duration", sdlutils().currRealTime());
 				state_cm->switch_pattern();
 			}
@@ -479,34 +489,43 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 
 	add_transition(state, "Dash2", "AreaAttack",
 		[state_cm, _p_tr, &tr, &weapon]() {
-			std::cout << "PATTERN_2 AreaAttack" << std::endl;
+			//std::cout << "PATTERN_2 AreaAttack" << std::endl;
 			bool trans = state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
 			if (trans) {
 				state_cm->reset_cooldown("explosion_attack_duration", sdlutils().currRealTime());
-				std::cout << "PATTERN_2 AreaAttack" << std::endl; 
+				//std::cout << "PATTERN_2 AreaAttack" << std::endl; 
 			}
 			return trans;
 		}
 	);
 	
-	add_transition(state, "AreaAttack", "DashAttack",
+	add_transition(state, "AreaAttack", "Dash3",
 		[state_cm, _p_tr, &tr, &weapon]() {
-			bool trans = state_cm->get_current_pattern() == "PATTERN_2" && state_cm->can_use("explosion_attack_duration", sdlutils().currRealTime());
-			std::cout << "PATTERN_2 DashAttack" << std::endl;
+			//std::cout << "PATTERN_2 AreaAttack" << std::endl;
+			bool trans = state_cm->can_use("explosion_attack_duration", sdlutils().currRealTime());
 			if (trans) {
 				state_cm->reset_cooldown("dash_attack_duration", sdlutils().currRealTime());
-				std::cout << "PATTERN_2 DashAttack" << std::endl; 
+				//std::cout << "PATTERN_2 Dash3" << std::endl;
+				weapon.set_player_pos(_p_tr->getPos());
 			}
 			return trans;
 		}
 	);
 
+	add_transition(state, "Dash3", "DashAttack",
+		[state_cm, _p_tr, &tr, &weapon]() {
+			state_cm->reset_cooldown("dash_attack_duration", sdlutils().currRealTime());
+			//std::cout << "PATTERN_2 DashAttack" << std::endl; 
+			return true;
+		}
+	);
+
 	add_transition(state, "DashAttack", "Walking",
 		[state_cm, _p_tr, &tr, &weapon]() {
-			bool trans = state_cm->get_current_pattern() == "PATTERN_2" && state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
+			bool trans = state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
 			if (trans) {
 				state_cm->reset_cooldown("dash_attack_duration", sdlutils().currRealTime());
-				std::cout << "PATTERN_2 DashAttack" << std::endl; 
+				//std::cout << "PATTERN_2 DashAttack" << std::endl; 
 				state_cm->switch_pattern();
 			}
 			return trans;

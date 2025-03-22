@@ -58,8 +58,7 @@ public:
 
         auto it = timers.find(action);
         if (it == timers.end()) {
-            std::cout << "aaa" << std::endl;
-            return true; // Si no tiene cooldown, siempre se puede usar
+            return true; // Si no tiene cooldown se puede usar
         }
         return (currentTime - timers[action].last_used) > timers[action].duration;
     }
@@ -69,6 +68,7 @@ public:
         timers[action].last_used = currentTime;
     }
 
+    // Cambiar de patron de manera aleatoria
     void switch_pattern() {
         if (patterns.empty()) return;
 
@@ -80,6 +80,7 @@ public:
             size_t newPatternIndex = get_random_pattern();
             currentPatternIndex = newPatternIndex;
             std::string nextPattern = patterns[currentPatternIndex];
+            //std::cout << nextPattern << std::endl;
             patternCounters[nextPattern] = patternCounters[nextPattern];
         }
     }
