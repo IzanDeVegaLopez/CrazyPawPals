@@ -25,6 +25,7 @@
 #include "scenes/ControlsScene.h"
 #include "scenes/SelectionMenuScene.h"
 #include "scenes/GameScene.h"
+#include "scenes/RewardScene.h"
 
 
 using namespace std;

@@ -9,7 +9,7 @@
 #include <list>
 #include <cassert>
 #include <string>
-#include "../../utils/EventsSystem.hpp"
+#include "../../../utils/EventsSystem.hpp"
 class Transform;
 class MovementController;
 
@@ -45,9 +45,10 @@ protected:
 	// Used for Primed cards to gain additional effects.
 	bool _primed = false;
 
-	void _register_names(std::list<Card*>& starterDeck);
+	void _register_names(const std::list<Card*>& starterDeck);
 public:
 	__CMPID_DECL__(ecs::cmp::DECK)
+	Deck();
 	//Creates a starter with a list of cards
 	Deck(CardList&& starterDeck) noexcept;
 	Deck(std::list<Card*>&) noexcept;
@@ -93,6 +94,6 @@ public:
 	inline Card* hand() { return _hand; }
 	inline Card* last_milled_card() { return _last_milled_card; }
 	inline AnimationVars animation_vars() { return _av; }
-	inline std::list<char[]> card_names() const { return _cards_names; }
+	inline const std::list<std::string>& card_names() const { return _cards_names; }
 	
 };

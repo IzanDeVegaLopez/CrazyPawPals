@@ -1,19 +1,17 @@
 #include "RewardScene.h"
-#include "../our_scripts/components/Button.h"
-#include "GameStructs.h"
-#include "../utils/Vector2D.h"
-#include "../sdlutils/SDLUtils.h"
-#include "../sdlutils/InputHandler.h"
-#include "../ecs/Entity.h"
+#include "../../our_scripts/components/ui/Button.h"
+#include "../GameStructs.h"
+#include "../../utils/Vector2D.h"
+#include "../../sdlutils/SDLUtils.h"
+#include "../../sdlutils/InputHandler.h"
+#include "../../ecs/Entity.h"
 
-#include "../our_scripts/card_system/Card.hpp"
-#include "../our_scripts/card_system/PlayableCards.hpp"
-#include "../our_scripts/components/Deck.hpp"
-#include "../our_scripts/components/ImageForButton.h"
+#include "../../our_scripts/card_system/Card.hpp"
+#include "../../our_scripts/card_system/PlayableCards.hpp"
+#include "../../our_scripts/components/cards/Deck.hpp"
+#include "../../our_scripts/components/rendering/ImageForButton.h"
 
 #include <iostream>
-#include <string>
-#include <list>
 
 RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE)
 {
@@ -29,6 +27,11 @@ void RewardScene::initScene() {
 }
 void RewardScene::enterScene()
 {
+    auto* mngr = Game::Instance()->get_mngr();
+    auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
+    auto _m_deck = mngr->getComponent<Deck>(player);
+    auto& pDeck = _m_deck->card_names();
+    refresh_my_deck_cards(pDeck);
 }
 
 void RewardScene::exitScene()
@@ -64,16 +67,16 @@ void RewardScene::create_reward_button(const GameStructs::ButtonProperties& bp)
     auto* mngr = Game::Instance()->get_mngr();
     auto e = create_button(bp);
     auto buttonComp = mngr->getComponent<Button>(e);
-    //Imagen del boton (seleccionado o sin seleccionar)
+    //used for change the sprite once a button is clicked
     auto imgComp = mngr->addComponent<ImageForButton>(e,
-        &sdlutils().images().at(bp.sprite_key),
-        &sdlutils().images().at(bp.sprite_key + "_selected"),
-        bp.rect,
-        0,
-        Game::Instance()->get_mngr()->getComponent<camera_component>(
-            Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
-    );
-
+        &sdlutils().images().at(bp.sprite_key), 
+        &sdlutils().images().at(bp.sprite_key + "_selected"), 
+        bp.rect, 
+        0, 
+        Game::Instance()->get_mngr()->getComponent<camera_component>( 
+            Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam 
+    ); 
+     
     buttonComp->connectClick([buttonComp, imgComp]() {
         std::cout << "left click -> Reward button" << std::endl;
         //swap the actual buttons textures
@@ -118,24 +121,33 @@ void RewardScene::create_my_deck_cards() {
     float umbral = 0.25f;
     GameStructs::ButtonProperties propTemplate = {
         { {0.15f, 0.7f}, {0.175f, 0.3f} },
-        0.0f, "piu", ecs::grp::UI
+        0.0f, "", ecs::grp::REWARDCARDS
     };
     auto* mngr = Game::Instance()->get_mngr();
 
-    ////GET PLAYERS DECK REFERENCE
-    //auto player = mngr->getHandler(ecs::hdlr::PLAYER);
-    //auto pDeck = mngr->getComponent<Deck>(player);
-    //
-    //auto pDraw= pDeck->DrawPile().card_list(); 
-    //auto pCardList = pDeck->Discard().card_list();
+    //GET PLAYERS DECK REFERENCE
+    auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
+    if (player && !mngr->hasComponent<Deck>(player)) {
+        //when we add these entities, our olayer doesnt have any deck as component
+       mngr->addComponent<Deck>(player);
+    }
+   auto _m_deck = mngr->getComponent<Deck>(player);
+   auto& pDeck = _m_deck->card_names();
+    
+   for (const auto& it : pDeck) {
+        propTemplate.sprite_key = it;
+        create_a_deck_card(propTemplate);
+        propTemplate.rect.position.x += umbral;
+   }
+}
+void RewardScene::refresh_my_deck_cards(const std::list<std::string>& cl) {
+  
+    auto mngr = Game::Instance()->get_mngr();
+    auto infos = mngr->getEntities(ecs::grp::REWARDCARDS);
 
-    ////merge these lists
-    //pCardList.merge(pDraw);
-
-    create_a_deck_card(propTemplate);
-
-    propTemplate.rect.position.x += umbral;
-    propTemplate.sprite_key = "mimi";
-
-    create_a_deck_card(propTemplate);
+    auto itInfo = infos.begin();
+    for (auto it = cl.begin(); it != cl.end() && itInfo != infos.end(); ++it, ++itInfo) {
+        auto img = mngr->getComponent<transformless_dyn_image>(*itInfo);
+        img->set_texture(&sdlutils().images().at(*it));
+    }
 }

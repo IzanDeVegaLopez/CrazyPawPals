@@ -5,7 +5,10 @@
 #include "../movement/MovementController.h"
 #include "../movement/Transform.h"
 #include "../../../rendering/card_rendering.hpp"
+
+#include "../../card_system/PlayableCards.hpp"
 #include <algorithm>
+
 
 void Deck::_put_new_card_on_hand()
 {
@@ -19,6 +22,16 @@ void Deck::_put_new_card_on_hand()
 	}
 }
 
+Deck::Deck() {
+	_discard_pile = CardList();
+	_hand = nullptr;
+	std::list<Card*> default_cardList = { new Fireball(), new Minigun(), new Lighting(), new Fireball(), new Minigun(), new Lighting() };
+	_draw_pile = CardList(default_cardList);
+	_register_names(default_cardList);
+	_draw_pile.shuffle();
+	_put_new_card_on_hand();
+};
+
 Deck::Deck(std::list<Card*>& starterDeck) noexcept
 {
 	_discard_pile = CardList();
@@ -29,7 +42,7 @@ Deck::Deck(std::list<Card*>& starterDeck) noexcept
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
 }
-void Deck::_register_names(std::list<Card*>& starterDeck) {
+void Deck::_register_names(const std::list<Card*>& starterDeck) {
 	for (auto it : starterDeck) {
 		_cards_names.push_back(it->get_name());
 	}
@@ -40,7 +53,7 @@ Deck::Deck(CardList&& starterDeck) noexcept
 	_hand = nullptr;
 	//_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
 	_draw_pile = starterDeck;
-	_register_names(*starterDeck);
+	_register_names(starterDeck.card_list());
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
 }

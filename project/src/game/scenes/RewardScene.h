@@ -1,5 +1,7 @@
 #pragma once
 #include "Scene.h"
+#include <string>
+#include <list>
 
 class Texture;
 class RewardScene : public Scene
@@ -19,5 +21,5 @@ private:
 	//methods to show your actual deck info
 	void create_my_deck_cards();
 	void create_a_deck_card(const GameStructs::ButtonProperties& bp);
-
+	void refresh_my_deck_cards(const std::list<std::string>& cl);
 };
