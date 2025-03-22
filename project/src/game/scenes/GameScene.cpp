@@ -45,7 +45,6 @@
 #include "../../our_scripts/components/rendering/transformless_dyn_image.h"
 #include "../../our_scripts/components/rendering/render_ordering.hpp"
 #include "../../our_scripts/components/rendering/rect_component.hpp"
-#include "../../our_scripts/components/movement/StopOnBorder.h"
 #include "../../our_scripts/components/ui/PlayerHUD.h"
 #include "../../our_scripts/components/ui/HUD.h"
 
@@ -147,7 +146,7 @@ ecs::entity_t GameScene::create_player()
 		new ManaComponent(),
 		new MovementController(0.1f,5.0f,20.0f*deccel_spawned_creatures_multi),
 		//new Deck(c),
-		new StopOnBorder(camera, 1.5f, 2.0f),
+		// new StopOnBorder(camera, 1.5f, 2.0f),
 		&player_rigidbody,
 		&player_collisionable
 		);

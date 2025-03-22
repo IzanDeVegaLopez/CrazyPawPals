@@ -26,7 +26,12 @@ void HUD::render()
 #pragma region number
 	int wavenum = _wm->get_current_wave();
 	rect_f32 num = rect_f32_screen_rect_from_viewport(rect_f32({ 0.85,0.1 }, { 0.07,0.05 }), _camera->cam.screen);
-	SDL_Rect numtrue{ num.position.x,num.position.y,num.size.x,num.size.y };
+	SDL_Rect numtrue{ 
+		int(num.position.x),
+		int(num.position.y),
+		int(num.size.x),
+		int(num.size.y)
+	};
 	Texture numtex{
 		sdlutils().renderer(),
 		"0"+std::to_string(wavenum) + "/10",
@@ -40,7 +45,12 @@ void HUD::render()
 	int wavetime = 60 - (_wm->get_wave_time() / 1000);
 	//std::cout << wavetime << std::endl;
 	rect_f32 timer = rect_f32_screen_rect_from_viewport(rect_f32({ 0.45,0.05 }, { 0.1,0.14 }), _camera->cam.screen);
-	SDL_Rect timertrue{ timer.position.x,timer.position.y,timer.size.x,timer.size.y };
+	SDL_Rect timertrue{
+		int(timer.position.x),
+		int(timer.position.y),
+		int(timer.size.x),
+		int(timer.size.y)
+	};
 	Texture timertex{
 		sdlutils().renderer(),
 		wavetime < 10 ? "0" + std::to_string(std::max(wavetime,0)) : std::to_string(wavetime),
