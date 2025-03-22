@@ -53,6 +53,7 @@
 
 #include "../../our_scripts/components/rigidbody_component.hpp"
 
+#include "../../our_scripts/components/MythicComponent.h"
 
 #include <iostream>
 #include <string>
@@ -107,11 +108,13 @@ void GameScene::enterScene()
 	auto w = mngr->getComponent<Weapon>(player);
 
 	w->initComponent();
-	mngr->addComponent<KeyboardPlayerCtrl>(player);
+	mngr->addComponent<MythicComponent>(player);
+
 	auto d = mngr->getComponent<Deck>(player);
 	d->initComponent();
-	mngr->addComponent<PlayerHUD>(player);
 
+	mngr->addComponent<KeyboardPlayerCtrl>(player);
+	mngr->addComponent<PlayerHUD>(player);
 	mngr->getComponent<WaveManager>(mngr->getHandler(ecs::hdlr::WAVE))->start_new_wave();
 }
 

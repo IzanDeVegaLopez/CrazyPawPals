@@ -32,7 +32,7 @@ namespace event_system {
 		mill = 0,				//bin 0
 		shuffle = 1 << 0,		//bin 1
 		change_deccel = 1 << 1,	//bin 2
-		//4º evento = 1 << 2,	//bin 4
+		//4?evento = 1 << 2,	//bin 4
 	};
 	
 	class event_receiver {
@@ -40,6 +40,7 @@ namespace event_system {
 		//this struct will need a rework if intensive use of it its needed
 		struct Msg {
 			float float_value = 0;
+			int mana = 0;
 		};
 		//add more in case its needed, 
 		virtual void event_callback0(const Msg& m) = 0;

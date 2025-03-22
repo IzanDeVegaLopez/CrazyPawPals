@@ -374,6 +374,12 @@
       "id": "enter_game",
       "file": "resources/images/ui/enter_game.png"
     }
+    ,
+
+    {
+      "id": "mythic",
+      "file": "resources/images/ui/mythic.png"
+    }
   ],
   
   "messages" : [

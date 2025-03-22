@@ -6,6 +6,7 @@ class Transform;
 class Weapon;
 class Deck;
 class MovementController;
+class MythicComponent;
 class KeyboardPlayerCtrl :public ecs::Component
 {
 public:
@@ -25,4 +26,5 @@ private:
 	MovementController* _mc;
 	Weapon* _w;
 	Deck* _dc;
+	MythicComponent* _my;
 };

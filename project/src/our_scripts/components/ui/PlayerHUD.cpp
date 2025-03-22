@@ -4,6 +4,7 @@
 #include "../../../sdlutils/SDLUtils.h"
 #include "../../../rendering/card_rendering.hpp"
 #include "../WaveManager.h"
+#include "../../mythic/MythicItem.h"
 PlayerHUD::PlayerHUD() : _tex_orb(&sdlutils().images().at("manaorb")), _tex_orb_empty(&sdlutils().images().at("manaorbempty")), _tex_prime(&sdlutils().images().at("prime"))
 {
 
@@ -20,6 +21,7 @@ void PlayerHUD::initComponent()
 	_health = Game::Instance()->get_mngr()->getComponent<Health>(_ent);
 	_deck = Game::Instance()->get_mngr()->getComponent<Deck>(_ent);
 	_camera = Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA));
+	_mythics = Game::Instance()->get_mngr()->getComponent<MythicComponent>(_ent);
 }
 
 void PlayerHUD::update(uint32_t delta_time)
@@ -206,6 +208,26 @@ void PlayerHUD::render()
 	}
 #pragma endregion
 #pragma endregion
+
+
+#pragma region mythics
+	const auto& mythics = _mythics->get_mythics();
+	if (mythics.size() > 0) {
+		float icon_size = 0.02f; 
+		float start_x = 0.15 + (max_health * health_scale);
+		float start_y = 0.82;
+
+		for (auto mythic : mythics) {
+			Texture* texture = mythic->get_texture();
+			rect_f32 mythics_rect = 
+				rect_f32_screen_rect_from_viewport(rect_f32({ start_x, start_y }, { icon_size, icon_size*1.5 }), _camera->cam.screen);
+			SDL_Rect mythics_rect_true{ mythics_rect.position.x, mythics_rect.position.y, mythics_rect.size.x, mythics_rect.size.y };
+			texture->render(mythics_rect_true);
+			start_x += icon_size + 0.01f;
+		}
+	}
+#pragma endregion
+
 #pragma region timer
 	//TODO: Move to general HUD component
 	//auto ent = Game::Instance()->get_mngr()->getHandler(ecs::hdlr::WAVE);
