@@ -101,24 +101,27 @@ void RewardScene::create_a_deck_card(const GameStructs::ButtonProperties& bp) {
 
     auto e = create_button(bp);
     auto buttonComp = mngr->getComponent<Button>(e);
-    buttonComp->connectClick([buttonComp, bp] {
-        std::cout << "carta " + bp.sprite_key + "seleccionada" << std::endl;
-    });
     auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
+    buttonComp->connectClick([buttonComp, imgComp] {
+        imgComp->destination_rect.size = { imgComp->_original_w,  imgComp->_original_h };
+    });
+
     buttonComp->connectHover([buttonComp, imgComp]() {
         std::cout << "hover -> Reward button: " << std::endl;
         //filter
-        imgComp->apply_filter(128, 128, 128);
+        //imgComp->apply_filter(128, 128, 128);
+        imgComp->destination_rect.size = { imgComp->destination_rect.size.x*1.25f,  imgComp->destination_rect.size.y * 1.25f };
     });
 
     buttonComp->connectExit([buttonComp, imgComp]() {
         std::cout << "exit -> Reward button: " << std::endl;
         //filter
-        imgComp->apply_filter(255, 255, 255);
+        //imgComp->apply_filter(255, 255, 255);
+        imgComp->destination_rect.size = { imgComp->destination_rect.size.x / 1.25f,  imgComp->destination_rect.size.y / 1.25f };
     });
 }
 void RewardScene::create_my_deck_cards() {
-    float umbral = 0.25f;
+    float umbral = 0.175f;
     GameStructs::ButtonProperties propTemplate = {
         { {0.15f, 0.7f}, {0.175f, 0.3f} },
         0.0f, "", ecs::grp::REWARDCARDS
@@ -138,6 +141,11 @@ void RewardScene::create_my_deck_cards() {
         propTemplate.sprite_key = it;
         create_a_deck_card(propTemplate);
         propTemplate.rect.position.x += umbral;
+   }
+   for (int i = 0; i < 4; ++i) {
+       propTemplate.sprite_key = "initial_info";
+       create_a_deck_card(propTemplate);
+       propTemplate.rect.position.x += umbral;
    }
 }
 void RewardScene::refresh_my_deck_cards(const std::list<std::string>& cl) {
