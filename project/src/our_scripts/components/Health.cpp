@@ -5,8 +5,8 @@
 #include "../../game/Game.h"
 #include <algorithm>
 
-Health::Health(int maxHealth) 
-	: _currentHealth(maxHealth), _maxHealth(maxHealth),_shield(0),_shieldTime(0) {};
+Health::Health(int maxHealth, bool isPlayer) 
+	: _is_player(isPlayer), _currentHealth(maxHealth), _maxHealth(maxHealth), _shield(0), _shieldTime(0) {};
 Health::~Health() {};
 
 void
@@ -21,24 +21,27 @@ Health::takeDamage(int damage) {
 	if (_shield <= 0) {
 		_currentHealth -= damage;
 		if (_currentHealth <= 0) {
+			if (!_is_player) {
+				std::cout << "muerto" << _maxHealth << std::endl;
+				event_system::event_receiver::Msg msg;
+				msg.int_value = _maxHealth * 0.2;
+				Game::Instance()->get_event_mngr()->fire_event(event_system::enemy_dead, msg);
+			}
 			Game::Instance()->get_mngr()->setAlive(_ent, false);
 		}
 	}
 	else _shield -= damage;
-
 }
 
 void
-Health::setMaxHeatlh(int h) {
-	if (h > 0) {
-		_maxHealth = h; 
-	}
+Health::setMaxHeatlh(int maxHeatlh) {
+	if (maxHeatlh > 0) _maxHealth = maxHeatlh;
 }
 int
 Health::getHealth() const { return _currentHealth; }
 void 
-Health::takeShield(int s) {
-	_shield = s;
+Health::takeShield(int shield) {
+	_shield = shield;
 }
 void Health::payHealth(int cost)
 {

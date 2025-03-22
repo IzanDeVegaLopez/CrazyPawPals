@@ -98,7 +98,7 @@ std::pair<bool, Card*> Deck::mill() noexcept
 		_last_milled_card = _draw_pile.pop_first()->on_mill(*this, &_tr->getPos());
 		
 		event_system::event_receiver::Msg mill_msg;
-		mill_msg.mana = _last_milled_card->get_costs().get_mana();
+		mill_msg.int_value = _last_milled_card->get_costs().get_mana();
 		switch (_last_milled_card->get_mill_destination()) {
 		case DISCARD_PILE:
 			_discard_pile.add_card(_last_milled_card);
