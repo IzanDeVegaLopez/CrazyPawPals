@@ -220,7 +220,7 @@
     },
     {
       "id": "rampage_info",
-      "file": "resources/images/ui/revolver_b_info.png"
+      "file": "resources/images/ui/rampage_b_info.png"
     },
     {
       "id": "rampage_button_selected",
@@ -232,7 +232,7 @@
     },
     {
       "id": "pump_shotgun_info",
-      "file": "resources/images/ui/revolver_b_info.png"
+      "file": "resources/images/ui/pump_shotgun_b_info.png"
     },
     {
       "id": "pump_shotgun_button_selected",
@@ -244,7 +244,7 @@
     },
     {
       "id": "ramp_canon_info",
-      "file": "resources/images/ui/revolver_b_info.png"
+      "file": "resources/images/ui/ramp_canon_b_info.png"
     },
     {
       "id": "ramp_canon_button_selected",
@@ -256,7 +256,7 @@
     },
     {
       "id": "lightbringer_info",
-      "file": "resources/images/ui/revolver_b_info.png"
+      "file": "resources/images/ui/lightbringer_b_info.png"
     },
     {
       "id": "lightbringer_button_selected",
@@ -373,6 +373,14 @@
     {
       "id": "enter_game",
       "file": "resources/images/ui/enter_game.png"
+    },
+    {
+      "id": "reward_card",
+      "file": "resources/images/ui/reward.png"
+    },
+    {
+      "id": "reward_card_selected",
+      "file": "resources/images/ui/reward_selected.png"
     }
     ,
 

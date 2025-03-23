@@ -16,8 +16,9 @@ public:
 		CONTROLSSCENE,
 		SELECTIONMENU,
 		GAMESCENE,
+		REWARDSCENE,
 		GAMEOVER,
-		NUM_SCENE
+		NUM_SCENE,
 	};
 	friend Singleton<Game>;
 	virtual ~Game();

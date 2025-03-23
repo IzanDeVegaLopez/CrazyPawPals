@@ -2,7 +2,8 @@
 #include "../utils/Vector2D.h"
 #include "../ecs/ecs.h"
 #include "../rendering/rect.hpp"
-
+#include <list>
+class Card;
 namespace GameStructs {
 	enum WeaponType {
 		REVOLVER,
@@ -35,5 +36,11 @@ namespace GameStructs {
 		float rot = 0.0f;
 		std::string sprite_key;
 		ecs::grpId_t ID;
+	};
+	struct CardButtonProperties : public ButtonProperties {
+		Card* iterator;
+		// constructor
+		CardButtonProperties(const rect_f32& rect, float rot, const std::string& sprite_key, ecs::grpId_t ID, Card* it)
+			: ButtonProperties{ rect, rot, sprite_key, ID }, iterator(it) {}
 	};
 }

@@ -78,7 +78,8 @@ void MainMenuScene::create_controls_button(const GameStructs::ButtonProperties& 
     auto e = create_button(bp);
     auto buttonComp = mngr->getComponent<Button>(e);
     buttonComp->connectClick([buttonComp, &mngr]() {
-        std::cout << "left click -> controls button" << std::endl;
+        //std::cout << "left click -> controls button" << std::endl;
+
         Game::Instance()->change_Scene(Game::CONTROLSSCENE);
         });
 
@@ -93,7 +94,8 @@ void MainMenuScene::create_exit_button(const GameStructs::ButtonProperties& bp)
     auto e = create_button(bp);
     auto buttonComp = mngr->getComponent<Button>(e);
     buttonComp->connectClick([buttonComp, &mngr]() {
-        std::cout << "left click -> exit button" << std::endl;
+        //std::cout << "left click -> exit button" << std::endl;
+
         Game::Instance()->set_exit(true);
 
         buttonComp->connectHover([buttonComp]() {
