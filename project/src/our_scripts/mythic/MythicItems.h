@@ -23,3 +23,9 @@ public:
 	void apply_effects(Health* health, ManaComponent* mana, MovementController* movement, Weapon* weapon) override;
 	void event_callback0(const event_system::event_receiver::Msg& m);
 };
+class ManaCatalyst : public MythicItem {
+public:
+	ManaCatalyst();
+	void apply_effects(Health* health, ManaComponent* mana, MovementController* movement, Weapon* weapon) override;
+};
+

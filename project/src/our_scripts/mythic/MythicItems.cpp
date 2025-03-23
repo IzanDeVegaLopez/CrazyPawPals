@@ -35,7 +35,7 @@ void ManaSwap::apply_effects(Health* health, ManaComponent* mana, MovementContro
 
 #pragma region ShieldHarvest
 ShieldHarvest::ShieldHarvest()
-	:MythicItem("ManaSwap"), _health(nullptr)
+	:MythicItem("ShieldHarvest"), _health(nullptr)
 {
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::enemy_dead, this, &event_system::event_receiver::event_callback0);
 }
@@ -48,5 +48,16 @@ void ShieldHarvest::apply_effects(Health* health, ManaComponent* mana, MovementC
 	int currhealth = _health->getHealth() / 2;
 	_health->takeDamage(currhealth);
 }
+#pragma endregion
 
+#pragma region ManaCatalyst
+ManaCatalyst::ManaCatalyst()
+	:MythicItem("ManaCatalyst"){}
+
+void ManaCatalyst::apply_effects(Health* health, ManaComponent* mana, MovementController* movement, Weapon* weapon) {
+	(void)health, (void)movement;
+	mana->change_mana_regen(mana->mana_regen());
+	int damage = weapon->damage() / 2;
+	weapon->set_damage(damage);
+}
 #pragma endregion
