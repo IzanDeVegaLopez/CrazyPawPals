@@ -52,7 +52,8 @@
     WEAPONINFO,\
 	ENEMY,\
 	PLAYERBULLETS,\
-    ENEMYBULLETS
+    ENEMYBULLETS,\
+    REWARDCARDS
 
 
 // Scene list
@@ -61,7 +62,8 @@
 	GAMESCENE,\
 	MAINMENUSCENE,\
 	CONTROLSSCENE,\
-	SELECTIONMENUSCENE
+	SELECTIONMENUSCENE, \
+	REWARDSCENE
 
 // Handlers list - must have at least one element
 //

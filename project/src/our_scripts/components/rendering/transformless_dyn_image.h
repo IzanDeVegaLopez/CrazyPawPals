@@ -17,13 +17,15 @@ struct transformless_dyn_image : public ecs::Component {
 	const camera_screen& my_camera_screen;
 	float my_rotation;
 	bool active = true;
+	float _original_w;
+	float _original_h;
 
 	transformless_dyn_image(
 		const rect_f32 subrect,
 		float rotation,
 		const camera_screen& camera,
 		Texture* texture
-	) : destination_rect(subrect), my_camera_screen(camera), texture(texture), my_rotation(rotation)
+	) : destination_rect(subrect), my_camera_screen(camera), texture(texture), my_rotation(rotation), _original_w(subrect.size.x), _original_h(subrect.size.y)
 	{
 	}
 
@@ -44,16 +46,6 @@ struct transformless_dyn_image : public ecs::Component {
 			int(rect.size.y)
 		}; //SDL_Rect_screen_rect_from_global(destination_rect, my_camera_screen);
 		const SDL_Rect source = { 0, 0, texture->width(), texture->height() };
-		/*
-		//card_texture.render(source, destination, angle, nullptr, flip);
-		const SDL_Rect subsource = {
-			int(source_subrect.position.x * source.w),
-			int(source_subrect.position.y * source.h),
-			int(source_subrect.size.x * source.w),
-			int(source_subrect.size.y * source.h)
-		};
-		//card_texture.render(subsource, destination, my_rotation, nullptr, flip);
-	//}*/
 		texture->render(source, destination, my_rotation, nullptr);
 	}
 	inline void set_texture(Texture* t) { texture = t; };

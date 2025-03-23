@@ -16,6 +16,7 @@ public:
 		CONTROLSSCENE,
 		SELECTIONMENU,
 		GAMESCENE,
+		REWARDSCENE,
 		NUM_SCENE,
 	};
 	friend Singleton<Game>;
