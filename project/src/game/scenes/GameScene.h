@@ -13,6 +13,7 @@ class GameScene : public event_system::event_receiver, public Scene
 	ecs::entity_t create_enemy(Transform* tr, const std::string& spriteKey, Weapon* weapon, float health, float width, float height);
 
 	void add_transition(StateMachine& state, const std::string& from, const std::string& to, const std::function<bool()>& condition);
+	
 public:
 	GameScene();
 	~GameScene() {};

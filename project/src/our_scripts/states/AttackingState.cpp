@@ -1,7 +1,6 @@
 #include "AttackingState.h"
 
 #include "../../game/scenes/GameScene.h"
-#include "../components/Health.h"
 #include "../components/movement/Transform.h"
 #include "../components/weapons/Weapon.h"
 
@@ -11,6 +10,13 @@ AttackingState::AttackingState(Transform* tr, Transform* playerTr, Weapon* weapo
 }
 
 void AttackingState::enter() {
+	if (_contador < _attack_times) {
+		_contador++;
+		Vector2D _target = _playerTr->getPos();
+		_weapon->shoot(_target);
+
+		if (_onAttackCallback) _onAttackCallback();
+	}
 }
 
 void AttackingState::update(uint32_t delta_time) {
@@ -27,5 +33,5 @@ void AttackingState::update(uint32_t delta_time) {
 }
 
 void AttackingState::exit() {
-	
+	_contador = 0;
 }

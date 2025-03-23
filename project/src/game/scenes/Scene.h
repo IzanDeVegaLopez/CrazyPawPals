@@ -10,6 +10,11 @@
 class Transform;
 class Scene {
 public:
+	constexpr static const ::rect_f32 default_scene_bounds{
+		.position = {0.0, 0.0},
+		.size = {32.0, 18.0},
+	};
+
 	Scene(ecs::sceneId_t id);
 	virtual ~Scene() {};
 	//Each scene
