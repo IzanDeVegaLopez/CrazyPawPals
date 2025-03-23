@@ -7,11 +7,12 @@
 
 using SDLEventCallback = std::function<void(void)>;
 
+class Card;
 class Button : public ecs::Component {
 public:
     __CMPID_DECL__(ecs::cmp::BUTTON);
     Button();
-    ~Button();
+    virtual ~Button();
 
     void initComponent() override;
     void update(uint32_t delta_time) override;
@@ -41,4 +42,16 @@ private:
     void emitExit() const;
 
     SDL_Rect _button_collider;
+};
+
+class CardButton : public Button {
+public:
+    __CMPID_DECL__(ecs::cmp::BUTTON);
+    CardButton();
+    virtual ~CardButton() {};
+    inline void set_it(Card* q) {
+        it = q;
+    }
+private:
+    Card* it;
 };

@@ -34,7 +34,6 @@ protected:
 	ManaComponent* _mana;
 	Health* _health;
 	Transform* _tr;
-	std::list<std::string> _cards_names;
 	const camera_component* _camera;
 	bool _is_reloading = false;
 	int _time_till_reload_finishes;
@@ -45,7 +44,9 @@ protected:
 	// Used for Primed cards to gain additional effects.
 	bool _primed = false;
 
-	void _register_names(const std::list<Card*>& starterDeck);
+	std::list<std::string> _cards_names;
+	CardList _all_cards;
+	void _register(const std::list<Card*>& starterDeck);
 public:
 	__CMPID_DECL__(ecs::cmp::DECK)
 	Deck();
@@ -95,5 +96,5 @@ public:
 	inline Card* last_milled_card() { return _last_milled_card; }
 	inline AnimationVars animation_vars() { return _av; }
 	inline const std::list<std::string>& card_names() const { return _cards_names; }
-	
+	inline CardList& all_cards() { return _all_cards; };
 };

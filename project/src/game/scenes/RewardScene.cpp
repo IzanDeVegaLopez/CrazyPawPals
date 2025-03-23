@@ -7,13 +7,14 @@
 #include "../../ecs/Entity.h"
 
 #include "../../our_scripts/card_system/Card.hpp"
+#include "../../our_scripts/card_system/CardList.h" 
 #include "../../our_scripts/card_system/PlayableCards.hpp"
 #include "../../our_scripts/components/cards/Deck.hpp"
 #include "../../our_scripts/components/rendering/ImageForButton.h"
 
 #include <iostream>
 
-RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr)
+RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr), _selected_button(nullptr)
 {
 }
 
@@ -96,72 +97,111 @@ void RewardScene::create_reward_button(const GameStructs::ButtonProperties& bp)
         });
 
 }
-void RewardScene::create_a_deck_card(const GameStructs::ButtonProperties& bp) {
+ecs::entity_t RewardScene::create_card_button(const GameStructs::CardButtonProperties& bp) {
+    auto* mngr = Game::Instance()->get_mngr();
+    auto e = create_button(bp);
+    auto b = mngr->addComponent<CardButton>(e);
+    b->initComponent();
+    b->set_it(bp.iterator);
+    return e;
+}
+void RewardScene::create_a_deck_card(const GameStructs::CardButtonProperties& bp) {
     auto* mngr = Game::Instance()->get_mngr();
 
-    auto e = create_button(bp);
+    auto e = create_card_button(bp);
     auto buttonComp = mngr->getComponent<Button>(e);
     auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
-    buttonComp->connectClick([buttonComp, imgComp, this] {
+    buttonComp->connectClick([buttonComp, imgComp, this, bp] {
         imgComp->destination_rect.size = { imgComp->_original_w,  imgComp->_original_h };
-        _selected_card = buttonComp;
-    });
+        _selected_button = buttonComp;
+        //only assign a valid iterator
+        if (bp.iterator != nullptr && bp.iterator != _selected_card) {
+            _selected_card = bp.iterator;
+            std::cout << "card selected "<< std::endl;
+        }
+        });
 
     buttonComp->connectHover([buttonComp, imgComp]() {
         std::cout << "hover -> Reward button: " << std::endl;
         //filter
         //imgComp->apply_filter(128, 128, 128);
-        imgComp->destination_rect.size = { imgComp->destination_rect.size.x*1.25f,  imgComp->destination_rect.size.y * 1.25f };
-    });
+        imgComp->destination_rect.size = { imgComp->destination_rect.size.x * 1.25f,  imgComp->destination_rect.size.y * 1.25f };
+        });
 
     buttonComp->connectExit([buttonComp, imgComp]() {
         std::cout << "exit -> Reward button: " << std::endl;
         //filter
         //imgComp->apply_filter(255, 255, 255);
         imgComp->destination_rect.size = { imgComp->destination_rect.size.x / 1.25f,  imgComp->destination_rect.size.y / 1.25f };
-    });
+        });
 }
 void RewardScene::create_my_deck_cards() {
-    float umbral = 0.175f;
-    GameStructs::ButtonProperties propTemplate = {
-        { {0.15f, 0.7f}, {0.175f, 0.3f} },
-        0.0f, "", ecs::grp::REWARDCARDS
-    };
     auto* mngr = Game::Instance()->get_mngr();
 
     //GET PLAYERS DECK REFERENCE
     auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
     if (player && !mngr->hasComponent<Deck>(player)) {
         //when we add these entities, our olayer doesnt have any deck as component
-       mngr->addComponent<Deck>(player);
+        mngr->addComponent<Deck>(player);
     }
-   auto _m_deck = mngr->getComponent<Deck>(player);
-   auto& pDeck = _m_deck->card_names();
-    
-   for (const auto& it : pDeck) {
+    auto _m_deck = mngr->getComponent<Deck>(player);
+    auto& pDeck = _m_deck->card_names();
+
+    float umbral = 0.175f;
+    auto iterator = _m_deck->all_cards().card_list().begin();
+    GameStructs::CardButtonProperties propTemplate = {
+        { {0.15f, 0.7f}, {0.175f, 0.3f} },
+        0.0f, "", ecs::grp::REWARDCARDS, *iterator
+    };
+
+    for (const auto& it : pDeck) {
         propTemplate.sprite_key = it;
         create_a_deck_card(propTemplate);
         propTemplate.rect.position.x += umbral;
-   }
-   for (int i = 0; i < 4; ++i) {
-       propTemplate.sprite_key = "initial_info";
-       create_a_deck_card(propTemplate);
-       propTemplate.rect.position.x += umbral;
-   }
+        iterator++;
+        if (iterator == _m_deck->all_cards().card_list().end()) {
+            propTemplate.iterator = nullptr;
+        }
+    }
+    for (int i = 0; i < 4; ++i) {
+        propTemplate.sprite_key = "initial_info";
+        create_a_deck_card(propTemplate);
+        propTemplate.rect.position.x += umbral;
+    }
 }
 void RewardScene::refresh_my_deck_cards(const std::list<std::string>& cl) {
-  
-    auto mngr = Game::Instance()->get_mngr();
+    auto* mngr = Game::Instance()->get_mngr();
     auto infos = mngr->getEntities(ecs::grp::REWARDCARDS);
 
+    // Obtener la referencia al mazo actualizado
+    auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
+    auto* deck = mngr->getComponent<Deck>(player);
+    auto& updatedCardList = deck->all_cards().card_list(); // Obtener los nuevos punteros
+
     auto itInfo = infos.begin();
+    auto itCard = updatedCardList.begin();
     auto it = cl.begin();
-    for (; it != cl.end(); ++it, ++itInfo) {
+
+    // Refrescar las texturas y actualizar punteros
+    for (; it != cl.end() && itCard != updatedCardList.end(); ++it, ++itInfo, ++itCard) {
         auto img = mngr->getComponent<transformless_dyn_image>(*itInfo);
         img->set_texture(&sdlutils().images().at(*it));
+
+        // Actualizar la referencia a la carta en el botón
+        auto buttonComp = mngr->getComponent<Button>(*itInfo);
+        if (buttonComp) {
+            static_cast<CardButton*>(buttonComp)->set_it(*itCard); // Método para actualizar puntero
+        }
     }
+
+    // Rellenar con imágenes vacías si hay menos cartas en el nuevo mazo
     for (; itInfo != infos.end(); ++itInfo) {
         auto img = mngr->getComponent<transformless_dyn_image>(*itInfo);
         img->set_texture(&sdlutils().images().at("initial_info"));
+
+        auto buttonComp = mngr->getComponent<Button>(*itInfo);
+        if (buttonComp) {
+            static_cast<CardButton*>(buttonComp)->set_it(nullptr); // Poner puntero a nullptr si no hay carta
+        }
     }
 }

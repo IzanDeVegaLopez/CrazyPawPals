@@ -92,3 +92,7 @@ void Button::emitExit() const {
         callback();
     }
 }
+
+CardButton::CardButton() : Button(), it(nullptr) {
+
+}

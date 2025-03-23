@@ -27,7 +27,7 @@ Deck::Deck() {
 	_hand = nullptr;
 	std::list<Card*> default_cardList = { new Fireball(), new Minigun(), new Lighting(), new Fireball(), new Minigun(), new Lighting() };
 	_draw_pile = CardList(default_cardList);
-	_register_names(default_cardList);
+	_register(default_cardList);
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
 };
@@ -38,13 +38,15 @@ Deck::Deck(std::list<Card*>& starterDeck) noexcept
 	_hand = nullptr;
 	//_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
 	_draw_pile = CardList(starterDeck);
-	_register_names(starterDeck);
+	_register(starterDeck);
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
 }
-void Deck::_register_names(const std::list<Card*>& starterDeck) {
+//register all cards name and its pointer
+void Deck::_register(const std::list<Card*>& starterDeck) {
 	for (auto it : starterDeck) {
 		_cards_names.push_back(it->get_name());
+		_all_cards.add_card(it);
 	}
 }
 Deck::Deck(CardList&& starterDeck) noexcept
@@ -53,7 +55,7 @@ Deck::Deck(CardList&& starterDeck) noexcept
 	_hand = nullptr;
 	//_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
 	_draw_pile = starterDeck;
-	_register_names(starterDeck.card_list());
+	_register(starterDeck.card_list());
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
 }
