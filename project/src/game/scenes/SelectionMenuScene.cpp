@@ -289,8 +289,6 @@ void SelectionMenuScene::create_weapon_info() {
             &sdlutils().images().at("initial_info"))
     );
     auto i = Game::Instance()->get_mngr();
-    int ew = 0;
-
 }
 void SelectionMenuScene::render() {
     _selection->render(0, -60);
