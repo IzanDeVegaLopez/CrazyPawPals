@@ -278,7 +278,7 @@ void SelectionMenuScene::create_deck_infos() {
 }
 void SelectionMenuScene::create_weapon_info() {
    // rect_f32 rect = {{1.3f, 0.25f} ,{0.75f, 0.5f}};
-    rect_f32 rect = { {1.0f, 0.25f} ,{0.75f, 0.5f} };
+    rect_f32 rect = { {0.95f, 0.25f} ,{0.5f, 0.35f} };
     ecs::entity_t e = create_entity(
         ecs::grp::WEAPONINFO,
         ecs::scene::SELECTIONMENUSCENE,
