@@ -150,6 +150,7 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
 
         if (imgComp != _last_weapon_button) {
             //swap the actual buttons textures
+            imgComp->apply_filter(255, 255, 255);
             imgComp->swap_textures();
         }
 
@@ -158,7 +159,6 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
             _last_weapon_button->swap_textures();
         }
         _last_weapon_button = imgComp;
-
         
 
     });

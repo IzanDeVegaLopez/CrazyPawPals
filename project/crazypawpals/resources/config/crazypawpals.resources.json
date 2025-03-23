@@ -15,8 +15,6 @@
       "id": "piu",
       "file": "resources/images/characters/piu.png"
     },
-
-
     {
       "id": "p_revolver",
       "file": "resources/images/projectiles/revolver.png"
@@ -86,8 +84,6 @@
       "id": "p_lightbringer_amp",
       "file": "resources/images/projectiles/SDL_logo.png"
     },
-
-
     {
       "id": "card_kunai",
       "file": "resources/images/cards/card_kunai.png"
@@ -152,8 +148,6 @@
       "id": "card_recover",
       "file": "resources/images/cards/carta.png"
     },
-
-
     {
       "id": "boom",
       "file": "resources/images/enemies/boom.png"
@@ -263,10 +257,6 @@
       "file": "resources/images/ui/weapon_selected_b.png"
     },
     {
-      "id": "play_button",
-      "file": "resources/images/ui/play.png"
-    },
-    {
       "id": "start",
       "file": "resources/images/enviroment/start.png"
     },
@@ -372,7 +362,15 @@
     },
     {
       "id": "enter_game",
-      "file": "resources/images/ui/enter_game.png"
+      "file": "resources/images/ui/play.png"
+    },
+    {
+      "id": "controls_button",
+      "file": "resources/images/ui/controls.png"
+    },
+    {
+      "id": "exit_game",
+      "file": "resources/images/ui/exit.png"
     },
     {
       "id": "reward_card",
