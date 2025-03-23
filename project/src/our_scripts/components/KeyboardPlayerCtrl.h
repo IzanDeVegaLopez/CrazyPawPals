@@ -3,6 +3,7 @@
 #include <SDL.h>
 
 class Transform;
+class Health;
 class Weapon;
 class Deck;
 class MovementController;
@@ -27,4 +28,5 @@ private:
 	Weapon* _w;
 	Deck* _dc;
 	MythicComponent* _my;
+	Health* _h;
 };

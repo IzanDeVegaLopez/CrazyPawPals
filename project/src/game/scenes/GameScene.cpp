@@ -61,6 +61,7 @@
 
 GameScene::GameScene() : Scene(ecs::scene::GAMESCENE){
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::change_deccel, this, &event_system::event_receiver::event_callback0);
+	event_system::event_manager::Instance()->suscribe_to_event(event_system::player_dead, this, &event_system::event_receiver::event_callback1);
 }
 
 static ecs::entity_t create_environment() {
@@ -873,4 +874,7 @@ void GameScene::check_collision() {
 
 void GameScene::event_callback0(const event_system::event_receiver::Msg& m) {
 	deccel_spawned_creatures_multi *= m.float_value;
+}
+void GameScene::event_callback1(const event_system::event_receiver::Msg& m) {
+	Game::Instance()->change_Scene(Game::GAMEOVER);
 }

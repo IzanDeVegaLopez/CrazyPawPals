@@ -21,8 +21,10 @@ Health::takeDamage(int damage) {
 	if (_shield <= 0) {
 		_currentHealth -= damage;
 		if (_currentHealth <= 0) {
-			if (!_is_player) {
-				std::cout << "muerto" << _maxHealth << std::endl;
+			if (_is_player) {
+				Game::Instance()->get_event_mngr()->fire_event(event_system::player_dead, event_system::event_receiver::Msg());
+			}
+			else {
 				event_system::event_receiver::Msg msg;
 				msg.int_value = _maxHealth * 0.2;
 				Game::Instance()->get_event_mngr()->fire_event(event_system::enemy_dead, msg);

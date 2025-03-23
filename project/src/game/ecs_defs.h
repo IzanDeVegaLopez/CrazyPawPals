@@ -62,7 +62,8 @@
 	GAMESCENE,\
 	MAINMENUSCENE,\
 	CONTROLSSCENE,\
-	SELECTIONMENUSCENE
+	SELECTIONMENUSCENE,\
+	GAMEOVERSCENE
 
 // Handlers list - must have at least one element
 //

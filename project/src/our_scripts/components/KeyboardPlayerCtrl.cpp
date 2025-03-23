@@ -37,6 +37,9 @@ KeyboardPlayerCtrl::initComponent() {
 
     _my = Game::Instance()->get_mngr()->getComponent<MythicComponent>(_ent);
     assert(_my != nullptr);
+
+    _h = Game::Instance()->get_mngr()->getComponent<Health>(_ent);
+    assert(_h != nullptr);
 }
 
 void KeyboardPlayerCtrl::update(Uint32 delta_time) {
@@ -63,12 +66,19 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
         //if we are not close enought to a reward, do nothing
         //std::cout << "colecta" << std::endl;
     }
+
+    ///inputs para probar cosas
     if (ihdlr.keyDownEvent() &&ihdlr.isKeyDown(SDL_SCANCODE_Z)) {
         _my->add_mythic(new BloodClaw());
     }
     if (ihdlr.keyDownEvent() && ihdlr.isKeyDown(SDL_SCANCODE_X)) {
         _my->add_mythic(new ManaSwap());
     }
+
+    if (ihdlr.keyDownEvent() && ihdlr.isKeyDown(SDL_SCANCODE_V)) {
+        _h->takeDamage(10);
+    }
+    ////
 
     auto _mouse_rect =rect_f32_global_from_screen_rect_flipped_y(
         {
