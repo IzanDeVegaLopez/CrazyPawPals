@@ -250,7 +250,7 @@ void PlayerHUD::render()
 		for (auto mythic : mythics) {
 			Texture* texture = mythic->get_texture();
 			rect_f32 mythics_rect = 
-				rect_f32_screen_rect_from_viewport(rect_f32({ start_x, start_y }, { icon_size, icon_size*1.5 }), _camera->cam.screen);
+				rect_f32_screen_rect_from_viewport(rect_f32({ start_x, start_y }, { icon_size, icon_size * 1.5f }), _camera->cam.screen);
 			SDL_Rect mythics_rect_true{ (int)mythics_rect.position.x, (int)mythics_rect.position.y, (int)mythics_rect.size.x, (int)mythics_rect.size.y };
 			texture->render(mythics_rect_true);
 			start_x += icon_size + 0.01f;

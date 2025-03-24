@@ -237,7 +237,14 @@ enum collision_response_options {
 };
 typedef uint8_t collision_response_flags;
 
-static bool manager_handle_collision_bodies(
+enum manager_collision_handle_response {
+	manager_collision_handle_response_none = 0,
+	manager_collision_handle_response_collision = 1 << 0,
+	manager_collision_handle_response_trigger = 1 << 1,
+};
+typedef uint8_t manager_collision_handle_response_flags;
+
+static manager_collision_handle_response manager_handle_collision_bodies(
 	Manager &manager,
 	const ecs::entity_t entity0,
 	const ecs::entity_t entity1,
@@ -250,7 +257,7 @@ static bool manager_handle_collision_bodies(
 	dbg_collision_fill_rect(manager, body0, body1);
 #endif
 	if (!collision_body_check_broad(body0, body1)) {
-		return false;
+		return manager_collision_handle_response_none;
 	}
 
 	collision_contact contact;
@@ -298,7 +305,7 @@ static bool manager_handle_collision_bodies(
 				contact1->body0 = entity0;
 				contact1->body1 = entity1;
 			}
-			break;
+			return manager_collision_handle_response_collision;
 		}
 		case collision_response_option_body0_trigger: {
 			trigger_manifold *trigger0 = manager.getComponent<trigger_manifold>(entity0);
@@ -308,7 +315,7 @@ static bool manager_handle_collision_bodies(
 				trigger0->body0 = entity0;
 				trigger0->body1 = entity1;
 			}
-			break;
+			return manager_collision_handle_response_trigger;
 		}
 		case collision_response_option_body1_trigger: {
 			trigger_manifold *trigger1 = manager.getComponent<trigger_manifold>(entity1);
@@ -318,7 +325,7 @@ static bool manager_handle_collision_bodies(
 				trigger1->body0 = entity0;
 				trigger1->body1 = entity1;
 			}
-			break;
+			return manager_collision_handle_response_trigger;
 		}
 		case collision_response_option_body0_trigger | collision_response_option_body1_trigger: {
 			trigger_manifold *trigger0 = manager.getComponent<trigger_manifold>(entity0);
@@ -336,16 +343,15 @@ static bool manager_handle_collision_bodies(
 				trigger1->body0 = entity0;
 				trigger1->body1 = entity1;
 			}
-			break;
+			return manager_collision_handle_response_trigger;
 		}
 		default: {
 			assert(false && "unreachable");
 			std::exit(EXIT_FAILURE);
 		}
 		}
-		return true;
 	} else {
-		return false;
+		return manager_collision_handle_response_none;
 	}
 }
 
@@ -375,12 +381,15 @@ static void manager_update_collisions(Manager &manager, const std::vector<ecs::e
 						if (other_collisionable != nullptr) {
 							collision_body other_body = collision_body_from_collisionable(*other_collisionable);
 	
-							bool collided = manager_handle_collision_bodies(manager, entity, other_entity, body, other_body, delta_time_seconds, (
+							manager_collision_handle_response collided = manager_handle_collision_bodies(manager, entity, other_entity, body, other_body, delta_time_seconds, (
 								((entity_collisionable->options & collisionable_option_trigger) != 0)
 									| (((other_collisionable->options & collisionable_option_trigger) != 0) << 1)
 							));
 	
-							if (collided) {
+							switch (collided) {
+							case manager_collision_handle_response_none:
+								break;
+							case manager_collision_handle_response_collision: {
 								const vec2_f32 displacement = vec2_f32{
 									.x = body.body.space.position.x - body.body.space.previous_position.x,
 									.y = body.body.space.position.y - body.body.space.previous_position.y,
@@ -408,7 +417,15 @@ static void manager_update_collisions(Manager &manager, const std::vector<ecs::e
 									};
 	
 									++last_pass_collision_count;
-								} 
+								}
+								break;
+							}
+							case manager_collision_handle_response_trigger:
+								break;
+							default: {
+								assert(false && "unreachable");
+								std::exit(EXIT_FAILURE);
+							}
 							}
 						}
 					}
