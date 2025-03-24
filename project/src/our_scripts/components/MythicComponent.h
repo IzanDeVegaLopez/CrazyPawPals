@@ -23,5 +23,4 @@ public:
     void add_mythic(MythicItem* mythic);
     void update(uint32_t dt) override;
     inline const std::vector<MythicItem*>& get_mythics() const { return _obtained_mythics; }
-
 };

@@ -9,15 +9,17 @@
 
 MythicComponent::MythicComponent()
 	:_mana(nullptr),_player_health(nullptr),_player_movement_controller(nullptr), _weapon(nullptr){}
-MythicComponent::~MythicComponent()
-{
+
+
+MythicComponent::~MythicComponent(){
 	for (auto mythic : _obtained_mythics) {
 		delete mythic;
 	}
 	_obtained_mythics.clear();
 }
 
-void MythicComponent::initComponent() {
+void 
+MythicComponent::initComponent() {
 	_mana = Game::Instance()->get_mngr()->getComponent<ManaComponent>(_ent);
 	assert(_mana != nullptr);
 
@@ -31,13 +33,15 @@ void MythicComponent::initComponent() {
 	assert(_weapon != nullptr);
 }
 
-void MythicComponent::add_mythic(MythicItem* mythic) {
+void 
+MythicComponent::add_mythic(MythicItem* mythic) {
 	 if (mythic == nullptr) return;
     _obtained_mythics.push_back(mythic);
-    mythic->apply_effects(_player_health, _mana, _player_movement_controller, _weapon);
+    mythic->apply_effects();
 }
 
-void MythicComponent::update(uint32_t dt) {
+void 
+MythicComponent::update(uint32_t dt) {
 	for (auto m : _obtained_mythics) {
 		m->update(dt);
 	}

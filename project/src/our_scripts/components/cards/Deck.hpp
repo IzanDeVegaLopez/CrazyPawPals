@@ -91,6 +91,7 @@ public:
 	inline bool empty_hand() { return _hand == nullptr; }
 	inline bool is_reloading() { return _is_reloading; }
 	inline int reload_time() { return _reload_time; }
+	inline void set_reload_time(int _new_reload_time) { _reload_time = _new_reload_time; }
 	inline int time_till_reload_finishes() { return _time_till_reload_finishes; }
 	inline Card* hand() { return _hand; }
 	inline Card* last_milled_card() { return _last_milled_card; }
