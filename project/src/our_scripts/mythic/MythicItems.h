@@ -164,3 +164,23 @@ public:
 	void set_deck(Deck* d) { _deck = d; }
 	void set_movement_controller(MovementController* mc) { _mc = mc; }
 };
+
+/**
+ * @class MeowOrNever
+ * @brief MeowOrNever is a MythicItem that enhances player's movement speed and reduces player's health.
+ *
+ * The player’s health is reduced by 50%.
+ * However, movement speed is enhanced by 100%.
+ */
+class MeowOrNever : public MythicItem {
+	MovementController* _mc;
+	Health* _health;
+public:
+	MeowOrNever() : _mc(nullptr), _health(nullptr) {}
+	MeowOrNever(Health* h, MovementController* mc);
+
+	void apply_effects() override;
+
+	void set_health(Health* h) { _health = h; }
+	void set_movement_controller(MovementController* mc) { _mc = mc; }
+};
