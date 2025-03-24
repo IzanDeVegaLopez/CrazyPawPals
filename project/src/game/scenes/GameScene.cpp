@@ -780,46 +780,26 @@ void GameScene::spawn_wave_manager()
 }
 void GameScene::spawn_fog()
 {
-	for (int i = 0; i < 4; i++) {
-
-		auto&& transform = *new Transform();
-		switch (i)
-		{ // right, left, up, down
-		case 0:
-			transform = *new Transform({ 10.0f, 0.0f }, { 0.0f,0.0f }, 0.0f, 1.0f);
-			break;
-		case 1:
-			transform = *new Transform({ -10.0f, 0.0f }, { 0.0f,0.0f }, 0.0f, 1.0f);
-			break;
-		case 2:
-			transform = *new Transform({ 0.0f, -10.0f }, { 0.0f,0.0f }, 0.0f, 1.0f);
-			break;
-		case 3:
-			transform = *new Transform({ 0.0f, 10.0f }, { 0.0f,0.0f }, 0.0f, 1.0f);
-			break;
-		default:
-			break;
-		}
-		auto&& rect = *new rect_component{ 0.0f, 0.0f, i < 2 ? 5.0f : 100.0f, i < 2 ? 100.0f : 5.0f}; // modificar !!
-		dyn_image* this_fog_image = new dyn_image(
-			rect_f32{ {0,0},{1,1} },
-			rect,
-			Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam,
-			sdlutils().images().at("fog"),
-			transform
-		);
-		Fog* this_fog = new Fog();
-		// La entidad tiene un grupo, una escena, un Transform, rect_component, un Fog y un dyn_image
-		auto ent = create_entity(
-			ecs::grp::DEFAULT,
-			ecs::scene::GAMESCENE,
-			&transform,
-			&rect,
-			this_fog,
-			this_fog_image
-		);
-		Game::Instance()->get_mngr()->setHandler(ecs::hdlr::FOGGROUP, ent);
-	}
+	auto&& transform = *new Transform({ 0.0f, 0.0f }, { 0.0f,0.0f }, 0.0f, 1.0f);
+	auto&& rect = *new rect_component{ 0.0f, 0.0f, 20.0f, 20.0f};
+	dyn_image* this_fog_image = new dyn_image(
+		rect_f32{ {0,0},{1,1} },
+		rect,
+		Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam,
+		sdlutils().images().at("fog"),
+		transform
+	);
+	Fog* this_fog = new Fog();
+	// La entidad tiene un grupo, una escena, un Transform, rect_component, un Fog y un dyn_image
+	auto ent = create_entity(
+		ecs::grp::DEFAULT,
+		ecs::scene::GAMESCENE,
+		&transform,
+		&rect,
+		this_fog,
+		this_fog_image
+	);
+	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::FOGGROUP, ent);
 }
 void GameScene::create_hud()
 {

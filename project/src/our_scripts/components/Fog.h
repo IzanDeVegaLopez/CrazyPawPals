@@ -12,7 +12,7 @@ class Fog : public ecs::Component
 public:
 	__CMPID_DECL__(ecs::cmp::FOG);
 
-	Fog() {};
+	Fog() { };
 	virtual ~Fog() {};
 	void initComponent() override;
 	void update(uint32_t delta_time) override;
@@ -27,4 +27,8 @@ private:
 	Transform* fogTransform;
 	dyn_image* fogImage;
 	rect_component* fogRect;
+	
+	float orSize;
+	int orW;
+	int orH;
 };
