@@ -31,7 +31,7 @@ struct transformless_dyn_image : public ecs::Component {
 
 	inline SDL_Rect get_destination_rect() const {
 		rect_f32 rect = rect_f32_screen_rect_from_viewport(destination_rect, my_camera_screen.screen);
-		SDL_Rect destination = { rect.position.x,rect.position.y,rect.size.x,rect.size.y };
+		SDL_Rect destination = { int(rect.position.x), int(rect.position.y), int(rect.size.x), int(rect.size.y) };
 		return destination;
 	};
 

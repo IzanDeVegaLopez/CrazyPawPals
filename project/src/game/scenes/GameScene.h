@@ -13,6 +13,7 @@ class GameScene : public event_system::event_receiver, public Scene
 	ecs::entity_t create_enemy(Transform* tr, const std::string& spriteKey, Weapon* weapon, float health, float width, float height);
 
 	void add_transition(StateMachine& state, const std::string& from, const std::string& to, const std::function<bool()>& condition);
+	
 public:
 	GameScene();
 	~GameScene() {};
@@ -37,6 +38,7 @@ public:
 	void generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid);
 	void check_collision();
 	void event_callback0(const event_system::event_receiver::Msg& m) override;
+	void event_callback1(const event_system::event_receiver::Msg& m) override;
 protected:
 	float deccel_spawned_creatures_multi = 1;
 };

@@ -13,8 +13,6 @@ public:
 	inline void start_wave_callback() override {
 		wave_event::start_wave_callback();
 		event_system::event_manager::Instance()->fire_event(event_system::change_deccel, (event_system::event_receiver::Msg{deccel_multiplier}));
-		std::cout << "meow" << std::endl;
-		//TODO: send event for everyone out there
 	}
 	inline void end_wave_callback() override {
 		//TODO: send event to revert

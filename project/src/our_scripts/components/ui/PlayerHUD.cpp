@@ -4,6 +4,7 @@
 #include "../../../sdlutils/SDLUtils.h"
 #include "../../../rendering/card_rendering.hpp"
 #include "../WaveManager.h"
+#include "../../mythic/MythicItem.h"
 PlayerHUD::PlayerHUD() : _tex_orb(&sdlutils().images().at("manaorb")), _tex_orb_empty(&sdlutils().images().at("manaorbempty")), _tex_prime(&sdlutils().images().at("prime"))
 {
 
@@ -20,6 +21,7 @@ void PlayerHUD::initComponent()
 	_health = Game::Instance()->get_mngr()->getComponent<Health>(_ent);
 	_deck = Game::Instance()->get_mngr()->getComponent<Deck>(_ent);
 	_camera = Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA));
+	_mythics = Game::Instance()->get_mngr()->getComponent<MythicComponent>(_ent);
 }
 
 void PlayerHUD::update(uint32_t delta_time)
@@ -38,13 +40,23 @@ void PlayerHUD::render()
 	//bg
 	SDL_SetRenderDrawColor(sdlutils().renderer(), 80, 55, 60, 255);
 	rect_f32 health1 = rect_f32_screen_rect_from_viewport(rect_f32({ 0.13,0.82 }, { max_health * health_scale,0.03 }),_camera->cam.screen);
-	SDL_Rect health1true { health1.position.x,health1.position.y,health1.size.x,health1.size.y};
+	SDL_Rect health1true {
+		int(health1.position.x),
+		int(health1.position.y),
+		int(health1.size.x),
+		int(health1.size.y)
+	};
 	SDL_RenderFillRect(sdlutils().renderer(), &health1true);
 
 	//remaining
 	SDL_SetRenderDrawColor(sdlutils().renderer(), 200, 80, 100, 255);
 	rect_f32 health2 = rect_f32_screen_rect_from_viewport(rect_f32({ 0.13,0.82 }, { health * health_scale,0.03 }), _camera->cam.screen);
-	SDL_Rect health2true { health2.position.x,health2.position.y,health2.size.x,health2.size.y };
+	SDL_Rect health2true {
+		int(health2.position.x),
+		int(health2.position.y),
+		int(health2.size.x),
+		int(health2.size.y)
+	};
 	SDL_RenderFillRect(sdlutils().renderer(), &health2true);
 
 #pragma endregion
@@ -57,20 +69,35 @@ void PlayerHUD::render()
 	//bg
 	SDL_SetRenderDrawColor(sdlutils().renderer(), 60, 55, 80, 255);
 	rect_f32 mana1 = rect_f32_screen_rect_from_viewport(rect_f32({ 0.13,0.86 }, { max_mana*mana_scale,0.024 }), _camera->cam.screen);
-	SDL_Rect mana1true{ mana1.position.x,mana1.position.y,mana1.size.x,mana1.size.y };
+	SDL_Rect mana1true{
+		int(mana1.position.x),
+		int(mana1.position.y),
+		int(mana1.size.x),
+		int(mana1.size.y)
+	};
 	SDL_RenderFillRect(sdlutils().renderer(), &mana1true);
 
 	//progress
 	SDL_SetRenderDrawColor(sdlutils().renderer(), 81, 100, 222, 255);
 	rect_f32 mana2 = rect_f32_screen_rect_from_viewport(rect_f32({ 0.13,0.86 }, { (mana_count%1000)*5 * mana_scale,0.024 }), _camera->cam.screen);
-	SDL_Rect mana2true{ mana2.position.x,mana2.position.y,mana2.size.x,mana2.size.y };
+	SDL_Rect mana2true{
+		int(mana2.position.x),
+		int(mana2.position.y),
+		int(mana2.size.x),
+		int(mana2.size.y)
+	};
 	SDL_RenderFillRect(sdlutils().renderer(), &mana2true);
 
 	// full mana orbs
 	int display = max_mana / 1000;
 	for (int i = 1; i <= display; i++) {
-		rect_f32 output = rect_f32_screen_rect_from_viewport(rect_f32({ 0.13+(0.024*(i-1)),0.894}, {0.022,0.022}), _camera->cam.screen);
-		SDL_Rect outputtrue{ output.position.x,output.position.y,output.size.x,output.size.x };
+		rect_f32 output = rect_f32_screen_rect_from_viewport(rect_f32({ 0.13f + (0.024f * float(i-1)), 0.894f}, {0.022f, 0.022f}), _camera->cam.screen);
+		SDL_Rect outputtrue{
+			int(output.position.x),
+			int(output.position.y),
+			int(output.size.x),
+			int(output.size.x)
+		};
 		if (mana_count >= i * 1000) _tex_orb->render(outputtrue);
 		else _tex_orb_empty->render(outputtrue);
 	}
@@ -201,11 +228,36 @@ void PlayerHUD::render()
 #pragma region prime
 	if (_deck->get_primed()) {
 		rect_f32 prime = rect_f32_screen_rect_from_viewport(rect_f32({0.013,0.805 }, { 0.1,0.1 }), _camera->cam.screen);
-		SDL_Rect primetrue{ prime.position.x,prime.position.y,prime.size.x,prime.size.x };
+		SDL_Rect primetrue{
+			int(prime.position.x),
+			int(prime.position.y),
+			int(prime.size.x),
+			int(prime.size.x)
+		};
 		_tex_prime->render(primetrue);
 	}
 #pragma endregion
 #pragma endregion
+
+
+#pragma region mythics
+	const auto& mythics = _mythics->get_mythics();
+	if (mythics.size() > 0) {
+		float icon_size = 0.02f; 
+		float start_x = 0.15 + (max_health * health_scale);
+		float start_y = 0.82;
+
+		for (auto mythic : mythics) {
+			Texture* texture = mythic->get_texture();
+			rect_f32 mythics_rect = 
+				rect_f32_screen_rect_from_viewport(rect_f32({ start_x, start_y }, { icon_size, icon_size*1.5 }), _camera->cam.screen);
+			SDL_Rect mythics_rect_true{ (int)mythics_rect.position.x, (int)mythics_rect.position.y, (int)mythics_rect.size.x, (int)mythics_rect.size.y };
+			texture->render(mythics_rect_true);
+			start_x += icon_size + 0.01f;
+		}
+	}
+#pragma endregion
+
 #pragma region timer
 	//TODO: Move to general HUD component
 	//auto ent = Game::Instance()->get_mngr()->getHandler(ecs::hdlr::WAVE);

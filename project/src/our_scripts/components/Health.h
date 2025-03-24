@@ -6,7 +6,7 @@ class Health :public ecs::Component
 public:
 	__CMPID_DECL__(ecs::cmp::HEALTH);
 
-	Health(int maxHealth);
+	Health(int maxHealth, bool isPlayer = false);
 	virtual ~Health();
 	void takeDamage(int damage);
 	void heal(int health);
@@ -22,6 +22,6 @@ protected:
 	int _maxHealth;
 	int _shield;
 	uint32_t _shieldTime;
-
+	bool _is_player;
 	const int FRAME_DURATION = 1000;
 };

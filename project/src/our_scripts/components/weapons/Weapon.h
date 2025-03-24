@@ -32,6 +32,7 @@ public:
 	void set_attack_size(float w, float h);
 	bool shoot(const Vector2D& target);
 	inline int damage() { return _damage; };
+	inline void set_damage(int damage) { _damage = damage; };
 	inline float cooldown() { return _cooldown; };
 	inline float distance() { return _distance; };
 };

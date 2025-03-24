@@ -117,6 +117,9 @@ std::pair<bool, Card*> Deck::mill() noexcept
 	if (!_draw_pile.empty()) {
 		milled = true;
 		_last_milled_card = _draw_pile.pop_first()->on_mill(*this, &_tr->getPos());
+		
+		event_system::event_receiver::Msg mill_msg;
+		mill_msg.int_value = _last_milled_card->get_costs().get_mana();
 		switch (_last_milled_card->get_mill_destination()) {
 		case DISCARD_PILE:
 			_discard_pile.add_card(_last_milled_card);
@@ -126,7 +129,7 @@ std::pair<bool, Card*> Deck::mill() noexcept
 			break;
 		}
 		_av._last_milled_card_time = sdlutils().virtualTimer().currTime();
-		Game::Instance()->get_event_mngr()->fire_event(event_system::mill, event_system::event_receiver::Msg());
+		Game::Instance()->get_event_mngr()->fire_event(event_system::mill, mill_msg);
 	}
 	return std::make_pair(milled, _last_milled_card);
 }

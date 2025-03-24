@@ -380,6 +380,12 @@
       "id": "reward_card_selected",
       "file": "resources/images/ui/reward_selected.png"
     }
+    ,
+
+    {
+      "id": "mythic",
+      "file": "resources/images/ui/mythic.png"
+    }
   ],
   
   "messages" : [

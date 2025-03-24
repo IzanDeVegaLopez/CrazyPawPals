@@ -8,15 +8,12 @@ public:
 	__CMPID_DECL__(ecs::cmp::WEAPON);
 	WeaponCatKuza();
 	virtual ~WeaponCatKuza();
-	void wind_attack(Vector2D shootPos, Vector2D shootDir);
+	void wind_attack(Vector2D shootPos);
 	void dash_attack(Vector2D shootPos, Vector2D shootDir);
+	void set_player_pos(Vector2D);
 
+	void area_attack(Vector2D shootPos);
 private:
-	void callback_3_wind(GameStructs::BulletProperties &bp);
-	void callback_area(GameStructs::BulletProperties &bp);
-	void callback_dash(GameStructs::BulletProperties &bp);
-	int _state;
-	int _wind_p;
-	int _area_p;
-	int _dash_p;
+	Vector2D _player_pos;
+	int _wind_p, _dash_p, _area_p;
 };
