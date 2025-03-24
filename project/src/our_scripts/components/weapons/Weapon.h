@@ -5,10 +5,11 @@
 #include <string>
 #include <cmath>
 #include "../../../utils/Vector2D.h"
+#include "../../../utils/EventsSystem.hpp"
 
 class Bullet;
 class Transform;
-class Weapon : public ecs::Component {
+class Weapon : public event_system::event_receiver, public ecs::Component {
 protected:
 	int _damage; //weapon's damage
 	float _cooldown; //cooldown
@@ -19,6 +20,7 @@ protected:
 	int _attack_height;
 	float _lastShoot;
 	Transform* _tr; //transform component
+	int _baseDamage;
 
 	virtual void callback(Vector2D shootPos, Vector2D shootDir) = 0; //when you attacks, this callback will be called
 public:
@@ -35,4 +37,8 @@ public:
 	inline void set_damage(int damage) { _damage = damage; };
 	inline float cooldown() { return _cooldown; };
 	inline float distance() { return _distance; };
+
+	void event_callback0(const event_system::event_receiver::Msg&) override;
+	bool double_damage_event = false;
+	int dmg_multiplier = 1;
 };

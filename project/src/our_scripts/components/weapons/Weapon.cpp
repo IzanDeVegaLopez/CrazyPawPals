@@ -11,6 +11,8 @@ Weapon::Weapon(int damage, float cd_ms, float distance, float speed, const std::
 	: _damage(damage), _cooldown(cd_ms), _distance(distance), _speed(speed), _tex(texture_key),
 	_attack_width(w), _attack_height(h), _lastShoot(0.0f), _tr(nullptr) 
 {
+	_baseDamage = _damage;
+	event_system::event_manager::Instance()->suscribe_to_event(event_system::double_damage_totem, this, &event_system::event_receiver::event_callback0);
 }
 
 void 
@@ -28,6 +30,18 @@ Weapon::set_attack_size(float w, float h) {
 bool
 Weapon::shoot(const Vector2D& target) {
 	auto& pos = _tr->getPos();
+
+	if (double_damage_event) {
+		Vector2D totemPos = Game::Instance()->get_mngr()->getComponent<Transform>(Game::Instance()->get_mngr()->getEntities(ecs::hdlr::TOTEM[0])->getPos();
+		Vector2D dist = totemPos - pos;
+		if (abs(dist.magnitude()) <= 10.0f && _damage == _baseDamage) {
+			_damage = _damage * 2;
+		}
+		else if (abs(dist.magnitude()) > 10.0f && _damage != _baseDamage) {
+			_damage = _baseDamage;
+		}
+	}
+
 	if (sdlutils().virtualTimer().currTime() >= _lastShoot + _cooldown) {
 		Vector2D shootPos = { pos.getX(), pos.getY() };
 		Vector2D shootDir = (target - shootPos).normalize();
@@ -35,4 +49,8 @@ Weapon::shoot(const Vector2D& target) {
 		_lastShoot = sdlutils().virtualTimer().currTime();
 		return true;
 	}return false;
+}
+
+void Weapon::event_callback0(const event_system::event_receiver::Msg& m) {
+	double_damage_event = true;
 }

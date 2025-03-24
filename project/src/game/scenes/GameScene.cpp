@@ -12,6 +12,7 @@
 #include "../../our_scripts/components/LifetimeTimer.h"
 #include "../../our_scripts/states/Conditions.h"
 #include "../../our_scripts/states/WalkingState.h"
+#include "../../our_scripts/states/WalkingTotemState.h"
 #include "../../our_scripts/states/AttackingState.h"
 #include "../../our_scripts/states/WaitingState.h"
 #include "../../our_scripts/states/RotatingState.h"
@@ -761,6 +762,47 @@ void GameScene::spawn_ratatouille(Vector2D posVec)
 
 	// Estado inicial
 	state->set_initial_state("Walking");
+}
+
+void GameScene::spawn_event_totem(Vector2D posVec) {
+	auto&& manager = *Game::Instance()->get_mngr();
+	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
+
+	float randSize = float(sdlutils().rand().nextInt(6, 10)) / 10.0f;
+	auto&& rect = *new rect_component{ 0, 0, 1.0f * randSize, 1.0f * randSize };
+	auto&& rigidbody = *new rigidbody_component{ rect_f32{{0.0f, -0.15f}, {0.5f, 0.6f}}, mass_f32{3.0f}, 0.05f };
+	auto&& col = *new collisionable{ tr, rigidbody, rect, collisionable_option_none };
+	auto e = create_entity(
+		ecs::hdlr::TOTEM,
+		ecs::scene::GAMESCENE,
+		tr,
+		&rect,
+		new dyn_image(
+			rect_f32{ {0,0},{1,1} },
+			rect,
+			manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam,
+			sdlutils().images().at("totem"),
+			tr
+		),
+		new Health(1000),
+		&rigidbody,
+		&col
+	);
+
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.06, 5.0f, 20.0 * deccel_spawned_creatures_multi));
+
+	//	StateMachine(ConditionManager& conditionManager, Transform* playerTransform, Transform* enemyTransform, float dist);
+	auto state = manager.addComponent<StateMachine>(e);
+	auto state_cm = state->getConditionManager();
+
+	// Crear estados
+	auto walkingTotemState = std::make_shared<WalkingTotemState>(&tr, &mc);
+
+	//poner los estado a la state
+	state->add_state("WalkingTotem", std::static_pointer_cast<State>(walkingTotemState));
+
+	// Estado inicial
+	state->set_initial_state("WalkingTotem");
 }
 
 void GameScene::spawn_wave_manager()

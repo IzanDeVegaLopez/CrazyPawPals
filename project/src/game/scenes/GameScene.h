@@ -34,6 +34,7 @@ public:
 	void create_hud();
 	void spawn_fog();
 	void spawn_super_michi_mafioso(Vector2D posVec);
+	void spawn_event_totem(Vector2D posVec);
 
 	void generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid);
 	void check_collision();
