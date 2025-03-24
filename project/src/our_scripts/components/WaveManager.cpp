@@ -18,8 +18,7 @@ WaveManager::WaveManager() :
     _enemiesSpawned(0),
     _enemiesKilled(0),
     _totalSpawnTime(10000.0f),
-    _current_wave_event(new no_event(this)),
-    _tdi(nullptr)
+    _current_wave_event(new no_event(this))
 {
 }
 
@@ -29,8 +28,8 @@ WaveManager::~WaveManager() {
 
 void
 WaveManager::initComponent() {
-    _tdi = Game::Instance()->get_mngr()->getComponent<transformless_dyn_image>(_ent);
-    assert(_tdi != nullptr);
+    //_tdi = Game::Instance()->get_mngr()->getComponent<transformless_dyn_image>(_ent);
+    //assert(_tdi != nullptr);
     //TODO: cambiar esto por _ent posiblemente
 	fog = Game::Instance()->get_mngr()->getComponent<Fog>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::FOGGROUP));
     assert(fog != nullptr);
@@ -185,12 +184,12 @@ WaveManager::enterRewardsMenu() {
 
 void WaveManager::show_wave_image()
 {
-    _tdi->set_active(true);
+    //_tdi->set_active(true);
 }
 
 void WaveManager::hide_wave_image()
 {
-    _tdi->set_active(false);
+    //_tdi->set_active(false);
 }
 
 void WaveManager::start_new_wave()
@@ -203,30 +202,21 @@ void WaveManager::choose_new_event()
 {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<int> rnd_gen(0,10);
-    int i = rnd_gen(gen);
-    std::cout << "wave number: " << (i) << std::endl;
-    switch(i) {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-    case 4:
+    std::uniform_int_distribution<int> rnd_gen(NONE,EVENTS_MAX);
+    _current_event = events(rnd_gen(gen));
+    //std::cout << "wave number: " << (i) << std::endl;
+    switch(_current_event) {
+    case NONE:
         _current_wave_event = (std::unique_ptr<wave_event>)new no_event(this);
         break;
-    case 5:
-    case 6:
-    case 7:
-    case 8:
-    case 9:
-    case 10:
+    case ICE_SKATE:
         _current_wave_event = (std::unique_ptr<wave_event>)new ice_skating_event(this);
         break;
     default:
         std::cout << "event_choser_went_wrong" << std::endl;
     }
 
-    std::cout << i << std::endl;
+    //std::cout << i << std::endl;
 
     _current_wave_event->start_wave_callback();
     //TODO elegir evento y llamar a la función de iniciar

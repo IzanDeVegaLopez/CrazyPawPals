@@ -118,6 +118,7 @@ void GameScene::enterScene()
 	mngr->addComponent<KeyboardPlayerCtrl>(player);
 	mngr->addComponent<PlayerHUD>(player);
 	mngr->getComponent<WaveManager>(mngr->getHandler(ecs::hdlr::WAVE))->start_new_wave();
+	mngr->getComponent<HUD>(mngr->getHandler(ecs::hdlr::HUD_ENTITY))->start_new_wave();
 }
 
 void GameScene::exitScene()
@@ -768,12 +769,6 @@ void GameScene::spawn_wave_manager()
 	auto ent = create_entity(
 		ecs::grp::DEFAULT,
 		ecs::scene::GAMESCENE,
-		new transformless_dyn_image(
-			{ {0.2,0.1},{0.6,0.2} },
-			0,
-			Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam,
-			&sdlutils().images().at("event_letters")
-		),
 		new WaveManager()
 	);
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::WAVE, ent);
