@@ -15,7 +15,7 @@ public:
 	void render() override;
 
 private:
-
+	void create_enter_button();
 	//flags to control if has been selected
 	bool _reward_selected;
 

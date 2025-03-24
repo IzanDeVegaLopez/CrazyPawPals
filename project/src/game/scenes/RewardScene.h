@@ -27,4 +27,5 @@ private:
 
 	Button* _selected_button;
 	Card* _selected_card;
+	Texture* _reward_bg;
 };

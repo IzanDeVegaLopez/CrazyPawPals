@@ -14,7 +14,7 @@
 
 #include <iostream>
 
-RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr), _selected_button(nullptr)
+RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr), _selected_button(nullptr), _reward_bg(nullptr)
 {
 }
 
@@ -25,6 +25,7 @@ RewardScene::~RewardScene()
 void RewardScene::initScene() {
     create_reward_buttons();
     create_my_deck_cards();
+    _reward_bg = &sdlutils().images().at("reward");
 }
 void RewardScene::enterScene()
 {
@@ -39,7 +40,7 @@ void RewardScene::exitScene()
 {
 }
 void RewardScene::render() {
-
+    _reward_bg->render(0, 0);
     Scene::render();
 }
 void RewardScene::create_reward_buttons() {
@@ -114,6 +115,7 @@ void RewardScene::create_a_deck_card(const GameStructs::CardButtonProperties& bp
     buttonComp->connectClick([buttonComp, imgComp, this, bp] {
         imgComp->destination_rect.size = { imgComp->_original_w,  imgComp->_original_h };
         _selected_button = buttonComp;
+        imgComp->destination_rect.position.y = bp.rect.position.y;
         //only assign a valid iterator
         if (bp.iterator != nullptr && bp.iterator != _selected_card) {
             _selected_card = bp.iterator;
@@ -125,14 +127,15 @@ void RewardScene::create_a_deck_card(const GameStructs::CardButtonProperties& bp
         std::cout << "hover -> Reward button: " << std::endl;
         //filter
         //imgComp->apply_filter(128, 128, 128);
-        imgComp->destination_rect.size = { imgComp->destination_rect.size.x * 1.25f,  imgComp->destination_rect.size.y * 1.25f };
+        imgComp->destination_rect.position.y -= 0.125f;
+        //imgComp->destination_rect.size = { imgComp->destination_rect.size.x * 1.25f,  imgComp->destination_rect.size.y * 1.25f };
         });
 
     buttonComp->connectExit([buttonComp, imgComp]() {
         std::cout << "exit -> Reward button: " << std::endl;
+        imgComp->destination_rect.position.y += 0.125f;
         //filter
-        //imgComp->apply_filter(255, 255, 255);
-        imgComp->destination_rect.size = { imgComp->destination_rect.size.x / 1.25f,  imgComp->destination_rect.size.y / 1.25f };
+        //imgComp->destination_rect.size = { imgComp->destination_rect.size.x / 1.25f,  imgComp->destination_rect.size.y / 1.25f };
         });
 }
 void RewardScene::create_my_deck_cards() {
@@ -147,10 +150,10 @@ void RewardScene::create_my_deck_cards() {
     auto _m_deck = mngr->getComponent<Deck>(player);
     auto& pDeck = _m_deck->card_names();
 
-    float umbral = 0.175f;
+    float umbral = 0.15f;
     auto iterator = _m_deck->all_cards().card_list().begin();
     GameStructs::CardButtonProperties propTemplate = {
-        { {0.15f, 0.7f}, {0.175f, 0.3f} },
+        { {0.1f, 0.95f}, {0.125f, 0.25f} },
         0.0f, "", ecs::grp::REWARDCARDS, *iterator
     };
 
