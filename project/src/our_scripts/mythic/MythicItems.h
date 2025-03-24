@@ -138,6 +138,29 @@ public:
 	void apply_effects() override;
 
 	void set_mana(ManaComponent* m) { _mana = m; }
-	void set_health(Weapon* w) { _weapon = w; }
+	void set_weapon(Weapon* w) { _weapon = w; }
 };
 
+/**
+ * @class ClawFile
+ * @brief ClawFile is a MythicItem that enhances player's reload speed and reduces movement speed.
+ *
+ * While reloading, movement speed reduced by 50%.
+ * However, reload speed is reduced by 50%.
+ */
+class ClawFile : public MythicItem {
+	MovementController* _mc;
+	Deck* _deck;
+
+	bool _set = false;
+	float _ini_mc;
+public:
+	ClawFile() : _mc(nullptr), _deck(nullptr) {}
+	ClawFile(Deck* d, MovementController* mc);
+
+	void apply_effects() override;
+	void update(uint32_t dt) override;
+
+	void set_deck(Deck* d) { _deck = d; }
+	void set_movement_controller(MovementController* mc) { _mc = mc; }
+};

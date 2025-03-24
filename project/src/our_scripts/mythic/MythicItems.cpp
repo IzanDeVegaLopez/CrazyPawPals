@@ -77,7 +77,7 @@ ArcaneSurge::ArcaneSurge(ManaComponent* m, Deck* d)
 
 void 
 ArcaneSurge::apply_effects() {
-	_deck->set_reload_time(_deck->reload_time() + 0.5f * _deck->reload_time());
+	_deck->set_reload_time(_deck->reload_time() - 0.5f * _deck->reload_time());
 	//std::cout << "mana: " << _mana->mana_regen() << std::endl;
 }
 
@@ -123,5 +123,39 @@ PreternaturalForce::apply_effects() {
 	_mana->change_mana_regen(- (_mana->mana_regen() * 0.5));
 	int damage = _weapon->damage() * 2;
 	_weapon->set_damage(damage);
+}
+#pragma endregion
+
+
+#pragma region ClawFile
+ClawFile::ClawFile(Deck* d, MovementController* mc)
+	:MythicItem("ArcaneSurge"),  _deck(d), _mc(mc), _set(false), _ini_mc(_mc->get_max_speed()){}
+
+void 
+ClawFile::apply_effects() {
+	std::cout << "deck: " << _deck->reload_time() << std::endl;
+	_deck->set_reload_time(_deck->reload_time() - 0.5f * _deck->reload_time());
+	std::cout << "deck despues: " << _deck->reload_time() << std::endl;
+
+	std::cout << "vel: " << _mc->get_max_speed() << std::endl;
+	std::cout << "velini: " << _ini_mc << std::endl;
+
+}
+
+void ClawFile::update(uint32_t dt) {
+	(void)dt;
+	if (_deck->is_reloading()) {
+		if (!_set) {
+			std::cout << "ClawFile activated" << std::endl;
+			_set = true;
+			_mc->set_max_speed(0.5f *_ini_mc);
+			std::cout << "vel: " << _mc->get_max_speed() << std::endl;
+		}
+	}
+	else if(_set){
+		_mc->set_max_speed((_ini_mc));
+		_set = false;
+		std::cout << "vel: " << _mc->get_max_speed() << std::endl;
+	}
 }
 #pragma endregion

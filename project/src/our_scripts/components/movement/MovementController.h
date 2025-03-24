@@ -29,6 +29,7 @@ public:
 	void event_callback0(const event_system::event_receiver::Msg&) override;
 
 	float& get_max_speed() { return _max_speed; }
+	inline void set_max_speed(float new_speed) { _max_speed = new_speed; }
 	float& get_acceleration() { return _acceleration; }
 
 
