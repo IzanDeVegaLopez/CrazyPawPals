@@ -5,6 +5,12 @@
 #include "../wave_events/wave_event.hpp"
 #include "rendering/transformless_dyn_image.h"
 
+enum events {
+    NONE = -1,
+    ICE_SKATE = 0,
+    EVENTS_MAX = ICE_SKATE
+};
+
 enum enemyType {
     none = 0,
     sarno_rata = 1,
@@ -68,6 +74,7 @@ public:
 
     inline Uint32 get_wave_time() { return _currentWaveTime; }
     inline int get_current_wave() { return _currentWave; }
+    inline events get_current_event() { return _current_event; }
 
 private:
     void choose_new_event();
@@ -75,7 +82,7 @@ private:
     Uint32 _currentWaveInitTime; // cuándo empezó la oleada
     Uint32 _waveTime; // cuánto dura la oleada (CONSTRUCTOR)
 
-
+    events _current_event = NONE;
     int _currentWave = 0;
     std::unique_ptr<wave_event> _current_wave_event;
 
@@ -92,7 +99,7 @@ private:
     float _min_time;
     float _op_time;
 
-    transformless_dyn_image* _tdi;
+    //transformless_dyn_image* _tdi;
 
     Fog* fog;
 };
