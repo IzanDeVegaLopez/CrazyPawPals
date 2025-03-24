@@ -376,15 +376,6 @@
         "file": "resources/images/ui/exit.png"
       },
       {
-        "id": "reward_card",
-        "file": "resources/images/ui/reward.png"
-      },
-      {
-        "id": "reward_card_selected",
-        "file": "resources/images/ui/reward_selected.png"
-      }
-      ,
-      {
         "id": "mythic",
         "file": "resources/images/ui/mythic.png"
       },

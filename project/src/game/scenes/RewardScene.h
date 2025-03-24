@@ -5,6 +5,9 @@
 
 class Texture;
 class Button;
+class Card;
+class ImagenForButton;
+using LastButton = ImageForButton*;
 class RewardScene : public Scene
 {
 public:
