@@ -7,6 +7,7 @@
 #include "../sdlutils/InputHandler.h"
 
 #include "../our_scripts/card_system/Card.hpp"
+#include "../our_scripts/card_system/CardList.h"
 #include "../our_scripts/card_system/PlayableCards.hpp"
 #include "../our_scripts/card_system/CardUpgrade.hpp"
 #include "../our_scripts/components/Deck.hpp"
@@ -17,7 +18,8 @@
 #include <string>
 
 
-RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE), _reward_selected(false), _card(false), _health(false)
+RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE), _reward_selected(false), _last_selected(nullptr),
+_card(false), _health(false), _object(false), _upgrade(false)
 {
 }
 
@@ -31,6 +33,10 @@ void RewardScene::initScene() {
         { {0.5f, 0.2f}, {0.175f, 0.3f} },
         0.0f, ""
     };
+
+    //Selects the cards to show
+    select_cards();
+
 
     //Reward 1
     GameStructs::ButtonProperties reward1B = buttonPropTemplate;
@@ -78,22 +84,65 @@ void RewardScene::render() {
     Scene::render();
 }
 
-void RewardScene::select_rewards()
+void RewardScene::select_cards()
 {
-    //Picks randomly the rewards, between all the enum, minus the last one (health)
-    for (int i = 0; i < _rewVector->size(); i++)
+    //enum all_cards { FIREBALL, LIGHTNING, KUNAI, 
+                    // RECOVER, MINIGUN, CARDSPRAY,
+                    // ELDRICHBLAST, PRIMORDIA, COMMUNE,
+                    // EVOKE, FULGUR, QUICKFEET }; //PRIME(? en revision
+                    
+    //Picks randomly the cards, between all the enum
+    for (int i = 0; i < _cards_vector->size(); i++)
     {
         RandomNumberGenerator rand;
-        int index = rand.nextInt(0, 3); //- 1
-        //_rewVector[i] = _rewards(index);
-    }
+        int index = rand.nextInt(0, 12); 
 
-    ////If health lower than 20%, rewVector[0] = _rewards.LIFE;
-    //Health* _healthComp = Game::Instance()->get_mngr()->getComponent<Health>(getHandler(ecs::hdlr::PLAYER);
-    //if (_healthComp->getHealth() <= _health->getMaxHealth() / 5)
-    //{
-    //    _rewVector[0] = _rewards[LIFE];
-    //}
+        switch (index)
+        {
+        case 0:
+            _cards_vector->emplace_back(new Fireball());
+            break;
+        case 1:
+            _cards_vector->emplace_back(new Lighting());
+            break;
+        case 2:
+            _cards_vector->emplace_back(new Kunai());
+            break;
+        case 3:
+            _cards_vector->emplace_back(new Recover());
+            break;
+        case 4:
+            _cards_vector->emplace_back(new Minigun());
+            break;
+        case 5:
+            _cards_vector->emplace_back(new CardSpray());
+            break;
+        case 6:
+            _cards_vector->emplace_back(new EldritchBlast());
+            break;
+        case 7:
+            _cards_vector->emplace_back(new Primordia());
+            break;
+        case 8:
+            _cards_vector->emplace_back(new Commune());
+            break;
+        case 9:
+            _cards_vector->emplace_back(new Evoke());
+            break;
+        case 10:
+            _cards_vector->emplace_back(new Fulgur());
+            break;
+        case 11:
+            _cards_vector->emplace_back(new QuickFeet());
+            break;
+        default:
+            break;
+        }
+
+
+        std::cout << _cards_vector[i].data();
+
+    }
 }
 
 void RewardScene::create_reward_button(const GameStructs::ButtonProperties& bp)
@@ -114,14 +163,16 @@ void RewardScene::create_reward_button(const GameStructs::ButtonProperties& bp)
 
     buttonComp->connectClick([buttonComp, imgComp, this]() {
         //std::cout << "left click -> Reward button" << std::endl;
+        _reward_selected = true;
+
         //swap the actual buttons textures
         imgComp->swap_textures();
 
-        //reward has been selected
-        if (!_reward_selected) _reward_selected = true;
-
-        //std::cout << _reward_selected << std::endl;
-
+        //register the last clicked button
+        if (_last_selected != nullptr && _last_selected != imgComp) {
+            _last_selected->swap_textures();
+        }
+        _last_selected = imgComp;
     });
 
     buttonComp->connectHover([buttonComp, imgComp]() {
