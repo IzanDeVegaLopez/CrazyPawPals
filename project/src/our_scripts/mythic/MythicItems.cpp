@@ -18,7 +18,7 @@ void BloodClaw::apply_effects() {
 
 #pragma region ProfaneHotline
 ProfaneHotline::ProfaneHotline(ManaComponent* m)
-	:MythicItem("ManaSwap"), _mana(m)
+	:MythicItem("ProfaneHotline"), _mana(m)
 {
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::mill, this, &event_system::event_receiver::event_callback0);
 }
@@ -37,33 +37,33 @@ ProfaneHotline::apply_effects() {
 
 #pragma endregion
 
-#pragma region ShieldHarvest
-ShieldHarvest::ShieldHarvest(Health* h)
-	:MythicItem("ShieldHarvest"), _health(h)
+#pragma region CurtainReaper
+CurtainReaper::CurtainReaper(Health* h)
+	:MythicItem("CurtainReaper"), _health(h)
 {
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::enemy_dead, this, &event_system::event_receiver::event_callback0);
 }
 
 void 
-ShieldHarvest::event_callback0(const event_system::event_receiver::Msg& m) {
+CurtainReaper::event_callback0(const event_system::event_receiver::Msg& m) {
 	int shield =  m.int_value;
 	_health->takeShield(shield);
 }
 
 void 
-ShieldHarvest::apply_effects() {
+CurtainReaper::apply_effects() {
 	int currhealth = _health->getHealth() / 2;
 	_health->takeDamage(currhealth);
 }
 
 #pragma endregion
 
-#pragma region ManaCatalyst
-ManaCatalyst::ManaCatalyst(ManaComponent* m, Weapon* w)
-	:MythicItem("ManaCatalyst"), _mana(m), _weapon(w){}
+#pragma region Incense
+Incense::Incense(ManaComponent* m, Weapon* w)
+	:MythicItem("Incense"), _mana(m), _weapon(w){}
 
 void 
-ManaCatalyst::apply_effects() {
+Incense::apply_effects() {
 	_mana->change_mana_regen(_mana->mana_regen());
 	int damage = _weapon->damage() / 2;
 	_weapon->set_damage(damage);
@@ -71,17 +71,17 @@ ManaCatalyst::apply_effects() {
 
 #pragma endregion
 
-#pragma region ManaForge
-ManaForge::ManaForge(ManaComponent* m, Deck* d)
-	:MythicItem("ManaForge"),  _mana(m), _deck(d), _set(false), _ini_mana(_mana->mana_regen()){}
+#pragma region ArcaneSurge
+ArcaneSurge::ArcaneSurge(ManaComponent* m, Deck* d)
+	:MythicItem("ArcaneSurge"),  _mana(m), _deck(d), _set(false), _ini_mana(_mana->mana_regen()){}
 
 void 
-ManaForge::apply_effects() {
+ArcaneSurge::apply_effects() {
 	_deck->set_reload_time(_deck->reload_time() + 0.5f * _deck->reload_time());
 	//std::cout << "mana: " << _mana->mana_regen() << std::endl;
 }
 
-void ManaForge::update(uint32_t dt) {
+void ArcaneSurge::update(uint32_t dt) {
 	(void)dt;
 	if (_deck->is_reloading()) {
 		if (!_set) {
@@ -116,7 +116,7 @@ BloodPact::apply_effects() {
 
 #pragma region PreternaturalForce
 PreternaturalForce::PreternaturalForce(ManaComponent* m, Weapon* w)
-	:MythicItem("ArcaneInferno"),  _mana(m), _weapon(w){}
+	:MythicItem("PreternaturalForce"),  _mana(m), _weapon(w){}
 
 void 
 PreternaturalForce::apply_effects() {

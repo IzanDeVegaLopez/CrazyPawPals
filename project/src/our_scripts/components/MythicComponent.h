@@ -11,10 +11,6 @@ class Weapon;
 class MythicComponent: public ecs::Component {
 private:
 	std::vector<MythicItem*> _obtained_mythics;
-    ManaComponent* _mana;
-    Health* _player_health;
-    MovementController* _player_movement_controller;
-    Weapon* _weapon;
 public:
     __CMPID_DECL__(ecs::cmp::MYTHICCOMPONENT);
     MythicComponent();

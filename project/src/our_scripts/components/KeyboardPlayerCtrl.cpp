@@ -72,7 +72,7 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
 
     ///inputs para probar cosas
     if (ihdlr.keyDownEvent() &&ihdlr.isKeyDown(SDL_SCANCODE_Y)) {
-        _my->add_mythic(new ManaForge(_m, _dc));
+        _my->add_mythic(new ArcaneSurge(_m, _dc));
     }  
       if (ihdlr.keyDownEvent() &&ihdlr.isKeyDown(SDL_SCANCODE_G)) {
         _my->add_mythic(new PreternaturalForce(_m, _w));

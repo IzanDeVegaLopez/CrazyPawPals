@@ -41,17 +41,17 @@ public:
 };
 
 /**
- * @class ShieldHarvest
- * @brief ShieldHarvest is a MythicItem that modifies the player's health mechanics.
+ * @class CurtainReaper
+ * @brief CurtainReaper is a MythicItem that modifies the player's health mechanics.
  *
  * The player’s health is reduced by 50%.
  * Upon defeating an enemy, the player gains 20% of the enemy's health as a shield.
  */
-class ShieldHarvest : public event_system::event_receiver, public MythicItem {
+class CurtainReaper : public event_system::event_receiver, public MythicItem {
 	Health* _health;
 public:
-	ShieldHarvest() : _health(nullptr) {}
-	ShieldHarvest(Health* h);
+	CurtainReaper() : _health(nullptr) {}
+	CurtainReaper(Health* h);
 
 	void apply_effects() override;
 	void event_callback0(const event_system::event_receiver::Msg& m);
@@ -60,18 +60,18 @@ public:
 };
 
 /**
- * @class ManaCatalyst
- * @brief ManaCatalyst is a MythicItem that enhances mana regeneration and reduces player's damage.
+ * @class Incense
+ * @brief Incense is a MythicItem that enhances mana regeneration and reduces player's damage.
  *
  * Mana regeneration is doubled.
  * However, base weapon damage is reduced by 50%.
  */
-class ManaCatalyst : public MythicItem {
+class Incense : public MythicItem {
 	ManaComponent* _mana;
 	Weapon* _weapon;
 public:
-	ManaCatalyst() : _mana(nullptr), _weapon(nullptr) {}
-	ManaCatalyst(ManaComponent* m,Weapon* w);
+	Incense() : _mana(nullptr), _weapon(nullptr) {}
+	Incense(ManaComponent* m,Weapon* w);
 
 	void apply_effects() override;
 
@@ -80,21 +80,21 @@ public:
 };
 
 /**
- * @class ManaForge
- * @brief ManaForge is a MythicItem that enhances mana regeneration while affecting reload speed.
+ * @class ArcaneSurge
+ * @brief ArcaneSurge is a MythicItem that enhances mana regeneration while affecting reload speed.
  *
  * While reloading, mana regeneration increases by 50%.
  * However, reload speed is reduced by 50%.
  */
-class ManaForge : public MythicItem {
+class ArcaneSurge : public MythicItem {
 	ManaComponent* _mana;
 	Deck* _deck;
 
 	bool _set = false;
 	int _ini_mana;
 public:
-	ManaForge() : _mana(nullptr), _deck(nullptr) {}
-	ManaForge(ManaComponent* m, Deck* d);
+	ArcaneSurge() : _mana(nullptr), _deck(nullptr),_ini_mana() {}
+	ArcaneSurge(ManaComponent* m, Deck* d);
 
 	void apply_effects() override;
 	void update(uint32_t dt) override;
@@ -126,7 +126,7 @@ public:
  * @class PreternaturalForce
  * @brief PreternaturalForce is a MythicItem that enhances player's damage and reduces mana production.
  *
- * This class reduces the player's health by 50% and doubles mana regeneration.
+ * This class reduces the player's  mana regeneration by 50% and doubles damage.
  */
 class PreternaturalForce : public MythicItem {
 	ManaComponent* _mana;

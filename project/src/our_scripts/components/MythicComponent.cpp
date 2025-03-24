@@ -7,8 +7,7 @@
 #include "movement/MovementController.h"
 #include "weapons/Weapon.h"
 
-MythicComponent::MythicComponent()
-	:_mana(nullptr),_player_health(nullptr),_player_movement_controller(nullptr), _weapon(nullptr){}
+MythicComponent::MythicComponent(){}
 
 
 MythicComponent::~MythicComponent(){
@@ -20,17 +19,6 @@ MythicComponent::~MythicComponent(){
 
 void 
 MythicComponent::initComponent() {
-	_mana = Game::Instance()->get_mngr()->getComponent<ManaComponent>(_ent);
-	assert(_mana != nullptr);
-
-	_player_health = Game::Instance()->get_mngr()->getComponent<Health>(_ent);
-	assert(_player_health != nullptr);
-
-	_player_movement_controller = Game::Instance()->get_mngr()->getComponent<MovementController>(_ent);
-	assert(_player_movement_controller != nullptr);
-
-	_weapon= Game::Instance()->get_mngr()->getComponent<Weapon>(_ent);
-	assert(_weapon != nullptr);
 }
 
 void 
