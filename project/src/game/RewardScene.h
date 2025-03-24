@@ -17,6 +17,8 @@ public:
 
 private:
 
+	ecs::Manager* _mngr;
+
 	//flags to control if has been selected
 	bool _reward_selected;
 	//last selected
@@ -29,9 +31,9 @@ private:
 	bool _upgrade;
 
 	//Vector with the 3 cards
-	std::vector<Card*> _cards_vector[];
+	std::vector<ImageForButton*> _cards_vector[3];
 	//Selects 3 cards randomly 
-	void select_cards();
+	std::string select_cards(int i);
 
 	//buttons
 	void create_reward_button(const GameStructs::ButtonProperties& bp);
