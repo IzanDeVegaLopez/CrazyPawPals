@@ -54,7 +54,8 @@
 	ENEMY,\
 	PLAYERBULLETS,\
     ENEMYBULLETS,\
-    REWARDCARDS
+    REWARDCARDS, \
+	STAR_DROP
 
 
 // Scene list
