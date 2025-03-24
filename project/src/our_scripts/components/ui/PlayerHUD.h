@@ -5,12 +5,14 @@
 #include "../cards/Deck.hpp"
 #include "../movement/Transform.h"
 #include "../rendering/camera_component.hpp"
+#include "../MythicComponent.h"
 class PlayerHUD : public ecs::Component {
 private:
 	ManaComponent* _mana;
 	Health* _health;
 	Deck* _deck;
 	Transform* _tr;
+	MythicComponent* _mythics;
 	const camera_component* _camera;
 
 	Texture* _tex_orb;

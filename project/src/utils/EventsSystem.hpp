@@ -32,7 +32,9 @@ namespace event_system {
 		mill = 0,				//bin 0
 		shuffle = 1 << 0,		//bin 1
 		change_deccel = 1 << 1,	//bin 2
-		//4º evento = 1 << 2,	//bin 4
+		enemy_dead = 1 << 2,	//bin 4
+		player_dead = 1 << 3
+		//4?evento = 1 << 2,	
 	};
 	
 	class event_receiver {
@@ -40,11 +42,12 @@ namespace event_system {
 		//this struct will need a rework if intensive use of it its needed
 		struct Msg {
 			float float_value = 0;
+			int int_value = 0;
 		};
 		//add more in case its needed, 
 		virtual void event_callback0(const Msg& m) = 0;
 		//recommended to only declare the first abstract, in order for the rest of the program to not explode when adding new ones
-		//virtual void event_callback1(const Msg& m) {}
+		virtual void event_callback1(const Msg& m) {};
 	protected:
 		~event_receiver() {};
 	};

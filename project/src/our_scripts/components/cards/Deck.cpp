@@ -5,7 +5,10 @@
 #include "../movement/MovementController.h"
 #include "../movement/Transform.h"
 #include "../../../rendering/card_rendering.hpp"
+
+#include "../../card_system/PlayableCards.hpp"
 #include <algorithm>
+
 
 void Deck::_put_new_card_on_hand()
 {
@@ -19,22 +22,40 @@ void Deck::_put_new_card_on_hand()
 	}
 }
 
+Deck::Deck() {
+	_discard_pile = CardList();
+	_hand = nullptr;
+	std::list<Card*> default_cardList = { new Fireball(), new Minigun(), new Lighting(), new Fireball(), new Minigun(), new Lighting() };
+	_draw_pile = CardList(default_cardList);
+	_register(default_cardList);
+	_draw_pile.shuffle();
+	_put_new_card_on_hand();
+};
+
 Deck::Deck(std::list<Card*>& starterDeck) noexcept
 {
 	_discard_pile = CardList();
 	_hand = nullptr;
 	//_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
 	_draw_pile = CardList(starterDeck);
+	_register(starterDeck);
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
 }
-
+//register all cards name and its pointer
+void Deck::_register(const std::list<Card*>& starterDeck) {
+	for (auto it : starterDeck) {
+		_cards_names.push_back(it->get_name());
+		_all_cards.add_card(it);
+	}
+}
 Deck::Deck(CardList&& starterDeck) noexcept
 {
 	_discard_pile = CardList();
 	_hand = nullptr;
 	//_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
 	_draw_pile = starterDeck;
+	_register(starterDeck.card_list());
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
 }
@@ -96,6 +117,9 @@ std::pair<bool, Card*> Deck::mill() noexcept
 	if (!_draw_pile.empty()) {
 		milled = true;
 		_last_milled_card = _draw_pile.pop_first()->on_mill(*this, &_tr->getPos());
+		
+		event_system::event_receiver::Msg mill_msg;
+		mill_msg.int_value = _last_milled_card->get_costs().get_mana();
 		switch (_last_milled_card->get_mill_destination()) {
 		case DISCARD_PILE:
 			_discard_pile.add_card(_last_milled_card);
@@ -105,7 +129,7 @@ std::pair<bool, Card*> Deck::mill() noexcept
 			break;
 		}
 		_av._last_milled_card_time = sdlutils().virtualTimer().currTime();
-		Game::Instance()->get_event_mngr()->fire_event(event_system::mill, event_system::event_receiver::Msg());
+		Game::Instance()->get_event_mngr()->fire_event(event_system::mill, mill_msg);
 	}
 	return std::make_pair(milled, _last_milled_card);
 }

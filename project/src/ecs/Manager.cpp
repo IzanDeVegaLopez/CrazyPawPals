@@ -39,12 +39,12 @@ Manager::~Manager() {
 #endif
 
 #if DBG_COLLISIONS
-constexpr int dbg_collisions_size = 512;
+#define DBG_COLLISIONS_BUFFER_SIZE 4096
 struct dbg_collisions {
-	SDL_Rect dbg_rect_col[dbg_collisions_size];
+	SDL_Rect dbg_rect_col[DBG_COLLISIONS_BUFFER_SIZE];
 	size_t dbg_rect_col_size;
 
-	position2_f32 dbg_pos[2][dbg_collisions_size];
+	position2_f32 dbg_pos[2][DBG_COLLISIONS_BUFFER_SIZE];
 	size_t dbg_pos_size;
 };
 
@@ -283,22 +283,59 @@ static bool manager_handle_collision_bodies(
 				space1.previous_position.x = space1.position.x - response1_restitution.restitution_displacement.x;
 				space1.previous_position.y = space1.position.y - response1_restitution.restitution_displacement.y;
 			}
-
-			manager.addComponent<contact_manifold>(entity0, contact, entity0, entity1);
-			manager.addComponent<contact_manifold>(entity1, contact, entity0, entity1);
+			
+			contact_manifold *contact0 = manager.getComponent<contact_manifold>(entity0);
+			contact_manifold *contact1 = manager.getComponent<contact_manifold>(entity1);
+			if (contact0 != nullptr) {
+				contact0->contact = contact;
+				contact0->collision_tick = sdlutils().virtualTimer().currTime();
+				contact0->body0 = entity0;
+				contact0->body1 = entity1;
+			}
+			if (contact1 != nullptr) {
+				contact1->contact = contact;
+				contact1->collision_tick = sdlutils().virtualTimer().currTime();
+				contact1->body0 = entity0;
+				contact1->body1 = entity1;
+			}
 			break;
 		}
 		case collision_response_option_body0_trigger: {
-			manager.addComponent<trigger_manifold>(entity0, contact, entity0, entity1);
+			trigger_manifold *trigger0 = manager.getComponent<trigger_manifold>(entity0);
+			if (trigger0 != nullptr) {
+				trigger0->contact = contact;
+				trigger0->collision_tick = sdlutils().virtualTimer().currTime();
+				trigger0->body0 = entity0;
+				trigger0->body1 = entity1;
+			}
 			break;
 		}
 		case collision_response_option_body1_trigger: {
-			manager.addComponent<trigger_manifold>(entity1, contact, entity0, entity1);
+			trigger_manifold *trigger1 = manager.getComponent<trigger_manifold>(entity1);
+			if (trigger1 != nullptr) {
+				trigger1->contact = contact;
+				trigger1->collision_tick = sdlutils().virtualTimer().currTime();
+				trigger1->body0 = entity0;
+				trigger1->body1 = entity1;
+			}
 			break;
 		}
 		case collision_response_option_body0_trigger | collision_response_option_body1_trigger: {
-			manager.addComponent<trigger_manifold>(entity0, contact, entity0, entity1);
-			manager.addComponent<trigger_manifold>(entity1, contact, entity0, entity1);
+			trigger_manifold *trigger0 = manager.getComponent<trigger_manifold>(entity0);
+			trigger_manifold *trigger1 = manager.getComponent<trigger_manifold>(entity1);
+
+			if (trigger0 != nullptr) {
+				trigger0->contact = contact;
+				trigger0->collision_tick = sdlutils().virtualTimer().currTime();
+				trigger0->body0 = entity0;
+				trigger0->body1 = entity1;
+			}
+			if (trigger1 != nullptr) {
+				trigger1->contact = contact;
+				trigger1->collision_tick = sdlutils().virtualTimer().currTime();
+				trigger1->body0 = entity0;
+				trigger1->body1 = entity1;
+			}
 			break;
 		}
 		default: {
@@ -320,46 +357,65 @@ static void manager_update_collisions(Manager &manager, const std::vector<ecs::e
 		break;
 	default: {
 		const float delta_time_seconds = delta_time_milliseconds / 1000.0f;
-		for (size_t i = 0; i < entities.size(); i++) {
-			auto entity = entities[i];
-			auto entity_collisionable = manager.getComponent<collisionable>(entity);
-			if (entity_collisionable != nullptr) {
-				collision_body body = collision_body_from_collisionable(*entity_collisionable);
 
-				for (size_t j = i + 1; j < entities.size(); j++) {
-					auto other_entity = entities[j];
-					auto other_collisionable = manager.getComponent<collisionable>(other_entity);
-					if (other_collisionable != nullptr) {
-						collision_body other_body = collision_body_from_collisionable(*other_collisionable);
-
-						bool collided = manager_handle_collision_bodies(manager, entity, other_entity, body, other_body, delta_time_seconds, (
-							((entity_collisionable->options & collisionable_option_trigger) != 0)
-								| (((other_collisionable->options & collisionable_option_trigger) != 0) << 1)
-						));
-
-						if (collided) {
-							entity_collisionable->transform.getPos() = Vector2D{
-								body.body.space.position.x,
-								body.body.space.position.y,
-							};
-							other_collisionable->transform.getPos() = Vector2D{
-								other_body.body.space.position.x,
-								other_body.body.space.position.y,
-							};
+		constexpr static const size_t max_collision_passes = 8;
+		size_t last_pass_collision_count;
+		size_t pass_count = 0;
+		do {
+			last_pass_collision_count = 0;
+			for (size_t i = 0; i < entities.size(); i++) {
+				auto entity = entities[i];
+				auto entity_collisionable = manager.getComponent<collisionable>(entity);
+				if (entity_collisionable != nullptr) {
+					collision_body body = collision_body_from_collisionable(*entity_collisionable);
 	
-							entity_collisionable->transform.getPos() += Vector2D{
-								(body.body.space.position.x - body.body.space.previous_position.x),
-								(body.body.space.position.y - body.body.space.previous_position.y),
-							};
-							other_collisionable->transform.getPos() += Vector2D{
-								(other_body.body.space.position.x - other_body.body.space.previous_position.x),
-								(other_body.body.space.position.y - other_body.body.space.previous_position.y),
-							};
+					for (size_t j = i + 1; j < entities.size(); j++) {
+						auto other_entity = entities[j];
+						auto other_collisionable = manager.getComponent<collisionable>(other_entity);
+						if (other_collisionable != nullptr) {
+							collision_body other_body = collision_body_from_collisionable(*other_collisionable);
+	
+							bool collided = manager_handle_collision_bodies(manager, entity, other_entity, body, other_body, delta_time_seconds, (
+								((entity_collisionable->options & collisionable_option_trigger) != 0)
+									| (((other_collisionable->options & collisionable_option_trigger) != 0) << 1)
+							));
+	
+							if (collided) {
+								const vec2_f32 displacement = vec2_f32{
+									.x = body.body.space.position.x - body.body.space.previous_position.x,
+									.y = body.body.space.position.y - body.body.space.previous_position.y,
+								};
+								const float displacement_length_sqr = 
+									displacement.x * displacement.x + displacement.y * displacement.y;
+								constexpr static const float epsilon_displacement_length_sqr = 0.0000001f;
+								if (displacement_length_sqr > epsilon_displacement_length_sqr) {
+									entity_collisionable->transform.getPos() = Vector2D{
+										body.body.space.position.x,
+										body.body.space.position.y,
+									};
+									other_collisionable->transform.getPos() = Vector2D{
+										other_body.body.space.position.x,
+										other_body.body.space.position.y,
+									};
+			
+									entity_collisionable->transform.getPos() += Vector2D{
+										(body.body.space.position.x - body.body.space.previous_position.x),
+										(body.body.space.position.y - body.body.space.previous_position.y),
+									};
+									other_collisionable->transform.getPos() += Vector2D{
+										(other_body.body.space.position.x - other_body.body.space.previous_position.x),
+										(other_body.body.space.position.y - other_body.body.space.previous_position.y),
+									};
+	
+									++last_pass_collision_count;
+								} 
+							}
 						}
 					}
 				}
 			}
-		}
+			++pass_count;
+		} while (last_pass_collision_count > 0 && pass_count < max_collision_passes);
 	}
 	}
 }

@@ -50,7 +50,7 @@ public:
 	void change_max_mana(int delta) { _max_mana += delta * 1000; }
 	// Returns your current mana.
 	int mana_count() const { return _mana_count/1000; }
-
+	int mana_regen() const { return  _mana_regen; }
 
 	inline int raw_mana_count() const { return _mana_count; }
 	inline int max_mana() const { return _max_mana; }

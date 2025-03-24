@@ -33,7 +33,7 @@ void SelectionMenuScene::create_weapon_buttons() {
     float umbral = 0.25f;
     GameStructs::ButtonProperties buttonPropTemplate = {
          { {0.85f, 0.025f},{0.1f, 0.175f} },
-         0.0f, ""
+         0.0f, "",  ecs::grp::WEAPONBUTTON
     };
 
     GameStructs::ButtonProperties revolverB = buttonPropTemplate;
@@ -67,7 +67,7 @@ void SelectionMenuScene::create_deck_buttons() {
     //create the first button prop
     GameStructs::ButtonProperties buttonPropTemplate = {
          { {0.025f, 0.025f},{0.2f, 0.3f} },
-         0.0f, ""
+         0.0f, "", ecs::grp::DECKBUTTON
     };
     GameStructs::ButtonProperties deck1B = buttonPropTemplate;
     deck1B.sprite_key = "deck1_button";
@@ -148,8 +148,10 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
 
         _weapon_selected = true;
 
-        //swap the actual buttons textures
-        imgComp->swap_textures();
+        if (imgComp != _last_weapon_button) {
+            //swap the actual buttons textures
+            imgComp->swap_textures();
+        }
 
         //register the last clicked button
         if (_last_weapon_button != nullptr && _last_weapon_button != imgComp) {
@@ -276,7 +278,7 @@ void SelectionMenuScene::create_deck_infos() {
 }
 void SelectionMenuScene::create_weapon_info() {
    // rect_f32 rect = {{1.3f, 0.25f} ,{0.75f, 0.5f}};
-    rect_f32 rect = { {1.0f, 0.25f} ,{0.75f, 0.5f} };
+    rect_f32 rect = { {0.95f, 0.25f} ,{0.5f, 0.35f} };
     ecs::entity_t e = create_entity(
         ecs::grp::WEAPONINFO,
         ecs::scene::SELECTIONMENUSCENE,
@@ -287,8 +289,6 @@ void SelectionMenuScene::create_weapon_info() {
             &sdlutils().images().at("initial_info"))
     );
     auto i = Game::Instance()->get_mngr();
-    int ew = 0;
-
 }
 void SelectionMenuScene::render() {
     _selection->render(0, -60);
@@ -313,7 +313,7 @@ void SelectionMenuScene::set_concrete_deck_info(const std::list<Card*>& cl) {
 void SelectionMenuScene::create_enter_button() {
     GameStructs::ButtonProperties bp = {
          { {0.5f, 0.5f},{0.3f, 0.125f} },
-         0.0f, "enter_game"
+         0.0f, "enter_game", ecs::grp::UI
     };
     auto* mngr = Game::Instance()->get_mngr();
     auto e = create_button(bp);
