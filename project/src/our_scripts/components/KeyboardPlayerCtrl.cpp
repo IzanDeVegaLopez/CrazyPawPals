@@ -40,6 +40,9 @@ KeyboardPlayerCtrl::initComponent() {
 
     _h = Game::Instance()->get_mngr()->getComponent<Health>(_ent);
     assert(_h != nullptr);
+
+    _m = Game::Instance()->get_mngr()->getComponent<ManaComponent>(_ent);
+    assert(_m != nullptr);
 }
 
 void KeyboardPlayerCtrl::update(Uint32 delta_time) {
@@ -68,11 +71,17 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
     }
 
     ///inputs para probar cosas
-    if (ihdlr.keyDownEvent() &&ihdlr.isKeyDown(SDL_SCANCODE_Z)) {
-        _my->add_mythic(new BloodClaw());
+    if (ihdlr.keyDownEvent() &&ihdlr.isKeyDown(SDL_SCANCODE_Y)) {
+        _my->add_mythic(new ArcaneSurge(_m, _dc));
+    }  
+      if (ihdlr.keyDownEvent() &&ihdlr.isKeyDown(SDL_SCANCODE_G)) {
+        _my->add_mythic(new PreternaturalForce(_m, _w));
+    } 
+    if (ihdlr.keyDownEvent() && ihdlr.isKeyDown(SDL_SCANCODE_Z)) {
+        _my->add_mythic(new BloodClaw(_h,_w));
     }
     if (ihdlr.keyDownEvent() && ihdlr.isKeyDown(SDL_SCANCODE_X)) {
-        _my->add_mythic(new ManaSwap());
+        _my->add_mythic(new ProfaneHotline(_m));
     }
 
     if (ihdlr.keyDownEvent() && ihdlr.isKeyDown(SDL_SCANCODE_V)) {
