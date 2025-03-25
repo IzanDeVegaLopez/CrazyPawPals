@@ -16,6 +16,7 @@ Revolver::callback(Vector2D shootPos, Vector2D shootDir) {
 	bp.life_time = 2;
 	bp.width = _attack_width;
 	bp.height = _attack_height;
+	bp.pierce_number = 1;
 	//bp.rot = atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI;
 	bp.sprite_key = _tex;
 	bp.weapon_type = GameStructs::REVOLVER;

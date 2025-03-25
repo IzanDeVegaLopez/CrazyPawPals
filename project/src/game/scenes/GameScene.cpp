@@ -838,7 +838,7 @@ void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs
 		new BulletData(bp.damage, bp.weapon_type),
 		&player_rigidbody,
 		&player_collisionable,
-		new bullet_collision_component(bp.collision_filter)
+		new bullet_collision_component(bp)
 	);
 }
 

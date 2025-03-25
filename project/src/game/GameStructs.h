@@ -31,6 +31,7 @@ namespace GameStructs {
 		Vector2D dir;
 		float speed = 0.0f;
 		int damage = 0;
+		int pierce_number = 0;
 		float life_time = 1.0f;
 		float width = 40;
 		float height = 40;
