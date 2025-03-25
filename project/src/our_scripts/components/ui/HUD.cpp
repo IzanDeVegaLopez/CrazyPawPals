@@ -5,7 +5,8 @@
 
 HUD::HUD():_camera(nullptr),_wm(nullptr)
 {
-	_event_textures.push_back(&sdlutils().images().at("event_letters")); //ICE_SKATE
+	_event_textures = std::vector<Texture*>(int(EVENTS_MAX)+1);
+	_event_textures[int(ICE_SKATE)] = (&sdlutils().images().at("event_letters")); 
 }
 
 HUD::~HUD()
