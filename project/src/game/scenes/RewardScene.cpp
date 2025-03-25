@@ -17,7 +17,7 @@
 #include <iostream>
 
 RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr), _selected_button(nullptr), _reward_bg(nullptr),
-_health(false),_card(false), _object(false), _upgrade(false), _lr(nullptr)
+_health(false),_card(false), _object(false), _upgrade(false), _lr(nullptr), _selected(false)
 {
 }
 
@@ -104,7 +104,7 @@ void RewardScene::refresh_rewards() {
         data->_data = s;
     }
 
-    change_pos(false);
+    change_pos(true);
 }
 void RewardScene::change_pos(bool enter) {
     auto swap_positions = [](transformless_dyn_image* img1, transformless_dyn_image* img2) {
@@ -147,7 +147,7 @@ void RewardScene::change_pos(bool enter) {
 void RewardScene::create_reward_buttons() {
     float umbral = 0.4f;
     GameStructs::ButtonProperties buttonPropTemplate = {
-        { {0.5f, 0.2f}, {0.175f, 0.3f} },
+        { {0.5f, 0.1f}, {0.175f, 0.3f} },
         0.0f, "", ecs::grp::REWARDCARDS
     };
 
@@ -155,27 +155,30 @@ void RewardScene::create_reward_buttons() {
     std::unordered_set<std::string> appeared_cards;
 
     //three card reward buttons
-    GameStructs::ButtonProperties reward_card1 = buttonPropTemplate; 
     GameStructs::CardType ct; 
-    reward_card1.sprite_key = get_unique_card(ct, appeared_cards);
-    create_reward_card_button(reward_card1);
+    buttonPropTemplate.sprite_key = get_unique_card(ct, appeared_cards);
+    create_reward_card_button(buttonPropTemplate);
 
-    GameStructs::ButtonProperties reward_card2 = buttonPropTemplate; 
-    reward_card2.sprite_key = get_unique_card(ct, appeared_cards);
-    reward_card2.rect.position.x -= umbral; 
-    create_reward_card_button(reward_card2);
+    buttonPropTemplate.sprite_key = get_unique_card(ct, appeared_cards);
+    buttonPropTemplate.rect.position.x -= umbral;
+    create_reward_card_button(buttonPropTemplate);
      
-    GameStructs::ButtonProperties reward_card3 = buttonPropTemplate; 
-    reward_card3.sprite_key = get_unique_card(ct, appeared_cards);
-    reward_card3.rect.position.x += umbral; 
-    create_reward_card_button(reward_card3);
+    buttonPropTemplate.sprite_key = get_unique_card(ct, appeared_cards);
+    buttonPropTemplate.rect.position.x += umbral*2;
+    create_reward_card_button(buttonPropTemplate);
 
     //it only appears in certain circustances (if so, we swap the position between this button and the third reward card)
-    GameStructs::ButtonProperties reward_heal = buttonPropTemplate;
-    reward_heal.ID = ecs::grp::REWARDHEALTH;
-    reward_heal.sprite_key = "reward_health";
-    reward_heal.rect.position.x = 20.0f;
-    create_reward_health_button(reward_heal);
+    buttonPropTemplate.ID = ecs::grp::REWARDHEALTH;
+    buttonPropTemplate.sprite_key = "reward_health";
+    buttonPropTemplate.rect.position.x = 20.0f;
+    create_reward_health_button(buttonPropTemplate);
+
+    //selected button
+    buttonPropTemplate.ID = ecs::grp::UI;
+    buttonPropTemplate.sprite_key = "confirm_reward";
+    buttonPropTemplate.rect.position = { 0.5f, 0.5f };
+    buttonPropTemplate.rect.size = { 0.325f, 0.195f };
+    create_reward_selected_button(buttonPropTemplate);
 }
 
 
@@ -186,7 +189,7 @@ void RewardScene::create_reward_health_button(const GameStructs::ButtonPropertie
     //used for change the sprite once a button is clicked
     auto imgComp = mngr->addComponent<ImageForButton>(e,
         &sdlutils().images().at(bp.sprite_key),
-        &sdlutils().images().at("reward_health_selected"),
+        &sdlutils().images().at("reward_selected"),
         bp.rect,
         0,
         Game::Instance()->get_mngr()->getComponent<camera_component>(
@@ -195,33 +198,27 @@ void RewardScene::create_reward_health_button(const GameStructs::ButtonPropertie
     auto data = mngr->addComponent<RewardDataComponent>(e, bp.sprite_key);
 
     buttonComp->connectClick([buttonComp, imgComp, this]() {
-        std::cout << "left click -> health button" << std::endl;
-        if (_lr == nullptr) {
-            imgComp->destination_rect.size = {
-            imgComp->destination_rect.size.x * 1.1f,
-            imgComp->destination_rect.size.y * 1.1f,
-            };
+        if (_selected) {
+            std::cout << "already selected" << std::endl;
         }
-        else if (_lr != imgComp) {
-            imgComp->destination_rect.size = {
-            imgComp->destination_rect.size.x * 1.1f,
-            imgComp->destination_rect.size.y * 1.1f,
-            };
-
-            _lr->destination_rect.size = {
-           _lr->destination_rect.size.x / 1.1f,
-           _lr->destination_rect.size.y / 1.1f,
-            };
+        else {
+            std::cout << "left click -> health button" << std::endl;
+            if (_lr == nullptr) {
+                resize(imgComp, 1.1f);
+            }
+            else if (_lr != nullptr && _lr != imgComp) {
+                resize(imgComp, 1.1f);
+                resize(_lr, 1.0f / 1.1f);
+            }
+            _lr = imgComp;
         }
-        _lr = imgComp;
     });
-
-    buttonComp->connectHover([buttonComp, imgComp]() {
+    buttonComp->connectHover([buttonComp, imgComp, this]() {
+        if (_selected) return;
         std::cout << "hover -> Reward button: " << std::endl;
         //filter
         imgComp->apply_filter(128, 128, 128);
     });
-
     buttonComp->connectExit([buttonComp, imgComp]() {
         std::cout << "exit -> Reward button: " << std::endl;
         //filter
@@ -229,6 +226,9 @@ void RewardScene::create_reward_health_button(const GameStructs::ButtonPropertie
     });
 }
 
+void RewardScene::resize(ImageForButton* im, float factor) { im->destination_rect.size = { 
+    im->destination_rect.size.x * factor, im->destination_rect.size.y * factor };
+}
 
 void RewardScene::create_reward_card_button(const GameStructs::ButtonProperties& bp)
 {
@@ -239,40 +239,37 @@ void RewardScene::create_reward_card_button(const GameStructs::ButtonProperties&
     //used for change the sprite once a button is clicked
     auto imgComp = mngr->addComponent<ImageForButton>(e,
         &sdlutils().images().at(bp.sprite_key), 
-        &sdlutils().images().at("reward_card_selected"),
+        &sdlutils().images().at("reward_selected"),
         bp.rect, 
         0, 
         Game::Instance()->get_mngr()->getComponent<camera_component>( 
             Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam 
-    ); 
+    );  
     //used for change the sprite once a button is clicked
     auto data = mngr->addComponent<RewardDataComponent>(e, bp.sprite_key);
-    buttonComp->connectClick([buttonComp, imgComp, this]() {
-        if (_lr == nullptr) {
-            imgComp->destination_rect.size = {
-            imgComp->destination_rect.size.x * 1.1f,
-            imgComp->destination_rect.size.y * 1.1f,
-            };
-        }
-        else if (_lr != imgComp) {
-            imgComp->destination_rect.size = {
-            imgComp->destination_rect.size.x * 1.1f,
-            imgComp->destination_rect.size.y * 1.1f,
-            };
 
-            _lr->destination_rect.size = {
-           _lr->destination_rect.size.x / 1.1f,
-           _lr->destination_rect.size.y / 1.1f,
-            };
+    buttonComp->connectClick([buttonComp, imgComp, this]() {
+        if (_selected) {
+            std::cout << "already selected" << std::endl;
         }
-        _lr = imgComp;
+        else {
+            std::cout << "left click -> reward card button" << std::endl;
+            if (_lr == nullptr) {
+                resize(imgComp, 1.1f);
+            }
+            else if (_lr != nullptr && _lr != imgComp) {
+                resize(imgComp, 1.1f);
+                resize(_lr, 1.0f / 1.1f);
+            }
+            _lr = imgComp;
+        }
     });
-    buttonComp->connectHover([buttonComp, imgComp]() {
+    buttonComp->connectHover([buttonComp, imgComp, this]() {
+        if (_selected) return;
         std::cout << "hover -> Reward button: " << std::endl;
         //filter
         imgComp->apply_filter(128, 128, 128);
         });
-
     buttonComp->connectExit([buttonComp, imgComp]() {
         std::cout << "exit -> Reward button: " << std::endl;
         //filter
@@ -312,7 +309,6 @@ void RewardScene::create_a_deck_card(const GameStructs::CardButtonProperties& bp
         imgComp->destination_rect.position.y -= 0.125f;
         //imgComp->destination_rect.size = { imgComp->destination_rect.size.x * 1.25f,  imgComp->destination_rect.size.y * 1.25f };
         });
-
     buttonComp->connectExit([buttonComp, imgComp]() {
         std::cout << "exit -> Reward button: " << std::endl;
         imgComp->destination_rect.position.y += 0.125f;
@@ -389,4 +385,32 @@ void RewardScene::refresh_my_deck_cards(const std::list<std::string>& cl) {
             static_cast<CardButton*>(buttonComp)->set_it(nullptr); // Poner puntero a nullptr si no hay carta
         }
     }
+}
+void RewardScene::create_reward_selected_button(const GameStructs::ButtonProperties& bp) {
+    auto* mngr = Game::Instance()->get_mngr();
+
+    auto e = create_button(bp);
+    auto buttonComp = mngr->getComponent<Button>(e);
+
+    buttonComp->connectClick([buttonComp, this, bp] {
+        //we only select a reward if previously we have chosen something
+        if (_lr != nullptr && !_selected) {
+            _lr->apply_filter(255, 255, 255);
+            _lr->swap_textures();
+            _selected = true;
+        }
+    });
+
+    auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
+    buttonComp->connectHover([buttonComp, imgComp, this]() {
+        if (_selected) return;
+        std::cout << "hover -> Reward selected button: " << std::endl;
+        //filter
+        imgComp->apply_filter(128, 128, 128);
+    });
+    buttonComp->connectExit([buttonComp, imgComp, this]() {
+        std::cout << "exit -> Reward selected button: " << std::endl;
+        //filter
+        imgComp->apply_filter(255, 255, 255);
+    });
 }

@@ -446,16 +446,16 @@
       "file": "resources/images/ui/mythic.png"
     },
     {
-      "id": "reward_card_selected",
-      "file": "resources/images/ui/reward_card_selected.png"
-    },
-    {
       "id": "reward_health",
       "file": "resources/images/ui/reward_health.png"
     },
     {
-      "id": "reward_health_selected",
+      "id": "reward_selected",
       "file": "resources/images/ui/reward_health_selected.png"
+    },
+    {
+      "id": "confirm_reward",
+      "file": "resources/images/ui/confirm_reward.png"
     }
   ], 
   "messages" : [

@@ -37,6 +37,7 @@ private:
 	bool _upgrade;
 
 	ImageForButton* _lr;
+	bool _selected;
 
 	//method to select a card randomly
 	std::string select_card(GameStructs::CardType ct);
@@ -52,4 +53,7 @@ private:
 
 	//method to change the position between health button and a card button
 	void change_pos(bool enter);
+	void resize(ImageForButton* im, float factor);
+
+	void create_reward_selected_button(const GameStructs::ButtonProperties& bp);
 };
