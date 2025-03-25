@@ -72,6 +72,8 @@ public:
     void hide_wave_image();
     void start_new_wave();
 
+    int get_wave_size();
+
     inline Uint32 get_wave_time() { return _currentWaveTime; }
     inline int get_current_wave() { return _currentWave; }
     inline events get_current_event() { return _current_event; }

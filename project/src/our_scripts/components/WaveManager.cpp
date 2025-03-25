@@ -74,7 +74,7 @@ WaveManager::spawnWave() {
     std::random_device rd;
     std::mt19937 gen(rd());
 	// _waves es un vector de pares (int, vector<int>)
-	_numEnemies = _waves[_currentWave].second.size();
+	int number_of_enemies = _waves[_currentWave].second.size();
     if (_enemiesSpawned < _numEnemies) {
 
         // RANDOM
@@ -98,6 +98,7 @@ WaveManager::spawnWave() {
             // Medio de la pantalla + angulo * distancia
             Vector2D posVec = Vector2D(Game::Instance()->get_world_half_size().first + cos(rAng) * (_min_distance + _op_dist), Game::Instance()->get_world_half_size().second + sin(rAng) * (_min_distance + _op_dist));
             
+            assert(_enemiesSpawned < (1 << 7));
             // FIXME: define enum values
             switch (_waves[_currentWave].second[_enemiesSpawned])
             {
@@ -132,7 +133,7 @@ WaveManager::spawnWave() {
                 }
             }
             // Tiempo
-            _min_time = _totalSpawnTime / _numEnemies;
+            _min_time = _totalSpawnTime / number_of_enemies;
             _op_time = _min_time * rn;
             _nextSpawn = _currentWaveTime + (_min_time + _op_time);
 
@@ -196,6 +197,11 @@ void WaveManager::start_new_wave()
 {
     _currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
     choose_new_event();
+}
+
+int WaveManager::get_wave_size()
+{
+    return _numEnemies;
 }
 
 void WaveManager::choose_new_event()
