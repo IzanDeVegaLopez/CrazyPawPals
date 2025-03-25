@@ -15,8 +15,6 @@
       "id": "piu",
       "file": "resources/images/characters/piu.png"
     },
-
-
     {
       "id": "p_revolver",
       "file": "resources/images/projectiles/revolver.png"
@@ -26,7 +24,6 @@
       "file": "resources/images/projectiles/p_pump_shotgun.png"
     },
     {
-
       "id": "p_canon",
       "file": "resources/images/projectiles/canon.png"
     },
@@ -86,8 +83,6 @@
       "id": "p_lightbringer_amp",
       "file": "resources/images/projectiles/SDL_logo.png"
     },
-
-
     {
       "id": "card_kunai",
       "file": "resources/images/cards/card_kunai.png"
@@ -153,6 +148,70 @@
       "file": "resources/images/cards/carta.png"
     },
 
+    {
+      "id": "reward_card_kunai",
+      "file": "resources/images/cards/card_kunai.png"
+    },
+    {
+      "id": "reward_card",
+      "file": "resources/images/cards/card.png"
+    },
+    {
+      "id": "reward_card_fireball",
+      "file": "resources/images/cards/card_fireball.png"
+    },
+    {
+      "id": "reward_card_minigun",
+      "file": "resources/images/cards/card_minigun.png"
+    },
+    {
+      "id": "reward_card_reloading",
+      "file": "resources/images/cards/card_reloading.png"
+    },
+    {
+      "id": "reward_card_lighting",
+      "file": "resources/images/cards/card_lighting.png"
+    },
+    {
+      "id": "reward_card_spray",
+      "file": "resources/images/cards/card_spray.png"
+    },
+    {
+      "id": "reward_card_back",
+      "file": "resources/images/cards/card_back.png"
+    },
+    {
+      "id": "reward_card_eldritch_blast",
+      "file": "resources/images/cards/card_eldritch_blast.png"
+    },
+    {
+      "id": "reward_card_primordia",
+      "file": "resources/images/cards/carta.png"
+    },
+    {
+      "id": "reward_card_commune",
+      "file": "resources/images/cards/card_commune.png"
+    },
+    {
+      "id": "reward_card_evoke",
+      "file": "resources/images/cards/carta.png"
+    },
+    {
+      "id": "reward_card_fulgur",
+      "file": "resources/images/cards/carta.png"
+    },
+    {
+      "id": "reward_card_placeholder",
+      "file": "resources/images/cards/carta.png"
+    },
+    {
+      "id": "reward_card_quick_feet",
+      "file": "resources/images/cards/carta.png"
+    },
+    {
+      "id": "reward_card_recover",
+      "file": "resources/images/cards/carta.png"
+    },
 
     {
       "id": "boom",
@@ -263,10 +322,6 @@
       "file": "resources/images/ui/weapon_selected_b.png"
     },
     {
-      "id": "play_button",
-      "file": "resources/images/ui/play.png"
-    },
-    {
       "id": "start",
       "file": "resources/images/enviroment/start.png"
     },
@@ -277,6 +332,10 @@
     {
       "id": "selection",
       "file": "resources/images/enviroment/selection.jpg"
+    },
+    {
+      "id": "reward",
+      "file": "resources/images/enviroment/reward.png"
     },
     {
       "id": "deck1_button",
@@ -372,24 +431,33 @@
     },
     {
       "id": "enter_game",
-      "file": "resources/images/ui/enter_game.png"
+      "file": "resources/images/ui/play.png"
     },
     {
-      "id": "reward_card",
-      "file": "resources/images/ui/reward.png"
+      "id": "controls_button",
+      "file": "resources/images/ui/controls.png"
     },
     {
-      "id": "reward_card_selected",
-      "file": "resources/images/ui/reward_selected.png"
-    }
-    ,
-
+      "id": "exit_game",
+      "file": "resources/images/ui/exit.png"
+    },
     {
       "id": "mythic",
       "file": "resources/images/ui/mythic.png"
+    },
+    {
+      "id": "reward_health",
+      "file": "resources/images/ui/reward_health.png"
+    },
+    {
+      "id": "reward_selected",
+      "file": "resources/images/ui/reward_health_selected.png"
+    },
+    {
+      "id": "confirm_reward",
+      "file": "resources/images/ui/confirm_reward.png"
     }
-  ],
-  
+  ], 
   "messages" : [
     { "id" : "start", "text" : "Press space to start", "font" : "ARIAL24", "color" : "0x441155ff"},
     { "id" : "continue", "text" : "Press space to continue", "font" : "ARIAL24", "color" : "0x112233ff", "bg" : "0xffffffff" },

@@ -150,6 +150,7 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
 
         if (imgComp != _last_weapon_button) {
             //swap the actual buttons textures
+            imgComp->apply_filter(255, 255, 255);
             imgComp->swap_textures();
         }
 
@@ -158,7 +159,6 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
             _last_weapon_button->swap_textures();
         }
         _last_weapon_button = imgComp;
-
         
 
     });
@@ -239,7 +239,8 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
         _deck_selected = true;
 
         //swap the actual buttons textures
-        if (_last_deck_button != nullptr &&_last_deck_button != imgComp) {
+        if (_last_deck_button != nullptr && _last_deck_button != imgComp) {
+            imgComp->apply_filter(255, 255, 255);
             imgComp->swap_textures();
             _last_deck_button->swap_textures();
             //register the clicked button
@@ -321,6 +322,6 @@ void SelectionMenuScene::create_enter_button() {
 
     buttonComp->connectClick([buttonComp, mngr, this]() {
         if (_weapon_selected &&_deck_selected)
-        Game::Instance()->change_Scene(Game::GAMESCENE);
+        Game::Instance()->change_Scene(Game::REWARDSCENE);
     }); 
 }

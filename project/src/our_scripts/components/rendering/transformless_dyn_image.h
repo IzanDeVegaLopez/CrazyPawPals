@@ -37,7 +37,6 @@ struct transformless_dyn_image : public ecs::Component {
 
 	inline virtual void render() override {
 		if (!active) return;
-
 		rect_f32 rect = rect_f32_screen_rect_from_viewport(destination_rect, my_camera_screen.screen);
 		const SDL_Rect destination = {
 			int(rect.position.x),

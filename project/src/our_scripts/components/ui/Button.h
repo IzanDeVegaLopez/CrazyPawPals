@@ -26,6 +26,8 @@ public:
     void connectClick(SDLEventCallback callback);
     void connectHover(SDLEventCallback callback);
     void connectExit(SDLEventCallback callback);
+
+    void update_collider();
 private:
     // Button states
     enum ButtonState { EMPTY, HOVER, CLICK };
