@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include <string>
 #include <list>
+#include <unordered_set>
 
 class Texture;
 class Button;
@@ -40,12 +41,16 @@ private:
 
 	//method to select a card randomly
 	std::string select_card(GameStructs::CardType ct);
+	std::string get_unique_card(GameStructs::CardType& ct, std::unordered_set<std::string>& appeared_cards);
 
 	//methods to create reward buttons
 	void create_reward_card_button(const GameStructs::ButtonProperties& bp);
 	void create_reward_health_button(const GameStructs::ButtonProperties& bp);
 	void create_reward_buttons();
-
+	void refresh_rewards();
 	//method to create next round button
 	void create_next_round_button() {};
+
+	//method to change the position between health button and a card button
+	void change_pos(bool enter);
 };
