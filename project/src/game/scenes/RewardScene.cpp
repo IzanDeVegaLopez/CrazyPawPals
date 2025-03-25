@@ -16,7 +16,7 @@
 #include <unordered_set>
 
 RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr), _selected_button(nullptr), _reward_bg(nullptr),
-_health(false),_card(false), _object(false), _upgrade(false), _reward_selected(false)
+_health(false),_card(false), _object(false), _upgrade(false), _lr(nullptr)
 {
 }
 

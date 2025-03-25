@@ -450,12 +450,12 @@
       "file": "resources/images/ui/reward_selected.png"
     },
     {
-      "id": "reward_life",
-      "file": "resources/images/ui/reward_life.png"
+      "id": "reward_health",
+      "file": "resources/images/ui/reward_health.png"
     },
     {
-      "id": "reward_life_selected",
-      "file": "resources/images/ui/reward_life_selected.png"
+      "id": "reward_health_selected",
+      "file": "resources/images/ui/reward_health_selected.png"
     }
   ], 
   "messages" : [
