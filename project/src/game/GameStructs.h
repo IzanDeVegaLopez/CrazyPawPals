@@ -43,4 +43,18 @@ namespace GameStructs {
 		CardButtonProperties(const rect_f32& rect, float rot, const std::string& sprite_key, ecs::grpId_t ID, Card* it)
 			: ButtonProperties{ rect, rot, sprite_key, ID }, iterator(it) {}
 	};
+	enum CardType {
+		FIREBALL,
+		LIGHTING,
+		KUNAI,
+		RECOVER,
+		MINIGUN,
+		SPRAY,
+		ELDRITCH_BLAST,
+		COMMUNE,
+		EVOKE,
+		FULGUR,
+		QUICK_FEET,
+		LAST_CARD,
+	};
 }

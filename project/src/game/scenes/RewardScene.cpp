@@ -13,8 +13,10 @@
 #include "../../our_scripts/components/rendering/ImageForButton.h"
 
 #include <iostream>
+#include <unordered_set>
 
-RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr), _selected_button(nullptr), _reward_bg(nullptr)
+RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr), _selected_button(nullptr), _reward_bg(nullptr),
+_health(false),_card(false), _object(false), _upgrade(false), _reward_selected(false)
 {
 }
 
@@ -43,6 +45,38 @@ void RewardScene::render() {
     _reward_bg->render(0, 0);
     Scene::render();
 }
+std::string RewardScene::select_card(GameStructs::CardType ct) {
+    std::string s = "";
+    switch (ct)
+    {
+    case GameStructs::FIREBALL: s = "reward_card_fireball";
+        break;
+    case GameStructs::LIGHTING: s = "reward_card_lighting";
+        break;
+    case GameStructs::KUNAI: s = "reward_card_kunai";
+        break;
+    case GameStructs::RECOVER: s = "reward_card_recover";
+        break;
+    case GameStructs::MINIGUN: s = "reward_card_minigun";
+        break;
+    case GameStructs::SPRAY: s = "reward_card_spray";
+        break;
+    case GameStructs::ELDRITCH_BLAST: s = "reward_card_eldritch_blast";
+        break;
+    case GameStructs::COMMUNE: s = "reward_card_commune";
+        break;
+    case GameStructs::EVOKE: s = "reward_card_evoke";
+        break;
+    case GameStructs::FULGUR: s = "reward_card_fulgur";
+        break;
+    case GameStructs::QUICK_FEET: s = "reward_card_quick_feet";
+        break;
+    default:
+        break;
+    }
+    std::cout << "reward card: " + s << std::endl;
+    return s;
+}
 void RewardScene::create_reward_buttons() {
     float umbral = 0.4f;
     GameStructs::ButtonProperties buttonPropTemplate = {
@@ -50,29 +84,94 @@ void RewardScene::create_reward_buttons() {
         0.0f, ""
     };
 
-    GameStructs::ButtonProperties reward1B = buttonPropTemplate;
-    reward1B.sprite_key = "reward_card";
-    create_reward_button(reward1B);
+    // Auxiliar set para asegurarnos de que no se repiten cartas
+    std::unordered_set<std::string> appeared_cards;
 
-    GameStructs::ButtonProperties reward2B = buttonPropTemplate;
-    reward2B.sprite_key = "reward_el_bl_x2";
-    reward2B.rect.position.x += umbral;
-    create_reward_button(reward2B);
+    //lambda function
+    auto get_unique_card = [&](GameStructs::CardType& ct) -> std::string { 
+        std::string sprite; 
+        do {
+            ct = (GameStructs::CardType)sdlutils().rand().nextInt(0, GameStructs::LAST_CARD); 
+            sprite = select_card(ct); 
+        } while (appeared_cards.find(sprite) != appeared_cards.end()); // Repeat this process if we got some card that appeared before 
+        appeared_cards.insert(sprite); 
+        return sprite; 
+        };
 
-    GameStructs::ButtonProperties reward3B = buttonPropTemplate;
-    reward3B.sprite_key = "reward_life";
-    reward3B.rect.position.x -= umbral;
-    create_reward_button(reward3B);
+    //three card reward buttons
+    GameStructs::ButtonProperties reward_card1 = buttonPropTemplate; 
+    GameStructs::CardType ct; 
+    reward_card1.sprite_key = get_unique_card(ct); 
+    create_reward_card_button(reward_card1);
+
+    GameStructs::ButtonProperties reward_card2 = buttonPropTemplate; 
+    reward_card2.sprite_key = get_unique_card(ct); 
+    reward_card2.rect.position.x -= umbral; 
+    create_reward_card_button(reward_card2);
+     
+    GameStructs::ButtonProperties reward_card3 = buttonPropTemplate; 
+    reward_card3.sprite_key = get_unique_card(ct); 
+    reward_card3.rect.position.x += umbral; 
+    create_reward_card_button(reward_card3);
+
+    //it only appears in certain circustances (if so, we swap the position between this button and the third reward card)
+    GameStructs::ButtonProperties reward_heal = buttonPropTemplate;
+    reward_heal.sprite_key = "reward_health";
+    reward_heal.rect.position.x = 20.0f;
+    create_reward_health_button(reward_heal);
 }
-void RewardScene::create_reward_button(const GameStructs::ButtonProperties& bp)
-{
+void RewardScene::create_reward_health_button(const GameStructs::ButtonProperties& bp) {
     auto* mngr = Game::Instance()->get_mngr();
     auto e = create_button(bp);
     auto buttonComp = mngr->getComponent<Button>(e);
     //used for change the sprite once a button is clicked
     auto imgComp = mngr->addComponent<ImageForButton>(e,
+        &sdlutils().images().at(bp.sprite_key),
+        &sdlutils().images().at("reward_health_selected"),
+        bp.rect,
+        0,
+        Game::Instance()->get_mngr()->getComponent<camera_component>(
+            Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
+    );
+
+    buttonComp->connectClick([buttonComp, imgComp]() {
+        std::cout << "left click -> Reward button" << std::endl;
+        //swap the actual buttons textures
+        imgComp->swap_textures();
+
+        ////swap the actual buttons textures
+        //if (_last_reward_button != nullptr && _last_reward_button != imgComp) {
+        //    imgComp->swap_textures();
+        //    _last_deck_button->swap_textures();
+        //    //register the clicked button
+        //}
+        //else if (_last_deck_button == nullptr) { //special case: first click
+        //    imgComp->swap_textures();
+        //}
+        //_last_deck_button = imgComp;
+        });
+    buttonComp->connectHover([buttonComp, imgComp]() {
+        std::cout << "hover -> Reward button: " << std::endl;
+        //filter
+        imgComp->apply_filter(128, 128, 128);
+        });
+
+    buttonComp->connectExit([buttonComp, imgComp]() {
+        std::cout << "exit -> Reward button: " << std::endl;
+        //filter
+        imgComp->apply_filter(255, 255, 255);
+        });
+}
+void RewardScene::create_reward_card_button(const GameStructs::ButtonProperties& bp)
+{
+    auto* mngr = Game::Instance()->get_mngr();
+    auto e = create_button(bp);
+    auto buttonComp = mngr->getComponent<Button>(e);
+    
+    //used for change the sprite once a button is clicked
+    auto imgComp = mngr->addComponent<ImageForButton>(e,
         &sdlutils().images().at(bp.sprite_key), 
-        &sdlutils().images().at(bp.sprite_key + "_selected"), 
+        &sdlutils().images().at("reward_card_selected"),
         bp.rect, 
         0, 
         Game::Instance()->get_mngr()->getComponent<camera_component>( 
