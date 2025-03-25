@@ -104,11 +104,13 @@ void RewardScene::refresh_rewards() {
         data->_data = s;
     }
 
-    change_pos(true);
+    change_pos(false);
 }
 void RewardScene::change_pos(bool enter) {
-    auto swap_positions = [](auto* img1, auto* img2) {
-        std::swap(img1->destination_rect.position.x, img2->destination_rect.position.x);
+    auto swap_positions = [](transformless_dyn_image* img1, transformless_dyn_image* img2) {
+        auto aux = img1->destination_rect.position.x;
+        img1->destination_rect.position.x = img2->destination_rect.position.x;
+        img2->destination_rect.position.x = aux;
         };
 
     auto* mngr = Game::Instance()->get_mngr();
@@ -124,14 +126,21 @@ void RewardScene::change_pos(bool enter) {
     auto img = mngr->getComponent<transformless_dyn_image>(rewardCard); // Última carta
     auto healImg = mngr->getComponent<transformless_dyn_image>(healthReward);
 
+    auto bRewardButton = mngr->getComponent<Button>(rewardCard);
+    auto hRewardButton = mngr->getComponent<Button>(healthReward);
+
     if (enter) { //if we need to activate the heal reward
         if ((float)act / (float)max <= 0.2f) {
             swap_positions(img, healImg);
+            bRewardButton->update_collider();
+            hRewardButton->update_collider();
         }
     }
     else { //in other case, the condition to swap changes
         if ((float)act / (float)max > 0.2f) {
             swap_positions(img, healImg);
+            bRewardButton->update_collider();
+            hRewardButton->update_collider();
         }
     }
 }
@@ -165,7 +174,7 @@ void RewardScene::create_reward_buttons() {
     GameStructs::ButtonProperties reward_heal = buttonPropTemplate;
     reward_heal.ID = ecs::grp::REWARDHEALTH;
     reward_heal.sprite_key = "reward_health";
-    reward_heal.rect.position.y = 0.5f;
+    reward_heal.rect.position.x = 20.0f;
     create_reward_health_button(reward_heal);
 }
 
