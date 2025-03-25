@@ -120,7 +120,7 @@ void RewardScene::change_pos(bool enter) {
     int max = playerHealth->getMaxHealth();
 
     // other references
-    const auto& healthReward = mngr->getEntities(ecs::grp::REWARDHEALTH)[0];
+    auto& healthReward = mngr->getEntities(ecs::grp::REWARDHEALTH)[0];
     auto img = mngr->getComponent<transformless_dyn_image>(rewardCard); // Última carta
     auto healImg = mngr->getComponent<transformless_dyn_image>(healthReward);
 
@@ -165,9 +165,11 @@ void RewardScene::create_reward_buttons() {
     GameStructs::ButtonProperties reward_heal = buttonPropTemplate;
     reward_heal.ID = ecs::grp::REWARDHEALTH;
     reward_heal.sprite_key = "reward_health";
-    reward_heal.rect.position.x = 20.0f;
+    reward_heal.rect.position.y = 0.5f;
     create_reward_health_button(reward_heal);
 }
+
+
 void RewardScene::create_reward_health_button(const GameStructs::ButtonProperties& bp) {
     auto* mngr = Game::Instance()->get_mngr();
     auto e = create_button(bp);
@@ -183,34 +185,42 @@ void RewardScene::create_reward_health_button(const GameStructs::ButtonPropertie
     );
     auto data = mngr->addComponent<RewardDataComponent>(e, bp.sprite_key);
 
-    buttonComp->connectClick([buttonComp, imgComp]() {
-        std::cout << "left click -> Reward button" << std::endl;
-        //swap the actual buttons textures
-        imgComp->swap_textures();
+    buttonComp->connectClick([buttonComp, imgComp, this]() {
+        std::cout << "left click -> health button" << std::endl;
+        if (_lr == nullptr) {
+            imgComp->destination_rect.size = {
+            imgComp->destination_rect.size.x * 1.1f,
+            imgComp->destination_rect.size.y * 1.1f,
+            };
+        }
+        else if (_lr != imgComp) {
+            imgComp->destination_rect.size = {
+            imgComp->destination_rect.size.x * 1.1f,
+            imgComp->destination_rect.size.y * 1.1f,
+            };
 
-        ////swap the actual buttons textures
-        //if (_last_reward_button != nullptr && _last_reward_button != imgComp) {
-        //    imgComp->swap_textures();
-        //    _last_deck_button->swap_textures();
-        //    //register the clicked button
-        //}
-        //else if (_last_deck_button == nullptr) { //special case: first click
-        //    imgComp->swap_textures();
-        //}
-        //_last_deck_button = imgComp;
-        });
+            _lr->destination_rect.size = {
+           _lr->destination_rect.size.x / 1.1f,
+           _lr->destination_rect.size.y / 1.1f,
+            };
+        }
+        _lr = imgComp;
+    });
+
     buttonComp->connectHover([buttonComp, imgComp]() {
         std::cout << "hover -> Reward button: " << std::endl;
         //filter
         imgComp->apply_filter(128, 128, 128);
-        });
+    });
 
     buttonComp->connectExit([buttonComp, imgComp]() {
         std::cout << "exit -> Reward button: " << std::endl;
         //filter
         imgComp->apply_filter(255, 255, 255);
-        });
+    });
 }
+
+
 void RewardScene::create_reward_card_button(const GameStructs::ButtonProperties& bp)
 {
     auto* mngr = Game::Instance()->get_mngr();
@@ -228,22 +238,26 @@ void RewardScene::create_reward_card_button(const GameStructs::ButtonProperties&
     ); 
     //used for change the sprite once a button is clicked
     auto data = mngr->addComponent<RewardDataComponent>(e, bp.sprite_key);
-    buttonComp->connectClick([buttonComp, imgComp]() {
-        std::cout << "left click -> Reward button" << std::endl;
-        //swap the actual buttons textures
-        imgComp->swap_textures();
+    buttonComp->connectClick([buttonComp, imgComp, this]() {
+        if (_lr == nullptr) {
+            imgComp->destination_rect.size = {
+            imgComp->destination_rect.size.x * 1.1f,
+            imgComp->destination_rect.size.y * 1.1f,
+            };
+        }
+        else if (_lr != imgComp) {
+            imgComp->destination_rect.size = {
+            imgComp->destination_rect.size.x * 1.1f,
+            imgComp->destination_rect.size.y * 1.1f,
+            };
 
-        ////swap the actual buttons textures
-        //if (_last_reward_button != nullptr && _last_reward_button != imgComp) {
-        //    imgComp->swap_textures();
-        //    _last_deck_button->swap_textures();
-        //    //register the clicked button
-        //}
-        //else if (_last_deck_button == nullptr) { //special case: first click
-        //    imgComp->swap_textures();
-        //}
-        //_last_deck_button = imgComp;
-        });
+            _lr->destination_rect.size = {
+           _lr->destination_rect.size.x / 1.1f,
+           _lr->destination_rect.size.y / 1.1f,
+            };
+        }
+        _lr = imgComp;
+    });
     buttonComp->connectHover([buttonComp, imgComp]() {
         std::cout << "hover -> Reward button: " << std::endl;
         //filter

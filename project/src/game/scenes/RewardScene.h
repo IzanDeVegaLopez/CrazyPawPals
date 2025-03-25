@@ -7,8 +7,7 @@
 class Texture;
 class Button;
 class Card;
-class ImagenForButton;
-using LastReward = ImagenForButton*;
+class ImageForButton;
 class RewardScene : public Scene
 {
 public:
@@ -37,7 +36,7 @@ private:
 	bool _object;
 	bool _upgrade;
 
-	LastReward _lr;
+	ImageForButton* _lr;
 
 	//method to select a card randomly
 	std::string select_card(GameStructs::CardType ct);

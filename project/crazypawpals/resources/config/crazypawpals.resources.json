@@ -447,7 +447,7 @@
     },
     {
       "id": "reward_card_selected",
-      "file": "resources/images/ui/reward_selected.png"
+      "file": "resources/images/ui/reward_card_selected.png"
     },
     {
       "id": "reward_health",

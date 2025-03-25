@@ -239,7 +239,8 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
         _deck_selected = true;
 
         //swap the actual buttons textures
-        if (_last_deck_button != nullptr &&_last_deck_button != imgComp) {
+        if (_last_deck_button != nullptr && _last_deck_button != imgComp) {
+            imgComp->apply_filter(255, 255, 255);
             imgComp->swap_textures();
             _last_deck_button->swap_textures();
             //register the clicked button
