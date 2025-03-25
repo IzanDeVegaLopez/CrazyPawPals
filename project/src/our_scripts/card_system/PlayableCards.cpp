@@ -22,6 +22,7 @@ void Fireball::on_play(Deck& d, const Vector2D* player_position, const Vector2D*
 	bp.width = 2.3;
 	bp.life_time = 2;
 	bp.sprite_key = "p_fireball";
+	bp.collision_filter = GameStructs::collide_with::player;
 	//std::cout << bp.init_pos << "--" << bp.dir << std::endl;
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }
@@ -44,6 +45,7 @@ Minigun::Minigun()
 	_bullets_properties.width = 0.5;
 	_bullets_properties.life_time = 0.5f;
 	_bullets_properties.sprite_key = "card_minigun";
+	_bullets_properties.collision_filter = GameStructs::collide_with::enemy;
 }
 void Minigun::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
 {
@@ -90,6 +92,7 @@ void Lighting::on_play(Deck& d, const Vector2D* player_position, const Vector2D*
 	bp.width = 3.8;
 	bp.life_time = 0.1;
 	bp.sprite_key = "p_lighting";
+	bp.collision_filter = GameStructs::collide_with::enemy;
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }
 #pragma endregion
@@ -113,6 +116,7 @@ void Kunai::on_play(Deck& d, const Vector2D* player_position, const Vector2D* ta
 	bp.width = 2.3;
 	bp.life_time = 2;
 	bp.sprite_key = "p_kunai";
+	bp.collision_filter = GameStructs::collide_with::enemy;
 	//std::cout << bp.init_pos << "--" << bp.dir << std::endl;
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }
@@ -144,6 +148,7 @@ void CardSpray::on_play(Deck& d, const Vector2D* player_position, const Vector2D
 	bp.width = 0.7;
 	bp.life_time = 3;
 	bp.sprite_key = "card_spray";
+	bp.collision_filter = GameStructs::collide_with::enemy;
 
 	patrons::ShotgunPatron(bp, ecs::grp::BULLET, 75, 3);
 	d.mill();
@@ -166,6 +171,7 @@ void EldritchBlast::on_play(Deck& d, const Vector2D* player_position, const Vect
 	bp.width = 2.3;
 	bp.life_time = 0.13;
 	bp.sprite_key = "p_eldritch_blast";
+	bp.collision_filter = GameStructs::collide_with::enemy;
 
 	patrons::ShotgunPatron(bp, ecs::grp::BULLET, _amplitude * (_shot_count - 1), _shot_count);
 }
@@ -192,6 +198,7 @@ void Primordia::on_play(Deck& d, const Vector2D* player_position, const Vector2D
 	bp.height = 2.3;
 	bp.width = 2.3;
 	bp.life_time = 0.3;
+	bp.collision_filter = GameStructs::collide_with::enemy;
 	// Primed effect
 	// TODO: Make distinct from standard effect
 	if (d.get_primed()) {
@@ -255,6 +262,7 @@ void Commune::on_play(Deck& d, const Vector2D* player_position, const Vector2D* 
 	bp.width = 1.0 + (amp * 1.5);
 	bp.life_time = 0.2;
 	bp.sprite_key = "card_commune";
+	bp.collision_filter = GameStructs::collide_with::enemy;
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }
 #pragma endregion
@@ -281,6 +289,7 @@ Fulgur::Fulgur() : Card("card_fulgur", Resources(3)), _playing(false),_time_sinc
 	_bullets_properties.life_time = 0.1f;
 	_bullets_properties.dir = (Vector2D(0, 1));
 	_bullets_properties.sprite_key = "p_lighting";
+	_bullets_properties.collision_filter = GameStructs::collide_with::enemy;
 }
 void Fulgur::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
 {
@@ -293,6 +302,7 @@ void Fulgur::on_play(Deck& d, const Vector2D* player_position, const Vector2D* t
 	bp.height = 4.2;
 	bp.width = 3.8;
 	bp.life_time = 0.5;
+	bp.collision_filter = GameStructs::collide_with::enemy;
 	bp.sprite_key = "p_lighting";
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 

@@ -39,6 +39,7 @@
 #include "../../our_scripts/components/weapons/enemies/WeaponBoom.h"
 #include "../../our_scripts/components/weapons/enemies/WeaponCatKuza.h"
 #include "../../our_scripts/components/Health.h"
+#include "../../our_scripts/components/bullet_collision_component.hpp"
 
 #include "../../our_scripts/components/StateMachine.h"
 #include "../../our_scripts/components/rendering/dyn_image.hpp"
@@ -47,6 +48,7 @@
 #include "../../our_scripts/components/rendering/rect_component.hpp"
 #include "../../our_scripts/components/ui/PlayerHUD.h"
 #include "../../our_scripts/components/ui/HUD.h"
+#include "../../our_scripts/components/collision_triggerers.hpp"
 
 #include "../../our_scripts/card_system/PlayableCards.hpp"
 #include "../../our_scripts/card_system/CardUpgrade.hpp"
@@ -150,6 +152,7 @@ ecs::entity_t GameScene::create_player()
 		new Health(100, true),
 		new ManaComponent(),
 		new MovementController(0.1f,5.0f,20.0f*deccel_spawned_creatures_multi),
+		new player_collision_triggerer(),
 		//new Deck(c),
 		// new StopOnBorder(camera, 1.5f, 2.0f),
 		&player_rigidbody,
@@ -179,6 +182,7 @@ ecs::entity_t GameScene::create_enemy(Transform* tr, const std::string& spriteKe
 			*tr
 		),
 		new Health(health),
+		new enemy_collision_triggerer(),
 		weapon,
 		&rigidbody,
 		&col
@@ -331,6 +335,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 			tr
 		),
 		new Health(2),
+		new enemy_collision_triggerer(),
 		&weapon,
 		&rigidbody
 	);
@@ -814,6 +819,8 @@ void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs
 	//std::cout << std::endl << atan2(bp.dir.getY(), bp.dir.getX()) << " = " << atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI << std::endl;
 	auto&& transform = *new Transform(bp.init_pos, bp.dir, (atan2(-bp.dir.getY(), bp.dir.getX()) + M_PI / 2) * 180.0f / M_PI, bp.speed);
 	auto&& rect = *new rect_component{ 0, 0, bp.width, bp.height };
+	auto&& player_rigidbody = *new rigidbody_component{ rect_f32{{0.15f, -0.125}, {0.5f, 0.75f}}, mass_f32{7.0f}, 1.0f };
+	auto&& player_collisionable = *new collisionable{ transform, player_rigidbody, rect, collisionable_option_trigger };
 	//std::cout << bp.speed << std::endl;
 	create_entity(
 		gid,
@@ -828,7 +835,10 @@ void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs
 			transform
 		),
 		new LifetimeTimer(bp.life_time),
-		new BulletData(bp.damage, bp.weapon_type)
+		new BulletData(bp.damage, bp.weapon_type),
+		&player_rigidbody,
+		&player_collisionable,
+		new bullet_collision_component(bp.collision_filter)
 	);
 }
 

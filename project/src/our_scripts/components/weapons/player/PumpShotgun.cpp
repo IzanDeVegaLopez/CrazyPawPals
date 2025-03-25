@@ -27,6 +27,7 @@ PumpShotgun::callback(Vector2D shootPos, Vector2D shootDir) {
 	bp.height = _attack_height * 0.6f;
 	bp.sprite_key = _tex;
 	bp.weapon_type = GameStructs::PUMP_SHOTGUN;
+	bp.collision_filter = GameStructs::collide_with::enemy;
 
 	float totalAngle = 60.0f;
 

@@ -19,6 +19,7 @@ Revolver::callback(Vector2D shootPos, Vector2D shootDir) {
 	//bp.rot = atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI;
 	bp.sprite_key = _tex;
 	bp.weapon_type = GameStructs::REVOLVER;
+	bp.collision_filter = GameStructs::collide_with::enemy;
 
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }
