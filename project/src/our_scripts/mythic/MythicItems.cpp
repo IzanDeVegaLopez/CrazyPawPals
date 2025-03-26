@@ -23,6 +23,11 @@ ProfaneHotline::ProfaneHotline(ManaComponent* m)
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::mill, this, &event_system::event_receiver::event_callback0);
 }
 
+ProfaneHotline::~ProfaneHotline()
+{
+	event_system::event_manager::Instance()->unsuscribe_to_event(event_system::mill, this, &event_system::event_receiver::event_callback0);
+}
+
 void 
 ProfaneHotline::event_callback0(const event_system::event_receiver::Msg& m) {
 	int newManaCount = _mana->mana_count() + m.int_value;
@@ -42,6 +47,11 @@ CurtainReaper::CurtainReaper(Health* h)
 	:MythicItem("CurtainReaper"), _health(h)
 {
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::enemy_dead, this, &event_system::event_receiver::event_callback0);
+}
+
+CurtainReaper::~CurtainReaper()
+{
+	event_system::event_manager::Instance()->unsuscribe_to_event(event_system::enemy_dead, this, &event_system::event_receiver::event_callback0);
 }
 
 void 

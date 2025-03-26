@@ -12,7 +12,6 @@ class BloodClaw : public MythicItem {
 	Health* _health;
 	Weapon* _weapon;
 public:
-	BloodClaw() : _health(nullptr), _weapon(nullptr) {}
 	BloodClaw(Health* h, Weapon* w);
 
 	void apply_effects() override;
@@ -31,9 +30,8 @@ public:
 class ProfaneHotline :public event_system::event_receiver, public MythicItem {
 	ManaComponent* _mana;
 public:
-	ProfaneHotline() : _mana(nullptr) {}
 	ProfaneHotline(ManaComponent* m);
-
+	~ProfaneHotline();
 	void apply_effects() override;
 	void event_callback0(const event_system::event_receiver::Msg& m);
 
@@ -50,9 +48,8 @@ public:
 class CurtainReaper : public event_system::event_receiver, public MythicItem {
 	Health* _health;
 public:
-	CurtainReaper() : _health(nullptr) {}
 	CurtainReaper(Health* h);
-
+	~CurtainReaper();
 	void apply_effects() override;
 	void event_callback0(const event_system::event_receiver::Msg& m);
 
@@ -70,9 +67,7 @@ class Incense : public MythicItem {
 	ManaComponent* _mana;
 	Weapon* _weapon;
 public:
-	Incense() : _mana(nullptr), _weapon(nullptr) {}
 	Incense(ManaComponent* m,Weapon* w);
-
 	void apply_effects() override;
 
 	void set_mana(ManaComponent* m) { _mana = m; }
@@ -93,7 +88,6 @@ class ArcaneSurge : public MythicItem {
 	bool _set = false;
 	int _ini_mana;
 public:
-	ArcaneSurge() : _mana(nullptr), _deck(nullptr),_ini_mana() {}
 	ArcaneSurge(ManaComponent* m, Deck* d);
 
 	void apply_effects() override;
@@ -113,7 +107,6 @@ class BloodPact : public MythicItem {
 	ManaComponent* _mana;
 	Health* _health;
 public:
-	BloodPact() : _mana(nullptr), _health(nullptr) {}
 	BloodPact(ManaComponent* m, Health* h);
 
 	void apply_effects() override;
@@ -132,7 +125,6 @@ class PreternaturalForce : public MythicItem {
 	ManaComponent* _mana;
 	Weapon* _weapon;
 public:
-	PreternaturalForce() : _mana(nullptr), _weapon(nullptr) {}
 	PreternaturalForce(ManaComponent* m, Weapon* w);
 
 	void apply_effects() override;

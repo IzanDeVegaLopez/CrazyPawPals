@@ -10,6 +10,7 @@ MovementController::MovementController(float max_speed, float acceleration, floa
 }
 
 MovementController::~MovementController() {
+	event_system::event_manager::Instance()->unsuscribe_to_event(event_system::change_deccel,this, &event_system::event_receiver::event_callback0);
 }
 
 void

@@ -67,6 +67,10 @@ GameScene::GameScene() : Scene(ecs::scene::GAMESCENE){
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::change_deccel, this, &event_system::event_receiver::event_callback0);
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::player_dead, this, &event_system::event_receiver::event_callback1);
 }
+GameScene::~GameScene() {
+	event_system::event_manager::Instance()->unsuscribe_to_event(event_system::change_deccel, this, &event_system::event_receiver::event_callback0);
+	event_system::event_manager::Instance()->unsuscribe_to_event(event_system::player_dead, this, &event_system::event_receiver::event_callback1);
+}
 
 static ecs::entity_t create_environment() {
 	auto&& manager = *Game::Instance()->get_mngr();
