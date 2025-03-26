@@ -391,17 +391,23 @@ void RewardScene::create_reward_selected_button(const GameStructs::ButtonPropert
 
     auto e = create_button(bp);
     auto buttonComp = mngr->getComponent<Button>(e);
-
-    buttonComp->connectClick([buttonComp, this, bp] {
+    auto imgComp = mngr->addComponent<ImageForButton>(e,
+        &sdlutils().images().at(bp.sprite_key),
+        &sdlutils().images().at("initial_info"),
+        bp.rect,
+        0,
+        Game::Instance()->get_mngr()->getComponent<camera_component>(
+            Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
+    );
+    buttonComp->connectClick([buttonComp, this, imgComp] {
         //we only select a reward if previously we have chosen something
         if (_lr != nullptr && !_selected) {
             _lr->apply_filter(255, 255, 255);
             _lr->swap_textures();
             _selected = true;
+            imgComp->swap_textures();
         }
     });
-
-    auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
     buttonComp->connectHover([buttonComp, imgComp, this]() {
         if (_selected) return;
         std::cout << "hover -> Reward selected button: " << std::endl;
