@@ -23,7 +23,7 @@
 #include <algorithm>
 SelectionMenuScene::SelectionMenuScene() 
     : Scene(ecs::scene::SELECTIONMENUSCENE), _weapon_selected(false), _deck_selected(false), _last_weapon_button(nullptr), _last_deck_button(nullptr), 
-    _num_cards_of_deck(6) {
+    _num_cards_of_deck(6), _activate_play_button(false) {
 }
 
 SelectionMenuScene::~SelectionMenuScene()
@@ -318,10 +318,31 @@ void SelectionMenuScene::create_enter_button() {
     };
     auto* mngr = Game::Instance()->get_mngr();
     auto e = create_button(bp);
+    mngr->setHandler(ecs::hdlr::TOGAMEBUTTON, e);
+    auto imgComp = mngr->addComponent<ImageForButton>(e,
+        &sdlutils().images().at("initial_info"),
+        &sdlutils().images().at(bp.sprite_key),
+        bp.rect,
+        0,
+        Game::Instance()->get_mngr()->getComponent<camera_component>(
+            Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
+    );
+
+
     auto buttonComp = mngr->getComponent<Button>(e);
 
     buttonComp->connectClick([buttonComp, mngr, this]() {
         if (_weapon_selected &&_deck_selected)
         Game::Instance()->change_Scene(Game::REWARDSCENE);
     }); 
+}
+void SelectionMenuScene::update(uint32_t delta_time) {
+    Scene::update(delta_time);
+
+    if (!_activate_play_button && _last_weapon_button != nullptr && _last_deck_button != nullptr) {
+        auto* mngr = Game::Instance()->get_mngr();
+        auto imgComp = mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::TOGAMEBUTTON));
+        imgComp->swap_textures();
+        _activate_play_button = true;
+    }
 }

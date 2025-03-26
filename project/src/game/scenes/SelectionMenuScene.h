@@ -17,7 +17,7 @@ public:
 	void enterScene() override;
 	void exitScene() override;
 	void render() override;
-
+	void update(uint32_t delta_time) override;
 private:
 	Texture* _selection;
 	void create_weapon_button(GameStructs::WeaponType wt, const GameStructs::ButtonProperties& bp);
@@ -40,4 +40,6 @@ private:
 	LastButton _last_deck_button;
 
 	int _num_cards_of_deck;
+
+	bool _activate_play_button;
 };
