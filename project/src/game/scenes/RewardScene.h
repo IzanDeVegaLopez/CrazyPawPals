@@ -17,7 +17,7 @@ public:
 	void enterScene() override;
 	void exitScene() override;
 	void render() override;
-
+	void update(uint32_t delta_time) override;
 private:
     ecs::entity_t create_card_button(const GameStructs::CardButtonProperties& bp);
 	//methods to show your actual deck info
@@ -38,6 +38,7 @@ private:
 
 	ImageForButton* _lr;
 	bool _selected;
+	bool _activate_confirm_button;
 
 	//method to select a card randomly
 	std::string select_card(GameStructs::CardType ct);

@@ -17,7 +17,7 @@
 #include <iostream>
 
 RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr), _selected_button(nullptr), _reward_bg(nullptr),
-_health(false),_card(false), _object(false), _upgrade(false), _lr(nullptr), _selected(false)
+_health(false),_card(false), _object(false), _upgrade(false), _lr(nullptr), _selected(false), _activate_confirm_button(false)
 {
 }
 
@@ -122,7 +122,7 @@ void RewardScene::change_pos(bool enter) {
     int max = playerHealth->getMaxHealth();
 
     // other references
-    auto& healthReward = mngr->getEntities(ecs::grp::REWARDHEALTH)[0];
+    auto healthReward = mngr->getHandler(ecs::hdlr::REWARDHEALTH);
     auto img = mngr->getComponent<transformless_dyn_image>(rewardCard); // Última carta
     auto healImg = mngr->getComponent<transformless_dyn_image>(healthReward);
 
@@ -168,7 +168,7 @@ void RewardScene::create_reward_buttons() {
     create_reward_card_button(buttonPropTemplate);
 
     //it only appears in certain circustances (if so, we swap the position between this button and the third reward card)
-    buttonPropTemplate.ID = ecs::grp::REWARDHEALTH;
+    buttonPropTemplate.ID = ecs::grp::UI;
     buttonPropTemplate.sprite_key = "reward_health";
     buttonPropTemplate.rect.position.x = 20.0f;
     create_reward_health_button(buttonPropTemplate);
@@ -185,6 +185,8 @@ void RewardScene::create_reward_buttons() {
 void RewardScene::create_reward_health_button(const GameStructs::ButtonProperties& bp) {
     auto* mngr = Game::Instance()->get_mngr();
     auto e = create_button(bp);
+    mngr->setHandler(ecs::hdlr::REWARDHEALTH, e);
+
     auto buttonComp = mngr->getComponent<Button>(e);
     //used for change the sprite once a button is clicked
     auto imgComp = mngr->addComponent<ImageForButton>(e,
@@ -399,6 +401,8 @@ void RewardScene::create_reward_selected_button(const GameStructs::ButtonPropert
         Game::Instance()->get_mngr()->getComponent<camera_component>(
             Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
     );
+    imgComp->swap_textures();
+    mngr->setHandler(ecs::hdlr::CONFIRMREWARD,e);
     buttonComp->connectClick([buttonComp, this, imgComp] {
         //we only select a reward if previously we have chosen something
         if (_lr != nullptr && !_selected) {
@@ -419,4 +423,14 @@ void RewardScene::create_reward_selected_button(const GameStructs::ButtonPropert
         //filter
         imgComp->apply_filter(255, 255, 255);
     });
+}
+void RewardScene::update(uint32_t delta_time) {
+    Scene::update(delta_time);
+
+    if (!_activate_confirm_button && _lr != nullptr) {
+        auto* mngr = Game::Instance()->get_mngr();
+        auto imgCompConfirm = mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::CONFIRMREWARD));
+        imgCompConfirm->swap_textures();
+        _activate_confirm_button = true;
+    }
 }
