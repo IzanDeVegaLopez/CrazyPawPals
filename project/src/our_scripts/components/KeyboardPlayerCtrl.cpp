@@ -77,8 +77,8 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
     if (ihdlr.keyDownEvent() &&ihdlr.isKeyDown(SDL_SCANCODE_Y)) {
         //MovementController* mc, Transform* tr, uint32_t time, uint32_t duration, float distance
         uint32_t time = 10000;
-        uint32_t duration = 5000;
-        float distance = 10.0f;
+        uint32_t duration = 1000;
+        float distance = 1.8f;
         _my->add_mythic(new ZoomiesInducer(_mc, _tr, time, duration, distance));
     }  
       if (ihdlr.keyDownEvent() &&ihdlr.isKeyDown(SDL_SCANCODE_G)) {

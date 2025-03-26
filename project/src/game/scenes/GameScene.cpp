@@ -332,8 +332,8 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 
 	/*auto&& rect = *new rect_component{ 0, 0,  1.5f * randSize, 2.0f * randSize };
 	auto &&rigidbody = *new rigidbody_component{rect_f32{{0.0f, -0.15f}, {0.5f, 0.6f}}, mass_f32{3.0f}, 0.05f};*/
-
-	auto e = create_enemy(&tr, "catkuza", static_cast<Weapon*>(&weapon), 2, 2.0f, 2.25f);
+	
+	auto e = create_enemy(EnemySpawnConfig{ &tr, "catkuza", static_cast<Weapon*>(&weapon), 2, 2.0f, 2.25f });
 
 	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.05f, 5.0f, 20.0 * deccel_spawned_creatures_multi));
 
@@ -382,7 +382,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 			Vector2D shootPos = tr.getPos();
 			Vector2D shootDir = (_p_tr->getPos() - shootPos).normalize();
 
-			Vector2D dash_target = _p_tr->getPos() + shootDir * 1.8;
+			Vector2D dash_target = _p_tr->getPos() + shootDir * 1.8f;
 			/*std::cout << dash_target << std::endl;
 			mc.dash(dash_target, 1000);*/
 
