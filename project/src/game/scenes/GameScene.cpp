@@ -40,6 +40,7 @@
 #include "../../our_scripts/components/weapons/enemies/WeaponCatKuza.h"
 #include "../../our_scripts/components/Health.h"
 #include "../../our_scripts/components/bullet_collision_component.hpp"
+#include "../../our_scripts/components/fog_collision_component.hpp"
 
 #include "../../our_scripts/components/StateMachine.h"
 #include "../../our_scripts/components/rendering/dyn_image.hpp"
@@ -803,6 +804,7 @@ void GameScene::spawn_fog()
 		sdlutils().images().at("fog"),
 		transform
 	);
+
 	Fog* this_fog = new Fog();
 	// La entidad tiene un grupo, una escena, un Transform, rect_component, un Fog y un dyn_image
 	auto ent = create_entity(
@@ -811,7 +813,9 @@ void GameScene::spawn_fog()
 		&transform,
 		&rect,
 		this_fog,
-		this_fog_image
+		this_fog_image,
+		new fog_collision_component()
+
 	);
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::FOGGROUP, ent);
 }

@@ -12,7 +12,7 @@
 // 1 segundo = 1000 ticks (ms)
 WaveManager::WaveManager() :
     _currentWaveTime(0),
-    _waveTime(60000),
+    _waveTime(5000), //60000 !!
     _currentWave(0),
     _waveActive(false),
     _enemiesSpawned(0),

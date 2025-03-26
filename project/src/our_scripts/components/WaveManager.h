@@ -28,7 +28,7 @@ class WaveManager : public ecs::Component {
     // _waves es un vector de pares (int, vector<int>)
     // Los 0 son espacios extra
     std::vector<std::pair<Uint32, std::vector<enemyType>>> _waves = {
-        { 10000,{
+        { 1000,{ // 10000 !!
             sarno_rata, none,
             sarno_rata, sarno_rata, none,
             sarno_rata, michi_mafioso, none, none,
