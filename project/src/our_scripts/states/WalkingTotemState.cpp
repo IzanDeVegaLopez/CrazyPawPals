@@ -16,7 +16,7 @@ void WalkingTotemState::enter() {
 
 void WalkingTotemState::update(uint32_t delta_time) {
     //std::cout << "Updating WalkingState" << std::endl;
-    if (abs(_targetPos - _tr->getPos()) <= 2.0f) {
+    if (abs((_targetPos - _tr->getPos()).magnitude()) <= 2.0f) {
         _targetPos = Vector2D{ sdlutils().rand().nextInt(-20, 21), sdlutils().rand().nextInt(-15, 16) };
     }
     // Calcular la dirección hacia el jugador
