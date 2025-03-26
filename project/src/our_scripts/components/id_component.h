@@ -11,7 +11,7 @@ public:
 		ocuppied_ids.reset();
 		last_given_bit = 0;
 	}
-	id_component() : _id(get_next_free_id()) { std::cout << (int)_id <<std::endl; }
+	id_component() : _id(get_next_free_id()) {}
 	~id_component() {
 		ocuppied_ids[_id] = false;
 	}

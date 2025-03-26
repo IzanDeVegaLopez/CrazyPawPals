@@ -44,8 +44,8 @@ WaveManager::update(uint32_t delta_time) {
     _currentWaveTime = sdlutils().virtualTimer().currRealTime() - _currentWaveInitTime;
     //std::cout << sdlutils().virtualTimer().currRealTime()<< " / "<< _currentWaveInitTime << std::endl;
 
-    if(_current_wave_event != nullptr)
-        _current_wave_event->update(delta_time);
+    //if(_current_wave_event != nullptr)
+    _current_wave_event->update(delta_time);
 
     if (areAllEnemiesDead()) {
         enterRewardsMenu();
@@ -147,6 +147,15 @@ WaveManager::spawnWave() {
     }
 }
 
+//---------------------------------------------------------------------------------------------------------------------------------
+void update() {
+    //tries spawning enemies
+    
+    //spawns fog after 50 secs
+    //when all enemies are killed wave finishes
+}
+//---------------------------------------------------------------------------------------------------------------------------------
+
 //Verifica si todos los enemigos estan muertos
 bool 
 WaveManager::areAllEnemiesDead() {
@@ -183,25 +192,14 @@ WaveManager::enterRewardsMenu() {
 	}
 }
 
-void WaveManager::show_wave_image()
-{
-    //_tdi->set_active(true);
-}
-
-void WaveManager::hide_wave_image()
-{
-    //_tdi->set_active(false);
-}
-
 void WaveManager::start_new_wave()
 {
     _currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
     choose_new_event();
 }
 
-int WaveManager::get_wave_size()
+void WaveManager::endwave()
 {
-    return _numEnemies;
 }
 
 void WaveManager::choose_new_event()
@@ -219,7 +217,7 @@ void WaveManager::choose_new_event()
         _current_wave_event = (std::unique_ptr<wave_event>)new ice_skating_event(this);
         break;
     default:
-        std::cout << "event_choser_went_wrong" << std::endl;
+        assert(NULL); // event_choser_went_wrong
     }
 
     //std::cout << i << std::endl;

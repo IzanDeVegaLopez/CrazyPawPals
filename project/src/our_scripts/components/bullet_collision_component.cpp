@@ -19,7 +19,6 @@ void bullet_collision_component::on_contact(const trigger_manifold& tm)
             if ((unsigned long long)health != 0xDDDDDDDDDDDDDDDD) {
                 health->takeDamage(my_damage);
                 Game::Instance()->get_mngr()->setAlive(_ent, pierce_number-- > 0);
-                std::cout << "bala shine" << std::endl;
             }
         }
     }

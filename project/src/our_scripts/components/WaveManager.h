@@ -64,15 +64,7 @@ public:
     virtual ~WaveManager() override;
     void update(uint32_t delta_time) override;
     void initComponent() override;
-    void spawnWave();
-    bool areAllEnemiesDead();
-    void activateFog();
-    void enterRewardsMenu();
-    void show_wave_image();
-    void hide_wave_image();
     void start_new_wave();
-
-    int get_wave_size();
 
     inline Uint32 get_wave_time() { return _currentWaveTime; }
     inline int get_current_wave() { return _currentWave; }
@@ -80,6 +72,11 @@ public:
 
 private:
     void choose_new_event();
+    void endwave();
+    void activateFog();
+    bool areAllEnemiesDead();
+    void enterRewardsMenu();
+    void spawnWave();
     Uint32 _currentWaveTime = 0; //tiempo actual (post calculo, inicial en constructor)
     Uint32 _currentWaveInitTime; // cuándo empezó la oleada
     Uint32 _waveTime; // cuánto dura la oleada (CONSTRUCTOR)
