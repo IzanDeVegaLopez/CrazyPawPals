@@ -29,7 +29,9 @@ struct star_drop {
     Transform *star_transform;
     dyn_image *shadow_image;
     rect_component *shadow_rect;
+    ptrdiff_t damage_amount;
     seconds_f32 remaining_fall_time;
+    float radius;
 };
 
 class star_shower_event : public wave_event {

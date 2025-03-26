@@ -3,6 +3,9 @@
 
 #include "../../our_scripts/components/rendering/dyn_image.hpp"
 #include "../../our_scripts/components/rendering/camera_component.hpp"
+#include "../../our_scripts/components/rendering/rect_component.hpp"
+#include "../../our_scripts/components/movement/Transform.h"
+#include "../../our_scripts/components/Health.h"
 #include "../../ecs/Entity.h"
 #include "../../game/Game.h"
 #include "../../game/scenes/Scene.h"
@@ -59,9 +62,10 @@ static star_drop star_shower_event_create_star_drop(
         rect_f32_full_subrect,
         star_rect,
         camera,
-        sdlutils().images().at("star"),
+        sdlutils().images().at("p_boom"),
         star_transform
     );
+    (void)star_image;
 
     Transform &shadow_transform = *manager.addComponent<Transform>(
         mark_entity,
@@ -80,7 +84,7 @@ static star_drop star_shower_event_create_star_drop(
         rect_f32_full_subrect,
         shadow_rect,
         camera,
-        sdlutils().images().at("star_shadow"),
+        sdlutils().images().at("boom"),
         shadow_transform
     );
 
@@ -90,7 +94,9 @@ static star_drop star_shower_event_create_star_drop(
         &star_transform,
         &shadow_image,
         &shadow_rect,
-        descriptor.fall_time
+        descriptor.damage_amount,
+        descriptor.fall_time,
+        descriptor.drop_radius
     };
 }
 
@@ -123,18 +129,45 @@ void star_shower_event::start_wave_callback() {
 
 void star_shower_event::end_wave_callback() {
     auto &&manager = *Game::Instance()->get_mngr();
-    for (auto star_drop : manager.getEntities(ecs::grp::STAR_DROP)) {
-        manager.setAlive(star_drop, false);
+    for (auto star_drop : star_drops) {
+        assert(star_drop.mark_entity != nullptr && "fatal error: star_drop.mark_entity must not be nullptr");
+        assert(star_drop.star_entity != nullptr && "fatal error: star_drop.star_entity must not be nullptr");
+        
+        manager.setAlive(star_drop.mark_entity, false);
+        manager.setAlive(star_drop.star_entity, false);
     }
     star_drops.clear();
 }
 
-static void star_shower_event_on_impact(
+static void star_shower_event_on_impact(    
     const star_drop &star_drop,
     ecs::Manager &manager,
     const seconds_f32 delta_time_seconds
 ) {
-    // TODO: star collision and deletion
+    (void)delta_time_seconds;
+    assert(star_drop.remaining_fall_time <= 0.0f && "fatal error: star_drop.remaining_fall_time must be less than or equal to 0.0f");
+    
+    auto &&player = manager.getHandler(ecs::hdlr::PLAYER);
+    auto &&player_transform = manager.getComponent<Transform>(player);
+    auto &&player_rect = manager.getComponent<rect_component>(player);
+
+    const position2_f32 player_centre{
+        .x = player_transform->getPos().getX() + player_rect->rect.position.x,
+        .y = player_transform->getPos().getY() + player_rect->rect.position.y
+    };
+    const vec2_f32 player_displacement{
+        .x = player_centre.x - star_drop.star_transform->getPos().getX(),
+        .y = player_centre.y - star_drop.star_transform->getPos().getY()
+    };
+    
+    const float player_distance_sqr = player_displacement.x * player_displacement.x + player_displacement.y * player_displacement.y;
+    if (player_distance_sqr < star_drop.radius) {
+        auto &&player_health = *manager.getComponent<Health>(player);
+        player_health.takeDamage(star_drop.damage_amount);
+    }
+
+    manager.setAlive(star_drop.mark_entity, false);
+    manager.setAlive(star_drop.star_entity, false);
 }
 
 void star_shower_event::update(unsigned int delta_time) {
@@ -145,10 +178,13 @@ void star_shower_event::update(unsigned int delta_time) {
 
         seconds_f32 delta_time_seconds = seconds_f32{float(delta_time) / 1000.0f};
         auto &&manager = *Game::Instance()->get_mngr();
-        for (auto &&star_drop : star_drops) {
+        for (ptrdiff_t i = drop_count - 1; i >= 0; --i) {
+            auto &&star_drop = star_drops[i];
             star_drop.remaining_fall_time -= delta_time_seconds;
             if (star_drop.remaining_fall_time <= 0.0f) {
                 star_shower_event_on_impact(star_drop, manager, delta_time_seconds);
+                star_drops[i] = star_drops.back();
+                star_drops.pop_back();
             }
         }
     }
