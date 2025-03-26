@@ -1,0 +1,65 @@
+#ifndef スター・シャワー_HPP
+#define スター・シャワー_HPP
+
+#include "wave_event.hpp"
+#include "../../rendering/rect.hpp"
+#include "../../rendering/units.hpp"
+
+#include <vector>
+#include <cassert>
+
+struct star_drop_descriptor {
+    position2_f32 drop_position;
+    ptrdiff_t damage_amount;
+    float drop_radius;
+    seconds_f32 fall_time;
+    float spawn_distance;
+};
+
+struct star_drop {
+    ecs::entity_t mark_entity;
+    ecs::entity_t star_entity;
+
+    Transform *star_transform;
+    dyn_image *shadow_image;
+    rect_component *shadow_rect;
+    seconds_f32 remaining_fall_time;
+};
+
+class スター・シャワー_event : public wave_event {
+    rect_f32 event_area;
+    star_drop_descriptor drop_lower_bound;
+    star_drop_descriptor drop_upper_bound;
+    
+    std::vector<star_drop> star_drops;
+    
+    size_t min_drops_inclusive;
+    size_t max_drops_exclusive;
+
+public:
+    inline スター・シャワー_event(
+        WaveManager &wave_manager,
+        const rect_f32 event_area,
+        const star_drop_descriptor drop_lower_bound,
+        const star_drop_descriptor drop_upper_bound,
+        const size_t min_drops_inclusive,
+        const size_t max_drops_exclusive
+    ) : wave_event(&wave_manager),
+        event_area(event_area),
+        drop_lower_bound(drop_lower_bound),
+        drop_upper_bound(drop_upper_bound),
+        star_drops{},
+        star_fall_remaining_times{},
+        min_drops_inclusive(min_drops_inclusive),
+        max_drops_exclusive(max_drops_exclusive)
+    {
+        assert(min_drops_inclusive < max_drops_exclusive && "error: min_drops_inclusive must be less than max_drops_exclusive");
+        assert(min_drops_inclusive > 0 && "error: min_drops_inclusive must be greater than 0");
+    }
+
+    void start_wave_callback() override;
+    void end_wave_callback() override;
+    void update(unsigned int delta_time) override;
+};
+
+#endif
