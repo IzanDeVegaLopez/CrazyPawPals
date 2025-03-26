@@ -5,6 +5,12 @@
 #include "../../rendering/rect.hpp"
 #include "../../rendering/units.hpp"
 
+#include "../../ecs/Entity.h"
+
+#include "../../our_scripts/components/rendering/dyn_image.hpp"
+#include "../../our_scripts/components/movement/Transform.h"
+#include "../../our_scripts/components/rendering/rect_component.hpp"
+
 #include <vector>
 #include <cassert>
 

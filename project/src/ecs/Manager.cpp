@@ -365,71 +365,101 @@ static void manager_update_collisions(Manager &manager, const std::vector<ecs::e
 	default: {
 		const float delta_time_seconds = delta_time_milliseconds / 1000.0f;
 
+		
+		struct collision_check {
+			ecs::entity_t entity0;
+			collision_body body0;
+			collisionable &collisionable0;
+			
+			ecs::entity_t entity1;
+			collision_body body1;
+			collisionable &collisionable1;
+		};
+		std::vector<collision_check> collision_checks;
+		for (size_t i = 0; i < entities.size(); i++) {
+			auto entity = entities[i];
+			auto entity_collisionable = manager.getComponent<collisionable>(entity);
+			if (entity_collisionable != nullptr) {
+				collision_body body = collision_body_from_collisionable(*entity_collisionable);
+				
+				for (size_t j = i + 1; j < entities.size(); j++) {
+					auto other_entity = entities[j];
+					auto other_collisionable = manager.getComponent<collisionable>(other_entity);
+					if (other_collisionable != nullptr) {
+						collision_body other_body = collision_body_from_collisionable(*other_collisionable);
+						
+						collision_checks.push_back(collision_check{
+							.entity0 = entity,
+							.body0 = body,
+							.collisionable0 = *entity_collisionable,
+							.entity1 = other_entity,
+							.body1 = other_body,
+							.collisionable1 = *other_collisionable,
+						});
+					}
+				}
+			}
+		}
+		
 		constexpr static const size_t max_collision_passes = 3;
 		size_t last_pass_collision_count;
 		size_t pass_count = 0;
 		do {
 			last_pass_collision_count = 0;
-			for (size_t i = 0; i < entities.size(); i++) {
-				auto entity = entities[i];
-				auto entity_collisionable = manager.getComponent<collisionable>(entity);
-				if (entity_collisionable != nullptr) {
-					collision_body body = collision_body_from_collisionable(*entity_collisionable);
+			for (size_t i = 0; i < collision_checks.size(); ++i) {
+				auto &&collision_check = collision_checks[i];
+				auto &&entity = collision_check.entity0;
+				auto &&body = collision_check.body0;
+				auto &&entity_collisionable = collision_check.collisionable0;
+				auto &&other_entity = collision_check.entity1;
+				auto &&other_body = collision_check.body1;
+				auto &&other_collisionable = collision_check.collisionable1;
+
+				manager_collision_handle_response collided = manager_handle_collision_bodies(manager, entity, other_entity, body, other_body, delta_time_seconds, (
+					((entity_collisionable.options & collisionable_option_trigger) != 0)
+						| (((other_collisionable.options & collisionable_option_trigger) != 0) << 1)
+				));
 	
-					for (size_t j = i + 1; j < entities.size(); j++) {
-						auto other_entity = entities[j];
-						auto other_collisionable = manager.getComponent<collisionable>(other_entity);
-						if (other_collisionable != nullptr) {
-							collision_body other_body = collision_body_from_collisionable(*other_collisionable);
+				switch (collided) {
+				case manager_collision_handle_response_none:
+					break;
+				case manager_collision_handle_response_collision: {
+					const vec2_f32 displacement = vec2_f32{
+						.x = body.body.space.position.x - body.body.space.previous_position.x,
+						.y = body.body.space.position.y - body.body.space.previous_position.y,
+					};
+					const float displacement_length_sqr = 
+						displacement.x * displacement.x + displacement.y * displacement.y;
+					constexpr static const float epsilon_displacement_length_sqr = 0.0000001f;
+					if (displacement_length_sqr > epsilon_displacement_length_sqr) {
+						entity_collisionable.transform.getPos() = Vector2D{
+							body.body.space.position.x,
+							body.body.space.position.y,
+						};
+						other_collisionable.transform.getPos() = Vector2D{
+							other_body.body.space.position.x,
+							other_body.body.space.position.y,
+						};
 	
-							manager_collision_handle_response collided = manager_handle_collision_bodies(manager, entity, other_entity, body, other_body, delta_time_seconds, (
-								((entity_collisionable->options & collisionable_option_trigger) != 0)
-									| (((other_collisionable->options & collisionable_option_trigger) != 0) << 1)
-							));
+						entity_collisionable.transform.getPos() += Vector2D{
+							(body.body.space.position.x - body.body.space.previous_position.x),
+							(body.body.space.position.y - body.body.space.previous_position.y),
+						};
+						other_collisionable.transform.getPos() += Vector2D{
+							(other_body.body.space.position.x - other_body.body.space.previous_position.x),
+							(other_body.body.space.position.y - other_body.body.space.previous_position.y),
+						};
 	
-							switch (collided) {
-							case manager_collision_handle_response_none:
-								break;
-							case manager_collision_handle_response_collision: {
-								const vec2_f32 displacement = vec2_f32{
-									.x = body.body.space.position.x - body.body.space.previous_position.x,
-									.y = body.body.space.position.y - body.body.space.previous_position.y,
-								};
-								const float displacement_length_sqr = 
-									displacement.x * displacement.x + displacement.y * displacement.y;
-								constexpr static const float epsilon_displacement_length_sqr = 0.0000001f;
-								if (displacement_length_sqr > epsilon_displacement_length_sqr) {
-									entity_collisionable->transform.getPos() = Vector2D{
-										body.body.space.position.x,
-										body.body.space.position.y,
-									};
-									other_collisionable->transform.getPos() = Vector2D{
-										other_body.body.space.position.x,
-										other_body.body.space.position.y,
-									};
-			
-									entity_collisionable->transform.getPos() += Vector2D{
-										(body.body.space.position.x - body.body.space.previous_position.x),
-										(body.body.space.position.y - body.body.space.previous_position.y),
-									};
-									other_collisionable->transform.getPos() += Vector2D{
-										(other_body.body.space.position.x - other_body.body.space.previous_position.x),
-										(other_body.body.space.position.y - other_body.body.space.previous_position.y),
-									};
-	
-									++last_pass_collision_count;
-								}
-								break;
-							}
-							case manager_collision_handle_response_trigger:
-								break;
-							default: {
-								assert(false && "unreachable");
-								std::exit(EXIT_FAILURE);
-							}
-							}
-						}
+						++last_pass_collision_count;
 					}
+					break;
+				}
+				case manager_collision_handle_response_trigger:
+					break;
+				default: {
+					assert(false && "unreachable");
+					std::exit(EXIT_FAILURE);
+				}
 				}
 			}
 			++pass_count;
@@ -491,20 +521,18 @@ void Manager::refresh()
 	std::unordered_set<ecs::entity_t> to_remove;
 	for (ecs::grpId_t gId = 0; gId < ecs::maxGroupId; gId++) {
 		auto &groupEntities = _entsByGroup[gId];
-		for (auto it = groupEntities.begin(); it != groupEntities.end(); ) {
-			if (isAlive(*it)) {
-				to_remove.insert(*it);
+		for (auto entity : groupEntities) {
+			if (!isAlive(entity)) {
+				to_remove.insert(entity);
 			}
-			++it;
 		}
 	}
 	for (ecs::sceneId_t sId = 0; sId < ecs::maxSceneId; sId++) {
 		auto &sceneEntities = _entsByScene[sId];
-		for (auto it = sceneEntities.begin(); it != sceneEntities.end(); ) {
-			if (isAlive(*it)) {
-				to_remove.insert(*it);
+		for (auto entity : sceneEntities) {
+			if (!isAlive(entity)) {
+				to_remove.insert(entity);
 			}
-			++it;
 		}
 	}
 	for (auto &&scene : _entsByScene) {
@@ -518,7 +546,9 @@ void Manager::refresh()
 		});
 	}
 
+	std::cout << "removed " << to_remove.size() << " entities" << std::endl;
 	for (auto e : to_remove) {
+		std::cout << e << ", " << std::endl;
 		delete e;
 	}
 

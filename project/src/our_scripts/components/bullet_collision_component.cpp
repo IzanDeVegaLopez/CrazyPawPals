@@ -14,7 +14,7 @@ void bullet_collision_component::on_contact(const trigger_manifold& tm)
     ecs::entity_t entity_collided_with = _ent==tm.body0 ? tm.body1 : tm.body0;
 
     if (check_if_valid_collision(entity_collided_with)) {
-        Game::Instance()->get_mngr()->setAlive
+        //Game::Instance()->get_mngr()->setAlive
         if (Game::Instance()->get_mngr()->hasComponent<Health>(entity_collided_with)) {
             auto health = Game::Instance()->get_mngr()->getComponent<Health>(entity_collided_with);
             if ((unsigned long long)health != 0xDDDDDDDDDDDDDDDD) {

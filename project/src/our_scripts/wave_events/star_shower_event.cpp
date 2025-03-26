@@ -143,7 +143,7 @@ void star_shower_event::update(unsigned int delta_time) {
         assert(drop_count >= min_drops_inclusive && "fatal error: drop_count must be greater than or equal to min_drops_inclusive");
         assert(drop_count < max_drops_exclusive && "fatal error: drop_count must be less than max_drops_exclusive");
 
-        seconds_f32 delta_time_seconds = seconds_f32{delta_time} / 1000.0f;
+        seconds_f32 delta_time_seconds = seconds_f32{float(delta_time) / 1000.0f};
         auto &&manager = *Game::Instance()->get_mngr();
         for (auto &&star_drop : star_drops) {
             star_drop.remaining_fall_time -= delta_time_seconds;
