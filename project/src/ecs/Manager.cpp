@@ -473,6 +473,8 @@ void Manager::update(sceneId_t sId, Uint32 dt) {
 	for (auto &ents : entities) {
 		update(ents, dt);
 	}
+
+	refresh();
 	manager_update_collisions(*this, entities, dt);
 }
 
@@ -536,12 +538,12 @@ void Manager::refresh()
 		}
 	}
 	for (auto &&scene : _entsByScene) {
-		std::remove_if(scene.begin(), scene.end(), [&to_remove](ecs::entity_t e) {
+		std::erase_if(scene, [&to_remove](ecs::entity_t e) {
 			return to_remove.find(e) != to_remove.end();
 		});
 	}
 	for (auto &&group : _entsByGroup) {
-		std::remove_if(group.begin(), group.end(), [&to_remove](ecs::entity_t e) {
+		std::erase_if(group, [&to_remove](ecs::entity_t e) {
 			return to_remove.find(e) != to_remove.end();
 		});
 	}
