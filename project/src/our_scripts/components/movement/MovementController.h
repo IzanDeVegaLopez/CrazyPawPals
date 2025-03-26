@@ -5,6 +5,7 @@
 #include "../../../utils/EventsSystem.hpp"
 
 class Transform;
+class collisionable;
 class MovementController : public event_system::event_receiver, public ecs::Component
 {
 private:
@@ -16,6 +17,7 @@ private:
 	Vector2D _dash_pos;
 	uint32_t _time_remaining;
 	Transform* _tr;
+	collisionable* _coll;
 
 public:
 	__CMPID_DECL__(ecs::cmp::MOVEMENTCONTROLLER);

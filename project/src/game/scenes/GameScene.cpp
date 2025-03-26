@@ -95,7 +95,7 @@ void GameScene::initScene() {
 
 	manager.refresh();
 	create_environment();
-	//spawn_catkuza(Vector2D{5.0f, 0.0f});
+	spawn_catkuza(Vector2D{5.0f, 0.0f});
 	//spawn_super_michi_mafioso(Vector2D{5.0f, 0.0f});
 	spawn_fog();
 	spawn_wave_manager();
@@ -313,26 +313,10 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	auto&& weapon = *new WeaponCatKuza();
 	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
-	float randSize = float(sdlutils().rand().nextInt(6, 10)) / 10.0f;
-	auto&& rect = *new rect_component{ 0, 0,  1.5f * randSize, 2.0f * randSize };
-	auto &&rigidbody = *new rigidbody_component{rect_f32{{0.0f, -0.15f}, {0.5f, 0.6f}}, mass_f32{3.0f}, 0.05f};
+	/*auto&& rect = *new rect_component{ 0, 0,  1.5f * randSize, 2.0f * randSize };
+	auto &&rigidbody = *new rigidbody_component{rect_f32{{0.0f, -0.15f}, {0.5f, 0.6f}}, mass_f32{3.0f}, 0.05f};*/
 
-	ecs::entity_t e = create_entity(
-		ecs::grp::ENEMY,
-		ecs::scene::GAMESCENE,
-		&tr,
-		&rect,
-		new dyn_image(
-			rect_f32{ {0,0},{1,1} },
-			rect,
-			manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam,
-			sdlutils().images().at("catkuza"),
-			tr
-		),
-		new Health(2),
-		&weapon,
-		&rigidbody
-	);
+	auto e = create_enemy(&tr, "catkuza", static_cast<Weapon*>(&weapon), 2, 2.0f, 2.25f);
 
 	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.05f, 5.0f, 20.0 * deccel_spawned_creatures_multi));
 

@@ -3,7 +3,7 @@
 #include "../../../ecs/Manager.h"
 #include "../../../sdlutils/SDLUtils.h"
 #include "../../../game/Game.h"
-
+#include "../rigidbody_component.hpp"
 MovementController::MovementController(float max_speed, float acceleration, float decceleration) 
 	: _tr(nullptr), _max_speed(max_speed), _acceleration(acceleration), _decceleration(decceleration), _dashing(false), _time_remaining(0){
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::change_deccel, this, &event_system::event_receiver::event_callback0);
@@ -16,6 +16,8 @@ void
 MovementController::initComponent() {
 	_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
 	assert(_tr != nullptr);
+
+	_coll = Game::Instance()->get_mngr()->getComponent<collisionable>(_ent);
 }
 
 void MovementController::set_input(Vector2D vec) {
@@ -42,6 +44,7 @@ void MovementController::update(uint32_t delta_time)
 			_dashing = false;
 			_tr->setPos(_dash_pos);
 			_tr->setDir(Vector2D(0, 0));
+			_coll->options = collisionable_option_none;
 		}
 	}
 	else {
@@ -78,6 +81,8 @@ void MovementController::dash(Vector2D next_pos, uint32_t time) {
 		_dashing = true;
 		_time_remaining = time;
 		_dash_pos = next_pos;
+		_coll->options = collisionable_option_trigger;
+
 	}
 }
 
