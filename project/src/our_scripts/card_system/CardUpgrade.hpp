@@ -1,5 +1,5 @@
 #include "Card.hpp"
-#include "../components/Deck.hpp"
+#include "../components/cards/Deck.hpp"
 
 
 //Decorator Patron --> https://refactoring.guru/design-patterns/decorator/cpp/example

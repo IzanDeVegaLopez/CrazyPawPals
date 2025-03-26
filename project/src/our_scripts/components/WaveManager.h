@@ -3,6 +3,7 @@
 #include "../../ecs/Component.h"
 #include "../../sdlutils/SDLUtils.h"
 #include "../wave_events/wave_event.hpp"
+#include "rendering/transformless_dyn_image.h"
 
 enum enemyType {
     none = 0,
@@ -10,8 +11,12 @@ enum enemyType {
     michi_mafioso = 2,
     plim_plim = 3,
     boom = 4,
-    ratatouille = 5
+    ratatouille = 5,
+    catkuza = 6,
+    super_michi_mafioso = 7
 };
+
+class Fog;
 
 class WaveManager : public ecs::Component {
     // _waves es un vector de pares (int, vector<int>)
@@ -51,23 +56,30 @@ public:
     __CMPID_DECL__(ecs::cmp::WAVEMANAGER)
     WaveManager();
     virtual ~WaveManager() override;
-
     void update(uint32_t delta_time) override;
+    void initComponent() override;
     void spawnWave();
     bool areAllEnemiesDead();
     void activateFog();
     void enterRewardsMenu();
+    void show_wave_image();
+    void hide_wave_image();
+    void start_new_wave();
+
+    inline Uint32 get_wave_time() { return _currentWaveTime; }
+    inline int get_current_wave() { return _currentWave; }
 
 private:
     void choose_new_event();
     Uint32 _currentWaveTime = 0; //tiempo actual (post calculo, inicial en constructor)
+    Uint32 _currentWaveInitTime; // cuándo empezó la oleada
     Uint32 _waveTime; // cuánto dura la oleada (CONSTRUCTOR)
+
 
     int _currentWave = 0;
     std::unique_ptr<wave_event> _current_wave_event;
 
     bool _waveActive = false;
-    bool _fogActive = false;
 
     int _numEnemies; // enemigos total en la oleada (post calculo)
     int _enemiesSpawned; // número de enemigos spawneados (post calculo)
@@ -79,4 +91,8 @@ private:
     // tiempo de spawn del siguiente enemigo (post calculo)
     float _min_time;
     float _op_time;
+
+    transformless_dyn_image* _tdi;
+
+    Fog* fog;
 };
