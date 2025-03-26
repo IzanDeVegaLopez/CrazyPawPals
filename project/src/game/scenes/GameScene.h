@@ -17,7 +17,7 @@ class GameScene : public event_system::event_receiver, public Scene
 	
 public:
 	GameScene();
-	~GameScene() {};
+	~GameScene();
 	void initScene() override;
 	void enterScene() override;
 	void exitScene() override;

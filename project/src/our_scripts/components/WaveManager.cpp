@@ -20,10 +20,11 @@ WaveManager::WaveManager() :
     _totalSpawnTime(10000.0f),
     _current_wave_event(new no_event(this))
 {
+    event_system::event_manager::Instance()->suscribe_to_event(event_system::enemy_dead, this, &event_system::event_receiver::event_callback0);
 }
 
 WaveManager::~WaveManager() {
-
+    event_system::event_manager::Instance()->unsuscribe_to_event(event_system::enemy_dead, this, &event_system::event_receiver::event_callback0);
 }
 
 void
@@ -38,7 +39,7 @@ WaveManager::initComponent() {
     //_currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
     //choose_new_event();
 }
-
+/*
 void 
 WaveManager::update(uint32_t delta_time) {
     _currentWaveTime = sdlutils().virtualTimer().currRealTime() - _currentWaveInitTime;
@@ -67,26 +68,18 @@ WaveManager::update(uint32_t delta_time) {
         spawnWave();
     }
 }
+*/
 
 // Spawnear enemigos fuera de la pantalla
 void 
-WaveManager::spawnWave() {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-	// _waves es un vector de pares (int, vector<int>)
-	int number_of_enemies = _waves[_currentWave].second.size();
-    if (_enemiesSpawned < _numEnemies) {
-
-        // RANDOM
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        // rAng entre (0, 360)
-        std::uniform_real_distribution<float> rAngGen(0.0f, 360.0f);
-        // rn entre (-0.35, 0.35)
-        std::uniform_real_distribution<float> rnGen(-0.35f, 0.35f);
-
-
-        if (_currentWaveTime > _nextSpawn){
+WaveManager::spawn_next_enemy() {
+            // RANDOM
+            std::random_device rd;
+            std::mt19937 gen(rd());
+            // rAng entre (0, 360)
+            std::uniform_real_distribution<float> rAngGen(0.0f, 360.0f);
+            // rn entre (-0.35, 0.35)
+            std::uniform_real_distribution<float> rnGen(-0.35f, 0.35f);
             float rAng = rAngGen(gen); // (0, 360)
             float rn = rnGen(gen); // (-0.35, 0.35)
             
@@ -98,7 +91,7 @@ WaveManager::spawnWave() {
             // Medio de la pantalla + angulo * distancia
             Vector2D posVec = Vector2D(Game::Instance()->get_world_half_size().first + cos(rAng) * (_min_distance + _op_dist), Game::Instance()->get_world_half_size().second + sin(rAng) * (_min_distance + _op_dist));
             
-            assert(_enemiesSpawned < (1 << 7));
+            //assert(_enemiesSpawned < (1 << 7));
             // FIXME: define enum values
             switch (_waves[_currentWave].second[_enemiesSpawned])
             {
@@ -133,24 +126,45 @@ WaveManager::spawnWave() {
                 }
             }
             // Tiempo
-            _min_time = _totalSpawnTime / number_of_enemies;
+            _min_time = _totalSpawnTime / _waves[_currentWave].second.size();
             _op_time = _min_time * rn;
             _nextSpawn = _currentWaveTime + (_min_time + _op_time);
 
             _enemiesSpawned++;
-        }
-    }
-    else {
+    /*else {
         _waveActive = true; // después de que se spawnee el último enemigo
 
         //std::cout << "WAVE ACTIVE" << std::endl;
-    }
+    }*/
+}
+
+bool WaveManager::can_spawn_next_enemy()
+{
+    return _enemiesSpawned < _waves[_currentWave].second.size() && _currentWaveTime > _nextSpawn;
+}
+
+bool WaveManager::is_wave_finished()
+{
+    //TODO: Necesitamos no notificar los enemigos que son creados por otros
+    //std::cout << "enemies_killed: " << _enemiesKilled << "   numEnemies: " << _numEnemies << "    enemies_spawned: " << _enemiesSpawned << std::endl;
+    return _enemiesKilled >= _numEnemies;
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------
-void update() {
+void WaveManager::update(uint32_t delta_time) {
+    _currentWaveTime = sdlutils().virtualTimer().currRealTime() - _currentWaveInitTime;
     //tries spawning enemies
-    
+    if (can_spawn_next_enemy())
+        spawn_next_enemy();
+
+    if (is_wave_finished())
+        endwave();
+
+    if (_currentWaveTime > 49 * 1000) {
+        activateFog();
+        std::cout << "cwt" << _currentWaveTime;
+    }
+
     //spawns fog after 50 secs
     //when all enemies are killed wave finishes
 }
@@ -166,40 +180,47 @@ WaveManager::areAllEnemiesDead() {
 void 
 WaveManager::activateFog() {
     fog->setFog(true);
-    std::cout << "Niebla activada!" << std::endl;
+    //std::cout << "Niebla activada!" << std::endl;
 }
 
 
 void 
 WaveManager::enterRewardsMenu() {
-    //std::cout << "Active time: " << sdlutils().virtualTimer().currRealTime() << std::endl;
-    //std::cout << "Todos los enemigos eliminados. Entrando al menu de recompensas..." << std::endl;
-    _current_wave_event->end_wave_callback();
-
-    choose_new_event();
-
-    // Esto tiene que ir después del menu de recompensas
-    _currentWave++;
-    _currentWaveTime = 0;
-    _totalSpawnTime = _waves[_currentWave].first;
-	_enemiesSpawned = 0;
-	_enemiesKilled = 0;
-    _numEnemies = 0;
-    fog->setFog(false);
-
-	for (int i : _waves[_currentWave].second) {
-		if (i != 0) _numEnemies++;
-	}
+    //ACTUALLY ENTER REWARDS MENU
 }
 
 void WaveManager::start_new_wave()
 {
     _currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
+
+    // Esto tiene que ir después del menu de recompensas
+    _currentWave++;
+    _currentWaveTime = 0;
+    _totalSpawnTime = _waves[_currentWave].first;
+    _enemiesSpawned = 0;
+    _enemiesKilled = 0;
+    _numEnemies = 0;
+    fog->setFog(false);
+
+    for (int i : _waves[_currentWave].second) {
+        if (i) _numEnemies++;
+    }
+
     choose_new_event();
 }
 
 void WaveManager::endwave()
 {
+    std::cout << "oleada superada con éxito meow" << std::endl;
+    _current_wave_event->end_wave_callback();
+    enterRewardsMenu();
+
+}
+
+void WaveManager::event_callback0(const Msg& m)
+{
+    (void)m;
+    _enemiesKilled++;
 }
 
 void WaveManager::choose_new_event()
