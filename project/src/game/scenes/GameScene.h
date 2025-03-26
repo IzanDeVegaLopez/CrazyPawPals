@@ -35,11 +35,16 @@ public:
 	void spawn_fog();
 	void spawn_super_michi_mafioso(Vector2D posVec);
 	void spawn_event_totem(Vector2D posVec);
+	void spawn_event_paw_patrol(Vector2D posVec);
 
 	void generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid);
 	void check_collision();
 	void event_callback0(const event_system::event_receiver::Msg& m) override;
 	void event_callback1(const event_system::event_receiver::Msg& m) override;
+	void event_callback2(const event_system::event_receiver::Msg& m) override;
+	void event_callback3(const event_system::event_receiver::Msg& m) override;
+
+	void delete_event_enemies();
 protected:
 	float deccel_spawned_creatures_multi = 1;
 };

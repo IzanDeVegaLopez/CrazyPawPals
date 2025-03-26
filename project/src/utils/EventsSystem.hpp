@@ -34,7 +34,8 @@ namespace event_system {
 		change_deccel = 1 << 1,	//bin 2
 		enemy_dead = 1 << 2,	//bin 4
 		player_dead = 1 << 3,
-		double_damage_totem = 1 << 4
+		double_damage_totem = 1 << 4,
+		paw_patrol = 1 << 5
 		//4?evento = 1 << 2,	
 	};
 	
@@ -49,6 +50,8 @@ namespace event_system {
 		virtual void event_callback0(const Msg& m) = 0;
 		//recommended to only declare the first abstract, in order for the rest of the program to not explode when adding new ones
 		virtual void event_callback1(const Msg& m) {};
+		virtual void event_callback2(const Msg& m) {};
+		virtual void event_callback3(const Msg& m) {};
 	protected:
 		~event_receiver() {};
 	};

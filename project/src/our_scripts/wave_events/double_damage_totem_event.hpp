@@ -14,7 +14,6 @@ public:
 		wave_event::start_wave_callback();
 		event_system::event_manager::Instance()->fire_event(event_system::double_damage_totem,
 			(event_system::event_receiver::Msg{ dmg_multiplier }));
-		std::cout << "a" << std::endl;
 		//TODO: send event for everyone out there
 	}
 	inline void end_wave_callback() override {

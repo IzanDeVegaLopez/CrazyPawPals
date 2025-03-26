@@ -49,6 +49,7 @@ WaveManager::update(uint32_t delta_time) {
         _current_wave_event->update(delta_time);
 
     if (areAllEnemiesDead()) {
+        static_cast<GameScene*>(Game::Instance()->get_currentScene())->delete_event_enemies();
         enterRewardsMenu();
     }
 

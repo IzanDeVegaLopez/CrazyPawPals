@@ -63,6 +63,8 @@
 GameScene::GameScene() : Scene(ecs::scene::GAMESCENE){
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::change_deccel, this, &event_system::event_receiver::event_callback0);
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::player_dead, this, &event_system::event_receiver::event_callback1);
+	event_system::event_manager::Instance()->suscribe_to_event(event_system::double_damage_totem, this, &event_system::event_receiver::event_callback2);
+	event_system::event_manager::Instance()->suscribe_to_event(event_system::paw_patrol, this, &event_system::event_receiver::event_callback3);
 }
 
 static ecs::entity_t create_environment() {
@@ -773,7 +775,7 @@ void GameScene::spawn_event_totem(Vector2D posVec) {
 	auto&& rigidbody = *new rigidbody_component{ rect_f32{{0.0f, -0.15f}, {0.5f, 0.6f}}, mass_f32{3.0f}, 0.05f };
 	auto&& col = *new collisionable{ tr, rigidbody, rect, collisionable_option_none };
 	auto e = create_entity(
-		ecs::hdlr::TOTEM,
+		ecs::grp::SPECIALENEMY,
 		ecs::scene::GAMESCENE,
 		tr,
 		&rect,
@@ -803,6 +805,83 @@ void GameScene::spawn_event_totem(Vector2D posVec) {
 
 	// Estado inicial
 	state->set_initial_state("WalkingTotem");
+}
+
+void GameScene::spawn_event_paw_patrol(Vector2D posVec) {
+	auto&& manager = *Game::Instance()->get_mngr();
+	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 5.0f);
+
+	float randSize = float(sdlutils().rand().nextInt(6, 10)) / 10.0f;
+	auto&& rect = *new rect_component{ 0, 0, 1.0f * randSize, 1.0f * randSize };
+	auto&& rigidbody = *new rigidbody_component{ rect_f32{{0.0f, -0.15f}, {0.5f, 0.6f}}, mass_f32{3.0f}, 0.05f };
+	auto&& col = *new collisionable{ tr, rigidbody, rect, collisionable_option_none };
+	auto e = create_entity(
+		ecs::grp::SPECIALENEMY,
+		ecs::scene::GAMESCENE,
+		tr,
+		&rect,
+		new dyn_image(
+			rect_f32{ {0,0},{1,1} },
+			rect,
+			manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam,
+			sdlutils().images().at("paw_patrol"),
+			tr
+		),
+		new Health(1000),
+		&rigidbody,
+		&col
+	);
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.08, 5.0f, 20.0 * deccel_spawned_creatures_multi));
+
+	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
+
+	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
+
+	//	StateMachine(ConditionManager& conditionManager, Transform* playerTransform, Transform* enemyTransform, float dist);
+	auto state = manager.addComponent<StateMachine>(e);
+	auto state_cm = state->getConditionManager();
+
+	// Crear estados
+	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
+	auto waitingState = std::make_shared<WaitingState>(&tr, _p_tr, &mc);
+	//auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon, [e]() {Game::Instance()->get_mngr()->setAlive(e, false); });
+	auto dashingState = std::make_shared<DashingState>(&tr, _p_tr, &mc);
+
+	//poner los estado a la state
+	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
+	state->add_state("Waiting", std::static_pointer_cast<State>(waitingState));
+	state->add_state("Dashing", std::static_pointer_cast<State>(dashingState));
+
+	//Poner los tiempos de cooldown
+	state_cm->set_cooldown("waiting_duration", 4000);
+	state_cm->set_cooldown("dash_duration", 1000);
+
+	// Condiciones de cada estado
+	// De: Walking a: Waiting, Condición: tiempo
+	state->add_transition("Walking", "Waiting", [state_cm, _p_tr, &tr]() {
+		return state_cm->is_player_near(_p_tr, &tr, 15.0f);
+		});
+
+	// De: Waiting a: Dashing, Condición: Jugador cerca
+	state->add_transition("Waiting", "Dashing", [state_cm, _p_tr, &tr]() {
+		bool trans = state_cm->can_use("waiting_duration", sdlutils().currRealTime());
+		if (trans) {
+			state_cm->reset_cooldown("dash_duration", sdlutils().currRealTime());
+		}
+		return trans;
+		});
+
+	// De: Dashing a: Waiting, Condición:
+	state->add_transition("Dashing", "Walking", [state_cm, _p_tr, &tr]() {
+		bool trans = state_cm->can_use("dash_duration", sdlutils().currRealTime());
+		if (trans) {
+			state_cm->reset_cooldown("waiting_duration", sdlutils().currRealTime());
+		}
+		return trans;
+		});
+
+	// Estado inicial
+	state->set_initial_state("Walking");
 }
 
 void GameScene::spawn_wave_manager()
@@ -919,4 +998,18 @@ void GameScene::event_callback0(const event_system::event_receiver::Msg& m) {
 }
 void GameScene::event_callback1(const event_system::event_receiver::Msg& m) {
 	Game::Instance()->change_Scene(Game::GAMEOVER);
+}
+void GameScene::event_callback2(const event_system::event_receiver::Msg& m) {
+	spawn_event_totem(Vector2D { sdlutils().rand().nextInt(-15, 16), sdlutils().rand().nextInt(-8, 9) });
+}
+void GameScene::event_callback3(const event_system::event_receiver::Msg& m) {
+	spawn_event_paw_patrol(Vector2D{ sdlutils().rand().nextInt(-15, 16), sdlutils().rand().nextInt(-8, 9) });
+}
+
+void GameScene::delete_event_enemies() {
+	std::vector<ecs::entity_t> enemies = Game::Instance()->get_mngr()->getEntities(ecs::grp::SPECIALENEMY);
+
+	for (int i = 0; i < enemies.size(); ++i) {
+		Game::Instance()->get_mngr()->setAlive(enemies[i], false);
+	}
 }

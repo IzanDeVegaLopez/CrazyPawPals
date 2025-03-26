@@ -1,12 +1,12 @@
 #include "WalkingTotemState.h"
 
-#include "../../game/GameScene.h"
+#include "../../game/scenes/GameScene.h"
 #include "../components/Health.h"
-#include "../components/Transform.h"
-#include "../components/MovementController.h"
+#include "../components/movement/Transform.h"
+#include "../components/movement/MovementController.h"
 
 WalkingTotemState::WalkingTotemState(Transform* tr, MovementController* movementController, bool toDestination)
-    : _tr(tr), _targetPos(new Vector2D{0,0}), _movementController(movementController), _to_destination(toDestination) {}
+    : _tr(tr), _targetPos(*new Vector2D{0,0}), _movementController(movementController), _to_destination(toDestination) {}
 
 void WalkingTotemState::enter() {
     //std::cout << "Entering WalkingState" << std::endl;
