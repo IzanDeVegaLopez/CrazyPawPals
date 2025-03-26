@@ -215,6 +215,7 @@ void Deck::add_card_to_discard_pile(Card* c)
 
 void Deck::remove_card(std::list<Card*>::iterator)
 {
+
 }
 
 MovementController* Deck::get_movement_controller()

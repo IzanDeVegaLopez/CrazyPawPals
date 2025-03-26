@@ -185,7 +185,7 @@ void RewardScene::create_reward_buttons() {
     buttonPropTemplate.rect.size = { 0.325f, 0.195f };
     create_reward_selected_button(buttonPropTemplate);
 
-    //exchange
+    //exchange button
     buttonPropTemplate.ID = ecs::grp::UI;
     buttonPropTemplate.sprite_key = "confirm_reward";
     buttonPropTemplate.rect.position = { 0.25f, 0.5f };
@@ -456,6 +456,15 @@ void RewardScene::create_reward_selected_button(const GameStructs::ButtonPropert
 }
 void RewardScene::exchange_deck_card()
 {
+    //We get the reference to the deck
+    auto* mngr = Game::Instance()->get_mngr();
+    auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
+    auto _m_deck = mngr->getComponent<Deck>(player);
+
+    //Removes old card from deck
+    //Look m
+   // _m_deck->all_cards().erase_card(_selected_card);
+
 
 }
 
