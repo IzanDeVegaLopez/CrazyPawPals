@@ -58,6 +58,7 @@ std::string RewardScene::get_unique_card(GameStructs::CardType& ct, std::unorder
     appeared_cards.insert(sprite);
     return sprite;
 }
+
 std::string RewardScene::select_card(GameStructs::CardType ct) {
     std::string s = "";
     switch (ct)
@@ -90,6 +91,7 @@ std::string RewardScene::select_card(GameStructs::CardType ct) {
     std::cout << "reward card: " + s << std::endl;
     return s;
 }
+
 void RewardScene::refresh_rewards() {
     auto* mngr = Game::Instance()->get_mngr();
     auto& rewards_cards = mngr->getEntities(ecs::grp::REWARDCARDS);
@@ -106,6 +108,7 @@ void RewardScene::refresh_rewards() {
 
     change_pos(true);
 }
+
 void RewardScene::change_pos(bool enter) {
     auto swap_positions = [](transformless_dyn_image* img1, transformless_dyn_image* img2) {
         auto aux = img1->destination_rect.position.x;
@@ -144,6 +147,7 @@ void RewardScene::change_pos(bool enter) {
         }
     }
 }
+
 void RewardScene::create_reward_buttons() {
     float umbral = 0.4f;
     GameStructs::ButtonProperties buttonPropTemplate = {
@@ -180,7 +184,6 @@ void RewardScene::create_reward_buttons() {
     buttonPropTemplate.rect.size = { 0.325f, 0.195f };
     create_reward_selected_button(buttonPropTemplate);
 }
-
 
 void RewardScene::create_reward_health_button(const GameStructs::ButtonProperties& bp) {
     auto* mngr = Game::Instance()->get_mngr();
@@ -277,6 +280,7 @@ void RewardScene::create_reward_card_button(const GameStructs::ButtonProperties&
         });
 
 }
+
 ecs::entity_t RewardScene::create_card_button(const GameStructs::CardButtonProperties& bp) {
     auto* mngr = Game::Instance()->get_mngr();
     auto e = create_button(bp);
@@ -285,6 +289,7 @@ ecs::entity_t RewardScene::create_card_button(const GameStructs::CardButtonPrope
     b->set_it(bp.iterator);
     return e;
 }
+
 void RewardScene::create_a_deck_card(const GameStructs::CardButtonProperties& bp) {
     auto* mngr = Game::Instance()->get_mngr();
 
@@ -316,6 +321,7 @@ void RewardScene::create_a_deck_card(const GameStructs::CardButtonProperties& bp
         //imgComp->destination_rect.size = { imgComp->destination_rect.size.x / 1.25f,  imgComp->destination_rect.size.y / 1.25f };
         });
 }
+
 void RewardScene::create_my_deck_cards() {
     auto* mngr = Game::Instance()->get_mngr();
 
@@ -350,6 +356,7 @@ void RewardScene::create_my_deck_cards() {
         propTemplate.rect.position.x += umbral;
     }
 }
+
 void RewardScene::refresh_my_deck_cards(const std::list<std::string>& cl) {
     auto* mngr = Game::Instance()->get_mngr();
     auto infos = mngr->getEntities(ecs::grp::REWARDDECK);
@@ -386,6 +393,7 @@ void RewardScene::refresh_my_deck_cards(const std::list<std::string>& cl) {
         }
     }
 }
+
 void RewardScene::create_reward_selected_button(const GameStructs::ButtonProperties& bp) {
     auto* mngr = Game::Instance()->get_mngr();
 
@@ -398,6 +406,20 @@ void RewardScene::create_reward_selected_button(const GameStructs::ButtonPropert
             _lr->apply_filter(255, 255, 255);
             _lr->swap_textures();
             _selected = true;
+
+            //We get the reference to the deck
+            auto* mngr = Game::Instance()->get_mngr();
+            auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
+            auto _m_deck = mngr->getComponent<Deck>(player);
+
+            //We add the cards to the deck
+            _m_deck->add_card_to_deck(new Fireball());
+
+      
+
+            //Refresh deck
+            auto& pDeck = _m_deck->card_names();
+            refresh_my_deck_cards(pDeck);
         }
     });
 
