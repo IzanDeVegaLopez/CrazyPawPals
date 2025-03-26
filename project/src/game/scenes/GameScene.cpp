@@ -148,11 +148,11 @@ ecs::entity_t GameScene::create_player()
 		new render_ordering{ 1 },
 		new Health(100, true),
 		new ManaComponent(),
-		new MovementController(0.1f,5.0f,20.0f*deccel_spawned_creatures_multi),
 		//new Deck(c),
 		// new StopOnBorder(camera, 1.5f, 2.0f),
 		&player_rigidbody,
-		&player_collisionable
+		&player_collisionable,
+		new MovementController(0.1f, 5.0f, 20.0f * deccel_spawned_creatures_multi)
 		);
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::PLAYER, player);
 	return player;

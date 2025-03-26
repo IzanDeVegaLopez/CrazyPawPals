@@ -18,6 +18,7 @@ MovementController::initComponent() {
 	assert(_tr != nullptr);
 
 	_coll = Game::Instance()->get_mngr()->getComponent<collisionable>(_ent);
+	assert(_coll != nullptr);
 }
 
 void MovementController::set_input(Vector2D vec) {
@@ -82,7 +83,6 @@ void MovementController::dash(Vector2D next_pos, uint32_t time) {
 		_time_remaining = time;
 		_dash_pos = next_pos;
 		_coll->options = collisionable_option_trigger;
-
 	}
 }
 

@@ -184,3 +184,31 @@ public:
 	void set_health(Health* h) { _health = h; }
 	void set_movement_controller(MovementController* mc) { _mc = mc; }
 };
+
+/**
+ * @class ZoomiesInducer
+ * @brief ZoomiesInducer is a MythicItem that enhances player's movement speed and reduces player's health.
+ *
+ * The player’s health is reduced by 50%.
+ * However, movement speed is enhanced by 100%.
+ */
+class ZoomiesInducer : public MythicItem {
+	MovementController* _mc;
+	Transform* _tr;
+
+	uint32_t _timer;
+	uint32_t _last_time;
+
+	uint32_t _duration;
+
+	float _distance;
+public:
+	ZoomiesInducer() : _mc(nullptr), _tr(nullptr), _timer(), _last_time(), _duration(), _distance(){}
+	ZoomiesInducer(MovementController* mc, Transform* tr, uint32_t time, uint32_t duration, float distance);
+
+	void apply_effects() override;
+	void update(uint32_t dt) override;
+
+	void set_movement_controller(MovementController* mc) { _mc = mc; }
+	void set_transform(Transform* tr) { _tr = tr; }
+};

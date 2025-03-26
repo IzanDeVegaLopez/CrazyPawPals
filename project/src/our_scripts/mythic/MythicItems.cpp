@@ -165,13 +165,35 @@ MeowOrNever::MeowOrNever(Health* h, MovementController* mc)
 
 void 
 MeowOrNever::apply_effects() {
-	std::cout << "deck: " << _health->getHealth() << std::endl;
+	//std::cout << "deck: " << _health->getHealth() << std::endl;
 	int currhealth = _health->getHealth() / 2;
 	_health->takeDamage(currhealth);
-	std::cout << "deck despues: " << _health->getHealth() << std::endl;
+	//std::cout << "deck despues: " << _health->getHealth() << std::endl;
 	
-	std::cout << "vel: " << _mc->get_max_speed() << std::endl;
+	//std::cout << "vel: " << _mc->get_max_speed() << std::endl;
 	_mc->set_max_speed(2.0f *_mc->get_max_speed());
+	//std::cout << "vel: " << _mc->get_max_speed() << std::endl;
+}
+#pragma endregion
+
+#pragma region ZoomiesInducer
+ZoomiesInducer::ZoomiesInducer(MovementController* mc, Transform* tr, uint32_t time, uint32_t duration, float distance)
+	:MythicItem("ZoomiesInducer"), _mc(mc), _tr(tr), _timer(time), _last_time(0), _distance(distance), _duration(duration){
+}
+
+void
+ZoomiesInducer::apply_effects() {
 	std::cout << "vel: " << _mc->get_max_speed() << std::endl;
+	_mc->set_max_speed(2.0f * _mc->get_max_speed());
+	std::cout << "velini: " << _mc->get_max_speed() << std::endl;
+}
+
+void ZoomiesInducer::update(uint32_t dt) {
+	if (_timer + _last_time <= sdlutils().virtualTimer().currTime()) {
+		std::cout << "ZoomiesInducer" << std::endl;
+		_last_time = sdlutils().virtualTimer().currTime();
+		Vector2D nextPos = _tr->getPos() + _tr->getDir() * _distance;
+		_mc->dash(nextPos, _duration);
+	}
 }
 #pragma endregion
