@@ -1,5 +1,5 @@
-#ifndef スター・シャワー_HPP
-#define スター・シャワー_HPP
+#ifndef STAR_SHOWER_EVENT_HPP
+#define STAR_SHOWER_EVENT_HPP
 
 #include "wave_event.hpp"
 #include "../../rendering/rect.hpp"
@@ -26,7 +26,7 @@ struct star_drop {
     seconds_f32 remaining_fall_time;
 };
 
-class スター・シャワー_event : public wave_event {
+class star_shower_event : public wave_event {
     rect_f32 event_area;
     star_drop_descriptor drop_lower_bound;
     star_drop_descriptor drop_upper_bound;
@@ -37,7 +37,7 @@ class スター・シャワー_event : public wave_event {
     size_t max_drops_exclusive;
 
 public:
-    inline スター・シャワー_event(
+    inline star_shower_event(
         WaveManager &wave_manager,
         const rect_f32 event_area,
         const star_drop_descriptor drop_lower_bound,
@@ -49,7 +49,6 @@ public:
         drop_lower_bound(drop_lower_bound),
         drop_upper_bound(drop_upper_bound),
         star_drops{},
-        star_fall_remaining_times{},
         min_drops_inclusive(min_drops_inclusive),
         max_drops_exclusive(max_drops_exclusive)
     {

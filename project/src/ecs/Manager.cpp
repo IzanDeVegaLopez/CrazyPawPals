@@ -6,6 +6,7 @@
 #include "../physics/collision.hpp"
 #include "../our_scripts/components/rendering/camera_component.hpp"
 #include <cstdlib>
+#include <unordered_set>
 
 namespace ecs {
 
@@ -487,24 +488,38 @@ void Manager::refresh()
 
     // remove dead entities from the groups lists, and also those
 	// do not belong to the group anymore
+	std::unordered_set<ecs::entity_t> to_remove;
 	for (ecs::grpId_t gId = 0; gId < ecs::maxGroupId; gId++) {
 		auto &groupEntities = _entsByGroup[gId];
-		groupEntities.erase(
-				std::remove_if(groupEntities.begin(), groupEntities.end(),
-						[this](Entity *e) {
-							if (isAlive(e)) {
-								return false;
-							} 
-							else {
-								auto& sceneEntities = _entsByScene[e->_sId];
-								sceneEntities.erase(
-									std::remove(sceneEntities.begin(), sceneEntities.end(), e),
-									sceneEntities.end()
-								);
-								delete e;
-								return true;
-							}
-						}), groupEntities.end());
+		for (auto it = groupEntities.begin(); it != groupEntities.end(); ) {
+			if (isAlive(*it)) {
+				to_remove.insert(*it);
+			}
+			++it;
+		}
+	}
+	for (ecs::sceneId_t sId = 0; sId < ecs::maxSceneId; sId++) {
+		auto &sceneEntities = _entsByScene[sId];
+		for (auto it = sceneEntities.begin(); it != sceneEntities.end(); ) {
+			if (isAlive(*it)) {
+				to_remove.insert(*it);
+			}
+			++it;
+		}
+	}
+	for (auto &&scene : _entsByScene) {
+		std::remove_if(scene.begin(), scene.end(), [&to_remove](ecs::entity_t e) {
+			return to_remove.find(e) != to_remove.end();
+		});
+	}
+	for (auto &&group : _entsByGroup) {
+		std::remove_if(group.begin(), group.end(), [&to_remove](ecs::entity_t e) {
+			return to_remove.find(e) != to_remove.end();
+		});
+	}
+
+	for (auto e : to_remove) {
+		delete e;
 	}
 
 	for (auto e : _pendingEntities) {

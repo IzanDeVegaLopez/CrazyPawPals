@@ -1,4 +1,4 @@
-#include "スター・シャワー.hpp"
+#include "star_shower_event.hpp"
 #include <random>
 
 #include "../../our_scripts/components/rendering/dyn_image.hpp"
@@ -8,7 +8,7 @@
 #include "../../game/scenes/Scene.h"
 #include "../../ecs/Manager.h"
 
-static star_drop_descriptor スター・シャワー_event_generate_star_drop_descriptor(
+static star_drop_descriptor star_shower_event_generate_star_drop_descriptor(
     const star_drop_descriptor lower_bound,
     const star_drop_descriptor upper_bound,
     std::default_random_engine &generator
@@ -29,7 +29,7 @@ static star_drop_descriptor スター・シャワー_event_generate_star_drop_de
     };
 }
 
-static star_drop スター・シャワー_event_create_star_drop(
+static star_drop star_shower_event_event_create_star_drop(
     const star_drop_descriptor descriptor,
     ecs::Manager &manager,
     const camera_screen &camera,
@@ -94,7 +94,7 @@ static star_drop スター・シャワー_event_create_star_drop(
     };
 }
 
-void スター・シャワー_event::start_wave_callback() {
+void star_shower_event::start_wave_callback() {
     assert(star_drops.empty() && "fatal error: star_drops must be empty at the start of the wave");
 
     std::default_random_engine generator;
@@ -105,7 +105,7 @@ void スター・シャワー_event::start_wave_callback() {
     star_drops.reserve(drop_count);
     for (size_t i = 0; i < drop_count; ++i) {
         star_drop_descriptors.at(i) = (
-            スター・シャワー_event_generate_star_drop_descriptor(drop_lower_bound, drop_upper_bound, generator)
+            star_shower_event_generate_star_drop_descriptor(drop_lower_bound, drop_upper_bound, generator)
         );
     }
     
@@ -114,14 +114,14 @@ void スター・シャワー_event::start_wave_callback() {
     ecs::Manager &manager = *game.get_mngr();
     const camera_screen &camera = manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam;
     for (size_t i = 0; i < drop_count; ++i) {
-        auto drop = スター・シャワー_event_create_star_drop(
+        auto drop = star_shower_event_create_star_drop(
             star_drop_descriptors[i], *game.get_mngr(), camera, scene_id
         );
         star_drops.push_back(drop);
     }
 }
 
-void スター・シャワー_event::end_wave_callback() {
+void star_shower_event::end_wave_callback() {
     auto &&manager = *Game::Instance()->get_mngr();
     for (auto star_drop : manager.getEntities(ecs::grp::STAR_DROP)) {
         manager.setAlive(star_drop, false);
@@ -129,7 +129,7 @@ void スター・シャワー_event::end_wave_callback() {
     star_drops.clear();
 }
 
-static void スター・シャワー_event_on_impact(
+static void star_shower_event_on_impact(
     const star_drop &star_drop,
     ecs::Manager &manager,
     const seconds_f32 delta_time_seconds
@@ -137,7 +137,7 @@ static void スター・シャワー_event_on_impact(
     // TODO: star collision and deletion
 }
 
-void スター・シャワー_event::update(unsigned int delta_time) {
+void star_shower_event::update(unsigned int delta_time) {
     if (!star_drops.empty()) {
         const size_t drop_count = star_drops.size();
         assert(drop_count >= min_drops_inclusive && "fatal error: drop_count must be greater than or equal to min_drops_inclusive");
@@ -148,7 +148,7 @@ void スター・シャワー_event::update(unsigned int delta_time) {
         for (auto &&star_drop : star_drops) {
             star_drop.remaining_fall_time -= delta_time_seconds;
             if (star_drop.remaining_fall_time <= 0.0f) {
-                スター・シャワー_event_on_impact(star_drop, manager, delta_time_seconds);
+                star_shower_event_on_impact(star_drop, manager, delta_time_seconds);
             }
         }
     }
