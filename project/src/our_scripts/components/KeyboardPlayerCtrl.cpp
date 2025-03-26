@@ -132,3 +132,9 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
     }
     
 }
+
+bool KeyboardPlayerCtrl::is_moving_input() const
+{
+    auto& ihdlr = ih();
+    return ihdlr.isKeyDown(_left) || ihdlr.isKeyDown(_right) || ihdlr.isKeyDown(_up) || ihdlr.isKeyDown(_down);
+}

@@ -16,6 +16,7 @@
 #include "../../our_scripts/states/WaitingState.h"
 #include "../../our_scripts/states/RotatingState.h"
 #include "../../our_scripts/states/DashingState.h"
+#include "../../our_scripts/states/AnimationState.h"
 
 #include "../../our_scripts/states/SuperMichiMafiosoAttack.h"
 #include "../../our_scripts/components/weapons/enemies/WeaponSuperMichiMafioso.h"
@@ -24,6 +25,7 @@
 #include "../../our_scripts/components/cards/Mana.h"
 #include "../../our_scripts/components/cards/Deck.hpp"
 #include "../../our_scripts/components/rendering/dyn_image.hpp"
+#include "../../our_scripts/components/rendering/dyn_image_with_frames.hpp"
 #include "../../our_scripts/components/rendering/camera_component.hpp"
 
 #include "../../our_scripts/components/Health.h" 
@@ -122,8 +124,10 @@ void GameScene::enterScene()
 
 	mngr->addComponent<KeyboardPlayerCtrl>(player);
 	mngr->addComponent<PlayerHUD>(player);
+	player_anim_state_machine(player);
 	mngr->getComponent<WaveManager>(mngr->getHandler(ecs::hdlr::WAVE))->start_new_wave();
 	mngr->getComponent<HUD>(mngr->getHandler(ecs::hdlr::HUD_ENTITY))->start_new_wave();
+
 }
 
 void GameScene::exitScene()
@@ -144,8 +148,8 @@ ecs::entity_t GameScene::create_player()
 		ecs::scene::GAMESCENE,
 		&player_transform,
 		&player_rect,
-		new dyn_image(
-			rect_f32_full_subrect,
+		new dyn_image_with_frames(
+			rect_f32{ {0,0},{0.2,1} },
 			player_rect,
 			camera,
 			sdlutils().images().at("piu"),
@@ -154,14 +158,46 @@ ecs::entity_t GameScene::create_player()
 		new render_ordering{ 1 },
 		new Health(100, true),
 		new ManaComponent(),
-		//new Deck(c),
 		// new StopOnBorder(camera, 1.5f, 2.0f),
 		&player_rigidbody,
 		&player_collisionable,
 		new MovementController(0.1f, 5.0f, 20.0f * deccel_spawned_creatures_multi)
 		);
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::PLAYER, player);
+
 	return player;
+}
+
+void GameScene::player_anim_state_machine(ecs::entity_t player)
+{
+	auto&& manager = *Game::Instance()->get_mngr();
+	
+	auto* anim_state = manager.addComponent<StateMachine>(player);
+	auto* player_dyn_image = manager.getComponent<dyn_image_with_frames>(player);
+	auto* player_input = manager.getComponent<KeyboardPlayerCtrl>(player);
+	
+	if (!player_dyn_image || !player_input) {
+		std::cerr << "Error:falta componente en player_anim_state_machine" << std::endl;
+		return;
+	}
+
+	//dyn_image_with_frames& anim, start_frame, end_frame, frame_duration
+	auto move = std::make_shared<AnimationState>(*player_dyn_image, 1, 5, 150);
+	auto idle = std::make_shared<AnimationState>(*player_dyn_image, 0, 0, 100);
+
+	//poner los estado a la state
+	anim_state->add_state("Moving", move);
+	anim_state->add_state("Idle", idle);
+
+	anim_state->add_transition("Moving", "Idle", [player_input]() {
+		return !player_input->is_moving_input(); 
+		});
+
+	anim_state->add_transition("Idle", "Moving", [player_input]() {
+		return player_input->is_moving_input(); 
+		});
+
+	anim_state->set_initial_state("Idle");
 }
 
 struct EnemySpawnConfig {
@@ -199,6 +235,8 @@ ecs::entity_t GameScene::create_enemy(EnemySpawnConfig&& ec){
 		&rigidbody,
 		&col
 	);
+
+
 	// BUG: ^^^^ justo ahí arriba se añade el weapon
 	// if (weapon != nullptr)manager.addExistingComponent<Weapon>(e, weapon);
 

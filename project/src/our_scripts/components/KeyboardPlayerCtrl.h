@@ -17,6 +17,8 @@ public:
 	virtual ~KeyboardPlayerCtrl(); 
 	void initComponent() override;
 	void update(Uint32 delta_time) override;
+
+	bool is_moving_input() const;
 private:
 	SDL_Scancode _left;
 	SDL_Scancode _right;
