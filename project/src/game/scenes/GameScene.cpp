@@ -805,6 +805,9 @@ void GameScene::spawn_fog()
 		transform
 	);
 
+	auto&& fog_rigidbody = *new rigidbody_component{ rect_f32{{0.0f, 0.0f}, {1.0f, 1.0f}}, mass_f32{1.0f}, 0.0f };
+	auto&& fog_collisionable = *new collisionable{ transform, fog_rigidbody, rect, collisionable_option_trigger };
+
 	Fog* this_fog = new Fog();
 	// La entidad tiene un grupo, una escena, un Transform, rect_component, un Fog y un dyn_image
 	auto ent = create_entity(
@@ -814,7 +817,9 @@ void GameScene::spawn_fog()
 		&rect,
 		this_fog,
 		this_fog_image,
-		new fog_collision_component()
+		new fog_collision_component(),
+		&fog_rigidbody,
+		&fog_collisionable
 
 	);
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::FOGGROUP, ent);

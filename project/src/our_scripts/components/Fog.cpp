@@ -30,9 +30,6 @@ void Fog::update(uint32_t delta_time) {
 		}
 		std::cout << "Fog: " << fogPercentage * 100 << "%" << std::endl;
 
-		fogTransform->setWidth(orW * (1 - fogPercentage));
-		fogTransform->setHeight(orH * (1 - fogPercentage));
-
 		fogRect->setSize(orSize * (1 - fogPercentage));
 	}
 }
