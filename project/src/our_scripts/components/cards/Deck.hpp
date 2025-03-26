@@ -97,4 +97,6 @@ public:
 	inline AnimationVars animation_vars() { return _av; }
 	inline const std::list<std::string>& card_names() const { return _cards_names; }
 	inline CardList& all_cards() { return _all_cards; };
+
+	inline void add_card_name(std::string _new_card) { _cards_names.emplace_back(_new_card); }
 };

@@ -195,6 +195,16 @@ void Deck::add_card_to_deck(Card* c)
 {
 	assert(c != nullptr);
 	_draw_pile.add_card(std::move(c));
+	std::string typeName = typeid(*c).name();
+	std::string prefix = "class ";
+	if (typeName.find(prefix) == 0) {  // Si empieza con "class "
+		typeName = typeName.substr(prefix.size());  // Elimina "class "
+		for (char& c: typeName)
+		{
+			c = tolower(c);
+		}
+	}
+	_cards_names.emplace_back("card_"+typeName);
 }
 
 void Deck::add_card_to_discard_pile(Card* c)

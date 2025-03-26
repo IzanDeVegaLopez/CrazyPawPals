@@ -17,7 +17,7 @@
 #include <iostream>
 
 RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr), _selected_button(nullptr), _reward_bg(nullptr),
-_health(false),_card(false), _object(false), _upgrade(false), _lr(nullptr), _selected(false), _activate_confirm_button(false)
+_health(false),_card(false), _object(false), _upgrade(false), _lr(nullptr), _selected(false), _activate_confirm_button(false), _chosen_card(nullptr)
 {
 }
 
@@ -44,20 +44,24 @@ void RewardScene::exitScene()
 {
     change_pos(false);
 }
+
 void RewardScene::render() {
     _reward_bg->render(0, 0);
     Scene::render();
 }
-std::string RewardScene::get_unique_card(GameStructs::CardType& ct, std::unordered_set<std::string>& appeared_cards) {
+
+std::pair<std::string, GameStructs::CardType> RewardScene::get_unique_card(std::unordered_set<std::string>& appeared_cards) {
     std::string sprite;
+    GameStructs::CardType ct;
     do {
         ct = (GameStructs::CardType)sdlutils().rand().nextInt(0, GameStructs::LAST_CARD);
         sprite = select_card(ct);
-    } while (appeared_cards.find(sprite) != appeared_cards.end()); // Repite si la carta ya apareció
+    } while (appeared_cards.find(sprite) != appeared_cards.end()); // Repite si la carta ya apareciï¿½
 
     appeared_cards.insert(sprite);
-    return sprite;
+    return { sprite, ct };
 }
+
 std::string RewardScene::select_card(GameStructs::CardType ct) {
     std::string s = "";
     switch (ct)
@@ -90,6 +94,7 @@ std::string RewardScene::select_card(GameStructs::CardType ct) {
     std::cout << "reward card: " + s << std::endl;
     return s;
 }
+
 void RewardScene::refresh_rewards() {
     auto* mngr = Game::Instance()->get_mngr();
     auto& rewards_cards = mngr->getEntities(ecs::grp::REWARDCARDS);
@@ -97,15 +102,16 @@ void RewardScene::refresh_rewards() {
     GameStructs::CardType ct;
     //refresh the three reward card button
     for (auto& e : rewards_cards) {
-        auto s = get_unique_card(ct, appeared_cards);
+        auto s = get_unique_card(appeared_cards);
         auto img = mngr->getComponent<transformless_dyn_image>(e);
-        img->set_texture(&sdlutils().images().at(s));
+        img->set_texture(&sdlutils().images().at(s.first));
         auto data = mngr->getComponent<RewardDataComponent>(e);
-        data->_data = s;
+        data->set_data(s.first, s.second);
     }
 
     change_pos(true);
 }
+
 void RewardScene::change_pos(bool enter) {
     auto swap_positions = [](transformless_dyn_image* img1, transformless_dyn_image* img2) {
         auto aux = img1->destination_rect.position.x;
@@ -123,7 +129,7 @@ void RewardScene::change_pos(bool enter) {
 
     // other references
     auto healthReward = mngr->getHandler(ecs::hdlr::REWARDHEALTH);
-    auto img = mngr->getComponent<transformless_dyn_image>(rewardCard); // Última carta
+    auto img = mngr->getComponent<transformless_dyn_image>(rewardCard); // ï¿½ltima carta
     auto healImg = mngr->getComponent<transformless_dyn_image>(healthReward);
 
     auto bRewardButton = mngr->getComponent<Button>(rewardCard);
@@ -144,6 +150,7 @@ void RewardScene::change_pos(bool enter) {
         }
     }
 }
+
 void RewardScene::create_reward_buttons() {
     float umbral = 0.4f;
     GameStructs::ButtonProperties buttonPropTemplate = {
@@ -155,15 +162,14 @@ void RewardScene::create_reward_buttons() {
     std::unordered_set<std::string> appeared_cards;
 
     //three card reward buttons
-    GameStructs::CardType ct; 
-    buttonPropTemplate.sprite_key = get_unique_card(ct, appeared_cards);
+    buttonPropTemplate.sprite_key = get_unique_card(appeared_cards).first;
     create_reward_card_button(buttonPropTemplate);
 
-    buttonPropTemplate.sprite_key = get_unique_card(ct, appeared_cards);
+    buttonPropTemplate.sprite_key = get_unique_card(appeared_cards).first;
     buttonPropTemplate.rect.position.x -= umbral;
     create_reward_card_button(buttonPropTemplate);
      
-    buttonPropTemplate.sprite_key = get_unique_card(ct, appeared_cards);
+    buttonPropTemplate.sprite_key = get_unique_card(appeared_cards).first;
     buttonPropTemplate.rect.position.x += umbral*2;
     create_reward_card_button(buttonPropTemplate);
 
@@ -180,7 +186,6 @@ void RewardScene::create_reward_buttons() {
     buttonPropTemplate.rect.size = { 0.325f, 0.195f };
     create_reward_selected_button(buttonPropTemplate);
 }
-
 
 void RewardScene::create_reward_health_button(const GameStructs::ButtonProperties& bp) {
     auto* mngr = Game::Instance()->get_mngr();
@@ -250,7 +255,7 @@ void RewardScene::create_reward_card_button(const GameStructs::ButtonProperties&
     //used for change the sprite once a button is clicked
     auto data = mngr->addComponent<RewardDataComponent>(e, bp.sprite_key);
 
-    buttonComp->connectClick([buttonComp, imgComp, this]() {
+    buttonComp->connectClick([buttonComp, imgComp, this, e]() {
         if (_selected) {
             std::cout << "already selected" << std::endl;
         }
@@ -264,6 +269,7 @@ void RewardScene::create_reward_card_button(const GameStructs::ButtonProperties&
                 resize(_lr, 1.0f / 1.1f);
             }
             _lr = imgComp;
+            _chosen_card = e;
         }
     });
     buttonComp->connectHover([buttonComp, imgComp, this]() {
@@ -279,6 +285,7 @@ void RewardScene::create_reward_card_button(const GameStructs::ButtonProperties&
         });
 
 }
+
 ecs::entity_t RewardScene::create_card_button(const GameStructs::CardButtonProperties& bp) {
     auto* mngr = Game::Instance()->get_mngr();
     auto e = create_button(bp);
@@ -287,6 +294,7 @@ ecs::entity_t RewardScene::create_card_button(const GameStructs::CardButtonPrope
     b->set_it(bp.iterator);
     return e;
 }
+
 void RewardScene::create_a_deck_card(const GameStructs::CardButtonProperties& bp) {
     auto* mngr = Game::Instance()->get_mngr();
 
@@ -318,6 +326,7 @@ void RewardScene::create_a_deck_card(const GameStructs::CardButtonProperties& bp
         //imgComp->destination_rect.size = { imgComp->destination_rect.size.x / 1.25f,  imgComp->destination_rect.size.y / 1.25f };
         });
 }
+
 void RewardScene::create_my_deck_cards() {
     auto* mngr = Game::Instance()->get_mngr();
 
@@ -352,6 +361,7 @@ void RewardScene::create_my_deck_cards() {
         propTemplate.rect.position.x += umbral;
     }
 }
+
 void RewardScene::refresh_my_deck_cards(const std::list<std::string>& cl) {
     auto* mngr = Game::Instance()->get_mngr();
     auto infos = mngr->getEntities(ecs::grp::REWARDDECK);
@@ -370,14 +380,14 @@ void RewardScene::refresh_my_deck_cards(const std::list<std::string>& cl) {
         auto img = mngr->getComponent<transformless_dyn_image>(*itInfo);
         img->set_texture(&sdlutils().images().at(*it));
 
-        // Actualizar la referencia a la carta en el botón
+        // Actualizar la referencia a la carta en el botï¿½n
         auto buttonComp = mngr->getComponent<Button>(*itInfo);
         if (buttonComp) {
-            static_cast<CardButton*>(buttonComp)->set_it(*itCard); // Método para actualizar puntero
+            static_cast<CardButton*>(buttonComp)->set_it(*itCard); // Mï¿½todo para actualizar puntero
         }
     }
 
-    // Rellenar con imágenes vacías si hay menos cartas en el nuevo mazo
+    // Rellenar con imï¿½genes vacï¿½as si hay menos cartas en el nuevo mazo
     for (; itInfo != infos.end(); ++itInfo) {
         auto img = mngr->getComponent<transformless_dyn_image>(*itInfo);
         img->set_texture(&sdlutils().images().at("initial_info"));
@@ -388,6 +398,7 @@ void RewardScene::refresh_my_deck_cards(const std::list<std::string>& cl) {
         }
     }
 }
+
 void RewardScene::create_reward_selected_button(const GameStructs::ButtonProperties& bp) {
     auto* mngr = Game::Instance()->get_mngr();
 
@@ -410,6 +421,7 @@ void RewardScene::create_reward_selected_button(const GameStructs::ButtonPropert
             _lr->swap_textures();
             _selected = true;
             imgComp->swap_textures();
+            add_new_reward_card();
         }
     });
     buttonComp->connectHover([buttonComp, imgComp, this]() {
@@ -424,6 +436,61 @@ void RewardScene::create_reward_selected_button(const GameStructs::ButtonPropert
         imgComp->apply_filter(255, 255, 255);
     });
 }
+
+void RewardScene::add_new_reward_card() {
+    assert(_chosen_card != nullptr);
+
+    //We get the reference to the deck
+    auto* mngr = Game::Instance()->get_mngr();
+    auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
+    auto _m_deck = mngr->getComponent<Deck>(player);
+    //We add the cards to the deck
+    Card* c = nullptr;
+    GameStructs::CardType ct = mngr->getComponent<RewardDataComponent>(_chosen_card)->CT(); 
+    switch (ct) 
+    {
+    case GameStructs::FIREBALL:
+        c = new Fireball();
+        break;
+    case GameStructs::LIGHTING:
+        c = new Lighting();
+        break;
+    case GameStructs::KUNAI:
+        c = new Kunai();
+        break;
+    case GameStructs::RECOVER:
+        c = new Recover();
+        break;
+    case GameStructs::MINIGUN:
+        c = new Minigun();
+        break;
+    case GameStructs::SPRAY:
+        c = new CardSpray();
+        break;
+    case GameStructs::ELDRITCH_BLAST:
+        c = new EldritchBlast();
+        break;
+    case GameStructs::COMMUNE:
+        c = new Commune();
+        break;
+    case GameStructs::EVOKE:
+        c = new Evoke();
+        break;
+    case GameStructs::FULGUR:
+        c = new Fulgur();
+        break;
+    case GameStructs::QUICK_FEET:
+        c = new QuickFeet();
+        break;
+    default:
+        break;
+    }
+    if (c != nullptr)  _m_deck->add_card_to_deck(c);
+    //Refresh deck
+    auto& pDeck = _m_deck->card_names();
+    refresh_my_deck_cards(pDeck);
+}
+
 void RewardScene::update(uint32_t delta_time) {
     Scene::update(delta_time);
 
