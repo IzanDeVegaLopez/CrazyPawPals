@@ -99,4 +99,6 @@ public:
 	inline CardList& all_cards() { return _all_cards; };
 
 	inline void add_card_name(std::string _new_card) { _cards_names.emplace_back(_new_card); }
+
+	void new_card_in_all_cards(Card* c);
 };

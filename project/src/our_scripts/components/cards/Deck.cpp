@@ -190,27 +190,31 @@ void Deck::update(Uint32 deltaTime) noexcept
 		_finish_realoading();
 	}
 }
-
-void Deck::add_card_to_deck(Card* c)
-{
-	assert(c != nullptr);
-	_draw_pile.add_card(std::move(c));
+void Deck::new_card_in_all_cards(Card* c) {
 	std::string typeName = typeid(*c).name();
 	std::string prefix = "class ";
 	if (typeName.find(prefix) == 0) {  // Si empieza con "class "
 		typeName = typeName.substr(prefix.size());  // Elimina "class "
-		for (char& c: typeName)
+		for (char& c : typeName)
 		{
 			c = tolower(c);
 		}
 	}
-	_cards_names.emplace_back("card_"+typeName);
+	_cards_names.emplace_back("card_" + typeName);
+	_all_cards.card_list().emplace_back(c);
+}
+void Deck::add_card_to_deck(Card* c)
+{
+	assert(c != nullptr);
+	_draw_pile.add_card(std::move(c));
+	new_card_in_all_cards(c);
 }
 
 void Deck::add_card_to_discard_pile(Card* c)
 {
 	assert(c != nullptr);
 	_discard_pile.add_card(std::move(c));
+	new_card_in_all_cards(c);
 }
 
 void Deck::remove_card(std::list<Card*>::iterator)
