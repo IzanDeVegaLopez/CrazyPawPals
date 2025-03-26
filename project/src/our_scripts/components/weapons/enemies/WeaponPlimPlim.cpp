@@ -17,6 +17,7 @@ WeaponPlimPlim::callback(Vector2D shootPos, Vector2D shootDir) {
 	bp.life_time = 2;
 	bp.width = _attack_width* 0.5f;
 	bp.height = _attack_height * 0.5f;
+	bp.collision_filter = GameStructs::collide_with::player;
 
 	bp.sprite_key = "p_plimplim";
 	auto* scene = static_cast<GameScene*>(Game::Instance()->get_currentScene());

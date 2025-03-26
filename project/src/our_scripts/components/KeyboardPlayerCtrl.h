@@ -6,6 +6,7 @@ class Transform;
 class Health;
 class Weapon;
 class Deck;
+class ManaComponent;
 class MovementController;
 class MythicComponent;
 class KeyboardPlayerCtrl :public ecs::Component
@@ -29,4 +30,5 @@ private:
 	Deck* _dc;
 	MythicComponent* _my;
 	Health* _h;
+	ManaComponent* _m;
 };

@@ -19,6 +19,7 @@ WeaponBoom::callback(Vector2D shootPos, Vector2D shootDir) {
 	bp.width = _attack_width;
 	bp.height = _attack_height;
 	bp.sprite_key = "p_boom";
+	bp.collision_filter = GameStructs::collide_with::player;
 	
 
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);

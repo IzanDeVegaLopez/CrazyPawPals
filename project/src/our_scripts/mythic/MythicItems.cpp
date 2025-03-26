@@ -1,63 +1,127 @@
 #include "MythicItems.h"
 #include "../../game/Game.h"
 #include "../../game/scenes/GameScene.h"
+#include <iostream>
 
 #pragma region BloodClaw
-BloodClaw::BloodClaw()
-	:MythicItem("BloodClaw")
+BloodClaw::BloodClaw(Health* h, Weapon* w)
+	:MythicItem("BloodClaw"), _health(h), _weapon(w)
 {}
-void BloodClaw::apply_effects(Health* health, ManaComponent* mana, MovementController* movement, Weapon* weapon) {
-	int currhealth = health->getHealth() / 2;
-	int damage = weapon->damage() * 2;
-	health->takeDamage(currhealth);
-	weapon->set_damage(damage);
+void BloodClaw::apply_effects() {
+	int currhealth = _health->getHealth() / 2;
+	int damage = _weapon->damage() * 2;
+	_health->takeDamage(currhealth);
+	_weapon->set_damage(damage);
 }
 #pragma endregion
 
 
-#pragma region ManaSwap
-ManaSwap::ManaSwap()
-	:MythicItem("ManaSwap"), _mana(nullptr)
+#pragma region ProfaneHotline
+ProfaneHotline::ProfaneHotline(ManaComponent* m)
+	:MythicItem("ProfaneHotline"), _mana(m)
 {
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::mill, this, &event_system::event_receiver::event_callback0);
 }
-void ManaSwap::event_callback0(const event_system::event_receiver::Msg& m) {
+
+void 
+ProfaneHotline::event_callback0(const event_system::event_receiver::Msg& m) {
 	int newManaCount = _mana->mana_count() + m.int_value;
 	_mana->change_mana(newManaCount);
 }
-void ManaSwap::apply_effects(Health* health, ManaComponent* mana, MovementController* movement, Weapon* weapon) {
-	_mana = mana;
+
+void 
+ProfaneHotline::apply_effects() {
 	int m = _mana->mana_regen();
 	_mana->change_mana_regen(-(m/2));
 }
 
 #pragma endregion
 
-#pragma region ShieldHarvest
-ShieldHarvest::ShieldHarvest()
-	:MythicItem("ShieldHarvest"), _health(nullptr)
+#pragma region CurtainReaper
+CurtainReaper::CurtainReaper(Health* h)
+	:MythicItem("CurtainReaper"), _health(h)
 {
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::enemy_dead, this, &event_system::event_receiver::event_callback0);
 }
-void ShieldHarvest::event_callback0(const event_system::event_receiver::Msg& m) {
+
+void 
+CurtainReaper::event_callback0(const event_system::event_receiver::Msg& m) {
 	int shield =  m.int_value;
 	_health->takeShield(shield);
 }
-void ShieldHarvest::apply_effects(Health* health, ManaComponent* mana, MovementController* movement, Weapon* weapon) {
-	_health = health;
+
+void 
+CurtainReaper::apply_effects() {
 	int currhealth = _health->getHealth() / 2;
 	_health->takeDamage(currhealth);
 }
+
 #pragma endregion
 
-#pragma region ManaCatalyst
-ManaCatalyst::ManaCatalyst()
-	:MythicItem("ManaCatalyst"){}
+#pragma region Incense
+Incense::Incense(ManaComponent* m, Weapon* w)
+	:MythicItem("Incense"), _mana(m), _weapon(w){}
 
-void ManaCatalyst::apply_effects(Health* health, ManaComponent* mana, MovementController* movement, Weapon* weapon) {
-	(void)health, (void)movement;
-	mana->change_mana_regen(mana->mana_regen());
-	int damage = weapon->damage() / 2;
-	weapon->set_damage(damage);
+void 
+Incense::apply_effects() {
+	_mana->change_mana_regen(_mana->mana_regen());
+	int damage = _weapon->damage() / 2;
+	_weapon->set_damage(damage);
+}
+
+#pragma endregion
+
+#pragma region ArcaneSurge
+ArcaneSurge::ArcaneSurge(ManaComponent* m, Deck* d)
+	:MythicItem("ArcaneSurge"),  _mana(m), _deck(d), _set(false), _ini_mana(_mana->mana_regen()){}
+
+void 
+ArcaneSurge::apply_effects() {
+	_deck->set_reload_time(_deck->reload_time() + 0.5f * _deck->reload_time());
+	//std::cout << "mana: " << _mana->mana_regen() << std::endl;
+}
+
+void ArcaneSurge::update(uint32_t dt) {
+	(void)dt;
+	if (_deck->is_reloading()) {
+		if (!_set) {
+			//std::cout << "ManaForge activated" << std::endl;
+			_set = true;
+			_mana->change_mana_regen(0.5f *_ini_mana);
+			//std::cout << "mana: " << _mana->mana_regen() << std::endl;
+
+		}
+	}
+	else if(_set){
+		_mana->change_mana_regen(-(_ini_mana * 0.5f));
+		_set = false;
+		//std::cout << "Quitando mana mana: " << _mana->mana_regen() << std::endl;
+	}
+}
+
+#pragma endregion
+
+#pragma region BloodPact
+BloodPact::BloodPact(ManaComponent* m, Health* h)
+	:MythicItem("BloodPact"),  _mana(m), _health(h){}
+
+void 
+BloodPact::apply_effects() {
+	int currhealth = _health->getHealth() / 2;
+	_health->takeDamage(currhealth);
+	_mana->change_mana_regen(_mana->mana_regen());
+	//std::cout << "mana: " << _mana->mana_regen() << std::endl;
+}
+#pragma endregion
+
+#pragma region PreternaturalForce
+PreternaturalForce::PreternaturalForce(ManaComponent* m, Weapon* w)
+	:MythicItem("PreternaturalForce"),  _mana(m), _weapon(w){}
+
+void 
+PreternaturalForce::apply_effects() {
+	_mana->change_mana_regen(- (_mana->mana_regen() * 0.5));
+	int damage = _weapon->damage() * 2;
+	_weapon->set_damage(damage);
 }
 #pragma endregion

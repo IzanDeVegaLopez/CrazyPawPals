@@ -35,7 +35,7 @@ Manager::~Manager() {
 
 #ifndef DBG_COLLISIONS
 #define DBG_COLLISIONS_DEFAULT false
-#define DBG_COLLISIONS DBG_COLLISIONS_DEFAULT
+#define DBG_COLLISIONS true
 #endif
 
 #if DBG_COLLISIONS
@@ -364,7 +364,7 @@ static void manager_update_collisions(Manager &manager, const std::vector<ecs::e
 	default: {
 		const float delta_time_seconds = delta_time_milliseconds / 1000.0f;
 
-		constexpr static const size_t max_collision_passes = 8;
+		constexpr static const size_t max_collision_passes = 3;
 		size_t last_pass_collision_count;
 		size_t pass_count = 0;
 		do {
