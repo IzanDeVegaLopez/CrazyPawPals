@@ -29,7 +29,7 @@ static star_drop_descriptor star_shower_event_generate_star_drop_descriptor(
     };
 }
 
-static star_drop star_shower_event_event_create_star_drop(
+static star_drop star_shower_event_create_star_drop(
     const star_drop_descriptor descriptor,
     ecs::Manager &manager,
     const camera_screen &camera,
