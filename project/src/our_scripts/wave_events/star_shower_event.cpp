@@ -1,0 +1,155 @@
+#include "star_shower_event.hpp"
+#include <random>
+
+#include "../../our_scripts/components/rendering/dyn_image.hpp"
+#include "../../our_scripts/components/rendering/camera_component.hpp"
+#include "../../ecs/Entity.h"
+#include "../../game/Game.h"
+#include "../../game/scenes/Scene.h"
+#include "../../ecs/Manager.h"
+
+static star_drop_descriptor star_shower_event_generate_star_drop_descriptor(
+    const star_drop_descriptor lower_bound,
+    const star_drop_descriptor upper_bound,
+    std::default_random_engine &generator
+) {
+    std::uniform_real_distribution<float> x_distribution{lower_bound.drop_position.x, upper_bound.drop_position.x};
+    std::uniform_real_distribution<float> y_distribution{lower_bound.drop_position.y, upper_bound.drop_position.y};
+    std::uniform_int_distribution<ptrdiff_t> damage_distribution{lower_bound.damage_amount, upper_bound.damage_amount};
+    std::uniform_real_distribution<float> radius_distribution{lower_bound.drop_radius, upper_bound.drop_radius};
+    std::uniform_real_distribution<float> fall_time_distribution{lower_bound.fall_time, upper_bound.fall_time};
+    std::uniform_real_distribution<float> spawn_distance_distribution{lower_bound.spawn_distance, upper_bound.spawn_distance};
+
+    return {
+        {x_distribution(generator), y_distribution(generator)},
+        damage_distribution(generator),
+        radius_distribution(generator),
+        fall_time_distribution(generator),
+        spawn_distance_distribution(generator)
+    };
+}
+
+static star_drop star_shower_event_create_star_drop(
+    const star_drop_descriptor descriptor,
+    ecs::Manager &manager,
+    const camera_screen &camera,
+    const ecs::sceneId_t scene_id
+) {
+    const ecs::entity_t mark_entity = manager.addEntity(scene_id, ecs::grp::STAR_DROP);
+    const ecs::entity_t star_entity = manager.addEntity(scene_id, ecs::grp::STAR_DROP);
+
+    const Vector2D shadow_position = Vector2D{descriptor.drop_position.x, descriptor.drop_position.y};
+    const Vector2D spawn_position = shadow_position + Vector2D{0.0, descriptor.spawn_distance};
+
+    const float drop_speed = descriptor.spawn_distance / descriptor.fall_time;
+    Transform &star_transform = *manager.addComponent<Transform>(
+        star_entity,
+        spawn_position,
+        Vector2D(0.0, -1.0),
+        0.0,
+        drop_speed
+    );
+    rect_component &star_rect = *manager.addComponent<rect_component>(
+        star_entity,
+        position2_f32{0.0f, 0.0f},
+        size2_f32{descriptor.drop_radius * 2.0f, descriptor.drop_radius * 2.0f}
+    );
+    dyn_image &star_image = *manager.addComponent<dyn_image>(
+        star_entity,
+        rect_f32_full_subrect,
+        star_rect,
+        camera,
+        sdlutils().images().at("star"),
+        star_transform
+    );
+
+    Transform &shadow_transform = *manager.addComponent<Transform>(
+        mark_entity,
+        shadow_position,
+        Vector2D(0.0, 0.0),
+        0.0,
+        0.0
+    );
+    rect_component &shadow_rect = *manager.addComponent<rect_component>(
+        mark_entity,
+        position2_f32{0.0f, 0.0f},
+        size2_f32{descriptor.drop_radius * 2.0f, descriptor.drop_radius * 2.0f}
+    );
+    dyn_image &shadow_image = *manager.addComponent<dyn_image>(
+        mark_entity,
+        rect_f32_full_subrect,
+        shadow_rect,
+        camera,
+        sdlutils().images().at("star_shadow"),
+        shadow_transform
+    );
+
+    return {
+        mark_entity,
+        star_entity,
+        &star_transform,
+        &shadow_image,
+        &shadow_rect,
+        descriptor.fall_time
+    };
+}
+
+void star_shower_event::start_wave_callback() {
+    assert(star_drops.empty() && "fatal error: star_drops must be empty at the start of the wave");
+
+    std::default_random_engine generator;
+    std::uniform_int_distribution<size_t> distribution{min_drops_inclusive, max_drops_exclusive};
+    const size_t drop_count = distribution(generator);
+
+    std::vector<star_drop_descriptor> star_drop_descriptors{drop_count};
+    star_drops.reserve(drop_count);
+    for (size_t i = 0; i < drop_count; ++i) {
+        star_drop_descriptors.at(i) = (
+            star_shower_event_generate_star_drop_descriptor(drop_lower_bound, drop_upper_bound, generator)
+        );
+    }
+    
+    Game &game = *Game::Instance();
+    const ecs::sceneId_t scene_id = game.get_currentScene()->get_scene_id();
+    ecs::Manager &manager = *game.get_mngr();
+    const camera_screen &camera = manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam;
+    for (size_t i = 0; i < drop_count; ++i) {
+        auto drop = star_shower_event_create_star_drop(
+            star_drop_descriptors[i], *game.get_mngr(), camera, scene_id
+        );
+        star_drops.push_back(drop);
+    }
+}
+
+void star_shower_event::end_wave_callback() {
+    auto &&manager = *Game::Instance()->get_mngr();
+    for (auto star_drop : manager.getEntities(ecs::grp::STAR_DROP)) {
+        manager.setAlive(star_drop, false);
+    }
+    star_drops.clear();
+}
+
+static void star_shower_event_on_impact(
+    const star_drop &star_drop,
+    ecs::Manager &manager,
+    const seconds_f32 delta_time_seconds
+) {
+    // TODO: star collision and deletion
+}
+
+void star_shower_event::update(unsigned int delta_time) {
+    if (!star_drops.empty()) {
+        const size_t drop_count = star_drops.size();
+        assert(drop_count >= min_drops_inclusive && "fatal error: drop_count must be greater than or equal to min_drops_inclusive");
+        assert(drop_count < max_drops_exclusive && "fatal error: drop_count must be less than max_drops_exclusive");
+
+        seconds_f32 delta_time_seconds = seconds_f32{float(delta_time) / 1000.0f};
+        auto &&manager = *Game::Instance()->get_mngr();
+        for (auto &&star_drop : star_drops) {
+            star_drop.remaining_fall_time -= delta_time_seconds;
+            if (star_drop.remaining_fall_time <= 0.0f) {
+                star_shower_event_on_impact(star_drop, manager, delta_time_seconds);
+            }
+        }
+    }
+}

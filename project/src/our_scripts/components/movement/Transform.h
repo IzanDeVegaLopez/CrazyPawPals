@@ -56,12 +56,14 @@ public:
 	}
 
 	void setPos(Vector2D& p) {
+		previous_position = _pos;
 		_pos=p;
 	}
 	void setDir(Vector2D& d) {
 		_dir = d;
 	}
 	void setPos(Vector2D&& p) {
+		previous_position = _pos;
 		_pos = p;
 	}
 	void setDir(Vector2D&& d) {
@@ -92,6 +94,7 @@ public:
 	inline void setHeight(int h) { _height = h; }
 
 	void update(uint32_t delta_time) override {
+		(void)delta_time;
 		previous_position = _pos;
 		
 		// const float delta_time_seconds = (delta_time / 1000.0f);

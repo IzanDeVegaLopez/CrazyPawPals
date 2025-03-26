@@ -4,14 +4,15 @@
 #include <SDL.h> // Add this include to resolve the incomplete type error
 
 class Transform;
-class Texture;
+class dyn_image;
+class rect_component;
 
 class Fog : public ecs::Component
 {
 public:
 	__CMPID_DECL__(ecs::cmp::FOG);
 
-	Fog() {};
+	Fog() { };
 	virtual ~Fog() {};
 	void initComponent() override;
 	void update(uint32_t delta_time) override;
@@ -20,23 +21,14 @@ public:
 	void setFog(bool fogActive_) { fogActive = fogActive_; }
 
 private:
-	Transform* _playerTr;
-	SDL_Texture* _fogTex;
 	bool fogActive = false;
 	float fogPercentage = 0;
 
-	SDL_Rect fogRight;
-	SDL_Rect fogLeft;
-	SDL_Rect fogUp;
-	SDL_Rect fogDown;
-
-	float fogRightEnd;
-	float fogLeftEnd;
-	float fogUpEnd;
-	float fogDownEnd;
-
-	float fogRightOrigin;
-	float fogLeftOrigin;
-	float fogUpOrigin;
-	float fogDownOrigin;
+	Transform* fogTransform;
+	dyn_image* fogImage;
+	rect_component* fogRect;
+	
+	float orSize;
+	int orW;
+	int orH;
 };

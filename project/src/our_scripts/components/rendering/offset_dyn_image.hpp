@@ -31,7 +31,6 @@ struct offset_dyn_image : public ecs::Component {
 		Texture &texture,
 		const Transform &transform
 	) : subrect(subrect), offset(offset), output_rect(output_rect), camera(camera), texture(texture), transform(transform) {};
-
 };
 
 #endif
