@@ -9,6 +9,8 @@ class Deck;
 class ManaComponent;
 class MovementController;
 class MythicComponent;
+class AnimationComponent;
+
 class KeyboardPlayerCtrl :public ecs::Component
 {
 public:
@@ -28,6 +30,7 @@ private:
 	SDL_Scancode _collect;
 	Vector2D _mouse_pos;
 
+	AnimationComponent* _dy;
 	MovementController* _mc;
 	Weapon* _w;
 	Deck* _dc;

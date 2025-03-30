@@ -26,4 +26,6 @@ struct dyn_image_with_frames : public offset_dyn_image {
 		frame_duration(frame_duration), next_frame_time(0), current_frame(ini_frame), ini_frame(ini_frame),end_frame(end_frame)
 	{};
 	void update(uint32_t delta_time) override;
+	
+	void set_animation(int ini, int end, uint32_t duration = 100);
 };

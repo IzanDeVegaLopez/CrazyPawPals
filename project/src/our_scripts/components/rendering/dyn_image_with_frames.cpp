@@ -12,3 +12,12 @@ void dyn_image_with_frames::update(uint32_t delta_time)
         next_frame_time = sdlutils().virtualTimer().currTime() + frame_duration;
     }
 }
+
+void dyn_image_with_frames::set_animation(int ini, int end, uint32_t duration)
+{
+    ini_frame = ini;
+    end_frame = end;
+    current_frame = ini;
+    frame_duration = duration;
+    next_frame_time = 0;
+}

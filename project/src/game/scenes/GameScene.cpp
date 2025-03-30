@@ -26,6 +26,7 @@
 #include "../../our_scripts/components/cards/Deck.hpp"
 #include "../../our_scripts/components/rendering/dyn_image.hpp"
 #include "../../our_scripts/components/rendering/dyn_image_with_frames.hpp"
+#include "../../our_scripts/components/AnimationComponent.h"
 #include "../../our_scripts/components/rendering/camera_component.hpp"
 
 #include "../../our_scripts/components/Health.h" 
@@ -128,7 +129,6 @@ void GameScene::enterScene()
 
 	mngr->addComponent<KeyboardPlayerCtrl>(player);
 	mngr->addComponent<PlayerHUD>(player);
-	player_anim_state_machine(player);
 	mngr->getComponent<WaveManager>(mngr->getHandler(ecs::hdlr::WAVE))->start_new_wave();
 	mngr->getComponent<HUD>(mngr->getHandler(ecs::hdlr::HUD_ENTITY))->start_new_wave();
 
@@ -167,41 +167,15 @@ ecs::entity_t GameScene::create_player()
 		&player_collisionable,
 		new MovementController(0.1f, 5.0f, 20.0f * deccel_spawned_creatures_multi)
 		);
+
+	//si tiene mas de una animacion
+	auto* anim = manager.addComponent<AnimationComponent>(player);
+	anim->add_animation("andar", 1, 5, 100);
+	anim->add_animation("idle", 0, 0, 100);
+
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::PLAYER, player);
 
 	return player;
-}
-
-void GameScene::player_anim_state_machine(ecs::entity_t player)
-{
-	auto&& manager = *Game::Instance()->get_mngr();
-	
-	auto* anim_state = manager.addComponent<StateMachine>(player);
-	auto* player_dyn_image = manager.getComponent<dyn_image_with_frames>(player);
-	auto* player_input = manager.getComponent<KeyboardPlayerCtrl>(player);
-	
-	if (!player_dyn_image || !player_input) {
-		std::cerr << "Error:falta componente en player_anim_state_machine" << std::endl;
-		return;
-	}
-
-	//dyn_image_with_frames& anim, start_frame, end_frame, frame_duration
-	auto move = std::make_shared<AnimationState>(*player_dyn_image, 1, 5, 150);
-	auto idle = std::make_shared<AnimationState>(*player_dyn_image, 0, 0, 100);
-
-	//poner los estado a la state
-	anim_state->add_state("Moving", move);
-	anim_state->add_state("Idle", idle);
-
-	anim_state->add_transition("Moving", "Idle", [player_input]() {
-		return !player_input->is_moving_input(); 
-		});
-
-	anim_state->add_transition("Idle", "Moving", [player_input]() {
-		return player_input->is_moving_input(); 
-		});
-
-	anim_state->set_initial_state("Idle");
 }
 
 struct EnemySpawnConfig {

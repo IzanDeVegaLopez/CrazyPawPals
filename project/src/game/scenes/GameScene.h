@@ -24,7 +24,6 @@ public:
 
 	//Methods of entities to spawn
 	ecs::entity_t create_player();
-	void player_anim_state_machine(ecs::entity_t);
 
 	void spawn_sarno_rata(Vector2D posVec);
 	void spawn_michi_mafioso(Vector2D posVec);

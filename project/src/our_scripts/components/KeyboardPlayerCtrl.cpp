@@ -11,11 +11,12 @@
 #include "Health.h"
 #include "MythicComponent.h"
 #include "../mythic/MythicItems.h"
+#include "AnimationComponent.h"
 
 KeyboardPlayerCtrl::KeyboardPlayerCtrl()
     : _left(SDL_SCANCODE_A), _right(SDL_SCANCODE_D), _up(SDL_SCANCODE_W), _down(SDL_SCANCODE_S), 
       _reload(SDL_SCANCODE_SPACE), _collect(SDL_SCANCODE_F), 
-      _mc(nullptr), _w(nullptr), _dc(nullptr), _mouse_pos(Vector2D(0,0)) {}
+      _mc(nullptr), _w(nullptr), _dc(nullptr), _dy(nullptr), _mouse_pos(Vector2D(0, 0)) {}
 
 KeyboardPlayerCtrl::~KeyboardPlayerCtrl() {}
 
@@ -46,6 +47,9 @@ KeyboardPlayerCtrl::initComponent() {
 
     _tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
     assert(_tr != nullptr);
+
+    _dy = Game::Instance()->get_mngr()->getComponent<AnimationComponent>(_ent);
+    assert(_dy != nullptr);
 }
 
 void KeyboardPlayerCtrl::update(Uint32 delta_time) {
@@ -58,6 +62,8 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
         (ihdlr.isKeyDown(_up) ? 1 : 0) + (ihdlr.isKeyDown(_down) ? -1 : 0)
     ));
 
+    if (is_moving_input()) _dy->play_animation("andar");
+    else _dy->play_animation("idle");
     //Vertical axis
     //dir.setY((ihdlr.isKeyDown(_up) ? -1 : 0) + (ihdlr.isKeyDown(_down) ? 1 : 0));
 
