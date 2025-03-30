@@ -233,7 +233,6 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec)
 	auto e = create_enemy(EnemySpawnConfig{ &tr, "super_michi_mafioso", static_cast<Weapon*>(&weapon), 2, 2.0f, 2.25f });
 	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.01, 3.0f, 15.0f*deccel_spawned_creatures_multi));
 
-	//	StateMachine(ConditionManager& conditionManager, Transform* playerTransform, Transform* enemyTransform, float dist);
 	auto state = manager.addComponent<StateMachine>(e);
 	auto state_cm = state->getConditionManager();
 

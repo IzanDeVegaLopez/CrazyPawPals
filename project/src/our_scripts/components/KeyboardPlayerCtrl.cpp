@@ -81,20 +81,16 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
 
     ///inputs para probar cosas
     if (ihdlr.keyDownEvent() &&ihdlr.isKeyDown(SDL_SCANCODE_Y)) {
-        //MovementController* mc, Transform* tr, uint32_t time, uint32_t duration, float distance
-        uint32_t time = 10000;
-        uint32_t duration = 1000;
-        float distance = 1.8f;
-        _my->add_mythic(new ZoomiesInducer(_mc, _tr, time, duration, distance));
+        _my->add_mythic(new ZoomiesInducer());
     }  
       if (ihdlr.keyDownEvent() &&ihdlr.isKeyDown(SDL_SCANCODE_G)) {
-        _my->add_mythic(new PreternaturalForce(_m, _w));
+        _my->add_mythic(new PreternaturalForce());
     } 
     if (ihdlr.keyDownEvent() && ihdlr.isKeyDown(SDL_SCANCODE_Z)) {
-        _my->add_mythic(new BloodClaw(_h,_w));
+        _my->add_mythic(new BloodClaw());
     }
     if (ihdlr.keyDownEvent() && ihdlr.isKeyDown(SDL_SCANCODE_X)) {
-        _my->add_mythic(new ProfaneHotline(_m));
+        _my->add_mythic(new ProfaneHotline());
     }
 
     if (ihdlr.keyDownEvent() && ihdlr.isKeyDown(SDL_SCANCODE_V)) {
