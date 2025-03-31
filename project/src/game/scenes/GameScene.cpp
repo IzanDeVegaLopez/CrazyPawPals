@@ -166,7 +166,8 @@ ecs::entity_t GameScene::create_player()
 		// new StopOnBorder(camera, 1.5f, 2.0f),
 		&player_rigidbody,
 		&player_collisionable,
-		new MovementController(0.1f, 5.0f, 20.0f * deccel_spawned_creatures_multi)
+		new MovementController(0.1f, 5.0f, 20.0f * deccel_spawned_creatures_multi),
+		new player_collision_triggerer()
 		);
 
 	//si tiene mas de una animacion
