@@ -1,0 +1,47 @@
+#pragma once
+#include "Scene.h"
+#include <string>
+#include <list>
+#include <unordered_set>
+#include <utility>
+
+class Texture;
+class Button;
+class ImageForButton;
+class MythicScene : public Scene
+{
+public:
+	MythicScene();
+	virtual ~MythicScene();
+	void initScene() override;
+	void enterScene() override;
+	void exitScene() override;
+	void render() override;
+	void update(uint32_t delta_time) override;
+private:
+	//Buttons on top
+	ecs::entity_t create_mythic_button(const GameStructs::ButtonProperties& bp);
+
+	//methods to show your actual mythic objects
+	void create_my_mythic();
+	//void create_a_deck_card(const GameStructs::CardButtonProperties& bp);
+	void refresh_my_mythic(const std::vector<MythicItem*> ml); //ml - Mythic List
+
+	//Mythic part
+	ImageForButton* _lr;
+	bool _selected;
+	bool _activate_confirm_button; //to activate button
+	ecs::entity_t _chosen_mythic;
+
+	//method to select a mythic randomly
+	std::string select_mythic(GameStructs::MythicType Mt);
+	std::pair<std::string, GameStructs::MythicType> get_unique_mythic(std::unordered_set<std::string>& appeared_mythic);
+
+	//methods to create reward buttons
+	void create_reward_buttons();
+	void refresh_mythics();
+
+	//method to create next round button
+	void create_next_round_button() {};
+
+};

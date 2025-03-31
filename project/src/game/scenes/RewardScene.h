@@ -31,12 +31,6 @@ private:
 	Card* _selected_card;
 	Texture* _reward_bg;
 
-	//reward part
-	bool _health;
-	bool _card;
-	bool _object;
-	bool _upgrade;
-
 	ImageForButton* _lr;
 	bool _selected;
 	bool _activate_confirm_button; //to add cards to deck

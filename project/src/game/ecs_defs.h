@@ -56,6 +56,7 @@
 	PLAYERBULLETS,\
     ENEMYBULLETS,\
     REWARDCARDS,\
+    MYTHICOBJS,\
     REWARDDECK
 
 // Scene list
@@ -66,7 +67,9 @@
 	CONTROLSSCENE,\
 	SELECTIONMENUSCENE,\
 	GAMEOVERSCENE,\
-	REWARDSCENE
+	REWARDSCENE, \
+	MYTHICSCENE, \
+	UPGRADESCENE
 
 // Handlers list - must have at least one element
 //

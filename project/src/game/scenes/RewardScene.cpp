@@ -17,8 +17,9 @@
 #include <iostream>
 
 RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr), _selected_button(nullptr), _reward_bg(nullptr),
-_health(false),_card(false), _object(false), _upgrade(false), _lr(nullptr),
 _selected(false), _activate_confirm_button(false), _chosen_card(nullptr), _activate_exchange_button(false)
+_lr(nullptr), _selected(false), _activate_confirm_button(false), 
+_chosen_card(nullptr), _activate_exchange_button(false)
 {
 }
 
@@ -474,6 +475,8 @@ void RewardScene::exchange_deck_card()
 
 void RewardScene::add_new_reward_card() {
     assert(_chosen_card != nullptr);
+
+
 }
 
 void RewardScene::check_number()

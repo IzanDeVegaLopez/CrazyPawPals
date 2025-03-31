@@ -57,4 +57,11 @@ namespace GameStructs {
 		QUICK_FEET,
 		LAST_CARD,
 	};
+	enum MythicType {
+		BLOODCLAW,
+		MANASWAP,
+		SHIELDHARVEST,
+		MANACATALYST,
+		LAST_MYTHIC,
+	};
 }
