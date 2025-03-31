@@ -43,6 +43,9 @@ KeyboardPlayerCtrl::initComponent() {
 
     _m = Game::Instance()->get_mngr()->getComponent<ManaComponent>(_ent);
     assert(_m != nullptr);
+
+    _tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
+    assert(_tr != nullptr);
 }
 
 void KeyboardPlayerCtrl::update(Uint32 delta_time) {
@@ -72,7 +75,11 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
 
     ///inputs para probar cosas
     if (ihdlr.keyDownEvent() &&ihdlr.isKeyDown(SDL_SCANCODE_Y)) {
-        _my->add_mythic(new ArcaneSurge(_m, _dc));
+        //MovementController* mc, Transform* tr, uint32_t time, uint32_t duration, float distance
+        uint32_t time = 10000;
+        uint32_t duration = 1000;
+        float distance = 1.8f;
+        _my->add_mythic(new ZoomiesInducer(_mc, _tr, time, duration, distance));
     }  
       if (ihdlr.keyDownEvent() &&ihdlr.isKeyDown(SDL_SCANCODE_G)) {
         _my->add_mythic(new PreternaturalForce(_m, _w));

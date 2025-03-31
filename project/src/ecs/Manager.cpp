@@ -550,7 +550,6 @@ void Manager::refresh()
 
 	// std::cout << "removed " << to_remove.size() << " entities" << std::endl;
 	for (auto e : to_remove) {
-		std::cout << e << ", " << std::endl;
 		delete e;
 	}
 

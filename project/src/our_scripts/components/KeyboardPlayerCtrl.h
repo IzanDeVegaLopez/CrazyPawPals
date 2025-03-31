@@ -25,10 +25,12 @@ private:
 	SDL_Scancode _reload;
 	SDL_Scancode _collect;
 	Vector2D _mouse_pos;
+
 	MovementController* _mc;
 	Weapon* _w;
 	Deck* _dc;
 	MythicComponent* _my;
 	Health* _h;
 	ManaComponent* _m;
+	Transform* _tr;
 };
