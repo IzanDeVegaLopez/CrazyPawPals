@@ -32,7 +32,7 @@ Weapon::shoot(const Vector2D& target) {
 	auto& pos = _tr->getPos();
 
 	if (double_damage_event) {
-		Vector2D totemPos = Game::Instance()->get_mngr()->getComponent<Transform>(Game::Instance()->get_mngr()->getEntities(ecs::hdlr::TOTEM)[0])->getPos();
+		Vector2D totemPos = Game::Instance()->get_mngr()->getComponent<Transform>(Game::Instance()->get_mngr()->getEntities(ecs::grp::SPECIALENEMY)[0])->getPos();
 		Vector2D dist = totemPos - pos;
 		if (abs(dist.magnitude()) <= 10.0f && _damage == _baseDamage) {
 			_damage = _damage * 2;

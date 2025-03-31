@@ -768,12 +768,12 @@ void GameScene::spawn_ratatouille(Vector2D posVec)
 
 void GameScene::spawn_event_totem(Vector2D posVec) {
 	auto&& manager = *Game::Instance()->get_mngr();
-	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
+	Transform* tr = new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
 	float randSize = float(sdlutils().rand().nextInt(6, 10)) / 10.0f;
 	auto&& rect = *new rect_component{ 0, 0, 1.0f * randSize, 1.0f * randSize };
 	auto&& rigidbody = *new rigidbody_component{ rect_f32{{0.0f, -0.15f}, {0.5f, 0.6f}}, mass_f32{3.0f}, 0.05f };
-	auto&& col = *new collisionable{ tr, rigidbody, rect, collisionable_option_none };
+	auto&& col = *new collisionable{ *tr, rigidbody, rect, collisionable_option_none };
 	auto e = create_entity(
 		ecs::grp::SPECIALENEMY,
 		ecs::scene::GAMESCENE,
@@ -784,21 +784,21 @@ void GameScene::spawn_event_totem(Vector2D posVec) {
 			rect,
 			manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam,
 			sdlutils().images().at("totem"),
-			tr
+			*tr
 		),
 		new Health(1000),
 		&rigidbody,
 		&col
 	);
 
-	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.06, 5.0f, 20.0 * deccel_spawned_creatures_multi));
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.06f, 5.0f, 20.0f * deccel_spawned_creatures_multi));
 
 	//	StateMachine(ConditionManager& conditionManager, Transform* playerTransform, Transform* enemyTransform, float dist);
 	auto state = manager.addComponent<StateMachine>(e);
 	auto state_cm = state->getConditionManager();
 
 	// Crear estados
-	auto walkingTotemState = std::make_shared<WalkingTotemState>(&tr, &mc);
+	auto walkingTotemState = std::make_shared<WalkingTotemState>(tr, &mc);
 
 	//poner los estado a la state
 	state->add_state("WalkingTotem", std::static_pointer_cast<State>(walkingTotemState));
@@ -809,12 +809,12 @@ void GameScene::spawn_event_totem(Vector2D posVec) {
 
 void GameScene::spawn_event_paw_patrol(Vector2D posVec) {
 	auto&& manager = *Game::Instance()->get_mngr();
-	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 5.0f);
+	Transform* tr = new Transform(posVec, { 0.0f,0.0f }, 0.0f, 5.0f);
 
 	float randSize = float(sdlutils().rand().nextInt(6, 10)) / 10.0f;
 	auto&& rect = *new rect_component{ 0, 0, 1.0f * randSize, 1.0f * randSize };
 	auto&& rigidbody = *new rigidbody_component{ rect_f32{{0.0f, -0.15f}, {0.5f, 0.6f}}, mass_f32{3.0f}, 0.05f };
-	auto&& col = *new collisionable{ tr, rigidbody, rect, collisionable_option_none };
+	auto&& col = *new collisionable{ *tr, rigidbody, rect, collisionable_option_none };
 	auto e = create_entity(
 		ecs::grp::SPECIALENEMY,
 		ecs::scene::GAMESCENE,
@@ -825,13 +825,13 @@ void GameScene::spawn_event_paw_patrol(Vector2D posVec) {
 			rect,
 			manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam,
 			sdlutils().images().at("paw_patrol"),
-			tr
+			*tr
 		),
 		new Health(1000),
 		&rigidbody,
 		&col
 	);
-	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.08, 5.0f, 20.0 * deccel_spawned_creatures_multi));
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.08f, 5.0f, 20.0f * deccel_spawned_creatures_multi));
 
 	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
 
@@ -842,10 +842,10 @@ void GameScene::spawn_event_paw_patrol(Vector2D posVec) {
 	auto state_cm = state->getConditionManager();
 
 	// Crear estados
-	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
-	auto waitingState = std::make_shared<WaitingState>(&tr, _p_tr, &mc);
+	auto walkingState = std::make_shared<WalkingState>(tr, _p_tr, &mc);
+	auto waitingState = std::make_shared<WaitingState>();
 	//auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon, [e]() {Game::Instance()->get_mngr()->setAlive(e, false); });
-	auto dashingState = std::make_shared<DashingState>(&tr, _p_tr, &mc);
+	auto dashingState = std::make_shared<DashingState>(tr, _p_tr, &mc);
 
 	//poner los estado a la state
 	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
@@ -859,7 +859,7 @@ void GameScene::spawn_event_paw_patrol(Vector2D posVec) {
 	// Condiciones de cada estado
 	// De: Walking a: Waiting, Condición: tiempo
 	state->add_transition("Walking", "Waiting", [state_cm, _p_tr, &tr]() {
-		return state_cm->is_player_near(_p_tr, &tr, 15.0f);
+		return state_cm->is_player_near(_p_tr, tr, 15.0f);
 		});
 
 	// De: Waiting a: Dashing, Condición: Jugador cerca
@@ -1000,10 +1000,10 @@ void GameScene::event_callback1(const event_system::event_receiver::Msg& m) {
 	Game::Instance()->change_Scene(Game::GAMEOVER);
 }
 void GameScene::event_callback2(const event_system::event_receiver::Msg& m) {
-	spawn_event_totem(Vector2D { sdlutils().rand().nextInt(-15, 16), sdlutils().rand().nextInt(-8, 9) });
+	spawn_event_totem(Vector2D { (float)sdlutils().rand().nextInt(-15, 16), (float)sdlutils().rand().nextInt(-8, 9) });
 }
 void GameScene::event_callback3(const event_system::event_receiver::Msg& m) {
-	spawn_event_paw_patrol(Vector2D{ sdlutils().rand().nextInt(-15, 16), sdlutils().rand().nextInt(-8, 9) });
+	spawn_event_paw_patrol(Vector2D{ (float)sdlutils().rand().nextInt(-15, 16), (float)sdlutils().rand().nextInt(-8, 9) });
 }
 
 void GameScene::delete_event_enemies() {
