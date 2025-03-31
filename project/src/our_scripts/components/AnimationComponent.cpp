@@ -18,11 +18,9 @@ void AnimationComponent::add_animation(const std::string& name, int ini_frame, i
 
 void AnimationComponent::play_animation(const std::string& name) {
     auto it = animations.find(name);
-    if (it != animations.end()) {
+    if (it != animations.end() && _currentAnim != it->first) {
+        _currentAnim = it->first;
         auto anim = it->second;
-        if (!(anim == _currentAnim)) {
-            _dy->set_animation(anim.ini_frame, anim.end_frame, anim.frame_duration);
-            _currentAnim = anim;
-        }
+        _dy->set_animation(anim.ini_frame, anim.end_frame, anim.frame_duration);
     }
 }

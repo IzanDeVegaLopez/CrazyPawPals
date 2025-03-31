@@ -11,18 +11,6 @@ struct Animation {
 
     Animation() : ini_frame(0), end_frame(0), frame_duration(0) {} //constructor por defecto
     Animation(int ini, int end, uint32_t duration): ini_frame(ini), end_frame(end), frame_duration(duration) {}
-
-    Animation& operator= (const Animation& other) {
-        ini_frame = other.ini_frame;
-        end_frame = other.end_frame;
-        frame_duration = other.frame_duration;
-        return *this;
-    }
-    bool operator== (const Animation& other) const {
-        return ini_frame == other.ini_frame &&
-            end_frame == other.end_frame &&
-            frame_duration == other.frame_duration;
-    }
 };
 
 class AnimationComponent :public ecs::Component {
@@ -43,5 +31,5 @@ public:
 
 private:
     dyn_image_with_frames* _dy;
-    Animation _currentAnim;
+    std::string _currentAnim;
 };
