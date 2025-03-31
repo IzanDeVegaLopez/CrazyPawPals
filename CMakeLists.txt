@@ -76,7 +76,7 @@ project(CrazyPawPals)
         ${PROJECT_NAME}
         PRIVATE
         -D RIGIDBODY_COMPONENT_DEGEN_RESTITUTION_OFF
-        -DDBG_COLLISIONS=true
+        -DDBG_COLLISIONS=false
     )
     
     target_include_directories(

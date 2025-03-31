@@ -86,7 +86,7 @@ static void dbg_collision_fill_rect(ecs::Manager &manager, const collision_body 
 	);
 	++dbg_rect_col_size;
 
-ddddd	dbg_rect_col[dbg_rect_col_size] = SDL_Rect_screen_rect_from_global(
+	dbg_rect_col[dbg_rect_col_size] = SDL_Rect_screen_rect_from_global(
 		rect_f32{
 			.position = {
 				.x = body1.body.body.position.x + body1.body.space.position.x - (body1.body.body.size.x + body0.body.body.size.x) * 0.5f,
