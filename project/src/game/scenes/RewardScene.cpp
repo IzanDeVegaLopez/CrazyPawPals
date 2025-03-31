@@ -38,6 +38,7 @@ void RewardScene::enterScene()
     auto& pDeck = _m_deck->card_names();
     refresh_my_deck_cards(pDeck);
     refresh_rewards();
+    Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::REWARDSCENE);
 }
 
 void RewardScene::exitScene()

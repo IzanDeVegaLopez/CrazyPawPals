@@ -48,7 +48,7 @@ void MainMenuScene::initScene()
 
 void MainMenuScene::enterScene()
 {
-
+    Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::MAINMENUSCENE);
 }
 
 void MainMenuScene::exitScene()

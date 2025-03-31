@@ -133,6 +133,7 @@ void GameScene::enterScene()
 	mngr->getComponent<WaveManager>(mngr->getHandler(ecs::hdlr::WAVE))->start_new_wave();
 	mngr->getComponent<HUD>(mngr->getHandler(ecs::hdlr::HUD_ENTITY))->start_new_wave();
 
+	Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::GAMESCENE);
 }
 
 void GameScene::exitScene()

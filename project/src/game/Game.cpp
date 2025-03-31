@@ -103,7 +103,7 @@ bool Game::init() {
 	_scenes[REWARDSCENE] = new RewardScene();
 	_scenes[REWARDSCENE]->initScene();
 
-	_current_scene_index = MAINMENU;
+	change_Scene(MAINMENU);
 	return true;
 }
 
@@ -180,6 +180,7 @@ void Game::change_Scene(State nextScene){
 	if (_current_scene_index != -1) {
 		_scenes[_current_scene_index]->exitScene();
 	}
+
 	_current_scene_index = nextScene;
 	_scenes[_current_scene_index]->enterScene();
 }

@@ -32,7 +32,7 @@ void GameOverScene::initScene() {
 }
 void GameOverScene::enterScene()
 {
-
+    Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::GAMEOVERSCENE);
 }
 
 void GameOverScene::exitScene()

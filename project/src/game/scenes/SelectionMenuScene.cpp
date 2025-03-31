@@ -98,6 +98,7 @@ void SelectionMenuScene::initScene() {
 }
 void SelectionMenuScene::enterScene()
 {
+    Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::SELECTIONMENUSCENE);
 }
 
 void SelectionMenuScene::exitScene()
@@ -126,11 +127,9 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
 
         switch (wt) {
         case GameStructs::REVOLVER:
-            
             mngr->addComponent<Revolver>(player);
             break;
         case GameStructs::RAMPAGE:
-            
             mngr->addComponent<Rampage>(player);
             break;
         case GameStructs::PUMP_SHOTGUN:
@@ -259,13 +258,14 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
         });
 }
 void SelectionMenuScene::create_deck_info(const rect_f32& rect) {
+    auto& cam = Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam;
     ecs::entity_t e = create_entity(
         ecs::grp::DECKINFO,
         ecs::scene::SELECTIONMENUSCENE,
         new transformless_dyn_image
         (rect, 
         0,
-        Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam,
+        cam,
         &sdlutils().images().at("initial_info"))
     );
 }
