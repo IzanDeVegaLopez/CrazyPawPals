@@ -10,7 +10,7 @@ struct fog_collision_component : public on_trigger<fog_collision_component> {
 
     int fogDamage = 1;
     bool damagingPlayer = false;
-    uint32_t fogCollidingTimer;
+    Uint32 fogCollidingTimer;
     
     inline fog_collision_component() : on_trigger<fog_collision_component>() {};
     void update(uint32_t delta_time) override;
