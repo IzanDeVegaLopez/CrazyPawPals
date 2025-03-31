@@ -121,16 +121,16 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
     auto player = mngr->getHandler(ecs::hdlr::PLAYER);
 
     buttonComp->connectClick([buttonComp, imgComp, mngr, wt, player, this]() {
-        //std::cout << "left click-> button" << std::endl;
+        
         std::string s;
 
         switch (wt) {
         case GameStructs::REVOLVER:
-            //std::cout << "revolver chosen" << std::endl;
+            
             mngr->addComponent<Revolver>(player);
             break;
         case GameStructs::RAMPAGE:
-            //std::cout << "rampage chosen" << std::endl;
+            
             mngr->addComponent<Rampage>(player);
             break;
         case GameStructs::PUMP_SHOTGUN:

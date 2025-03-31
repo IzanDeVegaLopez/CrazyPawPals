@@ -24,7 +24,7 @@ void Fireball::on_play(Deck& d, const Vector2D* player_position, const Vector2D*
 	bp.sprite_key = "p_fireball";
 	bp.damage = 5;
 	bp.collision_filter = GameStructs::collide_with::enemy;
-	//std::cout << bp.init_pos << "--" << bp.dir << std::endl;
+	
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }
 /*
@@ -66,7 +66,7 @@ void Minigun::update(uint32_t dt)
 		if (_time_since_played >= _number_of_bullets_shot * (_shooting_duration / (_number_of_shots - 1))) {
 			_bullets_properties.dir = ((*_aim_vec) - (*_pl_vec)).normalize();
 			_bullets_properties.init_pos = *_pl_vec;
-			//std::cout <<_bullets_properties.init_pos << "--" << _bullets_properties.dir << std::endl;
+			
 			static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(_bullets_properties, ecs::grp::BULLET);
 			++_number_of_bullets_shot;
 			if (_number_of_bullets_shot == _number_of_shots)
@@ -121,7 +121,7 @@ void Kunai::on_play(Deck& d, const Vector2D* player_position, const Vector2D* ta
 	bp.sprite_key = "p_kunai";
 	bp.damage = 3;
 	bp.collision_filter = GameStructs::collide_with::enemy;
-	//std::cout << bp.init_pos << "--" << bp.dir << std::endl;
+	
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }
 #pragma endregion
@@ -240,7 +240,7 @@ void Primordia::update(uint32_t dt) //TODO: Projectile must return following pat
 			bp.width = 2.3;
 			bp.life_time = 0.3;
 			bp.sprite_key = "p_eldritch_blast";
-			//std::cout << bp.init_pos << "--" << bp.dir << std::endl;
+			
 			static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 			_playing = false;
 		}
@@ -332,7 +332,7 @@ void Fulgur::update(uint32_t dt)
 		if (_time_since_played >= _number_of_bullets_shot * (_shooting_duration / (_number_of_shots - 1))) {
 
 			_bullets_properties.init_pos = _aim_vec+(Vector2D(sin(_number_of_bullets_shot*2*PI/_number_of_shots),cos(_number_of_bullets_shot * 2 * PI / _number_of_shots))*2);
-			//std::cout <<_bullets_properties.init_pos << "--" << _bullets_properties.dir << std::endl;
+			
 			static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(_bullets_properties, ecs::grp::BULLET);
 			++_number_of_bullets_shot;
 			if (_number_of_bullets_shot == _number_of_shots)

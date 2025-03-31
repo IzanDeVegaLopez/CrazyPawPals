@@ -44,7 +44,7 @@ public:
 
     void set_cooldown(const std::string& state, uint32_t cooldown) {
         timers[state].duration = cooldown;
-        //std::cout << state<<"   " << timers[state].duration << std::endl;
+        
         timers[state].last_used = 0;
     }
 
@@ -80,7 +80,7 @@ public:
             size_t newPatternIndex = get_random_pattern();
             currentPatternIndex = newPatternIndex;
             std::string nextPattern = patterns[currentPatternIndex];
-            //std::cout << nextPattern << std::endl;
+            
             patternCounters[nextPattern] = patternCounters[nextPattern];
         }
     }

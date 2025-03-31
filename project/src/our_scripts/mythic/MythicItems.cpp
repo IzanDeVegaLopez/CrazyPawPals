@@ -78,24 +78,24 @@ ArcaneSurge::ArcaneSurge(ManaComponent* m, Deck* d)
 void 
 ArcaneSurge::apply_effects() {
 	_deck->set_reload_time(_deck->reload_time() + 0.5f * _deck->reload_time());
-	//std::cout << "mana: " << _mana->mana_regen() << std::endl;
+	
 }
 
 void ArcaneSurge::update(uint32_t dt) {
 	(void)dt;
 	if (_deck->is_reloading()) {
 		if (!_set) {
-			//std::cout << "ManaForge activated" << std::endl;
+			
 			_set = true;
 			_mana->change_mana_regen(0.5f *_ini_mana);
-			//std::cout << "mana: " << _mana->mana_regen() << std::endl;
+			
 
 		}
 	}
 	else if(_set){
 		_mana->change_mana_regen(-(_ini_mana * 0.5f));
 		_set = false;
-		//std::cout << "Quitando mana mana: " << _mana->mana_regen() << std::endl;
+		
 	}
 }
 
@@ -110,7 +110,7 @@ BloodPact::apply_effects() {
 	int currhealth = _health->getHealth() / 2;
 	_health->takeDamage(currhealth);
 	_mana->change_mana_regen(_mana->mana_regen());
-	//std::cout << "mana: " << _mana->mana_regen() << std::endl;
+	
 }
 #pragma endregion
 

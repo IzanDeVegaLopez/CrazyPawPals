@@ -429,7 +429,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 		[state_cm, _p_tr, &tr, &weapon]() {
 			bool trans = state_cm->is_player_near(_p_tr, &tr, 5.0f) && state_cm->get_current_pattern() == "PATTERN_1";
 			if (trans) {
-				//std::cout << "PATTERN_1 Charging" << std::endl;
+				
 
 				state_cm->reset_cooldown("charging_duration", sdlutils().currRealTime());
 				weapon.set_player_pos(_p_tr->getPos());
@@ -442,7 +442,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 		[state_cm, &weapon, _p_tr]() {
 			bool trans = state_cm->can_use("charging_duration", sdlutils().currRealTime());
 			if (trans) {
-				//std::cout << "PATTERN_1 WindAttack" << std::endl;
+				
 
 				state_cm->reset_cooldown("wind_attack_duration", sdlutils().currRealTime());
 				weapon.set_player_pos(_p_tr->getPos());
@@ -455,7 +455,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 		[state_cm, &weapon, _p_tr]() {
 			bool trans = state_cm->can_use("wind_attack_duration", sdlutils().currRealTime());
 			if (trans ) {
-				//std::cout << "PATTERN_1 Dash" << std::endl;
+				
 				state_cm->reset_cooldown("dash_attack_duration", sdlutils().currRealTime());
 
 				weapon.set_player_pos(_p_tr->getPos());
@@ -476,7 +476,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 		[state_cm]() {
 			bool trans = state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
 			if (trans) {
-				//std::cout << "PATTERN_1 WindAttack2" << std::endl;
+				
 
 				state_cm->reset_cooldown("wind_attack_duration", sdlutils().currRealTime());
 			}
@@ -488,7 +488,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 		[state_cm]() {
 			bool trans = state_cm->can_use("wind_attack_duration", sdlutils().currRealTime());
 			if (trans) {
-				//std::cout << "SALIENDO PATTERN_1 Walking" << std::endl;
+				
 
 				state_cm->reset_cooldown("wind_attack_duration", sdlutils().currRealTime());
 				state_cm->switch_pattern();
@@ -512,11 +512,11 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 
 	add_transition(state, "Dash2", "AreaAttack",
 		[state_cm, _p_tr, &tr, &weapon]() {
-			//std::cout << "PATTERN_2 AreaAttack" << std::endl;
+			
 			bool trans = state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
 			if (trans) {
 				state_cm->reset_cooldown("explosion_attack_duration", sdlutils().currRealTime());
-				//std::cout << "PATTERN_2 AreaAttack" << std::endl; 
+				
 			}
 			return trans;
 		}
@@ -524,11 +524,11 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	
 	add_transition(state, "AreaAttack", "Dash3",
 		[state_cm, _p_tr, &tr, &weapon]() {
-			//std::cout << "PATTERN_2 AreaAttack" << std::endl;
+			
 			bool trans = state_cm->can_use("explosion_attack_duration", sdlutils().currRealTime());
 			if (trans) {
 				state_cm->reset_cooldown("dash_attack_duration", sdlutils().currRealTime());
-				//std::cout << "PATTERN_2 Dash3" << std::endl;
+				
 				weapon.set_player_pos(_p_tr->getPos());
 			}
 			return trans;
@@ -538,7 +538,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	add_transition(state, "Dash3", "DashAttack",
 		[state_cm, _p_tr, &tr, &weapon]() {
 			state_cm->reset_cooldown("dash_attack_duration", sdlutils().currRealTime());
-			//std::cout << "PATTERN_2 DashAttack" << std::endl; 
+			
 			return true;
 		}
 	);
@@ -548,7 +548,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 			bool trans = state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
 			if (trans) {
 				state_cm->reset_cooldown("dash_attack_duration", sdlutils().currRealTime());
-				//std::cout << "PATTERN_2 DashAttack" << std::endl; 
+				
 				state_cm->switch_pattern();
 			}
 			return trans;
@@ -830,12 +830,12 @@ void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs
 {
 	auto manager = Game::Instance()->get_mngr();
 	(void)gid;
-	//std::cout << std::endl << atan2(bp.dir.getY(), bp.dir.getX()) << " = " << atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI << std::endl;
+	
 	auto&& transform = *new Transform(bp.init_pos, bp.dir, (atan2(-bp.dir.getY(), bp.dir.getX()) + M_PI / 2) * 180.0f / M_PI, bp.speed);
 	auto&& rect = *new rect_component{ 0, 0, bp.width, bp.height };
 	auto&& player_rigidbody = *new rigidbody_component{ rect_f32{{0.15f, -0.125}, {0.5f, 0.75f}}, mass_f32{7.0f}, 1.0f };
 	auto&& player_collisionable = *new collisionable{ transform, player_rigidbody, rect, collisionable_option_trigger };
-	//std::cout << bp.speed << std::endl;
+	
 	auto e = create_entity(
 		gid,
 		ecs::scene::GAMESCENE,

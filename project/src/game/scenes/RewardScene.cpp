@@ -53,7 +53,7 @@ std::string RewardScene::get_unique_card(GameStructs::CardType& ct, std::unorder
     do {
         ct = (GameStructs::CardType)sdlutils().rand().nextInt(0, GameStructs::LAST_CARD);
         sprite = select_card(ct);
-    } while (appeared_cards.find(sprite) != appeared_cards.end()); // Repite si la carta ya apareció
+    } while (appeared_cards.find(sprite) != appeared_cards.end()); // Repite si la carta ya apareciï¿½
 
     appeared_cards.insert(sprite);
     return sprite;
@@ -123,7 +123,7 @@ void RewardScene::change_pos(bool enter) {
 
     // other references
     auto& healthReward = mngr->getEntities(ecs::grp::REWARDHEALTH)[0];
-    auto img = mngr->getComponent<transformless_dyn_image>(rewardCard); // Última carta
+    auto img = mngr->getComponent<transformless_dyn_image>(rewardCard); // ï¿½ltima carta
     auto healImg = mngr->getComponent<transformless_dyn_image>(healthReward);
 
     auto bRewardButton = mngr->getComponent<Button>(rewardCard);
@@ -368,14 +368,14 @@ void RewardScene::refresh_my_deck_cards(const std::list<std::string>& cl) {
         auto img = mngr->getComponent<transformless_dyn_image>(*itInfo);
         img->set_texture(&sdlutils().images().at(*it));
 
-        // Actualizar la referencia a la carta en el botón
+        // Actualizar la referencia a la carta en el botï¿½n
         auto buttonComp = mngr->getComponent<Button>(*itInfo);
         if (buttonComp) {
-            static_cast<CardButton*>(buttonComp)->set_it(*itCard); // Método para actualizar puntero
+            static_cast<CardButton*>(buttonComp)->set_it(*itCard); // Mï¿½todo para actualizar puntero
         }
     }
 
-    // Rellenar con imágenes vacías si hay menos cartas en el nuevo mazo
+    // Rellenar con imï¿½genes vacï¿½as si hay menos cartas en el nuevo mazo
     for (; itInfo != infos.end(); ++itInfo) {
         auto img = mngr->getComponent<transformless_dyn_image>(*itInfo);
         img->set_texture(&sdlutils().images().at("initial_info"));

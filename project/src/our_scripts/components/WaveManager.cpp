@@ -8,6 +8,7 @@
 #include "../components/Fog.h"
 #include "../wave_events/no_event.hpp"
 #include "../wave_events/ice_skating_event.hpp"
+#include "../wave_events/star_shower_event.hpp"
 
 // 1 segundo = 1000 ticks (ms)
 WaveManager::WaveManager() :
@@ -34,7 +35,7 @@ WaveManager::initComponent() {
 	fog = Game::Instance()->get_mngr()->getComponent<Fog>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::FOGGROUP));
     assert(fog != nullptr);
 
-    //std::cout << sdlutils().virtualTimer().currRealTime() << std::endl;
+    
     //_currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
     //choose_new_event();
 }
@@ -42,7 +43,7 @@ WaveManager::initComponent() {
 void 
 WaveManager::update(uint32_t delta_time) {
     _currentWaveTime = sdlutils().virtualTimer().currRealTime() - _currentWaveInitTime;
-    //std::cout << sdlutils().virtualTimer().currRealTime()<< " / "<< _currentWaveInitTime << std::endl;
+    
 
     //if(_current_wave_event != nullptr)
     _current_wave_event->update(delta_time);
@@ -129,7 +130,7 @@ WaveManager::spawnWave() {
                     assert(false && "unreachable");
                     exit(EXIT_FAILURE);
                     break;
-			        //std::cout << "Enemigo no existe" << std::endl;
+			        
                 }
             }
             // Tiempo
@@ -143,7 +144,7 @@ WaveManager::spawnWave() {
     else {
         _waveActive = true; // después de que se spawnee el último enemigo
 
-        //std::cout << "WAVE ACTIVE" << std::endl;
+        
     }
 }
 
@@ -172,8 +173,8 @@ WaveManager::activateFog() {
 
 void 
 WaveManager::enterRewardsMenu() {
-    //std::cout << "Active time: " << sdlutils().virtualTimer().currRealTime() << std::endl;
-    //std::cout << "Todos los enemigos eliminados. Entrando al menu de recompensas..." << std::endl;
+    
+    
     _current_wave_event->end_wave_callback();
 
     choose_new_event();
@@ -195,6 +196,9 @@ WaveManager::enterRewardsMenu() {
 void WaveManager::start_new_wave()
 {
     _currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
+
+    // DBG!
+    _current_event = STAR_SHOWER;
     choose_new_event();
 }
 
@@ -206,9 +210,9 @@ void WaveManager::choose_new_event()
 {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<int> rnd_gen(NONE,EVENTS_MAX);
+    std::uniform_int_distribution<int> rnd_gen(NONE,EVENTS_MAX - 1);
     _current_event = events(rnd_gen(gen));
-    //std::cout << "wave number: " << (i) << std::endl;
+    
     switch(_current_event) {
     case NONE:
         _current_wave_event = (std::unique_ptr<wave_event>)new no_event(this);
@@ -216,13 +220,43 @@ void WaveManager::choose_new_event()
     case ICE_SKATE:
         _current_wave_event = (std::unique_ptr<wave_event>)new ice_skating_event(this);
         break;
-    default:
-        assert(NULL); // event_choser_went_wrong
+    case STAR_SHOWER: {
+        constexpr static const rect_f32 event_area = {
+            .position = { 0.0f, 0.0f },
+            .size = { 32.0f, 16.0f },
+        };
+        constexpr static const size_t min_drops_inclusive = 5;
+        constexpr static const size_t max_drops_exclusive = 23;
+        _current_wave_event = std::make_unique<star_shower_event>(
+            *this,
+            event_area,
+            star_drop_descriptor{
+                .drop_position = { 0.0f, 0.0f },
+                .damage_amount = 3,
+                .drop_radius = 0.25f,
+                .fall_time = 1.25f,
+                .spawn_distance = 16.0f,
+            },
+            star_drop_descriptor{
+                .drop_position = { 0.0f, 0.0f },
+                .damage_amount = 24,
+                .drop_radius = 2.0f,
+                .fall_time = 8.0f,
+                .spawn_distance = 32.0f,
+            },
+            min_drops_inclusive,
+            max_drops_exclusive
+        );
+        break;
+    }
+    default: {
+        assert(false && "unrachable"); // event_choser_went_wrong
+        std::exit(EXIT_FAILURE);
+    }
     }
 
-    //std::cout << i << std::endl;
+    
 
     _current_wave_event->start_wave_callback();
     //TODO elegir evento y llamar a la función de iniciar
 }
-

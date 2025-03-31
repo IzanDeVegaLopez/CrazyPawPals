@@ -32,6 +32,7 @@ struct star_drop {
     ptrdiff_t damage_amount;
     seconds_f32 remaining_fall_time;
     float radius;
+    float fall_speed;
 };
 
 class star_shower_event : public wave_event {
@@ -43,6 +44,7 @@ class star_shower_event : public wave_event {
     
     size_t min_drops_inclusive;
     size_t max_drops_exclusive;
+    size_t drops_destroyed;
 
 public:
     inline star_shower_event(
@@ -58,7 +60,8 @@ public:
         drop_upper_bound(drop_upper_bound),
         star_drops{},
         min_drops_inclusive(min_drops_inclusive),
-        max_drops_exclusive(max_drops_exclusive)
+        max_drops_exclusive(max_drops_exclusive),
+        drops_destroyed{0}
     {
         assert(min_drops_inclusive < max_drops_exclusive && "error: min_drops_inclusive must be less than max_drops_exclusive");
         assert(min_drops_inclusive > 0 && "error: min_drops_inclusive must be greater than 0");

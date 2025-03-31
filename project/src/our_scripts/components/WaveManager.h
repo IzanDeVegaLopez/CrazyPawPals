@@ -6,9 +6,10 @@
 #include "rendering/transformless_dyn_image.h"
 
 enum events {
-    NONE = -1,
-    ICE_SKATE = 0,
-    EVENTS_MAX = ICE_SKATE
+    NONE = -1, // 0xffffffffff
+    ICE_SKATE = 0,  // 0x00000000
+    STAR_SHOWER = 1,
+    EVENTS_MAX
 };
 
 enum enemyType {

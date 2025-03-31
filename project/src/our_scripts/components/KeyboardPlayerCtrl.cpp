@@ -60,14 +60,14 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
 
     //reload
     if (ihdlr.isKeyDown(_reload)) {
-        //std::cout << "recarga" << std::endl;
+        
         _dc->reload();
     }
 
     //collect
     if (ihdlr.isKeyDown(_collect)) {
         //if we are not close enought to a reward, do nothing
-        //std::cout << "colecta" << std::endl;
+        
     }
 
     ///inputs para probar cosas

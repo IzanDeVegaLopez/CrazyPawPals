@@ -16,7 +16,7 @@ public:
 	void initComponent() override { _mana_count = 0; }
 	void update(Uint32 delta_time) override {
 		_mana_count = std::min(_mana_count + int(_mana_regen*delta_time)/1000, _max_mana);
-		//std::cout << delta_time << std::endl;
+		
 	}
 	/*void render() override {
 		SDL_SetRenderDrawBlendMode(sdlutils().renderer(), SDL_BLENDMODE_NONE);
@@ -39,7 +39,7 @@ public:
 			else _tex_orb_empty->render(output);
 		}
 
-		//std::cout << _mana_count << std::endl;
+		
 	}*/
 	
 	// Changes current mana by a given amount. Can be positive or negative, and cannot be lower than 0 or greater than _max_mana.

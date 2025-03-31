@@ -56,7 +56,7 @@ void MovementController::update(uint32_t delta_time)
 	/*
 	Vector2D my_new_speed = _tr->getDir() * (1 - _decceleration) + expected_speed * _decceleration;
 	float accelerate = _acceleration * delta_time/1000;
-	//std::cout << "acc  "<< accelerate << std::endl;
+	
 	if (my_new_speed.magnitude() > _tr->getSpeed()) {
 		//accelerate
 		_tr->setDir(_tr->getDir() * (1 - accelerate) + expected_speed * accelerate);
@@ -64,7 +64,7 @@ void MovementController::update(uint32_t delta_time)
 	else {
 
 		float deccelerate = _decceleration * delta_time/1000;
-		//std::cout << "dec  " << deccelerate << std::endl;
+		
 		//deccelerate
 		_tr->setDir(_tr->getDir() * (1 - deccelerate) + expected_speed * deccelerate);
 	}

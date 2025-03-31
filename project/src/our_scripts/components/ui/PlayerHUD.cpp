@@ -102,7 +102,7 @@ void PlayerHUD::render()
 		else _tex_orb_empty->render(outputtrue);
 	}
 
-	//std::cout << _mana_count << std::endl;
+	
 #pragma endregion
 
 #pragma region deck

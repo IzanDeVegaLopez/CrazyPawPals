@@ -28,7 +28,7 @@ void Card::on_play(Deck& d, const Vector2D* player_position, const Vector2D* tar
 	(void)player_position;
 	(void)target_position;
 	// Deploy effect
-	//std::cout << _name << " Played" << std::endl;
+	
 }
 
 std::string Card::get_written_info()

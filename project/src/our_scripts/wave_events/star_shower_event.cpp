@@ -4,6 +4,7 @@
 #include "../../our_scripts/components/rendering/dyn_image.hpp"
 #include "../../our_scripts/components/rendering/camera_component.hpp"
 #include "../../our_scripts/components/rendering/rect_component.hpp"
+#include "../../our_scripts/components/rendering/render_ordering.hpp"
 #include "../../our_scripts/components/movement/Transform.h"
 #include "../../our_scripts/components/Health.h"
 #include "../../ecs/Entity.h"
@@ -48,9 +49,9 @@ static star_drop star_shower_event_create_star_drop(
     Transform &star_transform = *manager.addComponent<Transform>(
         star_entity,
         spawn_position,
-        Vector2D(0.0, -1.0),
+        Vector2D(0.0, 0.0),
         0.0,
-        drop_speed
+        0.0
     );
     rect_component &star_rect = *manager.addComponent<rect_component>(
         star_entity,
@@ -84,7 +85,7 @@ static star_drop star_shower_event_create_star_drop(
         rect_f32_full_subrect,
         shadow_rect,
         camera,
-        sdlutils().images().at("boom"),
+        sdlutils().images().at("attack_warning"),
         shadow_transform
     );
 
@@ -96,7 +97,8 @@ static star_drop star_shower_event_create_star_drop(
         &shadow_rect,
         descriptor.damage_amount,
         descriptor.fall_time,
-        descriptor.drop_radius
+        descriptor.drop_radius,
+        drop_speed
     };
 }
 
@@ -109,9 +111,29 @@ void star_shower_event::start_wave_callback() {
 
     std::vector<star_drop_descriptor> star_drop_descriptors{drop_count};
     star_drops.reserve(drop_count);
+    const star_drop_descriptor lower_bound{
+        .drop_position = position2_f32{
+            .x = event_area.position.x - event_area.size.x * 0.5f,
+            .y = event_area.position.y - event_area.size.y * 0.5f
+        },
+        .damage_amount = drop_lower_bound.damage_amount,
+        .drop_radius = drop_lower_bound.drop_radius,
+        .fall_time = drop_lower_bound.fall_time,
+        .spawn_distance = drop_lower_bound.spawn_distance
+    };
+    const star_drop_descriptor upper_bound{
+        .drop_position = position2_f32{
+            .x = event_area.position.x + event_area.size.x * 0.5f,
+            .y = event_area.position.y + event_area.size.y * 0.5f
+        },
+        .damage_amount = drop_upper_bound.damage_amount,
+        .drop_radius = drop_upper_bound.drop_radius,
+        .fall_time = drop_upper_bound.fall_time,
+        .spawn_distance = drop_upper_bound.spawn_distance
+    };
     for (size_t i = 0; i < drop_count; ++i) {
         star_drop_descriptors.at(i) = (
-            star_shower_event_generate_star_drop_descriptor(drop_lower_bound, drop_upper_bound, generator)
+            star_shower_event_generate_star_drop_descriptor(lower_bound, upper_bound, generator)
         );
     }
     
@@ -173,18 +195,30 @@ static void star_shower_event_on_impact(
 void star_shower_event::update(unsigned int delta_time) {
     if (!star_drops.empty()) {
         const size_t drop_count = star_drops.size();
-        assert(drop_count >= min_drops_inclusive && "fatal error: drop_count must be greater than or equal to min_drops_inclusive");
-        assert(drop_count < max_drops_exclusive && "fatal error: drop_count must be less than max_drops_exclusive");
+        assert(drop_count + drops_destroyed >= min_drops_inclusive && "fatal error: drop_count must be greater than or equal to min_drops_inclusive");
+        assert(drop_count + drops_destroyed < max_drops_exclusive && "fatal error: drop_count must be less than max_drops_exclusive");
 
         seconds_f32 delta_time_seconds = seconds_f32{float(delta_time) / 1000.0f};
         auto &&manager = *Game::Instance()->get_mngr();
         for (ptrdiff_t i = drop_count - 1; i >= 0; --i) {
-            auto &&star_drop = star_drops[i];
-            star_drop.remaining_fall_time -= delta_time_seconds;
+            auto &&star_drop = star_drops[i];            
             if (star_drop.remaining_fall_time <= 0.0f) {
                 star_shower_event_on_impact(star_drop, manager, delta_time_seconds);
                 star_drops[i] = star_drops.back();
                 star_drops.pop_back();
+                
+                ++drops_destroyed;
+                assert(drops_destroyed < max_drops_exclusive && "fatal error: drops_destroyed must be less than max_drops_exclusive");
+            } else {
+                star_drop.star_transform->setPos(
+                    star_drop.star_transform->getPos()
+                        + Vector2D{0.0, -1.0} * (star_drop.fall_speed * delta_time_seconds)
+                );
+                
+                if (i == 0) {
+                    std::cout << "position: " << star_drop.star_transform->getPos().getX() << ", " << star_drop.star_transform->getPos().getY() << std::endl;
+                }
+                star_drop.remaining_fall_time -= delta_time_seconds;
             }
         }
     }
