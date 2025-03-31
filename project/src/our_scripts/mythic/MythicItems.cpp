@@ -4,9 +4,12 @@
 #include <iostream>
 
 #pragma region BloodClaw
-BloodClaw::BloodClaw(Health* h, Weapon* w)
-	:MythicItem("BloodClaw"), _health(h), _weapon(w)
-{}
+BloodClaw::BloodClaw() :MythicItem("BloodClaw")
+{
+	auto manager = Game::Instance()->get_mngr();
+	_health = manager->getComponent<Health>(_player);
+	_weapon = manager->getComponent<Weapon>(_player);
+}
 void BloodClaw::apply_effects() {
 	int currhealth = _health->getHealth() / 2;
 	int damage = _weapon->damage() * 2;
@@ -17,10 +20,15 @@ void BloodClaw::apply_effects() {
 
 
 #pragma region ProfaneHotline
-ProfaneHotline::ProfaneHotline(ManaComponent* m)
-	:MythicItem("ProfaneHotline"), _mana(m)
+ProfaneHotline::ProfaneHotline() :MythicItem("ProfaneHotline")
 {
+	_mana = Game::Instance()->get_mngr()->getComponent<ManaComponent>(_player);
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::mill, this, &event_system::event_receiver::event_callback0);
+}
+
+ProfaneHotline::~ProfaneHotline()
+{
+	event_system::event_manager::Instance()->unsuscribe_to_event(event_system::mill, this, &event_system::event_receiver::event_callback0);
 }
 
 void 
@@ -38,10 +46,15 @@ ProfaneHotline::apply_effects() {
 #pragma endregion
 
 #pragma region CurtainReaper
-CurtainReaper::CurtainReaper(Health* h)
-	:MythicItem("CurtainReaper"), _health(h)
+CurtainReaper::CurtainReaper() :MythicItem("CurtainReaper")
 {
+	_health = Game::Instance()->get_mngr()->getComponent<Health>(_player);
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::enemy_dead, this, &event_system::event_receiver::event_callback0);
+}
+
+CurtainReaper::~CurtainReaper()
+{
+	event_system::event_manager::Instance()->unsuscribe_to_event(event_system::enemy_dead, this, &event_system::event_receiver::event_callback0);
 }
 
 void 
@@ -59,8 +72,12 @@ CurtainReaper::apply_effects() {
 #pragma endregion
 
 #pragma region Incense
-Incense::Incense(ManaComponent* m, Weapon* w)
-	:MythicItem("Incense"), _mana(m), _weapon(w){}
+Incense::Incense() :MythicItem("Incense")
+{
+	auto manager = Game::Instance()->get_mngr();
+	_mana = manager->getComponent<ManaComponent>(_player);
+	_weapon = manager->getComponent<Weapon>(_player);
+}
 
 void 
 Incense::apply_effects() {
@@ -72,13 +89,17 @@ Incense::apply_effects() {
 #pragma endregion
 
 #pragma region ArcaneSurge
-ArcaneSurge::ArcaneSurge(ManaComponent* m, Deck* d)
-	:MythicItem("ArcaneSurge"),  _mana(m), _deck(d), _set(false), _ini_mana(_mana->mana_regen()){}
+ArcaneSurge::ArcaneSurge() :MythicItem("ArcaneSurge"), _set(false)
+{
+	auto manager = Game::Instance()->get_mngr();
+	_mana = manager->getComponent<ManaComponent>(_player);
+	_deck = manager->getComponent<Deck>(_player);
+	_ini_mana = _mana->mana_regen();
+}
 
 void 
 ArcaneSurge::apply_effects() {
-	_deck->set_reload_time(_deck->reload_time() + 0.5f * _deck->reload_time());
-	
+	_deck->set_reload_time(_deck->reload_time() - 0.5f * _deck->reload_time());
 }
 
 void ArcaneSurge::update(uint32_t dt) {
@@ -102,8 +123,12 @@ void ArcaneSurge::update(uint32_t dt) {
 #pragma endregion
 
 #pragma region BloodPact
-BloodPact::BloodPact(ManaComponent* m, Health* h)
-	:MythicItem("BloodPact"),  _mana(m), _health(h){}
+BloodPact::BloodPact() :MythicItem("BloodPact")
+{
+	auto manager = Game::Instance()->get_mngr();
+	_mana = manager->getComponent<ManaComponent>(_player);
+	_health = manager->getComponent<Health>(_player);
+}
 
 void 
 BloodPact::apply_effects() {
@@ -115,13 +140,106 @@ BloodPact::apply_effects() {
 #pragma endregion
 
 #pragma region PreternaturalForce
-PreternaturalForce::PreternaturalForce(ManaComponent* m, Weapon* w)
-	:MythicItem("PreternaturalForce"),  _mana(m), _weapon(w){}
+PreternaturalForce::PreternaturalForce() :MythicItem("PreternaturalForce")
+{
+	auto manager = Game::Instance()->get_mngr();
+	_mana = manager->getComponent<ManaComponent>(_player);
+	_weapon = manager->getComponent<Weapon>(_player);
+}
 
 void 
 PreternaturalForce::apply_effects() {
 	_mana->change_mana_regen(- (_mana->mana_regen() * 0.5));
 	int damage = _weapon->damage() * 2;
 	_weapon->set_damage(damage);
+}
+#pragma endregion
+
+
+#pragma region ClawFile
+ClawFile::ClawFile() :MythicItem("ClawFile"), _set(false)
+{
+	auto manager = Game::Instance()->get_mngr();
+	_deck = manager->getComponent<Deck>(_player);
+	_mc = manager->getComponent<MovementController>(_player);
+	_ini_mc = _mc->get_max_speed();
+}
+
+void 
+ClawFile::apply_effects() {
+	//std::cout << "deck: " << _deck->reload_time() << std::endl;
+	_deck->set_reload_time(_deck->reload_time() - 0.5f * _deck->reload_time());
+	//std::cout << "deck despues: " << _deck->reload_time() << std::endl;
+
+	//std::cout << "vel: " << _mc->get_max_speed() << std::endl;
+	//std::cout << "velini: " << _ini_mc << std::endl;
+}
+
+void ClawFile::update(uint32_t dt) {
+	(void)dt;
+	if (_deck->is_reloading()) {
+		if (!_set) {
+			//std::cout << "ClawFile activated" << std::endl;
+			_set = true;
+			_mc->set_max_speed(0.5f *_ini_mc);
+			//std::cout << "vel: " << _mc->get_max_speed() << std::endl;
+		}
+	}
+	else if(_set){
+		_mc->set_max_speed((_ini_mc));
+		_set = false;
+		//std::cout << "vel: " << _mc->get_max_speed() << std::endl;
+	}
+}
+#pragma endregion
+
+#pragma region MeowOrNever
+MeowOrNever::MeowOrNever():MythicItem("MeowOrNever")
+{
+	auto manager = Game::Instance()->get_mngr();
+	_health = manager->getComponent<Health>(_player);
+	_mc = manager->getComponent<MovementController>(_player);
+}
+
+void 
+MeowOrNever::apply_effects() {
+	//std::cout << "deck: " << _health->getHealth() << std::endl;
+	int currhealth = _health->getHealth() / 2;
+	_health->takeDamage(currhealth);
+	//std::cout << "deck despues: " << _health->getHealth() << std::endl;
+	
+	//std::cout << "vel: " << _mc->get_max_speed() << std::endl;
+	_mc->set_max_speed(2.0f *_mc->get_max_speed());
+	//std::cout << "vel: " << _mc->get_max_speed() << std::endl;
+}
+#pragma endregion
+
+#pragma region ZoomiesInducer
+ZoomiesInducer::ZoomiesInducer() :MythicItem("ZoomiesInducer"),\
+	_timer(10000), _last_time(0), _distance(3.0f), _duration(1000) 
+{
+	auto manager = Game::Instance()->get_mngr();
+	_tr = manager->getComponent<Transform>(_player);
+	_mc = manager->getComponent<MovementController>(_player);
+
+}
+ZoomiesInducer::ZoomiesInducer(MovementController* mc, Transform* tr, uint32_t time, uint32_t duration, float distance)
+	:MythicItem("ZoomiesInducer"), _mc(mc), _tr(tr), _timer(time), _last_time(0), _distance(distance), _duration(duration){
+}
+
+void
+ZoomiesInducer::apply_effects() {
+	//std::cout << "vel: " << _mc->get_max_speed() << std::endl;
+	_mc->set_max_speed(2.0f * _mc->get_max_speed());
+	//std::cout << "velini: " << _mc->get_max_speed() << std::endl;
+}
+
+void ZoomiesInducer::update(uint32_t dt) {
+	if (_timer + _last_time <= sdlutils().virtualTimer().currTime()) {
+		//std::cout << "ZoomiesInducer" << std::endl;
+		_last_time = sdlutils().virtualTimer().currTime();
+		Vector2D nextPos = _tr->getPos() + _tr->getDir().normalize() * _distance;
+		_mc->dash(nextPos, _duration);
+	}
 }
 #pragma endregion

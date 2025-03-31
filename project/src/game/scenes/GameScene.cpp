@@ -16,6 +16,7 @@
 #include "../../our_scripts/states/WaitingState.h"
 #include "../../our_scripts/states/RotatingState.h"
 #include "../../our_scripts/states/DashingState.h"
+#include "../../our_scripts/states/AnimationState.h"
 
 #include "../../our_scripts/states/SuperMichiMafiosoAttack.h"
 #include "../../our_scripts/components/weapons/enemies/WeaponSuperMichiMafioso.h"
@@ -24,6 +25,8 @@
 #include "../../our_scripts/components/cards/Mana.h"
 #include "../../our_scripts/components/cards/Deck.hpp"
 #include "../../our_scripts/components/rendering/dyn_image.hpp"
+#include "../../our_scripts/components/rendering/dyn_image_with_frames.hpp"
+#include "../../our_scripts/components/AnimationComponent.h"
 #include "../../our_scripts/components/rendering/camera_component.hpp"
 
 #include "../../our_scripts/components/Health.h" 
@@ -67,6 +70,10 @@ GameScene::GameScene() : Scene(ecs::scene::GAMESCENE){
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::change_deccel, this, &event_system::event_receiver::event_callback0);
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::player_dead, this, &event_system::event_receiver::event_callback1);
 }
+GameScene::~GameScene() {
+	event_system::event_manager::Instance()->unsuscribe_to_event(event_system::change_deccel, this, &event_system::event_receiver::event_callback0);
+	event_system::event_manager::Instance()->unsuscribe_to_event(event_system::player_dead, this, &event_system::event_receiver::event_callback1);
+}
 
 static ecs::entity_t create_environment() {
 	auto&& manager = *Game::Instance()->get_mngr();
@@ -100,7 +107,7 @@ void GameScene::initScene() {
 
 	manager.refresh();
 	create_environment();
-	//spawn_catkuza(Vector2D{5.0f, 0.0f});
+	spawn_catkuza(Vector2D{5.0f, 0.0f});
 	//spawn_super_michi_mafioso(Vector2D{5.0f, 0.0f});
 	spawn_fog();
 	spawn_wave_manager();
@@ -124,6 +131,7 @@ void GameScene::enterScene()
 	mngr->addComponent<PlayerHUD>(player);
 	mngr->getComponent<WaveManager>(mngr->getHandler(ecs::hdlr::WAVE))->start_new_wave();
 	mngr->getComponent<HUD>(mngr->getHandler(ecs::hdlr::HUD_ENTITY))->start_new_wave();
+
 }
 
 void GameScene::exitScene()
@@ -144,8 +152,8 @@ ecs::entity_t GameScene::create_player()
 		ecs::scene::GAMESCENE,
 		&player_transform,
 		&player_rect,
-		new dyn_image(
-			rect_f32_full_subrect,
+		new dyn_image_with_frames(
+			rect_f32{ {0,0},{0.2,1} },
 			player_rect,
 			camera,
 			sdlutils().images().at("piu"),
@@ -154,15 +162,20 @@ ecs::entity_t GameScene::create_player()
 		new render_ordering{ 1 },
 		new Health(100, true),
 		new ManaComponent(),
-		new MovementController(0.1f,5.0f,20.0f*deccel_spawned_creatures_multi),
-		new player_collision_triggerer(),
-		new id_component(),
-		//new Deck(c),
 		// new StopOnBorder(camera, 1.5f, 2.0f),
 		&player_rigidbody,
-		&player_collisionable
+		&player_collisionable,
+		new MovementController(0.1f, 5.0f, 20.0f * deccel_spawned_creatures_multi),
+		new player_collision_triggerer()
 		);
+
+	//si tiene mas de una animacion
+	auto* anim = manager.addComponent<AnimationComponent>(player);
+	anim->add_animation("andar", 1, 5, 100);
+	anim->add_animation("idle", 0, 0, 100);
+
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::PLAYER, player);
+
 	return player;
 }
 
@@ -201,6 +214,8 @@ ecs::entity_t GameScene::create_enemy(EnemySpawnConfig&& ec){
 		&rigidbody,
 		&col
 	);
+
+
 	// BUG: ^^^^ justo ahí arriba se añade el weapon
 	// if (weapon != nullptr)manager.addExistingComponent<Weapon>(e, weapon);
 
@@ -216,10 +231,9 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec)
 	auto&& weapon = *new WeaponSuperMichiMafioso(_p_tr);
 	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
-	auto e = create_enemy(EnemySpawnConfig{ &tr, "super_michi_mafioso", static_cast<Weapon*>(&weapon), 2, 2.0f, 2.25f });
+	auto e = create_enemy(EnemySpawnConfig{ &tr, "super_michi_mafioso", static_cast<Weapon*>(&weapon), 20, 1.75f, 2.25f });
 	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.01, 3.0f, 15.0f*deccel_spawned_creatures_multi));
 
-	//	StateMachine(ConditionManager& conditionManager, Transform* playerTransform, Transform* enemyTransform, float dist);
 	auto state = manager.addComponent<StateMachine>(e);
 	auto state_cm = state->getConditionManager();
 
@@ -332,27 +346,10 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	auto&& weapon = *new WeaponCatKuza();
 	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
-	float randSize = float(sdlutils().rand().nextInt(6, 10)) / 10.0f;
-	auto&& rect = *new rect_component{ 0, 0,  1.5f * randSize, 2.0f * randSize };
-	auto &&rigidbody = *new rigidbody_component{rect_f32{{0.0f, -0.15f}, {0.5f, 0.6f}}, mass_f32{3.0f}, 0.05f};
-
-	ecs::entity_t e = create_entity(
-		ecs::grp::ENEMY,
-		ecs::scene::GAMESCENE,
-		&tr,
-		&rect,
-		new dyn_image(
-			rect_f32{ {0,0},{1,1} },
-			rect,
-			manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam,
-			sdlutils().images().at("catkuza"),
-			tr
-		),
-		new Health(2),
-		new enemy_collision_triggerer(),
-		&weapon,
-		&rigidbody
-	);
+	/*auto&& rect = *new rect_component{ 0, 0,  1.5f * randSize, 2.0f * randSize };
+	auto &&rigidbody = *new rigidbody_component{rect_f32{{0.0f, -0.15f}, {0.5f, 0.6f}}, mass_f32{3.0f}, 0.05f};*/
+	
+	auto e = create_enemy(EnemySpawnConfig{ &tr, "catkuza", static_cast<Weapon*>(&weapon), 2, 2.0f, 2.25f });
 
 	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.05f, 5.0f, 20.0 * deccel_spawned_creatures_multi));
 
@@ -401,7 +398,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 			Vector2D shootPos = tr.getPos();
 			Vector2D shootDir = (_p_tr->getPos() - shootPos).normalize();
 
-			Vector2D dash_target = _p_tr->getPos() + shootDir * 1.8;
+			Vector2D dash_target = _p_tr->getPos() + shootDir * 1.8f;
 			/*std::cout << dash_target << std::endl;
 			mc.dash(dash_target, 1000);*/
 

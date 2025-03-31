@@ -5,15 +5,19 @@
 #include "../components/movement/MovementController.h"
 #include "../components/weapons/Weapon.h"
 #include "../components/cards/Deck.hpp"
-
+#include "game/Game.h"
+#include "ecs/Manager.h"
 class MythicItem {
 protected:
 	std::string _name;
 	Texture* _texture;
+	ecs::entity_t _player;
 	
 public:
 	MythicItem(std::string name = "default",std::string texture_name = "mythic")
-		:_name(name), _texture(&sdlutils().images().at(texture_name)) {};
+		:_name(name), _texture(&sdlutils().images().at(texture_name)) {
+		_player = Game::Instance()->get_mngr()->getHandler(ecs::hdlr::PLAYER);
+	};
 	virtual ~MythicItem() = default;
 
 	virtual void apply_effects() = 0;

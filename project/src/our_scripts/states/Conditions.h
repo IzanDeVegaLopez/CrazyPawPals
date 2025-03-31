@@ -28,7 +28,6 @@ private:
         std::uniform_int_distribution<> dis(0, patterns.size() - 1);
         return dis(gen);
     }
-
 public:
     // Métodos para evaluar condiciones
 
@@ -89,4 +88,5 @@ public:
         if (patterns.empty()) return "";
         return patterns[currentPatternIndex];
     }
+    
 };

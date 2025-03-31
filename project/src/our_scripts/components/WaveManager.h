@@ -4,6 +4,7 @@
 #include "../../sdlutils/SDLUtils.h"
 #include "../wave_events/wave_event.hpp"
 #include "rendering/transformless_dyn_image.h"
+#include "../../utils/EventsSystem.hpp"
 
 enum events {
     NONE = -1, // 0xffffffffff
@@ -25,7 +26,7 @@ enum enemyType {
 
 class Fog;
 
-class WaveManager : public ecs::Component {
+class WaveManager : public event_system::event_receiver, public ecs::Component {
     // _waves es un vector de pares (int, vector<int>)
     // Los 0 son espacios extra
     std::vector<std::pair<Uint32, std::vector<enemyType>>> _waves = {
@@ -70,6 +71,8 @@ public:
     inline Uint32 get_wave_time() { return _currentWaveTime; }
     inline int get_current_wave() { return _currentWave; }
     inline events get_current_event() { return _current_event; }
+    void event_callback0(const Msg& m) override;
+    void add_num_enemy();
 
 private:
     void choose_new_event();
@@ -78,6 +81,9 @@ private:
     bool areAllEnemiesDead();
     void enterRewardsMenu();
     void spawnWave();
+    bool can_spawn_next_enemy();
+    void spawn_next_enemy();
+    bool is_wave_finished();
     Uint32 _currentWaveTime = 0; //tiempo actual (post calculo, inicial en constructor)
     Uint32 _currentWaveInitTime; // cuándo empezó la oleada
     Uint32 _waveTime; // cuánto dura la oleada (CONSTRUCTOR)

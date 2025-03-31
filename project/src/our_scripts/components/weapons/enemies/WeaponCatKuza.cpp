@@ -54,7 +54,7 @@ void WeaponCatKuza::wind_attack(Vector2D shootPos) {
 	float totalAngle = 60.0f;
 
 	patrons::ShotgunPatron(bp, ecs::grp::BULLET, totalAngle, _wind_p);
-	std::cout << "aaaaaaaaa" << std::endl;
+	//std::cout << "aaaaaaaaa" << std::endl;
 }
 
 void WeaponCatKuza::dash_attack(Vector2D shootPos, Vector2D shoot_end_pos) {

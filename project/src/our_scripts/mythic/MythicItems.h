@@ -12,8 +12,7 @@ class BloodClaw : public MythicItem {
 	Health* _health;
 	Weapon* _weapon;
 public:
-	BloodClaw() : _health(nullptr), _weapon(nullptr) {}
-	BloodClaw(Health* h, Weapon* w);
+	BloodClaw();
 
 	void apply_effects() override;
 
@@ -31,9 +30,8 @@ public:
 class ProfaneHotline :public event_system::event_receiver, public MythicItem {
 	ManaComponent* _mana;
 public:
-	ProfaneHotline() : _mana(nullptr) {}
-	ProfaneHotline(ManaComponent* m);
-
+	ProfaneHotline();
+	~ProfaneHotline();
 	void apply_effects() override;
 	void event_callback0(const event_system::event_receiver::Msg& m);
 
@@ -50,9 +48,8 @@ public:
 class CurtainReaper : public event_system::event_receiver, public MythicItem {
 	Health* _health;
 public:
-	CurtainReaper() : _health(nullptr) {}
-	CurtainReaper(Health* h);
-
+	CurtainReaper();
+	~CurtainReaper();
 	void apply_effects() override;
 	void event_callback0(const event_system::event_receiver::Msg& m);
 
@@ -70,9 +67,7 @@ class Incense : public MythicItem {
 	ManaComponent* _mana;
 	Weapon* _weapon;
 public:
-	Incense() : _mana(nullptr), _weapon(nullptr) {}
-	Incense(ManaComponent* m,Weapon* w);
-
+	Incense();
 	void apply_effects() override;
 
 	void set_mana(ManaComponent* m) { _mana = m; }
@@ -93,8 +88,7 @@ class ArcaneSurge : public MythicItem {
 	bool _set = false;
 	int _ini_mana;
 public:
-	ArcaneSurge() : _mana(nullptr), _deck(nullptr),_ini_mana() {}
-	ArcaneSurge(ManaComponent* m, Deck* d);
+	ArcaneSurge();
 
 	void apply_effects() override;
 	void update(uint32_t dt) override;
@@ -113,8 +107,7 @@ class BloodPact : public MythicItem {
 	ManaComponent* _mana;
 	Health* _health;
 public:
-	BloodPact() : _mana(nullptr), _health(nullptr) {}
-	BloodPact(ManaComponent* m, Health* h);
+	BloodPact();
 
 	void apply_effects() override;
 
@@ -132,12 +125,80 @@ class PreternaturalForce : public MythicItem {
 	ManaComponent* _mana;
 	Weapon* _weapon;
 public:
-	PreternaturalForce() : _mana(nullptr), _weapon(nullptr) {}
-	PreternaturalForce(ManaComponent* m, Weapon* w);
+	PreternaturalForce();
 
 	void apply_effects() override;
 
 	void set_mana(ManaComponent* m) { _mana = m; }
-	void set_health(Weapon* w) { _weapon = w; }
+	void set_weapon(Weapon* w) { _weapon = w; }
 };
 
+/**
+ * @class ClawFile
+ * @brief ClawFile is a MythicItem that enhances player's reload speed and reduces movement speed.
+ *
+ * While reloading, movement speed reduced by 50%.
+ * However, reload speed is reduced by 50%.
+ */
+class ClawFile : public MythicItem {
+	MovementController* _mc;
+	Deck* _deck;
+
+	bool _set = false;
+	float _ini_mc;
+public:
+	ClawFile();
+
+	void apply_effects() override;
+	void update(uint32_t dt) override;
+
+	void set_deck(Deck* d) { _deck = d; }
+	void set_movement_controller(MovementController* mc) { _mc = mc; }
+};
+
+/**
+ * @class MeowOrNever
+ * @brief MeowOrNever is a MythicItem that enhances player's movement speed and reduces player's health.
+ *
+ * The player’s health is reduced by 50%.
+ * However, movement speed is enhanced by 100%.
+ */
+class MeowOrNever : public MythicItem {
+	MovementController* _mc;
+	Health* _health;
+public:
+	MeowOrNever();
+
+	void apply_effects() override;
+
+	void set_health(Health* h) { _health = h; }
+	void set_movement_controller(MovementController* mc) { _mc = mc; }
+};
+
+/**
+ * @class ZoomiesInducer
+ * @brief ZoomiesInducer is a MythicItem that enhances player's movement speed and reduces player's health.
+ *
+ * The player’s health is reduced by 50%.
+ * However, movement speed is enhanced by 100%.
+ */
+class ZoomiesInducer : public MythicItem {
+	MovementController* _mc;
+	Transform* _tr;
+
+	uint32_t _timer;
+	uint32_t _last_time;
+
+	uint32_t _duration;
+
+	float _distance;
+public:
+	ZoomiesInducer();
+	ZoomiesInducer(MovementController* mc, Transform* tr, uint32_t time, uint32_t duration, float distance);
+
+	void apply_effects() override;
+	void update(uint32_t dt) override;
+
+	void set_movement_controller(MovementController* mc) { _mc = mc; }
+	void set_transform(Transform* tr) { _tr = tr; }
+};
