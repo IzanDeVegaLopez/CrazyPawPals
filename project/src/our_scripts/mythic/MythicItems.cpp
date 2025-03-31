@@ -217,7 +217,7 @@ MeowOrNever::apply_effects() {
 
 #pragma region ZoomiesInducer
 ZoomiesInducer::ZoomiesInducer() :MythicItem("ZoomiesInducer"),\
-	_timer(10000), _last_time(0), _distance(1.8f), _duration(1000) 
+	_timer(10000), _last_time(0), _distance(3.0f), _duration(1000) 
 {
 	auto manager = Game::Instance()->get_mngr();
 	_tr = manager->getComponent<Transform>(_player);
@@ -239,7 +239,7 @@ void ZoomiesInducer::update(uint32_t dt) {
 	if (_timer + _last_time <= sdlutils().virtualTimer().currTime()) {
 		//std::cout << "ZoomiesInducer" << std::endl;
 		_last_time = sdlutils().virtualTimer().currTime();
-		Vector2D nextPos = _tr->getPos() + _tr->getDir() * _distance;
+		Vector2D nextPos = _tr->getPos() + _tr->getDir().normalize() * _distance;
 		_mc->dash(nextPos, _duration);
 	}
 }
