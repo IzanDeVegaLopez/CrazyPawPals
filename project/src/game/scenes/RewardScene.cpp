@@ -30,7 +30,9 @@ void RewardScene::initScene() {
     create_reward_buttons();
     create_my_deck_cards();
     _reward_bg = &sdlutils().images().at("reward");
+    check_number();
 }
+
 void RewardScene::enterScene()
 {
     auto* mngr = Game::Instance()->get_mngr();
@@ -189,10 +191,10 @@ void RewardScene::create_reward_buttons() {
 
     //exchange button
     buttonPropTemplate.ID = ecs::grp::UI;
-    buttonPropTemplate.sprite_key = "confirm_reward";
-    buttonPropTemplate.rect.position = { 0.25f, 0.5f };
+    buttonPropTemplate.sprite_key = "exchange_reward";
+    buttonPropTemplate.rect.position = { 1.0f, 0.5f };
     buttonPropTemplate.rect.size = { 0.325f, 0.195f };
-    create_reward_selected_button(buttonPropTemplate);
+    create_reward_exchange_button(buttonPropTemplate);
 }
 
 void RewardScene::create_reward_health_button(const GameStructs::ButtonProperties& bp) {
@@ -312,10 +314,11 @@ void RewardScene::create_a_deck_card(const GameStructs::CardButtonProperties& bp
     buttonComp->connectClick([buttonComp, imgComp, this, bp] {
         imgComp->destination_rect.size = { imgComp->_original_w,  imgComp->_original_h };
         _selected_button = buttonComp;
-        imgComp->destination_rect.position.y = bp.rect.position.y;
+        imgComp->destination_rect.position.y = bp.rect.position.y + 0.25f;
         //only assign a valid iterator
         if (bp.iterator != nullptr && bp.iterator != _selected_card) {
             _selected_card = bp.iterator;
+            
             std::cout << "card selected "<< std::endl;
         }
         });
@@ -428,23 +431,7 @@ void RewardScene::create_reward_selected_button(const GameStructs::ButtonPropert
             _lr->apply_filter(255, 255, 255);
             _lr->swap_textures();
             _selected = true;
-
-            //We get the reference to the deck
-            auto* mngr = Game::Instance()->get_mngr();
-            auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
-            auto _m_deck = mngr->getComponent<Deck>(player);
-
-            //We add the cards to the deck
-            _m_deck->add_card_to_deck(new Fireball());
-            
-            //Refresh deck
-            auto& pDeck = _m_deck->card_names();
- 
-            refresh_my_deck_cards(pDeck);
-
-            imgComp->swap_textures();
             add_new_reward_card();
-
         }
     });
     buttonComp->connectHover([buttonComp, imgComp, this]() {
@@ -460,104 +447,25 @@ void RewardScene::create_reward_selected_button(const GameStructs::ButtonPropert
     });
 }
 
-void RewardScene::exchange_deck_card()
+void RewardScene::remove_deck_card()
 {
-    //We get the reference to the deck
-    auto* mngr = Game::Instance()->get_mngr();
-    auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
-    auto _m_deck = mngr->getComponent<Deck>(player);
-
-    //Removes old card from deck
-    //Look m
-    // _m_deck->all_cards().erase_card(_selected_card);
+    auto mngr = Game::Instance()->get_mngr();
+    auto player = mngr->getHandler(ecs::hdlr::PLAYER);
+    auto deck = mngr->getComponent<Deck>(player);
+    deck->remove_card(_selected_card);
 }
 
 void RewardScene::add_new_reward_card() {
     assert(_chosen_card != nullptr);
-}
-
-void RewardScene::check_number()
-{
-    //Once reward is picked, checks number of cards in deck
+    
+    //We get the reference to the deck
     auto* mngr = Game::Instance()->get_mngr();
     auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
     auto _m_deck = mngr->getComponent<Deck>(player);
-    auto& pDeck = _m_deck->card_names();
-    if (pDeck.size() < 8)
-    {
-        _activate_confirm_button = true;
-        _activate_exchange_button = false;
-    }
-    else if (pDeck.size() >= 8 && pDeck.size() < 10)
-    {
-        _activate_confirm_button = true;
-        _activate_exchange_button = true;
-    }
-    else if (pDeck.size() == 10)
-    {
-        _activate_confirm_button = false;
-        _activate_exchange_button = true;
-    }
-}
-
-void RewardScene::create_reward_exchange_button(const GameStructs::ButtonProperties& bp)
-{
-    auto* mngr = Game::Instance()->get_mngr();
-
-    auto e = create_button(bp);
-    auto buttonComp = mngr->getComponent<Button>(e);
-    auto imgComp = mngr->addComponent<ImageForButton>(e,
-        &sdlutils().images().at(bp.sprite_key),
-        &sdlutils().images().at("initial_info"),
-        bp.rect,
-        0,
-        Game::Instance()->get_mngr()->getComponent<camera_component>(
-            Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
-    );
-    imgComp->swap_textures();
-    mngr->setHandler(ecs::hdlr::CONFIRMREWARD, e);
-    buttonComp->connectClick([buttonComp, this, imgComp] {
-        //we only select a reward if previously we have chosen something
-        if (_lr != nullptr && !_selected) {
-            _lr->apply_filter(255, 255, 255);
-            _lr->swap_textures();
-            _selected = true;
-
-            ////We get the reference to the deck
-            //auto* mngr = Game::Instance()->get_mngr();
-            //auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
-            //auto _m_deck = mngr->getComponent<Deck>(player);
-
-            ////Removes old card from deck
-            //exchange_deck_card();
-
-            ////We add the new card to the deck
-            //_m_deck->add_card_to_deck(new Fireball());
-
-            ////Refresh deck
-            //auto& pDeck = _m_deck->card_names();
-            //refresh_my_deck_cards(pDeck);
-
-            //imgComp->swap_textures();
-        }
-        });
-    buttonComp->connectHover([buttonComp, imgComp, this]() {
-        if (_selected) return;
-        std::cout << "hover -> Reward exchange button: " << std::endl;
-        //filter
-        imgComp->apply_filter(128, 128, 128);
-        });
-    buttonComp->connectExit([buttonComp, imgComp, this]() {
-        std::cout << "exit -> Reward exchange button: " << std::endl;
-        //filter
-        imgComp->apply_filter(255, 255, 255);
-        });
-
-
     //We add the cards to the deck
     Card* c = nullptr;
-    GameStructs::CardType ct = mngr->getComponent<RewardDataComponent>(_chosen_card)->CT(); 
-    switch (ct) 
+    GameStructs::CardType ct = mngr->getComponent<RewardDataComponent>(_chosen_card)->CT();
+    switch (ct)
     {
     case GameStructs::FIREBALL:
         c = new Fireball();
@@ -595,23 +503,82 @@ void RewardScene::create_reward_exchange_button(const GameStructs::ButtonPropert
     default:
         break;
     }
-    if (c != nullptr)  _m_deck->add_card_to_deck(c);
-    //Refresh deck
-    auto& pDeck = _m_deck->card_names();
-    refresh_my_deck_cards(pDeck);
+    if (c != nullptr) {
+        _m_deck->add_card_to_deck(c);
+        //Refresh deck
+        auto& pDeck = _m_deck->card_names();
+        refresh_my_deck_cards(pDeck);
+        
+    }
+}
 
+void RewardScene::check_number()
+{
+    //Once reward is picked, checks number of cards in deck
+    auto* mngr = Game::Instance()->get_mngr();
+    auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
+    auto _m_deck = mngr->getComponent<Deck>(player);
+    auto& pDeck = _m_deck->card_names();
+    if (pDeck.size() < 4)
+    {
+        _activate_exchange_button = false;
+    }
+    else if (pDeck.size() >= 4 && pDeck.size() < 10)
+    {
+        _activate_exchange_button = true;
+    }
+    else if (pDeck.size() == 10)
+    {
+        _activate_confirm_button = false;
+        _activate_exchange_button = true;
+    }
+}
+
+void RewardScene::create_reward_exchange_button(const GameStructs::ButtonProperties& bp)
+{
+    auto* mngr = Game::Instance()->get_mngr();
+
+    auto e = create_button(bp);
+    auto buttonComp = mngr->getComponent<Button>(e);
+    auto imgComp = mngr->addComponent<ImageForButton>(e,
+        &sdlutils().images().at(bp.sprite_key),
+        &sdlutils().images().at("initial_info"),
+        bp.rect,
+        0,
+        Game::Instance()->get_mngr()->getComponent<camera_component>(
+            Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
+    );
+    imgComp->swap_textures();
+    mngr->setHandler(ecs::hdlr::EXCHANGEBUTTON, e);
+    buttonComp->connectClick([buttonComp, this] 
+        {
+            //if we dont have enough card to exchange, ignore this callback
+            if (_selected || _activate_exchange_button || _chosen_card == nullptr) return;
+            _selected = true;
+            remove_deck_card();
+            add_new_reward_card();
+        });
+    buttonComp->connectHover([buttonComp, imgComp, this]() {
+        
+        });
+    buttonComp->connectExit([buttonComp, imgComp, this]() {
+
+        });
 }
 
 void RewardScene::update(uint32_t delta_time) {
-    Scene::update(delta_time);
+   Scene::update(delta_time);
+   if (!_activate_confirm_button && _lr != nullptr) {
+       auto mngr = Game::Instance()->get_mngr();
+       auto imgCompConfirm = mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::CONFIRMREWARD));
+       imgCompConfirm->swap_textures();
+       _activate_confirm_button = true;
+   }
 
-    if (!_activate_confirm_button && !_activate_exchange_button && _lr != nullptr) {
-        auto* mngr = Game::Instance()->get_mngr();
-        auto imgCompConfirm = mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::CONFIRMREWARD));
-        imgCompConfirm->swap_textures();
-
-        //Checks number of cards to activate or desactivate buttons
-        //Changes true or false in "comfirm" and "exchange"
-        check_number();
-    }
+   if (_activate_exchange_button && _lr != nullptr && _chosen_card != nullptr) {
+       auto mngr = Game::Instance()->get_mngr();
+       auto imgCompExchange = mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::EXCHANGEBUTTON));
+       imgCompExchange->swap_textures();
+       _activate_exchange_button = false;
+   }
 }

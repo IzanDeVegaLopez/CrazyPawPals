@@ -37,7 +37,9 @@ private:
 	bool _object;
 	bool _upgrade;
 
+
 	ImageForButton* _lr;
+
 	bool _selected;
 	bool _activate_confirm_button; //to add cards to deck
 	bool _activate_exchange_button; //to exchange cards from deck
@@ -65,7 +67,7 @@ private:
 	void create_reward_selected_button(const GameStructs::ButtonProperties& bp);
 
 	//method to swap card if you got 8 or more in the deck
-	void exchange_deck_card();
+	void remove_deck_card();  
 	void check_number();
 
 	//method to create button to exchange card

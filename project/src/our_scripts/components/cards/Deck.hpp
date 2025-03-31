@@ -76,7 +76,7 @@ public:
 	//Whenever this happens the iterator passed to this function must
 	//belong to _draw_pile (during rewards menu all cards are exclusively in
 	//the draw pile)
-	void remove_card(std::list<Card*>::iterator);
+	void remove_card(Card* c);
 
 	// Used for Primed cards to gain additional effects.
 	inline bool get_primed() { return _primed; }

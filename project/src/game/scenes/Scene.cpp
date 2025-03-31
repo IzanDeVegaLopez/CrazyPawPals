@@ -73,6 +73,7 @@ Scene::create_button(const GameStructs::ButtonProperties& bp) {
     b->initComponent();
     return e;
 }
+
 void Scene::update(uint32_t delta_time)
 {
     Game::Instance()->get_mngr()->update(_scene_ID, delta_time);
