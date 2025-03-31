@@ -75,6 +75,74 @@ GameScene::~GameScene() {
 	event_system::event_manager::Instance()->unsuscribe_to_event(event_system::player_dead, this, &event_system::event_receiver::event_callback1);
 }
 
+struct game_scene_map_walls {
+	std::array<ecs::entity_t, 4> wall_entities;
+	std::array<collisionable *, 4> wall_collisionables;
+
+	constexpr static size_t size() {
+		return 4;
+	}
+};
+static game_scene_map_walls game_scene_create_map_walls(ecs::Manager &manager, const ecs::sceneId_t scene_id, const rect_f32 scene_limits) {
+	const std::array<ecs::entity_t, game_scene_map_walls::size()> wall_entities{
+		manager.addEntity(scene_id),
+		manager.addEntity(scene_id),
+		manager.addEntity(scene_id),
+		manager.addEntity(scene_id)
+	};
+
+	constexpr static const float wall_thickness = 1.0f;
+	const std::array<position2_f32, game_scene_map_walls::size()> wall_positions{
+		position2_f32{scene_limits.position.x - scene_limits.size.x * 0.5f - wall_thickness * 0.25f, 	scene_limits.position.y														 },
+		position2_f32{scene_limits.position.x + scene_limits.size.x * 0.5f + wall_thickness * 0.25f, 	scene_limits.position.y														 },
+		position2_f32{scene_limits.position.x,															scene_limits.position.y - scene_limits.size.y * 0.5f - wall_thickness * 0.25f},
+		position2_f32{scene_limits.position.x,															scene_limits.position.y + scene_limits.size.y * 0.5f + wall_thickness * 0.25f}
+	};
+	
+	constexpr static const auto vec_from_position = [](const position2_f32 position) -> Vector2D {
+		return Vector2D{position.x, position.y};
+	};
+	const std::array<Transform *, game_scene_map_walls::size()> wall_transforms{
+		new Transform{vec_from_position(wall_positions[0]), Vector2D{0.0f, 0.0f}, 0.0f, 0.0f},
+		new Transform{vec_from_position(wall_positions[1]), Vector2D{0.0f, 0.0f}, 0.0f, 0.0f},
+		new Transform{vec_from_position(wall_positions[2]), Vector2D{0.0f, 0.0f}, 0.0f, 0.0f},
+		new Transform{vec_from_position(wall_positions[3]), Vector2D{0.0f, 0.0f}, 0.0f, 0.0f}
+	};
+
+	const std::array<rect_component *, game_scene_map_walls::size()> wall_rects{
+		new rect_component{0.0f, 0.0f, wall_thickness, 							scene_limits.size.y - wall_thickness},
+		new rect_component{0.0f, 0.0f, wall_thickness, 							scene_limits.size.y	- wall_thickness},
+		new rect_component{0.0f, 0.0f, scene_limits.size.x - wall_thickness,	wall_thickness						},
+		new rect_component{0.0f, 0.0f, scene_limits.size.x - wall_thickness,	wall_thickness						}
+	};
+
+	const std::array<rigidbody_component *, game_scene_map_walls::size()> wall_rigidbodies{
+		new rigidbody_component{rect_f32_full_subrect, inverse_mass_f32{0.00000000f}, 0.0f},
+		new rigidbody_component{rect_f32_full_subrect, inverse_mass_f32{0.00000000f}, 0.0f},
+		new rigidbody_component{rect_f32_full_subrect, inverse_mass_f32{0.00000000f}, 0.0f},
+		new rigidbody_component{rect_f32_full_subrect, inverse_mass_f32{0.00000000f}, 0.0f}
+	};
+	const std::array<collisionable *, game_scene_map_walls::size()> wall_collisionables{
+		new collisionable{*wall_transforms[0], *wall_rigidbodies[0], *wall_rects[0], collisionable_option_none},
+		new collisionable{*wall_transforms[1], *wall_rigidbodies[1], *wall_rects[1], collisionable_option_none},
+		new collisionable{*wall_transforms[2], *wall_rigidbodies[2], *wall_rects[2], collisionable_option_none},
+		new collisionable{*wall_transforms[3], *wall_rigidbodies[3], *wall_rects[3], collisionable_option_none}
+	};
+
+	for (size_t i = 0; i < wall_entities.size(); ++i) {
+		manager.addComponent<Transform>				(wall_entities[i], *wall_transforms[i]);
+		manager.addComponent<rect_component>		(wall_entities[i], *wall_rects[i]);
+		manager.addComponent<rigidbody_component>	(wall_entities[i], *wall_rigidbodies[i]);
+		manager.addComponent<collisionable>			(wall_entities[i], *wall_collisionables[i]);
+		manager.addComponent<render_ordering>		(wall_entities[i], 0);
+	}
+
+	return game_scene_map_walls{
+		wall_entities,
+		wall_collisionables
+	};
+}
+
 static ecs::entity_t create_environment() {
 	auto&& manager = *Game::Instance()->get_mngr();
 	auto environment = manager.addEntity(ecs::scene::GAMESCENE);
@@ -86,6 +154,7 @@ static ecs::entity_t create_environment() {
 		{1.0, 1.0}
 	}, position2_f32{0.0f, 0.0f}, rect, manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam, sdlutils().images().at("floor"), tr);
 	manager.addComponent<render_ordering>(environment, 0);
+	game_scene_create_map_walls(manager, ecs::scene::GAMESCENE, GameScene::default_scene_bounds);
 	return environment;
 }
 

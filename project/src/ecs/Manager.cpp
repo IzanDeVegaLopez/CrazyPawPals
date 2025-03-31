@@ -35,8 +35,8 @@ Manager::~Manager() {
 
 
 #ifndef DBG_COLLISIONS
-#define DBG_COLLISIONS_DEFAULT false
-#define DBG_COLLISIONS false
+#define DBG_COLLISIONS_DEFAULT true
+#define DBG_COLLISIONS DBG_COLLISIONS_DEFAULT
 #endif
 
 #if DBG_COLLISIONS
@@ -86,7 +86,7 @@ static void dbg_collision_fill_rect(ecs::Manager &manager, const collision_body 
 	);
 	++dbg_rect_col_size;
 
-	dbg_rect_col[dbg_rect_col_size] = SDL_Rect_screen_rect_from_global(
+ddddd	dbg_rect_col[dbg_rect_col_size] = SDL_Rect_screen_rect_from_global(
 		rect_f32{
 			.position = {
 				.x = body1.body.body.position.x + body1.body.space.position.x - (body1.body.body.size.x + body0.body.body.size.x) * 0.5f,
@@ -431,24 +431,15 @@ static void manager_update_collisions(Manager &manager, const std::vector<ecs::e
 					const float displacement_length_sqr = 
 						displacement.x * displacement.x + displacement.y * displacement.y;
 					constexpr static const float epsilon_displacement_length_sqr = 0.0000001f;
-					if (displacement_length_sqr > epsilon_displacement_length_sqr) {
-						entity_collisionable.transform.getPos() = Vector2D{
-							body.body.space.position.x,
-							body.body.space.position.y,
-						};
-						other_collisionable.transform.getPos() = Vector2D{
-							other_body.body.space.position.x,
-							other_body.body.space.position.y,
-						};
-	
-						entity_collisionable.transform.getPos() += Vector2D{
-							(body.body.space.position.x - body.body.space.previous_position.x),
-							(body.body.space.position.y - body.body.space.previous_position.y),
-						};
-						other_collisionable.transform.getPos() += Vector2D{
-							(other_body.body.space.position.x - other_body.body.space.previous_position.x),
-							(other_body.body.space.position.y - other_body.body.space.previous_position.y),
-						};
+					if (displacement_length_sqr > epsilon_displacement_length_sqr) {	
+						entity_collisionable.transform.setPos(Vector2D{
+							body.body.space.position.x + (body.body.space.position.x - body.body.space.previous_position.x),
+							body.body.space.position.y + (body.body.space.position.y - body.body.space.previous_position.y),
+						});
+						other_collisionable.transform.setPos(Vector2D{
+							other_body.body.space.position.x + (other_body.body.space.position.x - other_body.body.space.previous_position.x),
+							other_body.body.space.position.y + (other_body.body.space.position.y - other_body.body.space.previous_position.y),
+						});
 	
 						++last_pass_collision_count;
 					}
