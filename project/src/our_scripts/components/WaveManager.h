@@ -71,6 +71,7 @@ public:
     inline int get_current_wave() { return _currentWave; }
     inline events get_current_event() { return _current_event; }
     void event_callback0(const Msg& m) override;
+    void add_num_enemy();
 
 private:
     void choose_new_event();

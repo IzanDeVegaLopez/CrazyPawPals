@@ -150,6 +150,11 @@ bool WaveManager::is_wave_finished()
     return _enemiesKilled >= _numEnemies;
 }
 
+void WaveManager::add_num_enemy()
+{
+    _numEnemies++;
+}
+
 //---------------------------------------------------------------------------------------------------------------------------------
 void WaveManager::update(uint32_t delta_time) {
     _currentWaveTime = sdlutils().virtualTimer().currRealTime() - _currentWaveInitTime;

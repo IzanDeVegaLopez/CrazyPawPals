@@ -12,7 +12,7 @@ class BloodClaw : public MythicItem {
 	Health* _health;
 	Weapon* _weapon;
 public:
-	BloodClaw(Health* h, Weapon* w);
+	BloodClaw();
 
 	void apply_effects() override;
 
@@ -30,7 +30,7 @@ public:
 class ProfaneHotline :public event_system::event_receiver, public MythicItem {
 	ManaComponent* _mana;
 public:
-	ProfaneHotline(ManaComponent* m);
+	ProfaneHotline();
 	~ProfaneHotline();
 	void apply_effects() override;
 	void event_callback0(const event_system::event_receiver::Msg& m);
@@ -48,7 +48,7 @@ public:
 class CurtainReaper : public event_system::event_receiver, public MythicItem {
 	Health* _health;
 public:
-	CurtainReaper(Health* h);
+	CurtainReaper();
 	~CurtainReaper();
 	void apply_effects() override;
 	void event_callback0(const event_system::event_receiver::Msg& m);
@@ -67,7 +67,7 @@ class Incense : public MythicItem {
 	ManaComponent* _mana;
 	Weapon* _weapon;
 public:
-	Incense(ManaComponent* m,Weapon* w);
+	Incense();
 	void apply_effects() override;
 
 	void set_mana(ManaComponent* m) { _mana = m; }
@@ -88,7 +88,7 @@ class ArcaneSurge : public MythicItem {
 	bool _set = false;
 	int _ini_mana;
 public:
-	ArcaneSurge(ManaComponent* m, Deck* d);
+	ArcaneSurge();
 
 	void apply_effects() override;
 	void update(uint32_t dt) override;
@@ -107,7 +107,7 @@ class BloodPact : public MythicItem {
 	ManaComponent* _mana;
 	Health* _health;
 public:
-	BloodPact(ManaComponent* m, Health* h);
+	BloodPact();
 
 	void apply_effects() override;
 
@@ -125,7 +125,7 @@ class PreternaturalForce : public MythicItem {
 	ManaComponent* _mana;
 	Weapon* _weapon;
 public:
-	PreternaturalForce(ManaComponent* m, Weapon* w);
+	PreternaturalForce();
 
 	void apply_effects() override;
 
@@ -147,8 +147,7 @@ class ClawFile : public MythicItem {
 	bool _set = false;
 	float _ini_mc;
 public:
-	ClawFile() : _mc(nullptr), _deck(nullptr) {}
-	ClawFile(Deck* d, MovementController* mc);
+	ClawFile();
 
 	void apply_effects() override;
 	void update(uint32_t dt) override;
@@ -168,8 +167,7 @@ class MeowOrNever : public MythicItem {
 	MovementController* _mc;
 	Health* _health;
 public:
-	MeowOrNever() : _mc(nullptr), _health(nullptr) {}
-	MeowOrNever(Health* h, MovementController* mc);
+	MeowOrNever();
 
 	void apply_effects() override;
 
@@ -195,7 +193,7 @@ class ZoomiesInducer : public MythicItem {
 
 	float _distance;
 public:
-	ZoomiesInducer() : _mc(nullptr), _tr(nullptr), _timer(), _last_time(), _duration(), _distance(){}
+	ZoomiesInducer();
 	ZoomiesInducer(MovementController* mc, Transform* tr, uint32_t time, uint32_t duration, float distance);
 
 	void apply_effects() override;

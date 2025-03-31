@@ -38,6 +38,7 @@ void WeaponSuperMichiMafioso::attack1(Vector2D shootDir) {
 }
 void WeaponSuperMichiMafioso::attack2(Vector2D shootPos, Vector2D shootDir) {
 	create_area(shootPos, shootDir, "p_super_michi_mafioso", _damage, _speed, 2.0f);
+	Game::Instance()->get_mngr()->getComponent<WaveManager>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::WAVE))->add_num_enemy();
 }
 
 void WeaponSuperMichiMafioso::attack3(Vector2D shootPos, Vector2D shootDir) {
