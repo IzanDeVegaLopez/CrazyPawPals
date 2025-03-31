@@ -539,6 +539,7 @@ void Manager::refresh()
 		});
 	}
 
+	// std::cout << "removed " << to_remove.size() << " entities" << std::endl;
 	for (auto e : to_remove) {
 		delete e;
 	}
