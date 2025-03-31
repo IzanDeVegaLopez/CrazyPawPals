@@ -3,6 +3,7 @@
 #include <string>
 #include <list>
 #include <unordered_set>
+#include <utility>
 
 class Texture;
 class Button;
@@ -40,10 +41,12 @@ private:
 	bool _selected;
 	bool _activate_confirm_button; //to add cards to deck
 	bool _activate_exchange_button; //to exchange cards from deck
+	ecs::entity_t _chosen_card;
+
 
 	//method to select a card randomly
 	std::string select_card(GameStructs::CardType ct);
-	std::string get_unique_card(GameStructs::CardType& ct, std::unordered_set<std::string>& appeared_cards);
+	std::pair<std::string, GameStructs::CardType> get_unique_card(std::unordered_set<std::string>& appeared_cards);
 
 	//methods to create reward buttons
 	void create_reward_card_button(const GameStructs::ButtonProperties& bp);
@@ -67,4 +70,8 @@ private:
 
 	//method to create button to exchange card
 	void create_reward_exchange_button(const GameStructs::ButtonProperties& bp);
+
+
+	void add_new_reward_card();
+
 };
