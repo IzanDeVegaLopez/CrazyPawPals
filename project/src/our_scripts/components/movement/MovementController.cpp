@@ -5,7 +5,8 @@
 #include "../../../game/Game.h"
 #include "../rigidbody_component.hpp"
 MovementController::MovementController(float max_speed, float acceleration, float decceleration) 
-	: _tr(nullptr), _max_speed(max_speed), _acceleration(acceleration), _decceleration(decceleration), _dashing(false), _time_remaining(0){
+	: _tr(nullptr), _max_speed(max_speed), _acceleration(acceleration), _decceleration(decceleration), 
+	_dashing(false), _time_remaining(0),  _dash_duration(0), _start_pos(0,0) {
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::change_deccel, this, &event_system::event_receiver::event_callback0);
 }
 
@@ -31,23 +32,32 @@ void MovementController::set_input(Vector2D vec) {
 void MovementController::update(uint32_t delta_time)
 {
 	if (_dashing) {
-		Vector2D currentPosition = _tr->getPos();
-		Vector2D direction = (_dash_pos - currentPosition).normalize();
-		float distanceToTarget = (_dash_pos - currentPosition).magnitude();
+		float t = 1.0f - (static_cast<float>(_time_remaining) / static_cast<float>(_dash_duration));
+        
+		t = t * t * (3.0f - 2.0f * t);
 
-		float speed = distanceToTarget / (_time_remaining / 1000.0f);
+        t = std::clamp(t, 0.0f, 1.0f);
+        Vector2D newPos = Vector2D(
+            _start_pos.getX() + (_dash_pos.getX() - _start_pos.getX()) * t,
+            _start_pos.getY() + (_dash_pos.getY() -  _start_pos.getY()) * t
+        );
+       
+		//_tr->setPos(_start_pos + (_dash_pos - _start_pos) * t);
+		_tr->setPos(newPos);
+        
+		_time_remaining = (_time_remaining > delta_time) ? _time_remaining - delta_time : 0;
 
-		_tr->setPos(currentPosition + direction * speed * (delta_time / 1000.0f));
+		float distanceToTarget = (_dash_pos - _tr->getPos()).magnitude();
+		std::cout << "distance: " << distanceToTarget << std::endl;
 
-		_time_remaining -= delta_time;
+        if (_time_remaining <= 100 || distanceToTarget <= 0.1f) {
+			//std::cout << "dashing" << std::endl;
 
-		// Si el tiempo de dash ha terminado
-		if (_time_remaining <= 100 || distanceToTarget <= 0.1f) {
-			_dashing = false;
-			_tr->setPos(_dash_pos);
-			_tr->setDir(Vector2D(0, 0));
-			_coll->options = collisionable_option_none;
-		}
+            _dashing = false;
+            _tr->setPos(_dash_pos);
+            _tr->setDir(Vector2D(0, 0));
+            _coll->options = collisionable_option_none;
+        }
 	}
 	else {
 		Vector2D expected_speed = _input * _max_speed;
@@ -81,8 +91,10 @@ void MovementController::dash(Vector2D next_pos, uint32_t time) {
 	if (!_dashing) {
 		// Solo podemos iniciar un dash si no estamos ya en uno
 		_dashing = true;
-		_time_remaining = time;
+		_time_remaining = std::max(time, 100u); 
 		_dash_pos = next_pos;
+		_dash_duration = std::max(time, 100u); 
+        _start_pos = _tr->getPos();
 		_coll->options = collisionable_option_trigger;
 	}
 }

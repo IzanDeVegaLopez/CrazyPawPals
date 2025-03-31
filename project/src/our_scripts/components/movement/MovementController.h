@@ -19,6 +19,9 @@ private:
 	Transform* _tr;
 	collisionable* _coll;
 
+	Vector2D _start_pos;
+    uint32_t _dash_duration;
+
 public:
 	__CMPID_DECL__(ecs::cmp::MOVEMENTCONTROLLER);
 	MovementController(float max_speed = 0.1f, float acceleration = 5.0f, float decceleration = 20.0f);
