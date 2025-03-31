@@ -1,4 +1,5 @@
 #include "RewardScene.h"
+
 #include "../../our_scripts/components/ui/Button.h"
 #include "../GameStructs.h"
 #include "../../utils/Vector2D.h"
@@ -17,7 +18,6 @@
 #include <iostream>
 
 RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr), _selected_button(nullptr), _reward_bg(nullptr),
-_selected(false), _activate_confirm_button(false), _chosen_card(nullptr), _activate_exchange_button(false)
 _lr(nullptr), _selected(false), _activate_confirm_button(false), 
 _chosen_card(nullptr), _activate_exchange_button(false)
 {
