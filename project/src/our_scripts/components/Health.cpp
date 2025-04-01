@@ -2,7 +2,6 @@
 #include "../../sdlutils/SDLUtils.h"
 #include "../../ecs/Manager.h"
 #include "../../game/Game.h"
-#include "rendering/offset_dyn_image.hpp"
 #include "rendering/dyn_image.hpp"
 #include "rendering/dyn_image_with_frames.hpp"
 #include <algorithm>
@@ -13,13 +12,9 @@ Health::~Health() {};
 
 void Health::initComponent()
 {
-	dyn_image* temp = Game::Instance()->get_mngr()->getComponent<dyn_image>(_ent);
-	if (temp) _dy = static_cast<offset_dyn_image*>(temp);
-	else 
-	{
-		dyn_image_with_frames* temp2 = Game::Instance()->get_mngr()->getComponent<dyn_image_with_frames>(_ent);
-		_dy = static_cast<offset_dyn_image*>(temp2);
-	}
+	_dy = Game::Instance()->get_mngr()->getComponent<dyn_image>(_ent);
+	if (!_dy) _dy = Game::Instance()->get_mngr()->getComponent<dyn_image_with_frames>(_ent);
+	
 	assert(_dy != nullptr);
 }
 void

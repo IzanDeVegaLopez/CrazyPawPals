@@ -21,13 +21,12 @@ void offset_dyn_image::render() {
         .y = int((subrect.position.y) * float(texture.height())),
         .w = int(subrect.size.x * float(texture.width())),
         .h = int(subrect.size.y * float(texture.height()))
-        }, destination, transform.getRot(), nullptr, _flip);
+        }, destination, transform.getRot(), nullptr, flip);
     setRenderColor(255, 255, 255);
 }
 
 void offset_dyn_image::update(uint32_t delta_time)
 {
-    //_flip = transform.getDir().getX() < -0.001 ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
     if (isDamaged) {
         damageTimer += delta_time;
         if (damageTimer >=damage_color_duration) {

@@ -26,6 +26,7 @@
 #include "../../our_scripts/components/cards/Deck.hpp"
 #include "../../our_scripts/components/rendering/dyn_image.hpp"
 #include "../../our_scripts/components/rendering/dyn_image_with_frames.hpp"
+#include "../../our_scripts/components/rendering/FlipXController.h"
 #include "../../our_scripts/components/AnimationComponent.h"
 #include "../../our_scripts/components/rendering/camera_component.hpp"
 
@@ -278,6 +279,7 @@ ecs::entity_t GameScene::create_enemy(EnemySpawnConfig&& ec){
 			*ec.tr
 		),
 		new Health(ec.health),
+		new FlipXController(),
 		new enemy_collision_triggerer(),
 		new id_component(),
 		ec.weapon,
@@ -285,9 +287,9 @@ ecs::entity_t GameScene::create_enemy(EnemySpawnConfig&& ec){
 		&col
 	);
 
-
 	// BUG: ^^^^ justo ahí arriba se añade el weapon
-	// if (weapon != nullptr)manager.addExistingComponent<Weapon>(e, weapon);
+	//para ratatouille es necesario saber si es null weapon
+	//if (ec.weapon != nullptr)manager.addExistingComponent<Weapon>(e, ec.weapon);
 
 	return e;
 }
@@ -442,7 +444,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
-	uint32_t a = 1000;
+	
 	auto dashState = std::make_shared<DashingState>(&tr, _p_tr, &mc);
 	auto chargingState = std::make_shared<WaitingState>();
 
