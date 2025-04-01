@@ -13,6 +13,6 @@ struct bullet_collision_component : public on_trigger<bullet_collision_component
     inline bullet_collision_component(const GameStructs::BulletProperties& bp)
         : collision_filter(bp.collision_filter), my_damage(bp.damage), pierce_number(bp.pierce_number) {}
     //void initComponent() override;
-    void on_contact(const trigger_manifold&); //override;
+    void on_contact(const collision_manifold&); //override;
     bool check_if_valid_collision(ecs::entity_t);
 };

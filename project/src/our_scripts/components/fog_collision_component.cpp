@@ -9,7 +9,7 @@
 #include "id_component.h"
 #include "../../sdlutils/SDLUtils.h"
 
-void fog_collision_component::on_contact(const trigger_manifold& tm)
+void fog_collision_component::on_contact(const collision_manifold& tm)
 {
     //takes pointer to the other body
     ecs::entity_t entity_collided_with = _ent == tm.body0 ? tm.body1 : tm.body0;
@@ -34,3 +34,4 @@ void fog_collision_component::update(uint32_t delta_time) {
 		damagingPlayer = false;
     }
 }
+

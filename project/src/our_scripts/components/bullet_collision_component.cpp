@@ -8,7 +8,7 @@
 #include "collision_registration_by_id.h"
 #include "id_component.h"
 
-void bullet_collision_component::on_contact(const trigger_manifold& tm)
+void bullet_collision_component::on_contact(const collision_manifold& tm)
 {
     //takes pointer to the other body
     ecs::entity_t entity_collided_with = _ent==tm.body0 ? tm.body1 : tm.body0;
