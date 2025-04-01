@@ -5,6 +5,7 @@
 
 void dyn_image_with_frames::update(uint32_t delta_time)
 {
+    offset_dyn_image::update(delta_time);
     next_frame_time += delta_time; 
     if (next_frame_time >= frame_duration) {
         next_frame_time = 0;
