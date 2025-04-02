@@ -14,27 +14,12 @@ void paw_patrol_collision_component::on_contact(const collision_manifold& tm)
     //takes pointer to the other body
     ecs::entity_t entity_collided_with = _ent == tm.body0 ? tm.body1 : tm.body0;
 
-    if (check_if_valid_collision(entity_collided_with)) {
+    if (Game::Instance()->get_mngr()->hasComponent<player_collision_triggerer>(entity_collided_with)) {
         auto&& manager = *Game::Instance()->get_mngr();
         if (manager.hasComponent<Health>(entity_collided_with)) {
             auto health = manager.getComponent<Health>(entity_collided_with);
             health->takeDamage(my_damage);
             Game::Instance()->get_mngr()->setAlive(_ent, health->getHealth() > 0);
         }
-    }
-}
-
-bool paw_patrol_collision_component::check_if_valid_collision(ecs::entity_t ent_col)
-{
-    switch (collision_filter)
-    {
-    case GameStructs::collide_with::player:
-        return Game::Instance()->get_mngr()->hasComponent<player_collision_triggerer>(ent_col);
-        break;
-    case GameStructs::collide_with::none:
-        return false;
-        break;
-    default:
-        return false;
     }
 }

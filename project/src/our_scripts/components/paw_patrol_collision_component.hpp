@@ -13,5 +13,4 @@ struct paw_patrol_collision_component : public on_collision<paw_patrol_collision
         : collision_filter(col), my_damage(dmg) {}
     //void initComponent() override;
     void on_contact(const collision_manifold&); //override;
-    bool check_if_valid_collision(ecs::entity_t);
 };
