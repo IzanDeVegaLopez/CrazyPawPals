@@ -35,7 +35,7 @@ void ControlsScene::initScene()
 
 void ControlsScene::enterScene()
 {
-
+    Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::CONTROLSSCENE);
 }
 
 void ControlsScene::exitScene()

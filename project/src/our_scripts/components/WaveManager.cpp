@@ -167,7 +167,6 @@ void WaveManager::update(uint32_t delta_time) {
 
     if (_currentWaveTime > 49 * 1000) {
         activateFog();
-        std::cout << "cwt" << _currentWaveTime;
     }
 
     //spawns fog after 50 secs
@@ -231,7 +230,7 @@ void WaveManager::start_new_wave()
 
 void WaveManager::endwave()
 {
-    std::cout << "oleada superada con éxito meow" << std::endl;
+    //std::cout << "oleada superada con éxito meow" << std::endl;
     _current_wave_event->end_wave_callback();
     enterRewardsMenu();
 

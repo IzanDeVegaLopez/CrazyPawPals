@@ -518,12 +518,14 @@ void Manager::refresh()
     // remove dead entities from the groups lists, and also those
 	// do not belong to the group anymore
 	std::unordered_set<ecs::entity_t> to_remove;
+	std::unordered_set<ecs::entity_t> to_swap;
 	for (ecs::grpId_t gId = 0; gId < ecs::maxGroupId; gId++) {
 		auto &groupEntities = _entsByGroup[gId];
 		for (auto entity : groupEntities) {
 			if (!isAlive(entity)) {
 				to_remove.insert(entity);
 			}
+
 		}
 	}
 	for (ecs::sceneId_t sId = 0; sId < ecs::maxSceneId; sId++) {
@@ -532,11 +534,18 @@ void Manager::refresh()
 			if (!isAlive(entity)) {
 				to_remove.insert(entity);
 			}
+			else if (entity->_sId != sId) {
+				to_swap.insert(entity);
+				_pendingEntities.push_back(entity);
+			}
 		}
 	}
 	for (auto &&scene : _entsByScene) {
 		std::erase_if(scene, [&to_remove](ecs::entity_t e) {
 			return to_remove.find(e) != to_remove.end();
+		});
+		std::erase_if(scene, [&to_swap](ecs::entity_t e) {
+			return to_swap.find(e) != to_swap.end();
 		});
 	}
 	for (auto &&group : _entsByGroup) {

@@ -31,7 +31,6 @@ struct transformless_dyn_image : public ecs::Component {
 
 	inline SDL_Rect get_destination_rect() const {
 		rect_f32 rect = rect_f32_screen_rect_from_viewport(destination_rect, my_camera_screen.screen);
-		std::cout << "camera_size:  x: " << my_camera_screen.screen.pixel_size.x << "  y: " << my_camera_screen.screen.pixel_size.y << "          ";
 		SDL_Rect destination = { int(rect.position.x), int(rect.position.y), int(rect.size.x), int(rect.size.y) };
 		return destination;
 	};
@@ -49,9 +48,6 @@ struct transformless_dyn_image : public ecs::Component {
 		*/
 		SDL_Rect destination = get_destination_rect();
 		const SDL_Rect source = { 0, 0, texture->width(), texture->height() };
-		if (!source.x) {
-			std::cout << "w: " << source.w << "   h: " << source.h << std::endl;
-		}
 		texture->render(source, destination, my_rotation, nullptr);
 	}
 	inline void set_texture(Texture* t) { texture = t; };

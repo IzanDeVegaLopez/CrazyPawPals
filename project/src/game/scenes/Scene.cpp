@@ -65,9 +65,11 @@ Scene::create_button(const GameStructs::ButtonProperties& bp) {
     ecs::entity_t e = create_entity(
                         bp.ID,
                         _scene_ID,
-                        new transformless_dyn_image( bp.rect, 0,
-                        Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam,
-                        &sdlutils().images().at(bp.sprite_key)),
+                        new transformless_dyn_image( bp.rect, 
+                            0,
+                            Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam,
+                            &sdlutils().images().at(bp.sprite_key)
+                        ),
                         b
                     );
     b->initComponent();
