@@ -13,8 +13,6 @@ class GameScene : public event_system::event_receiver, public Scene
 
 	ecs::entity_t create_enemy(EnemySpawnConfig&& ec);
 
-	void add_transition(StateMachine& state, const std::string& from, const std::string& to, const std::function<bool()>& condition);
-	
 public:
 	GameScene();
 	~GameScene();
@@ -36,7 +34,6 @@ public:
 	void spawn_fog();
 	void spawn_super_michi_mafioso(Vector2D posVec);
 	void generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid);
-	void check_collision();
 	void event_callback0(const event_system::event_receiver::Msg& m) override;
 	void event_callback1(const event_system::event_receiver::Msg& m) override;
 protected:
