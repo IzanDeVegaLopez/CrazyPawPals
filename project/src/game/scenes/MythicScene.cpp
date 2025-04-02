@@ -38,10 +38,11 @@ void MythicScene::enterScene()
 {
     ecs::Manager* mngr = Game::Instance()->get_mngr();
     ecs::entity_t player = mngr->getHandler(ecs::hdlr::PLAYER);
+    mngr->addComponent<MythicComponent>(player); //QUITAR. QUE SE ANADA CUANDO SE CREE PLAYER
     MythicComponent* _m_mythics = mngr->getComponent<MythicComponent>(player);
     std::vector<MythicItem*> pMythics = _m_mythics->get_mythics();
     //refresh_my_mythic(pMythics);
-    //refresh_mythics();
+    refresh_mythics();
 }
 
 void MythicScene::exitScene()
@@ -111,23 +112,27 @@ ecs::entity_t MythicScene::create_mythic_button(const GameStructs::ButtonPropert
 
 void MythicScene::create_my_mythic()
 {
-    //auto* mngr = Game::Instance()->get_mngr();
+    auto* mngr = Game::Instance()->get_mngr();
 
-    ////GET PLAYERS DECK REFERENCE
-    //auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
-    //if (player && !mngr->hasComponent<Deck>(player)) {
-    //    //when we add these entities, our olayer doesnt have any deck as component
-    //    mngr->addComponent<Deck>(player);
-    //}
-    //auto _m_deck = mngr->getComponent<Deck>(player);
-    //auto& pDeck = _m_deck->card_names();
+    //Get Player´s mythics
+    auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
+    if (player && !mngr->hasComponent<MythicComponent>(player)) {
+        //when we add these entities, our olayer doesnt have any deck as component
+        mngr->addComponent<MythicComponent>(player);
+    }
+
+    MythicComponent* _m_mythics = mngr->getComponent<MythicComponent>(player);
+    std::vector<MythicItem*> pMythics = _m_mythics->get_mythics();
+
+    for (MythicItem* mi : pMythics) {
+
+    }
 
     //float umbral = 0.095f;
-    //auto iterator = _m_deck->all_cards().card_list().begin();
-    //GameStructs::CardButtonProperties propTemplate = {
-    //    { {0.01f, 0.65f}, {0.1f, 0.175f} },
-    //    0.0f, "", ecs::grp::REWARDDECK, *iterator
-    //};
+    //auto iterator = _m_mythics->all_cards().card_list().begin();
+    GameStructs::ButtonProperties{
+
+    };
 
    /* for (const auto& it : pDeck) {
         propTemplate.sprite_key = it;
