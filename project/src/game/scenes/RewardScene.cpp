@@ -151,9 +151,9 @@ void RewardScene::change_pos(bool enter) {
 }
 
 void RewardScene::create_reward_buttons() {
-    float umbral = 0.4f;
+    float umbral = 0.2f;
     GameStructs::ButtonProperties buttonPropTemplate = {
-        { {0.5f, 0.1f}, {0.175f, 0.3f} },
+        { {0.45f, 0.1f}, {0.125f, 0.2f} },
         0.0f, "", ecs::grp::REWARDCARDS
     };
 
@@ -181,15 +181,14 @@ void RewardScene::create_reward_buttons() {
     //selected button
     buttonPropTemplate.ID = ecs::grp::UI;
     buttonPropTemplate.sprite_key = "confirm_reward";
-    buttonPropTemplate.rect.position = { 0.5f, 0.5f };
-    buttonPropTemplate.rect.size = { 0.325f, 0.195f };
+    buttonPropTemplate.rect.position = { 0.35f, 0.35f };
+    buttonPropTemplate.rect.size = { 0.3f, 0.15f };
     create_reward_selected_button(buttonPropTemplate);
 
     //exchange button
     buttonPropTemplate.ID = ecs::grp::UI;
     buttonPropTemplate.sprite_key = "exchange_reward";
-    buttonPropTemplate.rect.position = { 1.0f, 0.5f };
-    buttonPropTemplate.rect.size = { 0.325f, 0.195f };
+    buttonPropTemplate.rect.position = { 1.1f, 0.35f };
     create_reward_exchange_button(buttonPropTemplate);
 }
 
@@ -346,10 +345,10 @@ void RewardScene::create_my_deck_cards() {
     auto _m_deck = mngr->getComponent<Deck>(player);
     auto& pDeck = _m_deck->card_names();
 
-    float umbral = 0.15f;
+    float umbral = 0.095f;
     auto iterator = _m_deck->all_cards().card_list().begin();
     GameStructs::CardButtonProperties propTemplate = {
-        { {0.1f, 0.95f}, {0.125f, 0.25f} },
+        { {0.01f, 0.65f}, {0.1f, 0.175f} },
         0.0f, "", ecs::grp::REWARDDECK, *iterator
     };
 
