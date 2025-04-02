@@ -19,7 +19,7 @@ struct AnimationVars {
 	Uint32 _last_milled_card_time = 0;
 	Uint32 _mill_card_anim_duration = 500;
 };
-class Deck: public ecs::Component {
+class Deck : public ecs::Component {
 protected:
 	int _reload_time = 1000;
 #pragma region animation_vars
@@ -44,12 +44,9 @@ protected:
 	// Used for Primed cards to gain additional effects.
 	bool _primed = false;
 
-	std::list<std::string> _cards_names;
-	CardList _all_cards;
-	void _register(const std::list<Card*>& starterDeck);
 public:
 	__CMPID_DECL__(ecs::cmp::DECK)
-	Deck();
+		Deck();
 	//Creates a starter with a list of cards
 	Deck(CardList&& starterDeck) noexcept;
 	Deck(std::list<Card*>&) noexcept;
@@ -63,7 +60,7 @@ public:
 	bool discard_card() noexcept;
 	//Puts the top card of draw pile on discard and fires its mill effect
 	//If there's no cards left on deck this does nothing
-	std::pair<bool,Card*> mill() noexcept;
+	std::pair<bool, Card*> mill() noexcept;
 	//Puts all cards on discard pile and sets player unable to use any action outside moving
 	//Then puts all cards on drawPile and shuffles
 	void reload() noexcept;
@@ -76,7 +73,7 @@ public:
 	//Whenever this happens the iterator passed to this function must
 	//belong to _draw_pile (during rewards menu all cards are exclusively in
 	//the draw pile)
-	void remove_card(std::list<Card*>::iterator);
+	void remove_card(Card* c);
 
 	// Used for Primed cards to gain additional effects.
 	inline bool get_primed() { return _primed; }
@@ -86,7 +83,8 @@ public:
 
 	void initComponent() override;
 
-	void move_discard_to_draw();
+	//only for menus 
+	CardList& move_discard_to_draw();
 
 	inline bool empty_hand() { return _hand == nullptr; }
 	inline bool is_reloading() { return _is_reloading; }
@@ -95,7 +93,5 @@ public:
 	inline int time_till_reload_finishes() { return _time_till_reload_finishes; }
 	inline Card* hand() { return _hand; }
 	inline Card* last_milled_card() { return _last_milled_card; }
-	inline AnimationVars animation_vars() { return _av; }
-	inline const std::list<std::string>& card_names() const { return _cards_names; }
-	inline CardList& all_cards() { return _all_cards; };
+	inline AnimationVars animation_vars() { return _av; } 
 };

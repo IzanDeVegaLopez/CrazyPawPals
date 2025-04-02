@@ -26,6 +26,9 @@ void Button::update_collider() {
 void Button::update(uint32_t delta_time) {
     (void)delta_time;
     _previous_state = _current_state;  // Guardamos el estado anterior
+
+    update_collider();
+
     if (mouseOver()) {
         if (_current_state != HOVER) {
             _current_state = HOVER;

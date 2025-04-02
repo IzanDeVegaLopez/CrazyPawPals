@@ -25,9 +25,8 @@ void Deck::_put_new_card_on_hand()
 Deck::Deck() {
 	_discard_pile = CardList();
 	_hand = nullptr;
-	std::list<Card*> default_cardList = { new Fireball(), new Minigun(), new Lighting(), new Fireball(), new Minigun(), new Lighting() };
+	std::list<Card*> default_cardList = { new Lighting(), new Fireball(), new Minigun(), new Lighting() };
 	_draw_pile = CardList(default_cardList);
-	_register(default_cardList);
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
 };
@@ -38,24 +37,16 @@ Deck::Deck(std::list<Card*>& starterDeck) noexcept
 	_hand = nullptr;
 	//_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
 	_draw_pile = CardList(starterDeck);
-	_register(starterDeck);
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
 }
-//register all cards name and its pointer
-void Deck::_register(const std::list<Card*>& starterDeck) {
-	for (auto it : starterDeck) {
-		_cards_names.push_back(it->get_name());
-		_all_cards.add_card(it);
-	}
-}
+
 Deck::Deck(CardList&& starterDeck) noexcept
 {
 	_discard_pile = CardList();
 	_hand = nullptr;
 	//_mana = new Mana(); // REMOVE AFTER IMPLEMENTING PLAYER
 	_draw_pile = starterDeck;
-	_register(starterDeck.card_list());
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
 }
@@ -203,8 +194,12 @@ void Deck::add_card_to_discard_pile(Card* c)
 	_discard_pile.add_card(std::move(c));
 }
 
-void Deck::remove_card(std::list<Card*>::iterator)
+void Deck::remove_card(Card* c)
 {
+	auto& cl = _draw_pile.card_list();
+	cl.remove(c);
+	std::cout << "draw pile size: " + _draw_pile.card_list().size();
+	std::cout << "discard pile size: " + _discard_pile.card_list().size();
 }
 
 MovementController* Deck::get_movement_controller()
@@ -217,9 +212,11 @@ void Deck::set_primed(bool prime)
 	_primed = prime;
 }
 
-void Deck::move_discard_to_draw() {
+CardList& Deck::move_discard_to_draw() {
 	_discard_pile.move_from_this_to(_draw_pile);
-	_draw_pile.shuffle();
+	if (_hand != nullptr) _draw_pile.add_card(_hand);
+	_hand = nullptr;
+	return _draw_pile;
 }
 
 void Deck::initComponent()

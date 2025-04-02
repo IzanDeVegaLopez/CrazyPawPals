@@ -21,7 +21,6 @@ void bullet_collision_component::on_contact(const collision_manifold& tm)
             health->takeDamage(my_damage);
             Game::Instance()->get_mngr()->setAlive(_ent, pierce_number-- > 0);
         }
-        //std::cout << "UwU" << std::endl;
     }
 }
 
