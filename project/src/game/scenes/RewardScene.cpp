@@ -17,7 +17,7 @@
 
 #include <iostream>
 
-RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr), _selected_button(nullptr), _reward_bg(nullptr),
+RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr), _selected_button(nullptr),
 _lr(nullptr), _selected(false), _activate_confirm_button(false), 
 _chosen_card(nullptr), _activate_exchange_button(false)
 {
@@ -454,10 +454,6 @@ void RewardScene::remove_deck_card()
 void RewardScene::add_new_reward_card() {
     assert(_chosen_card != nullptr);
 
-}
-
-void RewardScene::check_number()
-{
     //Once reward is picked, checks number of cards in deck
     auto* mngr = Game::Instance()->get_mngr();
     auto* player = mngr->getHandler(ecs::hdlr::PLAYER);

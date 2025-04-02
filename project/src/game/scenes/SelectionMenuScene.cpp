@@ -330,7 +330,8 @@ void SelectionMenuScene::create_enter_button() {
 
     buttonComp->connectClick([buttonComp, mngr, this]() {
         if (_weapon_selected &&_deck_selected)
-        Game::Instance()->change_Scene(Game::REWARDSCENE);
+        //Game::Instance()->change_Scene(Game::REWARDSCENE);
+        Game::Instance()->change_Scene(Game::MYTHICSCENE);
     }); 
 }
 void SelectionMenuScene::update(uint32_t delta_time) {

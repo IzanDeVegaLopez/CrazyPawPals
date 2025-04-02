@@ -2,12 +2,15 @@
 #include "../../game/Game.h"
 #include "../../ecs/Manager.h"
 #include "../mythic/MythicItem.h"
+#include "../mythic/MythicItems.h"
 #include "cards/Mana.h"
 #include "Health.h"
 #include "movement/MovementController.h"
 #include "weapons/Weapon.h"
 
-MythicComponent::MythicComponent(){}
+MythicComponent::MythicComponent() {
+	_obtained_mythics.push_back(new BloodClaw);
+}
 
 
 MythicComponent::~MythicComponent(){

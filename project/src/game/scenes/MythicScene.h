@@ -16,7 +16,6 @@ public:
 	void initScene() override;
 	void enterScene() override;
 	void exitScene() override;
-	void render() override;
 	void update(uint32_t delta_time) override;
 private:
 	//Buttons on top
@@ -24,10 +23,12 @@ private:
 
 	//methods to show your actual mythic objects
 	void create_my_mythic();
+	//method to create the mythics i got
+	void create_a_mythic(const GameStructs::CardButtonProperties& bp);
 	//void create_a_deck_card(const GameStructs::CardButtonProperties& bp);
-	void refresh_my_mythic(const std::vector<MythicItem*> ml); //ml - Mythic List
+	//void refresh_my_mythic(const std::vector<MythicItem*> ml); //ml - Mythic List
 
-	//Mythic part
+	//General mythic part
 	ImageForButton* _lr;
 	bool _selected;
 	bool _activate_confirm_button; //to activate button
@@ -41,7 +42,13 @@ private:
 	void create_reward_buttons();
 	void refresh_mythics();
 
+	//method to create button to select card
+	void create_reward_selected_button(const GameStructs::ButtonProperties& bp);
+
 	//method to create next round button
-	void create_next_round_button() {};
+	void create_next_round_button();
+
+	//Resize botones
+	void resize(ImageForButton* im, float factor);
 
 };
