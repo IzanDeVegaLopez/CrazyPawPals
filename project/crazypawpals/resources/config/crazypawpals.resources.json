@@ -108,7 +108,7 @@
       "file": "resources/images/cards/card_lighting.png"
     },
     {
-      "id": "card_spray",
+      "id": "card_cardSpray",
       "file": "resources/images/cards/card_spray.png"
     },
     {
@@ -116,7 +116,7 @@
       "file": "resources/images/cards/card_back.png"
     },
     {
-      "id": "card_eldritch_blast",
+      "id": "card_eldritchBlast",
       "file": "resources/images/cards/card_eldritch_blast.png"
     },
     {
@@ -140,7 +140,7 @@
       "file": "resources/images/cards/carta.png"
     },
     {
-      "id": "card_quick_feet",
+      "id": "card_quickFeet",
       "file": "resources/images/cards/carta.png"
     },
     {
@@ -173,7 +173,7 @@
       "file": "resources/images/cards/card_lighting.png"
     },
     {
-      "id": "reward_card_spray",
+      "id": "reward_card_cardSpray",
       "file": "resources/images/cards/card_spray.png"
     },
     {
@@ -181,7 +181,7 @@
       "file": "resources/images/cards/card_back.png"
     },
     {
-      "id": "reward_card_eldritch_blast",
+      "id": "reward_card_eldritchBlast",
       "file": "resources/images/cards/card_eldritch_blast.png"
     },
     {
@@ -205,7 +205,7 @@
       "file": "resources/images/cards/carta.png"
     },
     {
-      "id": "reward_card_quick_feet",
+      "id": "reward_card_quickFeet",
       "file": "resources/images/cards/carta.png"
     },
     {
