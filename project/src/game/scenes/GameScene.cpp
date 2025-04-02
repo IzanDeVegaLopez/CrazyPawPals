@@ -40,6 +40,7 @@
 #include "../../our_scripts/components/weapons/enemies/WeaponBoom.h"
 #include "../../our_scripts/components/weapons/enemies/WeaponCatKuza.h"
 #include "../../our_scripts/components/Health.h"
+#include "../../our_scripts/components/paw_patrol_collision_component.hpp"
 
 #include "../../our_scripts/components/StateMachine.h"
 #include "../../our_scripts/components/rendering/dyn_image.hpp"
@@ -815,6 +816,7 @@ void GameScene::spawn_event_paw_patrol(Vector2D posVec) {
 	auto&& rect = *new rect_component{ 0, 0, 1.0f * randSize, 1.0f * randSize };
 	auto&& rigidbody = *new rigidbody_component{ rect_f32{{0.0f, -0.15f}, {0.5f, 0.6f}}, mass_f32{3.0f}, 0.05f };
 	auto&& col = *new collisionable{ *tr, rigidbody, rect, collisionable_option_none };
+
 	auto e = create_entity(
 		ecs::grp::SPECIALENEMY,
 		ecs::scene::GAMESCENE,
@@ -828,6 +830,7 @@ void GameScene::spawn_event_paw_patrol(Vector2D posVec) {
 			*tr
 		),
 		new Health(1000),
+		new paw_patrol_collision_component(),
 		&rigidbody,
 		&col
 	);
