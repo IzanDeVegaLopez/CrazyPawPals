@@ -28,7 +28,6 @@ private:
         std::uniform_int_distribution<> dis(0, patterns.size() - 1);
         return dis(gen);
     }
-
 public:
     // Métodos para evaluar condiciones
 
@@ -44,7 +43,7 @@ public:
 
     void set_cooldown(const std::string& state, uint32_t cooldown) {
         timers[state].duration = cooldown;
-        //std::cout << state<<"   " << timers[state].duration << std::endl;
+        
         timers[state].last_used = 0;
     }
 
@@ -80,7 +79,7 @@ public:
             size_t newPatternIndex = get_random_pattern();
             currentPatternIndex = newPatternIndex;
             std::string nextPattern = patterns[currentPatternIndex];
-            //std::cout << nextPattern << std::endl;
+            
             patternCounters[nextPattern] = patternCounters[nextPattern];
         }
     }
@@ -89,4 +88,5 @@ public:
         if (patterns.empty()) return "";
         return patterns[currentPatternIndex];
     }
+    
 };

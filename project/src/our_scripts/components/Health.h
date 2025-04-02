@@ -1,6 +1,6 @@
 #pragma once
 #include "../../ecs/Component.h"
-
+struct 	offset_dyn_image;
 class Health :public ecs::Component
 {
 public:
@@ -16,7 +16,7 @@ public:
 	void takeShield(int s);
 	void payHealth(int cost);
 	void update(uint32_t delta_time) override;
-
+	void initComponent() override;
 protected:
 	int _currentHealth;
 	int _maxHealth;
@@ -24,4 +24,5 @@ protected:
 	uint32_t _shieldTime;
 	bool _is_player;
 	const int FRAME_DURATION = 1000;
+	offset_dyn_image* _dy;
 };

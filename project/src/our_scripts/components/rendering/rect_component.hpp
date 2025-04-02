@@ -14,6 +14,9 @@ struct rect_component : public ecs::Component {
         : rect{position, size} { }
     inline rect_component(const float x, const float y, const float w, const float h)
         : rect{{x, y}, {w, h}} {}
+
+    inline float getSize() const { return rect.size.x; }
+    inline void setSize(float _size) { rect.size = { _size, _size }; }
 };
 
 

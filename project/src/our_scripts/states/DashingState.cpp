@@ -8,7 +8,7 @@ DashingState::DashingState(Transform* tr, Transform* playerTr, MovementControlle
     : _tr(tr), _playerTr(playerTr), _movementController(movementController), _to_destination(toDestination), _time(time), _extra_space(extra_space){}
 
 void DashingState::enter() {
-    //std::cout << "Entering DashingState" << std::endl;
+    
 
     Vector2D direction = _playerTr->getPos() - _tr->getPos();
     direction = direction.normalize();
@@ -18,7 +18,7 @@ void DashingState::enter() {
 }
 
 void DashingState::update(uint32_t delta_time) {
-    //std::cout << "Updating DashingState" << std::endl;
+    
 }
 
 void DashingState::exit() {

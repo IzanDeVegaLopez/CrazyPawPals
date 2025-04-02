@@ -14,17 +14,18 @@ Button::Button(): _current_state(EMPTY) {
 Button::~Button() {}
 
 void Button::initComponent() {
+    update_collider();
+}
+void Button::update_collider() {
     auto* mngr = Game::Instance()->get_mngr();
     auto img = mngr->getComponent<transformless_dyn_image>(_ent);
     assert(img != nullptr);
 
     _button_collider = img->get_destination_rect();
 }
-
 void Button::update(uint32_t delta_time) {
     (void)delta_time;
     _previous_state = _current_state;  // Guardamos el estado anterior
-
     if (mouseOver()) {
         if (_current_state != HOVER) {
             _current_state = HOVER;

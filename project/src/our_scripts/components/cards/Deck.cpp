@@ -158,7 +158,7 @@ void Deck::_finish_realoading()
 	_discard_pile.move_from_this_to(_draw_pile);
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
-	//std::cout << *this;
+	
 }
 bool Deck::_can_finish_reloading()
 {
@@ -184,8 +184,8 @@ void Deck::update(Uint32 deltaTime) noexcept
 
 	_time_till_reload_finishes -= deltaTime;
 	//if(_is_reloading)
-		//std::cout << _time_till_reload_finishes << std::endl;
-	//std::cout << _time_till_reload_finishes << std::endl;
+		
+	
 	if (_can_finish_reloading()) {
 		_finish_realoading();
 	}

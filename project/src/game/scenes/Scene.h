@@ -52,4 +52,6 @@ protected:
 	ecs::sceneId_t _scene_ID;
 
 	ecs::entity_t create_button(const GameStructs::ButtonProperties& bp);
+public:
+	ecs::sceneId_t get_scene_id() const { return _scene_ID; }
 };
