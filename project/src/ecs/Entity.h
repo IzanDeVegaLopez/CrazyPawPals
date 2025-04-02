@@ -55,7 +55,6 @@ public:
 		return _mngr;
 	}
 	*/
-	inline int get_currCmps_size() { return _currCmps.size(); }
 
 private:
 

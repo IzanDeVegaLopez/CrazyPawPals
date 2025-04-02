@@ -94,10 +94,6 @@ public:
 		return *_texture;
 	}
 
-	inline void apply_filter(int r, int g, int b) {
-		SDL_SetTextureColorMod(_texture, r, g, b);
-	}
-
 private:
 
 	// Construct from text

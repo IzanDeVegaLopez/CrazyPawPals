@@ -4,7 +4,7 @@
 #include <iostream>
 #include <algorithm>
 #include "../../utils/Vector2D.h"
-#include "../components/cards/Deck.hpp"
+#include "../components/Deck.hpp"
 enum Destination {
 	DRAW_PILE,
 	DISCARD_PILE,

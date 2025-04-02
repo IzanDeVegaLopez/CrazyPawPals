@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../ecs/Component.h"
-#include "../../game/scenes/GameScene.h"
+#include "../../game/GameScene.h"
 #include "../../our_scripts/states/State.h"
 #include <functional>
 
@@ -15,8 +15,7 @@ public:
 	using StatePtr = std::shared_ptr<State>;
     using TransitionCondition = std::function<bool()>;
 
-	StateMachine();
-
+	StateMachine(ConditionManager& conditionManager);
 	//StateMachine(ConditionManager& conditionManager, Transform* playerTransform, Transform* enemyTransform, float dist);
 
 	void add_state(const std::string& name, StatePtr state);
@@ -25,16 +24,12 @@ public:
 
     void set_initial_state(const std::string& name);
 
-    void transitionTo(const std::string& name);
-
-	inline ConditionManager* getConditionManager() { return _condition_manager; };
-
     void enter();
 
     void exit();
 
 
-	virtual ~StateMachine();
+	virtual ~StateMachine() {};
 
 	void update(uint32_t delta_time) override;
 
@@ -52,6 +47,6 @@ protected:
     };
 
     std::unordered_map<std::string, std::vector<Transition>> _transitions; // Transiciones
-	ConditionManager* _condition_manager;
+	ConditionManager& _condition_manager;       
 };
 
