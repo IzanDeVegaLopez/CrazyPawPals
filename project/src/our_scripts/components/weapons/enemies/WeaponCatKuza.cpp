@@ -49,11 +49,12 @@ void WeaponCatKuza::wind_attack(Vector2D shootPos) {
 	bp.height = _attack_height * 0.5f;
 
 	bp.sprite_key = "p_plimplim";
+	bp.collision_filter = GameStructs::collide_with::player;
 
 	float totalAngle = 60.0f;
 
 	patrons::ShotgunPatron(bp, ecs::grp::BULLET, totalAngle, _wind_p);
-	std::cout << "aaaaaaaaa" << std::endl;
+	//std::cout << "aaaaaaaaa" << std::endl;
 }
 
 void WeaponCatKuza::dash_attack(Vector2D shootPos, Vector2D shoot_end_pos) {
@@ -67,6 +68,7 @@ void WeaponCatKuza::dash_attack(Vector2D shootPos, Vector2D shoot_end_pos) {
 	bp.width = _attack_width * 0.5f;
 	bp.height = _attack_height * 0.5f;
 	bp.sprite_key = "p_plimplim";
+	bp.collision_filter = GameStructs::collide_with::player;
 
 	Vector2D espacio = (shoot_end_pos - shootPos) / (_dash_p - 1);
 
@@ -87,6 +89,7 @@ WeaponCatKuza::area_attack(Vector2D shootPos) {
 	bp.width = _attack_width;
 	bp.height = _attack_height;
 	bp.sprite_key = "p_sarno_rata";
+	bp.collision_filter = GameStructs::collide_with::player;
 
 	for (int i = 0; i < _area_p; ++i) {
 		static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);

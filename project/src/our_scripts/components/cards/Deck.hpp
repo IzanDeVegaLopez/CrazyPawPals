@@ -76,7 +76,7 @@ public:
 	//Whenever this happens the iterator passed to this function must
 	//belong to _draw_pile (during rewards menu all cards are exclusively in
 	//the draw pile)
-	void remove_card(std::list<Card*>::iterator);
+	void remove_card(Card* c);
 
 	// Used for Primed cards to gain additional effects.
 	inline bool get_primed() { return _primed; }
@@ -91,6 +91,7 @@ public:
 	inline bool empty_hand() { return _hand == nullptr; }
 	inline bool is_reloading() { return _is_reloading; }
 	inline int reload_time() { return _reload_time; }
+	inline void set_reload_time(int _new_reload_time) { _reload_time = _new_reload_time; }
 	inline int time_till_reload_finishes() { return _time_till_reload_finishes; }
 	inline Card* hand() { return _hand; }
 	inline Card* last_milled_card() { return _last_milled_card; }

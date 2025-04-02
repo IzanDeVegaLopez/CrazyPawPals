@@ -8,6 +8,7 @@
 #include "../Game.h"
 
 class Transform;
+class Texture;
 class Scene {
 public:
 	constexpr static const ::rect_f32 default_scene_bounds{
@@ -52,4 +53,7 @@ protected:
 	ecs::sceneId_t _scene_ID;
 
 	ecs::entity_t create_button(const GameStructs::ButtonProperties& bp);
+	void create_static_background(Texture* bg);
+public:
+	ecs::sceneId_t get_scene_id() const { return _scene_ID; }
 };

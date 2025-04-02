@@ -18,9 +18,14 @@ struct offset_dyn_image : public ecs::Component {
 	const camera_screen &camera;
 	Texture &texture;
 	const Transform &transform;
-
+	bool isDamaged;
+	uint32_t damageTimer;
+	const uint32_t damage_color_duration;
+	SDL_RendererFlip flip;
 
 	virtual void render() override;
+	void update(uint32_t delta_time) override;
+	void setRenderColor(int r, int g, int b);
 
 	//static_assert(false);
 	inline offset_dyn_image(
@@ -30,8 +35,8 @@ struct offset_dyn_image : public ecs::Component {
 		const camera_screen &camera,
 		Texture &texture,
 		const Transform &transform
-	) : subrect(subrect), offset(offset), output_rect(output_rect), camera(camera), texture(texture), transform(transform) {};
-
+	) : subrect(subrect), offset(offset), output_rect(output_rect), camera(camera), 
+		texture(texture), transform(transform), isDamaged(false), damageTimer(0), damage_color_duration(250),flip(SDL_FLIP_NONE){};
 };
 
 #endif

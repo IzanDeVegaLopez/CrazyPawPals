@@ -22,7 +22,9 @@ void Fireball::on_play(Deck& d, const Vector2D* player_position, const Vector2D*
 	bp.width = 2.3;
 	bp.life_time = 2;
 	bp.sprite_key = "p_fireball";
-	//std::cout << bp.init_pos << "--" << bp.dir << std::endl;
+	bp.damage = 5;
+	bp.collision_filter = GameStructs::collide_with::enemy;
+	
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }
 /*
@@ -44,6 +46,8 @@ Minigun::Minigun()
 	_bullets_properties.width = 0.5;
 	_bullets_properties.life_time = 0.5f;
 	_bullets_properties.sprite_key = "card_minigun";
+	_bullets_properties.collision_filter = GameStructs::collide_with::enemy;
+	_bullets_properties.damage = 1;
 }
 void Minigun::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
 {
@@ -62,7 +66,7 @@ void Minigun::update(uint32_t dt)
 		if (_time_since_played >= _number_of_bullets_shot * (_shooting_duration / (_number_of_shots - 1))) {
 			_bullets_properties.dir = ((*_aim_vec) - (*_pl_vec)).normalize();
 			_bullets_properties.init_pos = *_pl_vec;
-			//std::cout <<_bullets_properties.init_pos << "--" << _bullets_properties.dir << std::endl;
+			
 			static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(_bullets_properties, ecs::grp::BULLET);
 			++_number_of_bullets_shot;
 			if (_number_of_bullets_shot == _number_of_shots)
@@ -90,6 +94,8 @@ void Lighting::on_play(Deck& d, const Vector2D* player_position, const Vector2D*
 	bp.width = 3.8;
 	bp.life_time = 0.1;
 	bp.sprite_key = "p_lighting";
+	bp.collision_filter = GameStructs::collide_with::enemy;
+	bp.damage = 8;
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }
 #pragma endregion
@@ -113,7 +119,9 @@ void Kunai::on_play(Deck& d, const Vector2D* player_position, const Vector2D* ta
 	bp.width = 2.3;
 	bp.life_time = 2;
 	bp.sprite_key = "p_kunai";
-	//std::cout << bp.init_pos << "--" << bp.dir << std::endl;
+	bp.damage = 3;
+	bp.collision_filter = GameStructs::collide_with::enemy;
+	
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }
 #pragma endregion
@@ -143,7 +151,9 @@ void CardSpray::on_play(Deck& d, const Vector2D* player_position, const Vector2D
 	bp.height = 0.7;
 	bp.width = 0.7;
 	bp.life_time = 3;
+	bp.damage = 2;
 	bp.sprite_key = "card_spray";
+	bp.collision_filter = GameStructs::collide_with::enemy;
 
 	patrons::ShotgunPatron(bp, ecs::grp::BULLET, 75, 3);
 	d.mill();
@@ -166,6 +176,8 @@ void EldritchBlast::on_play(Deck& d, const Vector2D* player_position, const Vect
 	bp.width = 2.3;
 	bp.life_time = 0.13;
 	bp.sprite_key = "p_eldritch_blast";
+	bp.damage = 3;
+	bp.collision_filter = GameStructs::collide_with::enemy;
 
 	patrons::ShotgunPatron(bp, ecs::grp::BULLET, _amplitude * (_shot_count - 1), _shot_count);
 }
@@ -192,6 +204,8 @@ void Primordia::on_play(Deck& d, const Vector2D* player_position, const Vector2D
 	bp.height = 2.3;
 	bp.width = 2.3;
 	bp.life_time = 0.3;
+	bp.damage = 3;//cambiar posiblemente
+	bp.collision_filter = GameStructs::collide_with::enemy;
 	// Primed effect
 	// TODO: Make distinct from standard effect
 	if (d.get_primed()) {
@@ -226,7 +240,7 @@ void Primordia::update(uint32_t dt) //TODO: Projectile must return following pat
 			bp.width = 2.3;
 			bp.life_time = 0.3;
 			bp.sprite_key = "p_eldritch_blast";
-			//std::cout << bp.init_pos << "--" << bp.dir << std::endl;
+			
 			static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 			_playing = false;
 		}
@@ -255,6 +269,8 @@ void Commune::on_play(Deck& d, const Vector2D* player_position, const Vector2D* 
 	bp.width = 1.0 + (amp * 1.5);
 	bp.life_time = 0.2;
 	bp.sprite_key = "card_commune";
+	bp.collision_filter = GameStructs::collide_with::enemy;
+	bp.damage = amp * 3;
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 }
 #pragma endregion
@@ -281,6 +297,7 @@ Fulgur::Fulgur() : Card("card_fulgur", Resources(3)), _playing(false),_time_sinc
 	_bullets_properties.life_time = 0.1f;
 	_bullets_properties.dir = (Vector2D(0, 1));
 	_bullets_properties.sprite_key = "p_lighting";
+	_bullets_properties.collision_filter = GameStructs::collide_with::enemy;
 }
 void Fulgur::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
 {
@@ -293,7 +310,9 @@ void Fulgur::on_play(Deck& d, const Vector2D* player_position, const Vector2D* t
 	bp.height = 4.2;
 	bp.width = 3.8;
 	bp.life_time = 0.5;
+	bp.collision_filter = GameStructs::collide_with::enemy;
 	bp.sprite_key = "p_lighting";
+	bp.damage = 5;
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 
 	// If Primed
@@ -313,7 +332,7 @@ void Fulgur::update(uint32_t dt)
 		if (_time_since_played >= _number_of_bullets_shot * (_shooting_duration / (_number_of_shots - 1))) {
 
 			_bullets_properties.init_pos = _aim_vec+(Vector2D(sin(_number_of_bullets_shot*2*PI/_number_of_shots),cos(_number_of_bullets_shot * 2 * PI / _number_of_shots))*2);
-			//std::cout <<_bullets_properties.init_pos << "--" << _bullets_properties.dir << std::endl;
+			
 			static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(_bullets_properties, ecs::grp::BULLET);
 			++_number_of_bullets_shot;
 			if (_number_of_bullets_shot == _number_of_shots)

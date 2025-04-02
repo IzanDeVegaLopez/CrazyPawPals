@@ -5,7 +5,6 @@
 #include <unordered_set>
 #include <utility>
 
-class Texture;
 class Button;
 class Card;
 class ImageForButton;
@@ -17,7 +16,6 @@ public:
 	void initScene() override;
 	void enterScene() override;
 	void exitScene() override;
-	void render() override;
 	void update(uint32_t delta_time) override;
 private:
     ecs::entity_t create_card_button(const GameStructs::CardButtonProperties& bp);
@@ -29,9 +27,9 @@ private:
 	//deck cards part
 	Button* _selected_button;
 	Card* _selected_card;
-	Texture* _reward_bg;
 
 	ImageForButton* _lr;
+
 	bool _selected;
 	bool _activate_confirm_button; //to add cards to deck
 	bool _activate_exchange_button; //to exchange cards from deck
@@ -59,7 +57,7 @@ private:
 	void create_reward_selected_button(const GameStructs::ButtonProperties& bp);
 
 	//method to swap card if you got 8 or more in the deck
-	void exchange_deck_card();
+	void remove_deck_card();  
 	void check_number();
 
 	//method to create button to exchange card

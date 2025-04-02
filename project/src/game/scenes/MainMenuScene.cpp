@@ -11,10 +11,10 @@ MainMenuScene::MainMenuScene() : Scene(ecs::scene::MAINMENUSCENE)
 {
 	auto* mngr = Game::Instance()->get_mngr();
 
-	_background = &sdlutils().images().at("start");
+    create_static_background(&sdlutils().images().at("start"));
 
     GameStructs::ButtonProperties buttonPropTemplate = { 
-        { {0.5f, 0.5f},{0.6f, 0.2f} },
+        { {0.365f, 0.25f},{0.3f, 0.1625f} },
         0.0f, ""
     };
 
@@ -24,13 +24,13 @@ MainMenuScene::MainMenuScene() : Scene(ecs::scene::MAINMENUSCENE)
     create_start_button(startB);
 
     //Boton controls
-    buttonPropTemplate.rect.position.y += 0.3f;
+    buttonPropTemplate.rect.position.y += 0.2f;
     GameStructs::ButtonProperties controlsB = buttonPropTemplate;
     controlsB.sprite_key = "controls_button";
     create_controls_button(controlsB);
 
     //Boton exit
-    buttonPropTemplate.rect.position.y += 0.3f;
+    buttonPropTemplate.rect.position.y += 0.2f;
     GameStructs::ButtonProperties exitB = buttonPropTemplate;
     exitB.sprite_key = "exit_game";
     create_exit_button(exitB);
@@ -48,16 +48,12 @@ void MainMenuScene::initScene()
 
 void MainMenuScene::enterScene()
 {
-
+    Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::MAINMENUSCENE);
 }
 
 void MainMenuScene::exitScene()
 {
 
-}
-void MainMenuScene::render() {
-	_background->render(0, 0);
-	Scene::render();
 }
 void MainMenuScene::create_start_button(const GameStructs::ButtonProperties& bp) {
     auto* mngr = Game::Instance()->get_mngr();
@@ -65,7 +61,7 @@ void MainMenuScene::create_start_button(const GameStructs::ButtonProperties& bp)
     auto buttonComp = mngr->getComponent<Button>(e);
     auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
     buttonComp->connectClick([buttonComp, imgComp, mngr]() {
-        //std::cout << "left click-> button" << std::endl;
+        
         Game::Instance()->change_Scene(Game::SELECTIONMENU);
         imgComp->apply_filter(255, 255, 255);
         });
@@ -85,7 +81,7 @@ void MainMenuScene::create_controls_button(const GameStructs::ButtonProperties& 
     auto buttonComp = mngr->getComponent<Button>(e);
     auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
     buttonComp->connectClick([buttonComp, imgComp, mngr]() {
-        //std::cout << "left click -> controls button" << std::endl;
+        
 
         Game::Instance()->change_Scene(Game::CONTROLSSCENE);
         imgComp->apply_filter(255, 255, 255);
@@ -106,7 +102,7 @@ void MainMenuScene::create_exit_button(const GameStructs::ButtonProperties& bp)
     auto buttonComp = mngr->getComponent<Button>(e);
     auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
     buttonComp->connectClick([buttonComp, imgComp, mngr]() {
-        //std::cout << "left click -> exit button" << std::endl;
+        
 
         Game::Instance()->set_exit(true);
         imgComp->apply_filter(255, 255, 255);

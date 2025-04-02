@@ -35,7 +35,7 @@ void ControlsScene::initScene()
 
 void ControlsScene::enterScene()
 {
-
+    Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::CONTROLSSCENE);
 }
 
 void ControlsScene::exitScene()
@@ -52,7 +52,7 @@ void ControlsScene::create_mainmenu_button(const GameStructs::ButtonProperties& 
     auto e = create_button(bp);
     auto buttonComp = mngr->getComponent<Button>(e);
     buttonComp->connectClick([buttonComp, &mngr]() {
-        //std::cout << "left click -> main menu button" << std::endl;
+        
 
         Game::Instance()->change_Scene(Game::MAINMENU);
         });

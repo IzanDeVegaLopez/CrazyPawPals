@@ -456,6 +456,10 @@
     {
       "id": "confirm_reward",
       "file": "resources/images/ui/confirm_reward.png"
+    },
+    {
+      "id": "exchange_reward",
+      "file": "resources/images/ui/confirm_reward.png"
     }
   ], 
   "messages" : [

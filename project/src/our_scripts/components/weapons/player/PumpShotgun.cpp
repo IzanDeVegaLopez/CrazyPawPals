@@ -7,7 +7,9 @@ PumpShotgun::PumpShotgun() : Weapon(1, 900.0f, 1.5f, 0.6f, "p_pump_shotgun",1.0f
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::mill, this, &event_system::event_receiver::event_callback0);
 }
 
-PumpShotgun::~PumpShotgun() {}
+PumpShotgun::~PumpShotgun() {
+	event_system::event_manager::Instance()->unsuscribe_to_event(event_system::mill, this, &event_system::event_receiver::event_callback0);
+}
 
 void PumpShotgun::event_callback0(const event_system::event_receiver::Msg& m)
 {
@@ -27,6 +29,7 @@ PumpShotgun::callback(Vector2D shootPos, Vector2D shootDir) {
 	bp.height = _attack_height * 0.6f;
 	bp.sprite_key = _tex;
 	bp.weapon_type = GameStructs::PUMP_SHOTGUN;
+	bp.collision_filter = GameStructs::collide_with::enemy;
 
 	float totalAngle = 60.0f;
 

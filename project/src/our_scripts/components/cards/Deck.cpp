@@ -158,7 +158,7 @@ void Deck::_finish_realoading()
 	_discard_pile.move_from_this_to(_draw_pile);
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
-	//std::cout << *this;
+	
 }
 bool Deck::_can_finish_reloading()
 {
@@ -184,8 +184,8 @@ void Deck::update(Uint32 deltaTime) noexcept
 
 	_time_till_reload_finishes -= deltaTime;
 	//if(_is_reloading)
-		//std::cout << _time_till_reload_finishes << std::endl;
-	//std::cout << _time_till_reload_finishes << std::endl;
+		
+	
 	if (_can_finish_reloading()) {
 		_finish_realoading();
 	}
@@ -195,10 +195,7 @@ void Deck::new_card_in_all_cards(Card* c) {
 	std::string prefix = "class ";
 	if (typeName.find(prefix) == 0) {  // Si empieza con "class "
 		typeName = typeName.substr(prefix.size());  // Elimina "class "
-		for (char& c : typeName)
-		{
-			c = tolower(c);
-		}
+		typeName[0] = tolower(typeName[0]);
 	}
 	_cards_names.emplace_back("card_" + typeName);
 	_all_cards.card_list().emplace_back(c);
@@ -217,9 +214,18 @@ void Deck::add_card_to_discard_pile(Card* c)
 	new_card_in_all_cards(c);
 }
 
-void Deck::remove_card(std::list<Card*>::iterator)
+void Deck::remove_card(Card* c)
 {
-
+	auto cl = _draw_pile.card_list();
+	cl.remove(c);
+	_all_cards.card_list().remove(c);
+	std::string typeName = typeid(*c).name();
+	std::string prefix = "class ";
+	if (typeName.find(prefix) == 0) {  // Si empieza con "class "
+		typeName = typeName.substr(prefix.size());  // Elimina "class "
+		typeName[0] = tolower(typeName[0]);
+	}
+	_cards_names.remove("card_" + typeName);
 }
 
 MovementController* Deck::get_movement_controller()

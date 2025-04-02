@@ -2,6 +2,7 @@
 #include "../../../../game/Game.h"
 #include "../../../../game/scenes/GameScene.h"
 #include "../../movement/Transform.h"
+#include <our_scripts/components/WaveManager.h>
 
 
 WeaponSuperMichiMafioso::WeaponSuperMichiMafioso(Transform* playerTr) 
@@ -19,6 +20,7 @@ void WeaponSuperMichiMafioso::create_area(Vector2D shootPos, Vector2D shootDir, 
 	bp.width = _attack_width * scale;
 	bp.height = _attack_height * scale;
 	bp.sprite_key = key_name;
+	bp.collision_filter = GameStructs::collide_with::player;
 
 	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::ENEMYBULLETS);
 }
@@ -36,6 +38,7 @@ void WeaponSuperMichiMafioso::attack1(Vector2D shootDir) {
 }
 void WeaponSuperMichiMafioso::attack2(Vector2D shootPos, Vector2D shootDir) {
 	create_area(shootPos, shootDir, "p_super_michi_mafioso", _damage, _speed, 2.0f);
+	Game::Instance()->get_mngr()->getComponent<WaveManager>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::WAVE))->add_num_enemy();
 }
 
 void WeaponSuperMichiMafioso::attack3(Vector2D shootPos, Vector2D shootDir) {
@@ -51,6 +54,7 @@ void WeaponSuperMichiMafioso::attack3(Vector2D shootPos, Vector2D shootDir) {
 	bp.width = radius;
 	bp.height = radius;
 	bp.sprite_key = "p_super_michi_mafioso";
+	bp.collision_filter = GameStructs::collide_with::player;
 
 	for (int i = 0; i < numAreas; ++i) {
 		float angleOffset = (angle * (i / (std::max(((float)numAreas - 1.0f), 1.0f))) - angle / 2.0f) * (M_PI / 180.0f);

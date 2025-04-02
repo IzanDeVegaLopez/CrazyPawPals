@@ -103,7 +103,7 @@ bool Game::init() {
 	_scenes[REWARDSCENE] = new RewardScene();
 	_scenes[REWARDSCENE]->initScene();
 
-	_current_scene_index = MAINMENU;
+	change_Scene(MAINMENU);
 	return true;
 }
 
@@ -132,15 +132,10 @@ void Game::start() {
 		last_frame_start_tick = frame_start_tick;
 		ihdlr.refresh();
 
-		if (ihdlr.isKeyDown(SDL_SCANCODE_ESCAPE)) {
+		if (ihdlr.isKeyDown(SDL_SCANCODE_ESCAPE) || ihdlr.closeWindowEvent()) {
 			exit = true;
 			continue;
 		}
-		if (ihdlr.closeWindowEvent()) {
-			exit = true;
-			continue;
-		}
-		
 		_scenes[_current_scene_index]->update(delta_time_milliseconds);
 		_mngr->refresh();
 
@@ -185,6 +180,7 @@ void Game::change_Scene(State nextScene){
 	if (_current_scene_index != -1) {
 		_scenes[_current_scene_index]->exitScene();
 	}
+
 	_current_scene_index = nextScene;
 	_scenes[_current_scene_index]->enterScene();
 }

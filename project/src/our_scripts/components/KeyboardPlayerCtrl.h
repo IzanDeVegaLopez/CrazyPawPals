@@ -6,8 +6,11 @@ class Transform;
 class Health;
 class Weapon;
 class Deck;
+class ManaComponent;
 class MovementController;
 class MythicComponent;
+class AnimationComponent;
+
 class KeyboardPlayerCtrl :public ecs::Component
 {
 public:
@@ -16,6 +19,8 @@ public:
 	virtual ~KeyboardPlayerCtrl(); 
 	void initComponent() override;
 	void update(Uint32 delta_time) override;
+
+	bool is_moving_input() const;
 private:
 	SDL_Scancode _left;
 	SDL_Scancode _right;
@@ -24,9 +29,13 @@ private:
 	SDL_Scancode _reload;
 	SDL_Scancode _collect;
 	Vector2D _mouse_pos;
+
+	AnimationComponent* _dy;
 	MovementController* _mc;
 	Weapon* _w;
 	Deck* _dc;
 	MythicComponent* _my;
 	Health* _h;
+	ManaComponent* _m;
+	Transform* _tr;
 };
