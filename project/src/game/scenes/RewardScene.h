@@ -27,6 +27,7 @@ private:
 	//deck cards part
 	Button* _selected_button;
 	Card* _selected_card;
+	ImageForButton* _last_deck_card_img;
 
 	//reward part
 	bool _health;

@@ -217,16 +217,16 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
         switch (dt)
         {
         case GameStructs::ONE:
-            cl = { new Prime(), new Primordia(), new Prime(), new Prime(), new Prime(), new Prime() };
+            cl = { new Prime(), new Primordia(), new Prime(), new Prime()};
             break;
         case GameStructs::TWO: 
-            cl = { new Fireball(), new CardSpray(), new Lighting(), new Minigun(), new Kunai(), new EldritchBlast() };
+            cl = { new Fireball(), new CardSpray(), new Lighting(), new Minigun()};
             break;
         case GameStructs::THREE:
-            cl = { new CardSpray(), new Lighting(), new Minigun(), new Kunai(), new EldritchBlast(), new Recover() };
+            cl = { new CardSpray(), new Lighting(), new Minigun(), new Kunai()};
             break;
         case GameStructs::FOUR:
-            cl = { new Lighting(), new Minigun(), new Kunai(), new EldritchBlast(), new Commune(), new QuickFeet()};
+            cl = { new Kunai(), new EldritchBlast(), new Commune(), new QuickFeet()};
             break;
         default:
             break;
@@ -271,7 +271,7 @@ void SelectionMenuScene::create_deck_info(const rect_f32& rect) {
 }
 
 void SelectionMenuScene::create_deck_infos() {
-    float umbral = 0.12f;
+    float umbral = 0.14f;
     rect_f32 r = {{ 0.065f, 0.175f }, { 0.3f, 0.1425f }};
     for (int i = 0; i < _num_cards_of_deck; ++i) {
         create_deck_info(r); 

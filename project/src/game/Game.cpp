@@ -78,6 +78,8 @@ bool Game::init() {
 	
 	// enable the cursor visibility
 	SDL_ShowCursor(SDL_ENABLE);
+	// disable mipmap
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 	
 	_mngr = new ecs::Manager();
 

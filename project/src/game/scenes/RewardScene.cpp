@@ -18,7 +18,7 @@
 
 RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr), _selected_button(nullptr),
 _health(false),_card(false), _object(false), _upgrade(false), _lr(nullptr),
-_selected(false), _activate_confirm_button(false), _chosen_card(nullptr), _activate_exchange_button(false)
+_selected(false), _activate_confirm_button(false), _chosen_card(nullptr), _activate_exchange_button(false), _last_deck_card_img(nullptr)
 {
 }
 
@@ -144,15 +144,11 @@ void RewardScene::change_pos(bool enter) {
     if (enter) { //if we need to activate the heal reward
         if ((float)act / (float)max <= 0.2f) {
             swap_positions(img, healImg);
-            bRewardButton->update_collider();
-            hRewardButton->update_collider();
         }
     }
     else { //in other case, the condition to swap changes
         if ((float)act / (float)max > 0.2f) {
             swap_positions(img, healImg);
-            bRewardButton->update_collider();
-            hRewardButton->update_collider();
         }
     }
 #pragma endregion
@@ -317,13 +313,14 @@ void RewardScene::create_a_deck_card(const GameStructs::CardButtonProperties& bp
     buttonComp->connectClick([buttonComp, imgComp, this, bp] {
         imgComp->destination_rect.size = { imgComp->_original_w,  imgComp->_original_h };
         _selected_button = buttonComp;
-        imgComp->destination_rect.position.y = bp.rect.position.y + 0.25f;
         auto it = buttonComp->It();
         //only assign a valid iterator
         if (bp.iterator != nullptr && it != _selected_card) {
 
             _selected_card = it;
-            
+            imgComp->destination_rect.position.y -= 0.05f;
+            if (_last_deck_card_img != nullptr) _last_deck_card_img->destination_rect.position.y += 0.05f;
+            _last_deck_card_img = static_cast<ImageForButton*>(imgComp);
             std::cout << "card selected: "<< std::endl;
         }
         });
@@ -331,14 +328,15 @@ void RewardScene::create_a_deck_card(const GameStructs::CardButtonProperties& bp
     buttonComp->connectHover([buttonComp, imgComp]() {
         std::cout << "hover -> Reward button: " << std::endl;
         //filter
-        //imgComp->apply_filter(128, 128, 128);
-        imgComp->destination_rect.position.y -= 0.125f;
-        //imgComp->destination_rect.size = { imgComp->destination_rect.size.x * 1.25f,  imgComp->destination_rect.size.y * 1.25f };
+        imgComp->apply_filter(128, 128, 128);
+        /*imgComp->destination_rect.position.y -= 0.125f;*/
+       /* imgComp->destination_rect.size = { imgComp->destination_rect.size.x * 1.25f,  imgComp->destination_rect.size.y * 1.25f };*/
         });
     buttonComp->connectExit([buttonComp, imgComp]() {
         std::cout << "exit -> Reward button: " << std::endl;
-        imgComp->destination_rect.position.y += 0.125f;
+        /*imgComp->destination_rect.position.y += 0.125f;*/
         //filter
+        imgComp->apply_filter(255, 255, 255);
         //imgComp->destination_rect.size = { imgComp->destination_rect.size.x / 1.25f,  imgComp->destination_rect.size.y / 1.25f };
         });
 }
@@ -572,9 +570,12 @@ void RewardScene::create_reward_exchange_button(const GameStructs::ButtonPropert
         {
             //if we dont have enough card to exchange, ignore this callback
             if (_selected || _activate_exchange_button || _selected_card == nullptr) return;
+            _lr->apply_filter(255, 255, 255);
+            _lr->swap_textures();
             _selected = true;
             remove_deck_card();
             add_new_reward_card();
+            _last_deck_card_img->destination_rect.position.y += 0.05f;
         });
     buttonComp->connectHover([buttonComp, imgComp, this]() {
         if (_selected) return;
@@ -606,9 +607,6 @@ void RewardScene::update(uint32_t delta_time) {
 
        auto buttonC = mngr->getComponent<Button>(mngr->getHandler(ecs::hdlr::CONFIRMREWARD));
        auto buttonE = mngr->getComponent<Button>(mngr->getHandler(ecs::hdlr::EXCHANGEBUTTON));
-
-       buttonC->update_collider();
-       buttonE->update_collider();
        _activate_exchange_button = false;
    }
 }

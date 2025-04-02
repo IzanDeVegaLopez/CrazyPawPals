@@ -25,7 +25,7 @@ void Deck::_put_new_card_on_hand()
 Deck::Deck() {
 	_discard_pile = CardList();
 	_hand = nullptr;
-	std::list<Card*> default_cardList = { new Fireball(), new Minigun(), new Lighting(), new Fireball(), new Minigun(), new Lighting() };
+	std::list<Card*> default_cardList = { new Lighting(), new Fireball(), new Minigun(), new Lighting() };
 	_draw_pile = CardList(default_cardList);
 	_draw_pile.shuffle();
 	_put_new_card_on_hand();
@@ -216,7 +216,6 @@ CardList& Deck::move_discard_to_draw() {
 	_discard_pile.move_from_this_to(_draw_pile);
 	if (_hand != nullptr) _draw_pile.add_card(_hand);
 	_hand = nullptr;
-	_draw_pile.shuffle();
 	return _draw_pile;
 }
 
