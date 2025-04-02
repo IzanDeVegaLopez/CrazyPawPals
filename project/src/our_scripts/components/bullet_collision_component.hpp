@@ -16,3 +16,13 @@ struct bullet_collision_component : public on_trigger<bullet_collision_component
     void on_contact(const collision_manifold&); //override;
     bool check_if_valid_collision(ecs::entity_t);
 };
+
+struct ratatouille_collision_component : public on_trigger<ratatouille_collision_component> {
+    int my_damage;
+    uint32_t last_damage_time;
+    uint32_t damage_interval;
+    __CMPID_DECL__(ecs::cmp::RATATOUILLE_COLLISION_COMPONENT);
+    inline ratatouille_collision_component(int damage, uint32_t interval)
+        : my_damage(damage), damage_interval(interval*1000),last_damage_time(0){}
+    void on_contact(const collision_manifold&); //override;
+};

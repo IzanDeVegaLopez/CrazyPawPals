@@ -178,7 +178,7 @@ void GameScene::initScene() {
 
 	manager.refresh();
 	create_environment();
-	spawn_catkuza(Vector2D{5.0f, 0.0f});
+	//spawn_catkuza(Vector2D{5.0f, 0.0f});
 	//spawn_super_michi_mafioso(Vector2D{5.0f, 0.0f});
 	spawn_fog();
 	spawn_wave_manager();
@@ -292,10 +292,6 @@ ecs::entity_t GameScene::create_enemy(EnemySpawnConfig&& ec){
 		&rigidbody,
 		&col
 	);
-
-	// BUG: ^^^^ justo ahí arriba se añade el weapon
-	//para ratatouille es necesario saber si es null weapon
-	//if (ec.weapon != nullptr)manager.addExistingComponent<Weapon>(e, ec.weapon);
 
 	return e;
 }
@@ -642,7 +638,7 @@ GameScene::spawn_sarno_rata(Vector2D posVec)
 
 	// De: Attacking a: Walking, Condición: Jugador lejos
     state->add_transition("Attacking", "Walking", [state_cm, _p_tr, &tr]() {
-        return !state_cm->is_player_near(_p_tr, &tr, 3.0f);
+        return !state_cm->is_player_near(_p_tr, &tr, 1.1f);
     });
 
 	
@@ -796,17 +792,42 @@ void GameScene::spawn_boom(Vector2D posVec)
 #pragma region Ratatouille
 void GameScene::spawn_ratatouille(Vector2D posVec)
 {
+	//no llama al create enemy porque no tiene weapon, y va ser diferente las colisiones
+	float randSpeed = float(sdlutils().rand().nextInt(10, 20) / 10.0f);
+	int damage = 5;
 	auto&& manager = *Game::Instance()->get_mngr();
-	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
-	auto e = create_enemy(EnemySpawnConfig{ &tr, "ratatouille", nullptr, 2, 1.0f, 1.0f });
-	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.06, 5.0f, 20.0*deccel_spawned_creatures_multi));
+	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
+	auto&& rect = *new rect_component{ 0, 0,0.8f, 0.8f };
+	auto&& rigidbody = *new rigidbody_component(rect_f32{{0.0f, -0.15f}, {0.5f, 0.6f}}, mass_f32{3.0f}, 0.05f );
+	auto&& col = *new collisionable(tr, rigidbody, rect, collisionable_option_trigger );
+
+	auto e = create_entity(
+		ecs::grp::ENEMY,
+		ecs::scene::GAMESCENE,
+	    &tr,
+		&rect,
+		new dyn_image(
+			rect_f32{ {0,0},{1,1} },
+			rect,
+			manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam,
+			sdlutils().images().at("ratatouille"),
+			tr
+		),
+		new Health(10),
+		new FlipXController(),
+		new enemy_collision_triggerer(),
+		new id_component(),
+		new ratatouille_collision_component(damage,2),
+		&rigidbody,
+		&col
+	);
+
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.06* randSpeed, 5.0f* randSpeed, 20.0 * deccel_spawned_creatures_multi));
 
 	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
-
 	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
 
-	//	StateMachine(ConditionManager& conditionManager, Transform* playerTransform, Transform* enemyTransform, float dist);
 	auto state = manager.addComponent<StateMachine>(e);
 	auto state_cm = state->getConditionManager();
 
@@ -818,7 +839,7 @@ void GameScene::spawn_ratatouille(Vector2D posVec)
 	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
 	state->add_state("Rotating", std::static_pointer_cast<State>(rotatingState));
 
-	float dist_to_rotate = 4.0f;
+	float dist_to_rotate = 3.5f;
 
 	// Condiciones de cada estado
 	// De: Walking a: Rotating, Condición: Jugador cerca
@@ -828,7 +849,7 @@ void GameScene::spawn_ratatouille(Vector2D posVec)
 
 	// De: Rotating a: Walking, Condición: Jugador lejos
 	state->add_transition("Rotating", "Walking", [state_cm, _p_tr, &tr, dist_to_rotate]() {
-		return !state_cm->is_player_near(_p_tr, &tr, dist_to_rotate * 2);
+		return !state_cm->is_player_near(_p_tr, &tr, dist_to_rotate * 1.8f);
 		});
 
 

@@ -167,7 +167,7 @@ void WaveManager::update(uint32_t delta_time) {
 
     if (_currentWaveTime > 49 * 1000) {
         activateFog();
-        std::cout << "cwt" << _currentWaveTime;
+        //std::cout << "cwt" << _currentWaveTime;
     }
 
     //spawns fog after 50 secs

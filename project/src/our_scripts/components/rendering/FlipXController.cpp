@@ -17,7 +17,7 @@ void FlipXController::initComponent() {
 }
 
 void FlipXController::update(uint32_t delta_time) {
-	(void)delta_time;
-	if (_tr->getDir().getX() < -0.01) _dy->flip = SDL_FLIP_HORIZONTAL;
-	else _dy->flip = SDL_FLIP_NONE;
+    (void)delta_time;
+	float dirX = _tr->getDir().getX();
+	_dy->flip = dirX > 0.001 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
 }
