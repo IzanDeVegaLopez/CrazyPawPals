@@ -8,45 +8,46 @@
 #include "../components/Fog.h"
 #include "../wave_events/no_event.hpp"
 #include "../wave_events/ice_skating_event.hpp"
+#include "../wave_events/star_shower_event.hpp"
 
 // 1 segundo = 1000 ticks (ms)
 WaveManager::WaveManager() :
     _currentWaveTime(0),
-    _waveTime(60000),
+    _waveTime(5000), //60000 !!
     _currentWave(0),
     _waveActive(false),
     _enemiesSpawned(0),
     _enemiesKilled(0),
     _totalSpawnTime(10000.0f),
-    _current_wave_event(new no_event(this)),
-    _tdi(nullptr)
+    _current_wave_event(new no_event(this))
 {
+    event_system::event_manager::Instance()->suscribe_to_event(event_system::enemy_dead, this, &event_system::event_receiver::event_callback0);
 }
 
 WaveManager::~WaveManager() {
-
+    event_system::event_manager::Instance()->unsuscribe_to_event(event_system::enemy_dead, this, &event_system::event_receiver::event_callback0);
 }
 
 void
 WaveManager::initComponent() {
-    _tdi = Game::Instance()->get_mngr()->getComponent<transformless_dyn_image>(_ent);
-    assert(_tdi != nullptr);
+    //_tdi = Game::Instance()->get_mngr()->getComponent<transformless_dyn_image>(_ent);
+    //assert(_tdi != nullptr);
     //TODO: cambiar esto por _ent posiblemente
 	fog = Game::Instance()->get_mngr()->getComponent<Fog>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::FOGGROUP));
     assert(fog != nullptr);
 
-    //std::cout << sdlutils().virtualTimer().currRealTime() << std::endl;
+    
     //_currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
     //choose_new_event();
 }
-
+/*
 void 
 WaveManager::update(uint32_t delta_time) {
     _currentWaveTime = sdlutils().virtualTimer().currRealTime() - _currentWaveInitTime;
-    //std::cout << sdlutils().virtualTimer().currRealTime()<< " / "<< _currentWaveInitTime << std::endl;
+    
 
-    if(_current_wave_event != nullptr)
-        _current_wave_event->update(delta_time);
+    //if(_current_wave_event != nullptr)
+    _current_wave_event->update(delta_time);
 
     if (areAllEnemiesDead()) {
         enterRewardsMenu();
@@ -68,26 +69,18 @@ WaveManager::update(uint32_t delta_time) {
         spawnWave();
     }
 }
+*/
 
 // Spawnear enemigos fuera de la pantalla
 void 
-WaveManager::spawnWave() {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-	// _waves es un vector de pares (int, vector<int>)
-	_numEnemies = _waves[_currentWave].second.size();
-    if (_enemiesSpawned < _numEnemies) {
-
-        // RANDOM
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        // rAng entre (0, 360)
-        std::uniform_real_distribution<float> rAngGen(0.0f, 360.0f);
-        // rn entre (-0.35, 0.35)
-        std::uniform_real_distribution<float> rnGen(-0.35f, 0.35f);
-
-
-        if (_currentWaveTime > _nextSpawn){
+WaveManager::spawn_next_enemy() {
+            // RANDOM
+            std::random_device rd;
+            std::mt19937 gen(rd());
+            // rAng entre (0, 360)
+            std::uniform_real_distribution<float> rAngGen(0.0f, 360.0f);
+            // rn entre (-0.35, 0.35)
+            std::uniform_real_distribution<float> rnGen(-0.35f, 0.35f);
             float rAng = rAngGen(gen); // (0, 360)
             float rn = rnGen(gen); // (-0.35, 0.35)
             
@@ -99,6 +92,7 @@ WaveManager::spawnWave() {
             // Medio de la pantalla + angulo * distancia
             Vector2D posVec = Vector2D(Game::Instance()->get_world_half_size().first + cos(rAng) * (_min_distance + _op_dist), Game::Instance()->get_world_half_size().second + sin(rAng) * (_min_distance + _op_dist));
             
+            //assert(_enemiesSpawned < (1 << 7));
             // FIXME: define enum values
             switch (_waves[_currentWave].second[_enemiesSpawned])
             {
@@ -129,23 +123,57 @@ WaveManager::spawnWave() {
                     assert(false && "unreachable");
                     exit(EXIT_FAILURE);
                     break;
-			        //std::cout << "Enemigo no existe" << std::endl;
+			        
                 }
             }
             // Tiempo
-            _min_time = _totalSpawnTime / _numEnemies;
+            _min_time = _totalSpawnTime / _waves[_currentWave].second.size();
             _op_time = _min_time * rn;
             _nextSpawn = _currentWaveTime + (_min_time + _op_time);
 
             _enemiesSpawned++;
-        }
-    }
-    else {
+    /*else {
         _waveActive = true; // después de que se spawnee el último enemigo
-
         //std::cout << "WAVE ACTIVE" << std::endl;
-    }
+    }*/
 }
+
+bool WaveManager::can_spawn_next_enemy()
+{
+    return _enemiesSpawned < _waves[_currentWave].second.size() && _currentWaveTime > _nextSpawn;
+}
+
+bool WaveManager::is_wave_finished()
+{
+    //TODO: Necesitamos no notificar los enemigos que son creados por otros
+    //std::cout << "enemies_killed: " << _enemiesKilled << "   numEnemies: " << _numEnemies << "    enemies_spawned: " << _enemiesSpawned << std::endl;
+    return _enemiesKilled >= _numEnemies;
+}
+
+void WaveManager::add_num_enemy()
+{
+    _numEnemies++;
+}
+
+//---------------------------------------------------------------------------------------------------------------------------------
+void WaveManager::update(uint32_t delta_time) {
+    _currentWaveTime = sdlutils().virtualTimer().currRealTime() - _currentWaveInitTime;
+    //tries spawning enemies
+    if (can_spawn_next_enemy())
+        spawn_next_enemy();
+
+    if (is_wave_finished())
+        endwave();
+
+    if (_currentWaveTime > 49 * 1000) {
+        activateFog();
+        std::cout << "cwt" << _currentWaveTime;
+    }
+
+    //spawns fog after 50 secs
+    //when all enemies are killed wave finishes
+}
+//---------------------------------------------------------------------------------------------------------------------------------
 
 //Verifica si todos los enemigos estan muertos
 bool 
@@ -157,14 +185,12 @@ WaveManager::areAllEnemiesDead() {
 void 
 WaveManager::activateFog() {
     fog->setFog(true);
-    std::cout << "Niebla activada!" << std::endl;
+    //std::cout << "Niebla activada!" << std::endl;
 }
 
 
 void 
 WaveManager::enterRewardsMenu() {
-    //std::cout << "Active time: " << sdlutils().virtualTimer().currRealTime() << std::endl;
-    //std::cout << "Todos los enemigos eliminados. Entrando al menu de recompensas..." << std::endl;
     _current_wave_event->end_wave_callback();
 
     choose_new_event();
@@ -183,52 +209,91 @@ WaveManager::enterRewardsMenu() {
 	}
 }
 
-void WaveManager::show_wave_image()
-{
-    _tdi->set_active(true);
-}
-
-void WaveManager::hide_wave_image()
-{
-    _tdi->set_active(false);
-}
-
 void WaveManager::start_new_wave()
 {
     _currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
+
+    // Esto tiene que ir después del menu de recompensas
+    _currentWave++;
+    _currentWaveTime = 0;
+    _totalSpawnTime = _waves[_currentWave].first;
+    _enemiesSpawned = 0;
+    _enemiesKilled = 0;
+    _numEnemies = 0;
+    fog->setFog(false);
+
+    for (int i : _waves[_currentWave].second) {
+        if (i) _numEnemies++;
+    }
+
     choose_new_event();
+}
+
+void WaveManager::endwave()
+{
+    std::cout << "oleada superada con éxito meow" << std::endl;
+    _current_wave_event->end_wave_callback();
+    enterRewardsMenu();
+
+}
+
+void WaveManager::event_callback0(const Msg& m)
+{
+    (void)m;
+    _enemiesKilled++;
 }
 
 void WaveManager::choose_new_event()
 {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<int> rnd_gen(0,10);
-    int i = rnd_gen(gen);
-    std::cout << "wave number: " << (i) << std::endl;
-    switch(i) {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-    case 4:
+    std::uniform_int_distribution<int> rnd_gen(NONE,EVENTS_MAX - 1);
+    _current_event = events(rnd_gen(gen));
+    
+    switch(_current_event) {
+    case NONE:
         _current_wave_event = (std::unique_ptr<wave_event>)new no_event(this);
         break;
-    case 5:
-    case 6:
-    case 7:
-    case 8:
-    case 9:
-    case 10:
+    case ICE_SKATE:
         _current_wave_event = (std::unique_ptr<wave_event>)new ice_skating_event(this);
         break;
-    default:
-        std::cout << "event_choser_went_wrong" << std::endl;
+    case STAR_SHOWER: {
+        constexpr static const rect_f32 event_area = {
+            .position = { 0.0f, 0.0f },
+            .size = { 32.0f, 16.0f },
+        };
+        constexpr static const size_t min_drops_inclusive = 5;
+        constexpr static const size_t max_drops_exclusive = 23;
+        _current_wave_event = std::make_unique<star_shower_event>(
+            *this,
+            event_area,
+            star_drop_descriptor{
+                .drop_position = { 0.0f, 0.0f },
+                .damage_amount = 3,
+                .drop_radius = 0.25f,
+                .fall_time = 1.25f,
+                .spawn_distance = 16.0f,
+            },
+            star_drop_descriptor{
+                .drop_position = { 0.0f, 0.0f },
+                .damage_amount = 24,
+                .drop_radius = 2.0f,
+                .fall_time = 8.0f,
+                .spawn_distance = 32.0f,
+            },
+            min_drops_inclusive,
+            max_drops_exclusive
+        );
+        break;
+    }
+    default: {
+        assert(false && "unrachable"); // event_choser_went_wrong
+        std::exit(EXIT_FAILURE);
+    }
     }
 
-    std::cout << i << std::endl;
+    
 
     _current_wave_event->start_wave_callback();
     //TODO elegir evento y llamar a la función de iniciar
 }
-

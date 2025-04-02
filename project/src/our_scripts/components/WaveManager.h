@@ -4,6 +4,14 @@
 #include "../../sdlutils/SDLUtils.h"
 #include "../wave_events/wave_event.hpp"
 #include "rendering/transformless_dyn_image.h"
+#include "../../utils/EventsSystem.hpp"
+
+enum events {
+    NONE = -1, // 0xffffffffff
+    ICE_SKATE = 0,  // 0x00000000
+    STAR_SHOWER = 1,
+    EVENTS_MAX
+};
 
 enum enemyType {
     none = 0,
@@ -18,11 +26,11 @@ enum enemyType {
 
 class Fog;
 
-class WaveManager : public ecs::Component {
+class WaveManager : public event_system::event_receiver, public ecs::Component {
     // _waves es un vector de pares (int, vector<int>)
     // Los 0 son espacios extra
     std::vector<std::pair<Uint32, std::vector<enemyType>>> _waves = {
-        { 10000,{
+        { 1000,{ // 10000 !!
             sarno_rata, none,
             sarno_rata, sarno_rata, none,
             sarno_rata, michi_mafioso, none, none,
@@ -58,24 +66,29 @@ public:
     virtual ~WaveManager() override;
     void update(uint32_t delta_time) override;
     void initComponent() override;
-    void spawnWave();
-    bool areAllEnemiesDead();
-    void activateFog();
-    void enterRewardsMenu();
-    void show_wave_image();
-    void hide_wave_image();
     void start_new_wave();
 
     inline Uint32 get_wave_time() { return _currentWaveTime; }
     inline int get_current_wave() { return _currentWave; }
+    inline events get_current_event() { return _current_event; }
+    void event_callback0(const Msg& m) override;
+    void add_num_enemy();
 
 private:
     void choose_new_event();
+    void endwave();
+    void activateFog();
+    bool areAllEnemiesDead();
+    void enterRewardsMenu();
+    void spawnWave();
+    bool can_spawn_next_enemy();
+    void spawn_next_enemy();
+    bool is_wave_finished();
     Uint32 _currentWaveTime = 0; //tiempo actual (post calculo, inicial en constructor)
     Uint32 _currentWaveInitTime; // cuándo empezó la oleada
     Uint32 _waveTime; // cuánto dura la oleada (CONSTRUCTOR)
 
-
+    events _current_event = NONE;
     int _currentWave = 0;
     std::unique_ptr<wave_event> _current_wave_event;
 
@@ -92,7 +105,7 @@ private:
     float _min_time;
     float _op_time;
 
-    transformless_dyn_image* _tdi;
+    //transformless_dyn_image* _tdi;
 
     Fog* fog;
 };

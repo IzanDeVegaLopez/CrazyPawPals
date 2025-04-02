@@ -121,16 +121,16 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
     auto player = mngr->getHandler(ecs::hdlr::PLAYER);
 
     buttonComp->connectClick([buttonComp, imgComp, mngr, wt, player, this]() {
-        //std::cout << "left click-> button" << std::endl;
+        
         std::string s;
 
         switch (wt) {
         case GameStructs::REVOLVER:
-            //std::cout << "revolver chosen" << std::endl;
+            
             mngr->addComponent<Revolver>(player);
             break;
         case GameStructs::RAMPAGE:
-            //std::cout << "rampage chosen" << std::endl;
+            
             mngr->addComponent<Rampage>(player);
             break;
         case GameStructs::PUMP_SHOTGUN:
@@ -333,7 +333,7 @@ void SelectionMenuScene::create_enter_button() {
 
     buttonComp->connectClick([buttonComp, mngr, this]() {
         if (_weapon_selected &&_deck_selected)
-        Game::Instance()->change_Scene(Game::REWARDSCENE);
+        Game::Instance()->change_Scene(Game::GAMESCENE);
     }); 
 }
 void SelectionMenuScene::update(uint32_t delta_time) {

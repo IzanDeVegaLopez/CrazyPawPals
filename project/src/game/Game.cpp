@@ -132,15 +132,10 @@ void Game::start() {
 		last_frame_start_tick = frame_start_tick;
 		ihdlr.refresh();
 
-		if (ihdlr.isKeyDown(SDL_SCANCODE_ESCAPE)) {
+		if (ihdlr.isKeyDown(SDL_SCANCODE_ESCAPE) || ihdlr.closeWindowEvent()) {
 			exit = true;
 			continue;
 		}
-		if (ihdlr.closeWindowEvent()) {
-			exit = true;
-			continue;
-		}
-		
 		_scenes[_current_scene_index]->update(delta_time_milliseconds);
 		_mngr->refresh();
 

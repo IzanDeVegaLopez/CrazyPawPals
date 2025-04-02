@@ -10,6 +10,7 @@ if (MSVC)
         /Zi
 
         /nologo
+        #-D DBG_COLLISIONS=true
     )
 else()
     add_compile_options(
@@ -75,6 +76,7 @@ project(CrazyPawPals)
         ${PROJECT_NAME}
         PRIVATE
         -D RIGIDBODY_COMPONENT_DEGEN_RESTITUTION_OFF
+        -DDBG_COLLISIONS=false
     )
     
     target_include_directories(

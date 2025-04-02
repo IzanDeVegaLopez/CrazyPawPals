@@ -52,14 +52,10 @@ struct collisionable : public ecs::Component {
 
     collisionable(Transform &transform, rigidbody_component &rigidbody, rect_component &rect, collisionable_option options)
         : transform(transform), rigidbody(rigidbody), rect(rect), options(options) {
-
     }
 };
 
-template <ecs::cmp::cmpId COMPONENT_ID>
-struct collision_manifold : public ecs::Component {
-    __CMPID_DECL__(COMPONENT_ID);
-
+struct collision_manifold {
     collision_contact contact;
     uint64_t collision_tick;
     ecs::entity_t body0;
@@ -68,12 +64,32 @@ struct collision_manifold : public ecs::Component {
     constexpr collision_manifold(collision_contact contact, uint64_t collision_tick, ecs::entity_t body0, ecs::entity_t body1)
         : contact(contact), collision_tick(collision_tick), body0(body0), body1(body1) {
     }
+
+    constexpr collision_manifold()
+        : contact(collision_contact{
+                    .penetration = {0.0f, 0.0f},
+                    .normal = {0.0f, 0.0f},
+                    .delta_of_collision_normalised = 0.0f
+            }), collision_tick(0), body0(nullptr), body1(nullptr) {
+    }
 };
-using contact_manifold = collision_manifold<ecs::cmp::CONTACT_MANIFOLD>;
-using trigger_manifold = collision_manifold<ecs::cmp::TRIGGER_MANIFOLD>;
+static constexpr int8_t collision_manifolds_capacity = 8;
 
 template <ecs::cmp::cmpId COMPONENT_ID>
-static const collision_manifold uninitialized_manifold = collision_manifold<COMPONENT_ID>{collision_contact{
+struct collision_manifolds : ecs::Component {
+    __CMPID_DECL__(COMPONENT_ID);
+    std::array<collision_manifold, collision_manifolds_capacity> manifolds;
+    uint8_t count = 0;
+    /*
+    collision_manifolds() {
+        
+    }
+    */
+};
+using contact_manifolds = collision_manifolds<ecs::cmp::CONTACT_MANIFOLD>;
+using trigger_manifolds = collision_manifolds<ecs::cmp::TRIGGER_MANIFOLD>;
+
+static const collision_manifold uninitialized_manifold = collision_manifold{collision_contact{
     .penetration = {0.0f, 0.0f},
     .normal = {0.0f, 0.0f},
     .delta_of_collision_normalised = 0.0f
@@ -81,48 +97,54 @@ static const collision_manifold uninitialized_manifold = collision_manifold<COMP
 
 template <typename OnCollisionComponent>
 struct on_collision : public ecs::Component {
-    const contact_manifold *manifold;
-    uint64_t last_collision_tick;
+    contact_manifolds *manifolds;
+    std::array<uint64_t, collision_manifolds_capacity> last_collision_tick;
         
-    on_collision() : manifold{nullptr}, last_collision_tick{0} {
+    on_collision() : manifolds{nullptr}, last_collision_tick{0} {
 
     }
     void initComponent() override {
         ecs::Component::initComponent();
-        manifold = Game::Instance()->get_mngr()->addComponent<contact_manifold>(
-            _ent, uninitialized_manifold<ecs::cmp::CONTACT_MANIFOLD>
-        );
+        manifolds = Game::Instance()->get_mngr()->addComponent<contact_manifolds>(_ent);
     }
 
     void update(uint32_t delta_time) override {
         (void)delta_time;
-        if (manifold->collision_tick != last_collision_tick) {
-            static_cast<OnCollisionComponent*>(this)->on_contact(*manifold);
-            last_collision_tick = manifold->collision_tick;
+        static_assert((collision_manifolds_capacity & (collision_manifolds_capacity - 1)) == 0);
+        for (ptrdiff_t i = ((ptrdiff_t)manifolds->count - 1) & (manifolds->manifolds.size() - 1); i >= 0; --i) {
+            auto& my_manifold = manifolds->manifolds[i];
+            if (my_manifold.collision_tick != last_collision_tick[i]) {
+                static_cast<OnCollisionComponent*>(this)->on_contact(my_manifold);
+                last_collision_tick[i] = my_manifold.collision_tick;
+            }
         }
+        manifolds->count = 0;
     }
 };
 
 template <typename OnTriggerComponent>
 struct on_trigger : public ecs::Component {
-    const trigger_manifold *manifold;
-    uint64_t last_collision_tick;
+    trigger_manifolds* manifolds;
+    std::array<uint64_t, collision_manifolds_capacity> last_collision_tick;
 
-    on_trigger() : manifold{nullptr}, last_collision_tick{0} {
+    on_trigger() : manifolds{nullptr}, last_collision_tick{0} {
 
     }
     void initComponent() override {
         ecs::Component::initComponent();
-        manifold = Game::Instance()->get_mngr()->addComponent<trigger_manifold>(
-            _ent, uninitialized_manifold<ecs::cmp::TRIGGER_MANIFOLD>
-        );
+        manifolds = Game::Instance()->get_mngr()->addComponent<trigger_manifolds>(_ent );
     }
     void update(uint32_t delta_time) override {
         (void)delta_time;
-        if (manifold->collision_tick != last_collision_tick) {
-            static_cast<OnTriggerComponent*>(this)->on_contact(*manifold);
-            last_collision_tick = manifold->collision_tick;
+        static_assert((collision_manifolds_capacity & (collision_manifolds_capacity - 1)) == 0);
+        for (ptrdiff_t i = ((ptrdiff_t)manifolds->count - 1) & (manifolds->manifolds.size() - 1); i >= 0; --i) {
+            auto& my_manifold = manifolds->manifolds[i];
+            if (my_manifold.collision_tick != last_collision_tick[i]) {
+                static_cast<OnTriggerComponent*>(this)->on_contact(my_manifold);
+                last_collision_tick[i] = my_manifold.collision_tick;
+            }
         }
+        manifolds->count = 0;
     }
 };
 

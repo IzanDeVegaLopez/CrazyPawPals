@@ -20,16 +20,24 @@ namespace GameStructs {
 		FOUR,
 		LAST_DECK,
 	};
+	enum collide_with {
+		player = 0,
+		enemy = 1,
+		all = 2,
+		none = 4
+	};
 	struct BulletProperties {
 		Vector2D init_pos;
 		Vector2D dir;
 		float speed = 0.0f;
 		int damage = 0;
+		int pierce_number = 0;
 		float life_time = 1.0f;
 		float width = 40;
 		float height = 40;
 		std::string sprite_key;
 		WeaponType weapon_type;
+		collide_with collision_filter;
 	};
 	struct ButtonProperties {
 		rect_f32 rect;
