@@ -5,7 +5,6 @@
 #include <unordered_set>
 #include <utility>
 
-class Texture;
 class Button;
 class Card;
 class ImageForButton;
@@ -17,7 +16,6 @@ public:
 	void initScene() override;
 	void enterScene() override;
 	void exitScene() override;
-	void render() override;
 	void update(uint32_t delta_time) override;
 private:
     ecs::entity_t create_card_button(const GameStructs::CardButtonProperties& bp);
@@ -29,7 +27,6 @@ private:
 	//deck cards part
 	Button* _selected_button;
 	Card* _selected_card;
-	Texture* _reward_bg;
 
 	//reward part
 	bool _health;

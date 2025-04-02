@@ -63,10 +63,10 @@ void SelectionMenuScene::create_weapon_buttons() {
 
 void SelectionMenuScene::create_deck_buttons() {
     float size = 0.3f;
-    float umbral = 0.2f;
+    float umbral = 0.1f;
     //create the first button prop
     GameStructs::ButtonProperties buttonPropTemplate = {
-         { {0.025f, 0.025f},{0.2f, 0.3f} },
+         { {0.025f, 0.025f},{0.09f, 0.125f} },
          0.0f, "", ecs::grp::DECKBUTTON
     };
     GameStructs::ButtonProperties deck1B = buttonPropTemplate;
@@ -89,7 +89,7 @@ void SelectionMenuScene::create_deck_buttons() {
     create_deck_button(GameStructs::FOUR, deck4B);
 }
 void SelectionMenuScene::initScene() {
-    _selection = &sdlutils().images().at("selection");
+    create_static_background(&sdlutils().images().at("selection"));
     create_weapon_info();
     create_weapon_buttons();
     create_deck_buttons();
@@ -291,10 +291,6 @@ void SelectionMenuScene::create_weapon_info() {
     );
     auto i = Game::Instance()->get_mngr();
 }
-void SelectionMenuScene::render() {
-    _selection->render(0, -60);
-    Scene::render();
-}
 
 void SelectionMenuScene::set_concrete_deck_info(const std::list<Card*>& cl) {
     auto mngr = Game::Instance()->get_mngr();
@@ -333,7 +329,7 @@ void SelectionMenuScene::create_enter_button() {
 
     buttonComp->connectClick([buttonComp, mngr, this]() {
         if (_weapon_selected &&_deck_selected)
-        Game::Instance()->change_Scene(Game::GAMESCENE);
+        Game::Instance()->change_Scene(Game::REWARDSCENE);
     }); 
 }
 void SelectionMenuScene::update(uint32_t delta_time) {

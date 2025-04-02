@@ -75,6 +75,14 @@ Scene::create_button(const GameStructs::ButtonProperties& bp) {
     b->initComponent();
     return e;
 }
+void Scene::create_static_background(Texture* bg) {
+    create_entity(ecs::grp::UI,
+        _scene_ID,
+        new transformless_dyn_image({ { 0.0f,0.0f }, {1.0f,1.0f} }, 
+            0, 
+            Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam, 
+            bg));
+}
 
 void Scene::update(uint32_t delta_time)
 {

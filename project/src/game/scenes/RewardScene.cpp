@@ -16,7 +16,7 @@
 
 #include <iostream>
 
-RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr), _selected_button(nullptr), _reward_bg(nullptr),
+RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr), _selected_button(nullptr),
 _health(false),_card(false), _object(false), _upgrade(false), _lr(nullptr),
 _selected(false), _activate_confirm_button(false), _chosen_card(nullptr), _activate_exchange_button(false)
 {
@@ -27,10 +27,9 @@ RewardScene::~RewardScene()
 }
 
 void RewardScene::initScene() {
+    create_static_background(&sdlutils().images().at("reward"));
     create_reward_buttons();
     create_my_deck_cards();
-    _reward_bg = &sdlutils().images().at("reward");
-    check_number();
 }
 
 void RewardScene::enterScene()
@@ -41,17 +40,13 @@ void RewardScene::enterScene()
     auto& pDeck = _m_deck->card_names();
     refresh_my_deck_cards(pDeck);
     refresh_rewards();
+    check_number();
     Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::REWARDSCENE);
 }
 
 void RewardScene::exitScene()
 {
     change_pos(false);
-}
-
-void RewardScene::render() {
-    _reward_bg->render(0, 0);
-    Scene::render();
 }
 
 std::pair<std::string, GameStructs::CardType> RewardScene::get_unique_card(std::unordered_set<std::string>& appeared_cards) {
