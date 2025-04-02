@@ -2,18 +2,21 @@
 #include "../../sdlutils/InputHandler.h"
 #include "../../game/Game.h"
 #include "../../ecs/Manager.h"
-#include "../components/camera_component.hpp"
+#include "../components/rendering/camera_component.hpp"
 
-#include "Deck.hpp"
-#include "Transform.h"
-#include "Weapon.h"
-#include "MovementController.h"
+#include "cards/Deck.hpp"
+#include "movement/Transform.h"
+#include "weapons/Weapon.h"
+#include "movement/MovementController.h"
 #include "Health.h"
+#include "MythicComponent.h"
+#include "../mythic/MythicItems.h"
+#include "AnimationComponent.h"
 
 KeyboardPlayerCtrl::KeyboardPlayerCtrl()
     : _left(SDL_SCANCODE_A), _right(SDL_SCANCODE_D), _up(SDL_SCANCODE_W), _down(SDL_SCANCODE_S), 
       _reload(SDL_SCANCODE_SPACE), _collect(SDL_SCANCODE_F), 
-      _mc(nullptr), _w(nullptr), _dc(nullptr), _mouse_pos(Vector2D(0,0)) {}
+      _mc(nullptr), _w(nullptr), _dc(nullptr), _dy(nullptr), _mouse_pos(Vector2D(0, 0)) {}
 
 KeyboardPlayerCtrl::~KeyboardPlayerCtrl() {}
 
@@ -32,6 +35,21 @@ KeyboardPlayerCtrl::initComponent() {
 
     _dc = Game::Instance()->get_mngr()->getComponent<Deck>(_ent);
     assert(_dc != nullptr);
+
+    _my = Game::Instance()->get_mngr()->getComponent<MythicComponent>(_ent);
+    assert(_my != nullptr);
+
+    _h = Game::Instance()->get_mngr()->getComponent<Health>(_ent);
+    assert(_h != nullptr);
+
+    _m = Game::Instance()->get_mngr()->getComponent<ManaComponent>(_ent);
+    assert(_m != nullptr);
+
+    _tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
+    assert(_tr != nullptr);
+
+    _dy = Game::Instance()->get_mngr()->getComponent<AnimationComponent>(_ent);
+    assert(_dy != nullptr);
 }
 
 void KeyboardPlayerCtrl::update(Uint32 delta_time) {
@@ -44,20 +62,41 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
         (ihdlr.isKeyDown(_up) ? 1 : 0) + (ihdlr.isKeyDown(_down) ? -1 : 0)
     ));
 
+    if (is_moving_input()) _dy->play_animation("andar");
+    else _dy->play_animation("idle");
     //Vertical axis
     //dir.setY((ihdlr.isKeyDown(_up) ? -1 : 0) + (ihdlr.isKeyDown(_down) ? 1 : 0));
 
     //reload
     if (ihdlr.isKeyDown(_reload)) {
-        //std::cout << "recarga" << std::endl;
+        
         _dc->reload();
     }
 
     //collect
     if (ihdlr.isKeyDown(_collect)) {
         //if we are not close enought to a reward, do nothing
-        //std::cout << "colecta" << std::endl;
+        
     }
+
+    ///inputs para probar cosas
+    if (ihdlr.keyDownEvent() &&ihdlr.isKeyDown(SDL_SCANCODE_Y)) {
+        _my->add_mythic(new ZoomiesInducer());
+    }  
+      if (ihdlr.keyDownEvent() &&ihdlr.isKeyDown(SDL_SCANCODE_G)) {
+        _my->add_mythic(new PreternaturalForce());
+    } 
+    if (ihdlr.keyDownEvent() && ihdlr.isKeyDown(SDL_SCANCODE_Z)) {
+        _my->add_mythic(new BloodClaw());
+    }
+    if (ihdlr.keyDownEvent() && ihdlr.isKeyDown(SDL_SCANCODE_X)) {
+        _my->add_mythic(new ProfaneHotline());
+    }
+
+    if (ihdlr.keyDownEvent() && ihdlr.isKeyDown(SDL_SCANCODE_V)) {
+        _h->takeDamage(10);
+    }
+    ////
 
     auto _mouse_rect =rect_f32_global_from_screen_rect_flipped_y(
         {
@@ -94,4 +133,10 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
         }
     }
     
+}
+
+bool KeyboardPlayerCtrl::is_moving_input() const
+{
+    auto& ihdlr = ih();
+    return ihdlr.isKeyDown(_left) || ihdlr.isKeyDown(_right) || ihdlr.isKeyDown(_up) || ihdlr.isKeyDown(_down);
 }

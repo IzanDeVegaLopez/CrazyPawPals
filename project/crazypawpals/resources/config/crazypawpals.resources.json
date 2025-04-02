@@ -24,7 +24,6 @@
       "file": "resources/images/projectiles/p_pump_shotgun.png"
     },
     {
-
       "id": "p_canon",
       "file": "resources/images/projectiles/canon.png"
     },
@@ -63,6 +62,18 @@
     {
       "id": "p_boom",
       "file": "resources/images/projectiles/p_boom.png"
+    },
+    {
+      "id": "fog",
+      "file": "resources/images/enviroment/fog.png"
+    },
+    {
+      "id": "p_super_michi_mafioso",
+      "file": "resources/images/projectiles/p_super_michi_mafioso.png"
+    },
+    {
+      "id": "attack_warning",
+      "file": "resources/images/projectiles/attack_warning.png"
     },
     {
       "id": "p_lightbringer",
@@ -136,9 +147,79 @@
       "id": "card_recover",
       "file": "resources/images/cards/carta.png"
     },
+
+    {
+      "id": "reward_card_kunai",
+      "file": "resources/images/cards/card_kunai.png"
+    },
+    {
+      "id": "reward_card",
+      "file": "resources/images/cards/card.png"
+    },
+    {
+      "id": "reward_card_fireball",
+      "file": "resources/images/cards/card_fireball.png"
+    },
+    {
+      "id": "reward_card_minigun",
+      "file": "resources/images/cards/card_minigun.png"
+    },
+    {
+      "id": "reward_card_reloading",
+      "file": "resources/images/cards/card_reloading.png"
+    },
+    {
+      "id": "reward_card_lighting",
+      "file": "resources/images/cards/card_lighting.png"
+    },
+    {
+      "id": "reward_card_spray",
+      "file": "resources/images/cards/card_spray.png"
+    },
+    {
+      "id": "reward_card_back",
+      "file": "resources/images/cards/card_back.png"
+    },
+    {
+      "id": "reward_card_eldritch_blast",
+      "file": "resources/images/cards/card_eldritch_blast.png"
+    },
+    {
+      "id": "reward_card_primordia",
+      "file": "resources/images/cards/carta.png"
+    },
+    {
+      "id": "reward_card_commune",
+      "file": "resources/images/cards/card_commune.png"
+    },
+    {
+      "id": "reward_card_evoke",
+      "file": "resources/images/cards/carta.png"
+    },
+    {
+      "id": "reward_card_fulgur",
+      "file": "resources/images/cards/carta.png"
+    },
+    {
+      "id": "reward_card_placeholder",
+      "file": "resources/images/cards/carta.png"
+    },
+    {
+      "id": "reward_card_quick_feet",
+      "file": "resources/images/cards/carta.png"
+    },
+    {
+      "id": "reward_card_recover",
+      "file": "resources/images/cards/carta.png"
+    },
+
     {
       "id": "boom",
       "file": "resources/images/enemies/boom.png"
+    },
+    {
+      "id": "catkuza",
+      "file": "resources/images/enemies/catkuza.png"
     },
     {
       "id": "sarno_rata",
@@ -151,6 +232,14 @@
     {
       "id": "michi_mafioso",
       "file": "resources/images/enemies/michi_mafioso.png"
+    },
+    {
+      "id": "super_michi_mafioso",
+      "file": "resources/images/enemies/super_michi_mafioso.png"
+    },
+    {
+      "id": "ratatouille",
+      "file": "resources/images/enemies/ratatouille.png"
     },
     {
       "id": "heart",
@@ -177,28 +266,198 @@
       "file": "resources/images/ui/revolver_b.png"
     },
     {
+      "id": "revolver_info",
+      "file": "resources/images/ui/revolver_b_info.png"
+    },
+    {
+      "id": "revolver_button_selected",
+      "file": "resources/images/ui/weapon_selected_b.png"
+    },
+    {
       "id": "rampage_button",
       "file": "resources/images/ui/rampage_b.png"
+    },
+    {
+      "id": "rampage_info",
+      "file": "resources/images/ui/rampage_b_info.png"
+    },
+    {
+      "id": "rampage_button_selected",
+      "file": "resources/images/ui/weapon_selected_b.png"
     },
     {
       "id": "pump_shotgun_button",
       "file": "resources/images/ui/pump_shotgun_b.png"
     },
     {
-      "id": "lightbringer_button",
-      "file": "resources/images/projectiles/SDL_logo.png"
+      "id": "pump_shotgun_info",
+      "file": "resources/images/ui/pump_shotgun_b_info.png"
     },
     {
-      "id": "play_button",
-      "file": "resources/images/ui/play.png"
+      "id": "pump_shotgun_button_selected",
+      "file": "resources/images/ui/weapon_selected_b.png"
+    },
+    {
+      "id": "ramp_canon_button",
+      "file": "resources/images/ui/rampage_b.png"
+    },
+    {
+      "id": "ramp_canon_info",
+      "file": "resources/images/ui/ramp_canon_b_info.png"
+    },
+    {
+      "id": "ramp_canon_button_selected",
+      "file": "resources/images/ui/weapon_selected_b.png"
+    },
+    {
+      "id": "lightbringer_button",
+      "file": "resources/images/ui/rampage_b.png"
+    },
+    {
+      "id": "lightbringer_info",
+      "file": "resources/images/ui/lightbringer_b_info.png"
+    },
+    {
+      "id": "lightbringer_button_selected",
+      "file": "resources/images/ui/weapon_selected_b.png"
     },
     {
       "id": "start",
       "file": "resources/images/enviroment/start.png"
+    },
+    {
+      "id": "controls",
+      "file": "resources/images/enviroment/controls.png"
+    },
+    {
+      "id": "selection",
+      "file": "resources/images/enviroment/selection.jpg"
+    },
+    {
+      "id": "reward",
+      "file": "resources/images/enviroment/reward.png"
+    },
+    {
+      "id": "deck1_button",
+      "file": "resources/images/ui/deck1_b.png"
+    },
+    {
+      "id": "deck1_button_selected",
+      "file": "resources/images/ui/deck_selected_b.png"
+    },
+    {
+      "id": "deck2_button",
+      "file": "resources/images/ui/deck2_b.png"
+    },
+    {
+      "id": "deck2_button_selected",
+      "file": "resources/images/ui/deck_selected_b.png"
+    },
+    {
+      "id": "deck3_button",
+      "file": "resources/images/ui/deck3_b.png"
+    },
+    {
+      "id": "deck3_button_selected",
+      "file": "resources/images/ui/deck_selected_b.png"
+    },
+    {
+      "id": "deck4_button",
+      "file": "resources/images/ui/deck4_b.png"
+    },
+    {
+      "id": "deck4_button_selected",
+      "file": "resources/images/ui/deck_selected_b.png"
+    },
+    {
+      "id": "initial_info",
+      "file": "resources/images/ui/initial_info.png"
+    },
+    {
+      "id": "card_Kunai_info",
+      "file": "resources/images/ui/card_kunai_info.png"
+    },
+    {
+      "id": "card_EldritchBlast_info",
+      "file": "resources/images/ui/card_eldritch_blast_info.png"
+    },
+    {
+      "id": "card_Recover_info",
+      "file": "resources/images/ui/card_recover_info.png"
+    },
+    {
+      "id": "card_Fireball_info",
+      "file": "resources/images/ui/card_fireball_info.png"
+    },
+    {
+      "id": "card_Minigun_info",
+      "file": "resources/images/ui/card_minigun_info.png"
+    },
+    {
+      "id": "card_CardSpray_info",
+      "file": "resources/images/ui/card_spray_info.png"
+    },
+    {
+      "id": "card_Lighting_info",
+      "file": "resources/images/ui/card_lighting_info.png"
+    },
+    {
+      "id": "card_Primordia_info",
+      "file": "resources/images/ui/card_primordia_info.png"
+    },
+    {
+      "id": "card_Commune_info",
+      "file": "resources/images/ui/card_commune_info.png"
+    },
+    {
+      "id": "card_Evoke_info",
+      "file": "resources/images/ui/card_evoke_info.png"
+    },
+    {
+      "id": "card_Fulgur_info",
+      "file": "resources/images/ui/card_commune_info.png"
+    },
+    {
+      "id": "card_QuickFeet_info",
+      "file": "resources/images/ui/card_quickfeet_info.png"
+    },
+    {
+      "id": "card_Prime_info",
+      "file": "resources/images/ui/card_prime_info.png"
+    },
+    {
+      "id": "event_letters",
+      "file": "resources/images/enviroment/event_letters.png"
+    },
+    {
+      "id": "enter_game",
+      "file": "resources/images/ui/play.png"
+    },
+    {
+      "id": "controls_button",
+      "file": "resources/images/ui/controls.png"
+    },
+    {
+      "id": "exit_game",
+      "file": "resources/images/ui/exit.png"
+    },
+    {
+      "id": "mythic",
+      "file": "resources/images/ui/mythic.png"
+    },
+    {
+      "id": "reward_health",
+      "file": "resources/images/ui/reward_health.png"
+    },
+    {
+      "id": "reward_selected",
+      "file": "resources/images/ui/reward_selected.png"
+    },
+    {
+      "id": "confirm_reward",
+      "file": "resources/images/ui/confirm_reward.png"
     }
-
-  ],
-  
+  ], 
   "messages" : [
     { "id" : "start", "text" : "Press space to start", "font" : "ARIAL24", "color" : "0x441155ff"},
     { "id" : "continue", "text" : "Press space to continue", "font" : "ARIAL24", "color" : "0x112233ff", "bg" : "0xffffffff" },

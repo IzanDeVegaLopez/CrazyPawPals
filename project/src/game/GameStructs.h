@@ -1,6 +1,9 @@
 #pragma once
 #include "../utils/Vector2D.h"
-
+#include "../ecs/ecs.h"
+#include "../rendering/rect.hpp"
+#include <list>
+class Card;
 namespace GameStructs {
 	enum WeaponType {
 		REVOLVER,
@@ -10,22 +13,56 @@ namespace GameStructs {
 		LIGHTBRINGER,
 		LAST_WEAPON,
 	};
+	enum DeckType {
+		ONE,
+		TWO,
+		THREE,
+		FOUR,
+		LAST_DECK,
+	};
+	enum collide_with {
+		player = 0,
+		enemy = 1,
+		all = 2,
+		none = 4
+	};
 	struct BulletProperties {
 		Vector2D init_pos;
 		Vector2D dir;
 		float speed = 0.0f;
 		int damage = 0;
+		int pierce_number = 0;
 		float life_time = 1.0f;
 		float width = 40;
 		float height = 40;
 		std::string sprite_key;
 		WeaponType weapon_type;
+		collide_with collision_filter;
 	};
 	struct ButtonProperties {
-		Vector2D pos;
-		float width = 40.0f;
-		float height = 40.0f;
+		rect_f32 rect;
 		float rot = 0.0f;
 		std::string sprite_key;
+		ecs::grpId_t ID;
+	};
+	struct CardButtonProperties : public ButtonProperties {
+		Card* iterator;
+		// constructor
+		CardButtonProperties(const rect_f32& rect, float rot, const std::string& sprite_key, ecs::grpId_t ID, Card* it)
+			: ButtonProperties{ rect, rot, sprite_key, ID }, iterator(it) {}
+	};
+	enum CardType {
+		FIREBALL,
+		LIGHTING,
+		KUNAI,
+		RECOVER,
+		MINIGUN,
+		SPRAY,
+		ELDRITCH_BLAST,
+		COMMUNE,
+		EVOKE,
+		FULGUR,
+		QUICK_FEET,
+		LAST_CARD,
 	};
 }

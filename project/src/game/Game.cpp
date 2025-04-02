@@ -7,23 +7,26 @@
 #include "../utils/Vector2D.h"
 #include "../utils/Collisions.h"
 
-#include "../our_scripts/components/Image.h"
-#include "../our_scripts/components/Transform.h"
+#include "../our_scripts/components/rendering/Image.h"
+#include "../our_scripts/components/movement/Transform.h"
 #include "../our_scripts/components/KeyboardPlayerCtrl.h"
-#include "../our_scripts/components/MovementController.h"
-#include "../our_scripts/components/Mana.h"
-#include "../our_scripts/components/EnemyMovement.h"
-#include "../our_scripts/components/Deck.hpp"
-#include "../our_scripts/components/dyn_image.hpp"
-#include "../our_scripts/components/camera_component.hpp"
-#include "../our_scripts/components/rect_component.hpp"
-#include "../our_scripts/components/Revolver.h"
-#include "../our_scripts/components/Rampage.h"
+#include "../our_scripts/components/movement/MovementController.h"
+#include "../our_scripts/components/cards/Mana.h"
+
+#include "../our_scripts/components/cards/Deck.hpp"
+#include "../our_scripts/components/rendering/dyn_image.hpp"
+#include "../our_scripts/components/rendering/camera_component.hpp"
+#include "../our_scripts/components/rendering/rect_component.hpp"
+#include "../our_scripts/components/weapons/player/Revolver.h"
+#include "../our_scripts/components/weapons/player/Rampage.h"
 //Scenes for SceneManager
-#include "Scene.h"
-#include "MainMenuScene.h"
-#include "SelectionMenuScene.h"
-#include "GameScene.h"
+#include "scenes/Scene.h"
+#include "scenes/MainMenuScene.h"
+#include "scenes/ControlsScene.h"
+#include "scenes/SelectionMenuScene.h"
+#include "scenes/GameScene.h"
+#include "scenes/GameOverScene.h"
+#include "scenes/RewardScene.h"
 
 
 using namespace std;
@@ -88,9 +91,17 @@ bool Game::init() {
 	_scenes[MAINMENU] = new MainMenuScene();
 	_scenes[MAINMENU]->initScene();
 
+	_scenes[CONTROLSSCENE] = new ControlsScene();
+	_scenes[CONTROLSSCENE]->initScene();
+
 	_scenes[SELECTIONMENU] = new SelectionMenuScene();
 	_scenes[SELECTIONMENU]->initScene();
 
+	_scenes[GAMEOVER] = new GameOverScene();
+	_scenes[GAMEOVER]->initScene();
+	
+	_scenes[REWARDSCENE] = new RewardScene();
+	_scenes[REWARDSCENE]->initScene();
 
 	_current_scene_index = MAINMENU;
 	return true;
@@ -101,7 +112,7 @@ bool Game::init() {
 void Game::start() {
 
 	// a boolean to exit the loop
-	bool exit = false;
+	exit = false;
 
 	auto& ihdlr = ih();
 	//delta time
@@ -121,15 +132,10 @@ void Game::start() {
 		last_frame_start_tick = frame_start_tick;
 		ihdlr.refresh();
 
-		if (ihdlr.isKeyDown(SDL_SCANCODE_ESCAPE)) {
+		if (ihdlr.isKeyDown(SDL_SCANCODE_ESCAPE) || ihdlr.closeWindowEvent()) {
 			exit = true;
 			continue;
 		}
-		if (ihdlr.closeWindowEvent()) {
-			exit = true;
-			continue;
-		}
-		
 		_scenes[_current_scene_index]->update(delta_time_milliseconds);
 		_mngr->refresh();
 

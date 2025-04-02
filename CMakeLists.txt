@@ -10,6 +10,7 @@ if (MSVC)
         /Zi
 
         /nologo
+        #-D DBG_COLLISIONS=true
     )
 else()
     add_compile_options(
@@ -70,7 +71,13 @@ project(CrazyPawPals)
         ${PROJECT_NAME}
         ${CrazyPawPals_SRC_DIRECTORY}/main.cpp
         ${CrazyPawPals_SOURCES}
-     "project/src/our_scripts/components/Lightbringer.h" "project/src/our_scripts/components/Lightbringer.cpp")
+     "project/src/our_scripts/components/ui/HUD.cpp" "project/src/our_scripts/components/ui/HUD.h")
+    target_compile_options(
+        ${PROJECT_NAME}
+        PRIVATE
+        -D RIGIDBODY_COMPONENT_DEGEN_RESTITUTION_OFF
+        -DDBG_COLLISIONS=false
+    )
     
     target_include_directories(
         ${PROJECT_NAME}
