@@ -35,6 +35,6 @@ RampCanon::callback(Vector2D shootPos, Vector2D shootDir) {
 
 		static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
 	}
-	else std::cout << "No hay suficiente mana para disparar" << std::endl;
+	//else std::cout << "No hay suficiente mana para disparar" << std::endl;
 	
 }

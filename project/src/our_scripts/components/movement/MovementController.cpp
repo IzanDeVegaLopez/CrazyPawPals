@@ -48,7 +48,7 @@ void MovementController::update(uint32_t delta_time)
 		_time_remaining = (_time_remaining > delta_time) ? _time_remaining - delta_time : 0;
 
 		float distanceToTarget = (_dash_pos - _tr->getPos()).magnitude();
-		std::cout << "distance: " << distanceToTarget << std::endl;
+		//std::cout << "distance: " << distanceToTarget << std::endl;
 
         if (_time_remaining <= 100 || distanceToTarget <= 0.1f) {
 			//std::cout << "dashing" << std::endl;

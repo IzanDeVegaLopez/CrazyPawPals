@@ -87,7 +87,7 @@ std::string RewardScene::select_card(GameStructs::CardType ct) {
     default:
         break;
     }
-    std::cout << "reward card: " + s << std::endl;
+    //std::cout << "reward card: " + s << std::endl;
     return s;
 }
 void RewardScene::refresh_rewards() {
