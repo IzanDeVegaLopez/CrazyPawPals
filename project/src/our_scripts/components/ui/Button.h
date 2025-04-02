@@ -54,6 +54,7 @@ public:
     inline void set_it(Card* q) {
         it = q;
     }
+    inline Card* It() const { return it; };
 private:
     Card* it;
 };

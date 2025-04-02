@@ -196,8 +196,10 @@ void Deck::add_card_to_discard_pile(Card* c)
 
 void Deck::remove_card(Card* c)
 {
-	auto cl = _draw_pile.card_list();
+	auto& cl = _draw_pile.card_list();
 	cl.remove(c);
+	std::cout << "draw pile size: " + _draw_pile.card_list().size();
+	std::cout << "discard pile size: " + _discard_pile.card_list().size();
 }
 
 MovementController* Deck::get_movement_controller()

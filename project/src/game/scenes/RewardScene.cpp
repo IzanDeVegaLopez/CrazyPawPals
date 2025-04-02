@@ -312,17 +312,19 @@ void RewardScene::create_a_deck_card(const GameStructs::CardButtonProperties& bp
     auto* mngr = Game::Instance()->get_mngr();
 
     auto e = create_card_button(bp);
-    auto buttonComp = mngr->getComponent<Button>(e);
+    auto buttonComp = mngr->getComponent<CardButton>(e);
     auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
     buttonComp->connectClick([buttonComp, imgComp, this, bp] {
         imgComp->destination_rect.size = { imgComp->_original_w,  imgComp->_original_h };
         _selected_button = buttonComp;
         imgComp->destination_rect.position.y = bp.rect.position.y + 0.25f;
+        auto it = buttonComp->It();
         //only assign a valid iterator
-        if (bp.iterator != nullptr && bp.iterator != _selected_card) {
-            _selected_card = bp.iterator;
+        if (bp.iterator != nullptr && it != _selected_card) {
+
+            _selected_card = it;
             
-            std::cout << "card selected "<< std::endl;
+            std::cout << "card selected: "<< std::endl;
         }
         });
 
@@ -536,10 +538,12 @@ void RewardScene::check_number()
     if (pDeck.size() < 4)
     {
         _activate_exchange_button = false;
+        _activate_confirm_button = true;
     }
     else if (pDeck.size() >= 4 && pDeck.size() < 10)
     {
         _activate_exchange_button = true;
+        _activate_confirm_button = true;
     }
     else if (pDeck.size() == 10)
     {
@@ -567,32 +571,44 @@ void RewardScene::create_reward_exchange_button(const GameStructs::ButtonPropert
     buttonComp->connectClick([buttonComp, this] 
         {
             //if we dont have enough card to exchange, ignore this callback
-            if (_selected || _activate_exchange_button || _chosen_card == nullptr) return;
+            if (_selected || _activate_exchange_button || _selected_card == nullptr) return;
             _selected = true;
             remove_deck_card();
             add_new_reward_card();
         });
     buttonComp->connectHover([buttonComp, imgComp, this]() {
-        
+        if (_selected) return;
+        imgComp->apply_filter(128, 128, 128);
         });
     buttonComp->connectExit([buttonComp, imgComp, this]() {
-
+        imgComp->apply_filter(255, 255, 255);
         });
 }
 
 void RewardScene::update(uint32_t delta_time) {
    Scene::update(delta_time);
-   if (!_activate_confirm_button && _lr != nullptr) {
+
+   if (_activate_confirm_button && _lr != nullptr) {
        auto mngr = Game::Instance()->get_mngr();
        auto imgCompConfirm = mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::CONFIRMREWARD));
        imgCompConfirm->swap_textures();
-       _activate_confirm_button = true;
+       _activate_confirm_button = false;
    }
 
-   if (_activate_exchange_button && _lr != nullptr && _chosen_card != nullptr) {
+   if (_activate_exchange_button && _lr != nullptr && _selected_card != nullptr) {
        auto mngr = Game::Instance()->get_mngr();
        auto imgCompExchange = mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::EXCHANGEBUTTON));
        imgCompExchange->swap_textures();
+       imgCompExchange->destination_rect.position = {0.1f, imgCompExchange->destination_rect.position.y};
+
+       auto imgCompConfirm = mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::CONFIRMREWARD));
+       imgCompConfirm->destination_rect.position = { 0.5f, imgCompConfirm->destination_rect.position.y };
+
+       auto buttonC = mngr->getComponent<Button>(mngr->getHandler(ecs::hdlr::CONFIRMREWARD));
+       auto buttonE = mngr->getComponent<Button>(mngr->getHandler(ecs::hdlr::EXCHANGEBUTTON));
+
+       buttonC->update_collider();
+       buttonE->update_collider();
        _activate_exchange_button = false;
    }
 }
