@@ -906,6 +906,7 @@ void GameScene::spawn_event_paw_patrol(Vector2D posVec) {
 	auto&& rect = *new rect_component{ 0, 0, 1.0f * randSize, 1.0f * randSize };
 	auto&& rigidbody = *new rigidbody_component{ rect_f32{{0.0f, -0.15f}, {0.5f, 0.6f}}, mass_f32{3.0f}, 0.05f };
 	auto&& col = *new collisionable{ *tr, rigidbody, rect, collisionable_option_none };
+	int dmg = 10;
 
 	auto e = create_entity(
 		ecs::grp::SPECIALENEMY,
@@ -920,7 +921,7 @@ void GameScene::spawn_event_paw_patrol(Vector2D posVec) {
 			*tr
 		),
 		new Health(1000),
-		new paw_patrol_collision_component(),
+		new paw_patrol_collision_component(dmg, GameStructs::player),
 		&rigidbody,
 		&col
 	);

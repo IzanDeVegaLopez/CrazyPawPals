@@ -39,6 +39,9 @@ namespace GameStructs {
 		WeaponType weapon_type;
 		collide_with collision_filter;
 	};
+	struct PawPatrolProperties {
+		int damage = 3;
+	};
 	struct ButtonProperties {
 		rect_f32 rect;
 		float rot = 0.0f;
