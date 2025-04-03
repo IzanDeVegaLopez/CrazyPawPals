@@ -137,7 +137,7 @@ Recover::on_play(Deck& d, const Vector2D* player_position, const Vector2D* targe
 
 #pragma region cardspray
 CardSpray::CardSpray()
-	:Card("card_spray")
+	:Card("card_cardSpray")
 {
 }
 
@@ -161,7 +161,7 @@ void CardSpray::on_play(Deck& d, const Vector2D* player_position, const Vector2D
 #pragma endregion
 
 #pragma region eldritchblast
-EldritchBlast::EldritchBlast() :Card("card_eldritch_blast", Resources(1))
+EldritchBlast::EldritchBlast() :Card("card_eldritchBlast", Resources(1))
 {
 }
 
@@ -342,7 +342,7 @@ void Fulgur::update(uint32_t dt)
 }
 #pragma endregion
 #pragma region quickfeet
-QuickFeet::QuickFeet(): Card("card_quick_feet", Resources(2)), _playing(false), _time_since_played(0)
+QuickFeet::QuickFeet(): Card("card_quickFeet", Resources(2)), _playing(false), _time_since_played(0)
 {
 }
 void QuickFeet::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
