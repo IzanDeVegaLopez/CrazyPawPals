@@ -30,43 +30,62 @@ SelectionMenuScene::~SelectionMenuScene()
 {
 }
 void SelectionMenuScene::create_weapon_buttons() {
-    float umbral = 0.11f;
+    float umbral = 0.1f;
+    float offsetX = 0.0675f;  // Distance between buttons on the X axis
+    float startX = 0.8f;   // Starting position of the first button on X
+    float startY = 0.025f; // Starting position of the first button on Y
+
     GameStructs::ButtonProperties buttonPropTemplate = {
-         { {0.925f, 0.025f},{0.05f, 0.1f} },
-         0.0f, "",  ecs::grp::WEAPONBUTTON
+        { { startX, startY }, {0.05f, 0.1f} },
+        0.0f, "", ecs::grp::WEAPONBUTTON
     };
 
     GameStructs::ButtonProperties revolverB = buttonPropTemplate;
     revolverB.sprite_key = "revolver_button";
     create_weapon_button(GameStructs::REVOLVER, revolverB);
 
-    buttonPropTemplate.rect.position.y += umbral;
+    buttonPropTemplate.rect.position.x += offsetX;  // Move to the right
     GameStructs::ButtonProperties rampageB = buttonPropTemplate;
     rampageB.sprite_key = "rampage_button";
     create_weapon_button(GameStructs::RAMPAGE, rampageB);
 
-    buttonPropTemplate.rect.position.y += umbral;
+    buttonPropTemplate.rect.position.x += offsetX;  // Move to the right
     GameStructs::ButtonProperties pump_shotgun_B = buttonPropTemplate;
     pump_shotgun_B.sprite_key = "pump_shotgun_button";
     create_weapon_button(GameStructs::PUMP_SHOTGUN, pump_shotgun_B);
 
-    buttonPropTemplate.rect.position.y += umbral;
+    buttonPropTemplate.rect.position.y += umbral; // Move to the next row
+    buttonPropTemplate.rect.position.x = startX;  // Reset X to the initial position
+
     GameStructs::ButtonProperties ramp_canon_B = buttonPropTemplate;
     ramp_canon_B.sprite_key = "ramp_canon_button";
     create_weapon_button(GameStructs::RAMP_CANON, ramp_canon_B);
 
-    buttonPropTemplate.rect.position.y += umbral;
+    buttonPropTemplate.rect.position.x += offsetX;  // Move to the right
     GameStructs::ButtonProperties lightbringerB = buttonPropTemplate;
     lightbringerB.sprite_key = "lightbringer_button";
     create_weapon_button(GameStructs::LIGHTBRINGER, lightbringerB);
+
+    buttonPropTemplate.rect.position.x += offsetX;  // Move to the right
+    GameStructs::ButtonProperties another_B = buttonPropTemplate;
+    another_B.sprite_key = "ramp_canon_button";
+    create_weapon_button(GameStructs::RAMP_CANON, another_B);
+
+    buttonPropTemplate.rect.position.y += umbral; // Move to the next row
+    buttonPropTemplate.rect.position.x = startX;  // Reset X to the initial position
+    buttonPropTemplate.rect.position.x += offsetX;  // Move to the right
+
+    GameStructs::ButtonProperties another2 = buttonPropTemplate;
+    another2.sprite_key = "ramp_canon_button";
+    create_weapon_button(GameStructs::RAMP_CANON, another2);
 }
 
 void SelectionMenuScene::create_deck_buttons() {
     float size = 0.3f;
-    float umbral = 0.1f;
+    float umbral = 0.11f;
     //create the first button prop
     GameStructs::ButtonProperties buttonPropTemplate = {
-         { {0.025f, 0.025f},{0.09f, 0.145f} },
+         { {0.025f, 0.025f},{0.105f, 0.1745f} },
          0.0f, "", ecs::grp::DECKBUTTON
     };
     GameStructs::ButtonProperties deck1B = buttonPropTemplate;
@@ -269,10 +288,9 @@ void SelectionMenuScene::create_deck_info(const rect_f32& rect) {
         &sdlutils().images().at("initial_info"))
     );
 }
-
 void SelectionMenuScene::create_deck_infos() {
     float umbral = 0.14f;
-    rect_f32 r = {{ 0.065f, 0.175f }, { 0.3f, 0.1425f }};
+    rect_f32 r = {{ 0.065f, 0.225f }, { 0.3f, 0.1425f }};
     for (int i = 0; i < _num_cards_of_deck; ++i) {
         create_deck_info(r); 
         r.position.y += umbral;
@@ -280,7 +298,7 @@ void SelectionMenuScene::create_deck_infos() {
 }
 void SelectionMenuScene::create_weapon_info() {
    // rect_f32 rect = {{1.3f, 0.25f} ,{0.75f, 0.5f}};
-    rect_f32 rect = { {0.5f, 0.05f} ,{0.5f, 0.35f} };
+    rect_f32 rect = { {0.5f, 0.025f} ,{0.3f, 0.225f} };
     ecs::entity_t e = create_entity(
         ecs::grp::WEAPONINFO,
         ecs::scene::SELECTIONMENUSCENE,
