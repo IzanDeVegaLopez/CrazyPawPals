@@ -128,6 +128,10 @@ void PlayerHUD::render()
 #pragma endregion
 
 #pragma region cards
+	card_rendering_descriptor crd = card_rendering_descriptor();
+	crd.mana_cost_font_key = "ARIAL16";
+	crd.mana_cost_color = { 81, 100, 222, 255 };
+	crd.health_cost_color = { 200, 80, 100, 255 };
 	AnimationVars av = _deck->animation_vars();
 #pragma region camera_definition
 	camera_screen cam_screen = camera_screen();
@@ -138,18 +142,48 @@ void PlayerHUD::render()
 	cam_screen.screen = { position.first, position.second };
 #pragma endregion
 
+#pragma region cards_in_queue
+	auto it = _deck->get_draw_pile().rbegin();
+	int8_t card_pos_mod = _deck->get_draw_pile().size();
+
+	while (it != _deck->get_draw_pile().rend()) {
+		crd.mana_cost_subrect = { {0.1,0.2},{0.3,0.3} };
+		crd.card_image_key = "card_back";// : (*it)->get_name().data();
+		crd.mana_cost = (*it)->get_costs().get_mana();
+		crd.health_cost = (*it)->get_costs().get_health();
+		crd.health_cost_subrect = { {0.55,0.2},{0.3,0.3} };
+
+		card_rendering_descriptor_render(
+			crd,
+			cam_screen,
+			//take renderer
+			*sdlutils().renderer(),
+			//destination rect --> where will the card be placed (position, size in world units)
+			{ {-8,-3.5f+card_pos_mod*0.3f},{2,2.5f} },
+			//src subrect --> if our image is only 1 take this parameters
+			//if we have a map of 5x6 cards and we wanted to render card (3,2) being first card(0,0), and last (4,5)
+			//values would be --> { {3/5, 2/6}, {1/5,1/6} }
+			{ {0,0},{1,1} },
+			//rotation
+			0,
+			//adittional options
+			//card_rendering_descriptor_options_none,
+			//card_rendering_descriptor_options_flip_horizontal,
+			//card_rendering_descriptor_options_flip_vertical,
+			//card_rendering_descriptor_options_full_subrect
+			card_rendering_descriptor_options_none
+		);
+		--card_pos_mod;
+	}
+#pragma endregion
+
 #pragma region hand_card
 	//Mostrar carta en la mano
 	//Mostrar n? cartas draw_pile and discard_pile
-	card_rendering_descriptor crd = card_rendering_descriptor();
 	//Position and scale for the cost --> both values from 0 to 1
 
 	//Funci�n que calcula la posici�n de una carta seg�n el tiempo
 	float percentual_time_to_card_in_position = (sdlutils().virtualTimer().currTime() - av._last_card_draw_time) / (float)av._card_draw_anim_duration;
-
-	crd.mana_cost_font_key = "ARIAL16";
-	crd.mana_cost_color = { 81, 100, 222, 255 };
-	crd.health_cost_color = { 200, 80, 100, 255 };
 	if (_deck->hand() == nullptr) {
 		crd.card_image_key = "card_reloading";
 		crd.mana_cost_subrect = { {0,0.2},{0,0} };

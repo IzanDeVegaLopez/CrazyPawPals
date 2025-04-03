@@ -92,6 +92,7 @@ public:
 	inline void set_reload_time(int _new_reload_time) { _reload_time = _new_reload_time; }
 	inline int time_till_reload_finishes() { return _time_till_reload_finishes; }
 	inline Card* hand() { return _hand; }
+	inline std::list<Card*>& get_draw_pile() { return _draw_pile.card_list(); }
 	inline Card* last_milled_card() { return _last_milled_card; }
 	inline AnimationVars animation_vars() { return _av; } 
 };

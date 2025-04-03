@@ -347,8 +347,10 @@ void SelectionMenuScene::create_enter_button() {
     auto buttonComp = mngr->getComponent<Button>(e);
 
     buttonComp->connectClick([buttonComp, mngr, this]() {
-        if (_weapon_selected &&_deck_selected)
-        Game::Instance()->change_Scene(Game::GAMESCENE);
+        if (_weapon_selected && _deck_selected) {
+            std::cout << "miau"<<std::endl;
+            Game::Instance()->change_Scene(Game::GAMESCENE);
+        }
     }); 
 }
 void SelectionMenuScene::update(uint32_t delta_time) {
