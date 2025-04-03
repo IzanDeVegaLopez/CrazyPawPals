@@ -1117,10 +1117,10 @@ void GameScene::event_callback1(const event_system::event_receiver::Msg& m) {
 	Game::Instance()->change_Scene(Game::GAMEOVER);
 }
 void GameScene::event_callback2(const event_system::event_receiver::Msg& m) {
-	spawn_event_totem(Vector2D { (float)sdlutils().rand().nextInt(-15, 16), (float)sdlutils().rand().nextInt(-8, 9) });
+	if (m.int_value == 1) spawn_event_totem(Vector2D { (float)sdlutils().rand().nextInt(-15, 16), (float)sdlutils().rand().nextInt(-8, 9) });
 }
 void GameScene::event_callback3(const event_system::event_receiver::Msg& m) {
-	spawn_event_paw_patrol(Vector2D{ (float)sdlutils().rand().nextInt(-15, 16), (float)sdlutils().rand().nextInt(-8, 9) });
+	if (m.int_value == 1) spawn_event_paw_patrol(Vector2D{ (float)sdlutils().rand().nextInt(-15, 16), (float)sdlutils().rand().nextInt(-8, 9) });
 }
 
 void GameScene::delete_event_enemies() {
