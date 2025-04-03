@@ -147,11 +147,11 @@ void PlayerHUD::render()
 	int8_t card_pos_mod = _deck->get_draw_pile().size();
 
 	while (it != _deck->get_draw_pile().rend()) {
-		crd.mana_cost_subrect = { {0.1,0.2},{0.3,0.3} };
+		crd.mana_cost_subrect = { {0.1,0.2},{0,0} };
 		crd.card_image_key = "card_back";// : (*it)->get_name().data();
 		crd.mana_cost = (*it)->get_costs().get_mana();
 		crd.health_cost = (*it)->get_costs().get_health();
-		crd.health_cost_subrect = { {0.55,0.2},{0.3,0.3} };
+		crd.health_cost_subrect = { {0.55,0.2},{0,0} };
 
 		card_rendering_descriptor_render(
 			crd,
@@ -159,7 +159,7 @@ void PlayerHUD::render()
 			//take renderer
 			*sdlutils().renderer(),
 			//destination rect --> where will the card be placed (position, size in world units)
-			{ {-8,-3.5f+card_pos_mod*0.3f},{2,2.5f} },
+			{ {-8,-3.5f+card_pos_mod*1.0f},{2,2.5f} },
 			//src subrect --> if our image is only 1 take this parameters
 			//if we have a map of 5x6 cards and we wanted to render card (3,2) being first card(0,0), and last (4,5)
 			//values would be --> { {3/5, 2/6}, {1/5,1/6} }
@@ -174,6 +174,7 @@ void PlayerHUD::render()
 			card_rendering_descriptor_options_none
 		);
 		--card_pos_mod;
+		++it;
 	}
 #pragma endregion
 
