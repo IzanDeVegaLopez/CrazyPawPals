@@ -21,8 +21,7 @@ enum enemyType {
     boom = 4,
     ratatouille = 5,
     catkuza = 6,
-    super_michi_mafioso = 7,
-    paw_patrol = 8
+    super_michi_mafioso = 7
 };
 
 class Fog;
@@ -32,11 +31,11 @@ class WaveManager : public event_system::event_receiver, public ecs::Component {
     // Los 0 son espacios extra
     std::vector<std::pair<Uint32, std::vector<enemyType>>> _waves = {
         { 1000,{ // 10000 !!
-            paw_patrol, none,
-            none, none, none,
-            none, none, none, none,
-            none, none, none, none, none,
-            none, none }
+            sarno_rata, none,
+            sarno_rata, sarno_rata, none,
+            sarno_rata, michi_mafioso, none, none,
+            michi_mafioso, sarno_rata, sarno_rata, none, none,
+            michi_mafioso, michi_mafioso }
         },
         { 15000,{
             sarno_rata, michi_mafioso, none,

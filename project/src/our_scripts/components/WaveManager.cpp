@@ -120,9 +120,6 @@ WaveManager::spawn_next_enemy() {
                 case super_michi_mafioso:
                     static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_super_michi_mafioso(posVec);
                     break;
-                case paw_patrol:
-                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_event_paw_patrol(posVec);
-                    break;
                 default: {
                     assert(false && "unreachable");
                     exit(EXIT_FAILURE);
