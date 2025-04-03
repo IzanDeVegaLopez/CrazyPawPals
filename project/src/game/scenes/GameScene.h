@@ -29,6 +29,8 @@ public:
 	void spawn_boom(Vector2D posVec);
 	void spawn_catkuza(Vector2D posVec);
 	void spawn_ratatouille(Vector2D posVec);
+	void spawn_rata_basurera(Vector2D posVec);
+	void spawn_rey_basurero(Vector2D posVec);
 	void spawn_wave_manager();
 	void create_hud();
 	void spawn_fog();

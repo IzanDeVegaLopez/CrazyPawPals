@@ -42,6 +42,8 @@
 #include "../../our_scripts/components/weapons/enemies/WeaponSarnoRata.h"
 #include "../../our_scripts/components/weapons/enemies/WeaponBoom.h"
 #include "../../our_scripts/components/weapons/enemies/WeaponCatKuza.h"
+#include "../../our_scripts/components/weapons/enemies/WeaponRataBasurera.h"
+#include "../../our_scripts/components/weapons/enemies/WeaponReyBasurero.h"
 #include "../../our_scripts/components/Health.h"
 #include "../../our_scripts/components/bullet_collision_component.hpp"
 #include "../../our_scripts/components/fog_collision_component.hpp"
@@ -853,6 +855,96 @@ void GameScene::spawn_ratatouille(Vector2D posVec)
 		return !state_cm->is_player_near(_p_tr, &tr, dist_to_rotate * 1.8f);
 		});
 
+
+	// Estado inicial
+	state->set_initial_state("Walking");
+}
+#pragma endregion
+
+#pragma region Rata_Basurera
+void GameScene::spawn_rata_basurera(Vector2D posVec) {
+
+	auto&& manager = *Game::Instance()->get_mngr();
+	auto&& weapon = *new WeaponRataBasurera();
+	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
+
+	auto e = create_enemy(EnemySpawnConfig{ &tr, "rata_basurera", static_cast<Weapon*>(&weapon), 2, 1.8f, 1.8f });
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.01, 0.1f, 20.0 * deccel_spawned_creatures_multi));
+
+	//Le pasamos el componente "Health" al componente "WeaponRataBasurera"
+	//para que al morir pueda generar al Rey del Basurero
+	weapon.sendHealthComponent(Game::Instance()->get_mngr()->getComponent<Health>(e));
+
+	ConditionManager conditionManager;
+
+	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
+
+	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
+
+	auto state = manager.addComponent<StateMachine>(e, conditionManager);
+
+	// Crear estados
+	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
+	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon);
+
+	//poner los estado a la state
+	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
+	state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));
+
+	// Condiciones de cada estado
+	// De: Walking a: Attacking, Condición: Jugador a distancia correcta
+	state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr]() {
+		return conditionManager.is_player_near(_p_tr, &tr, 50.0f);
+		});
+
+	// De: Attacking a: Walking, Condición: Jugador se aleja demasiado
+	state->add_transition("Attacking", "Walking", [&conditionManager, _p_tr, &tr]() {
+		return !conditionManager.is_player_near(_p_tr, &tr, 55.0f);
+		});
+
+	// Estado inicial
+	state->set_initial_state("Walking");
+
+}
+#pragma endregion
+
+#pragma region Rey_Basurero
+void GameScene::spawn_rey_basurero(Vector2D posVec) {
+
+	auto&& manager = *Game::Instance()->get_mngr();
+	auto&& weapon = *new WeaponReyBasurero();
+	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 1.0f);
+
+	auto e = create_enemy(EnemySpawnConfig{ &tr, "rey_basurero", static_cast<Weapon*>(&weapon), 2, 1.8f, 1.8f });
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.05, 2.5f, 20.0 * deccel_spawned_creatures_multi));
+
+
+	ConditionManager conditionManager;
+
+	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
+
+	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
+
+	auto state = manager.addComponent<StateMachine>(e, conditionManager);
+
+	// Crear estados
+	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
+	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon);
+
+	//poner los estado a la state
+	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
+	state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));
+
+	// Condiciones de cada estado
+	// De: Walking a: Attacking, Condición: Jugador a distancia correcta
+	state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr]() {
+		return conditionManager.is_player_near(_p_tr, &tr, 7.0f);
+		});
+
+	// De: Attacking a: Walking, Condición: Jugador lejose aleja demasiado
+	state->add_transition("Attacking", "Walking", [&conditionManager, _p_tr, &tr]() {
+		return !conditionManager.is_player_near(_p_tr, &tr, 10.0f);
+		});
 
 	// Estado inicial
 	state->set_initial_state("Walking");
