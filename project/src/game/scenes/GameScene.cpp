@@ -881,7 +881,7 @@ void GameScene::spawn_rata_basurera(Vector2D posVec) {
 
 	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
 
-	auto state = manager.addComponent<StateMachine>(e, conditionManager);
+	auto state = manager.addComponent<StateMachine>(e);
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
@@ -925,7 +925,7 @@ void GameScene::spawn_rey_basurero(Vector2D posVec) {
 
 	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
 
-	auto state = manager.addComponent<StateMachine>(e, conditionManager);
+	auto state = manager.addComponent<StateMachine>(e);
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
