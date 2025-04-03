@@ -17,7 +17,7 @@ struct AnimationVars {
 	Uint32 _last_card_draw_time = 0;
 	Uint32 _card_draw_anim_duration = 150;
 	Uint32 _last_milled_card_time = 0;
-	Uint32 _mill_card_anim_duration = 500;
+	Uint32 _mill_card_anim_duration = 700;
 };
 class Deck : public ecs::Component {
 protected:
