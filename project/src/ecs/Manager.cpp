@@ -245,6 +245,12 @@ enum manager_collision_handle_response {
 };
 typedef uint8_t manager_collision_handle_response_flags;
 
+inline bool operator < (const std::pair<ecs::entity_t,ecs::entity_t>& l, const std::pair<ecs::entity_t, ecs::entity_t>& r) {
+	return (l.first != r.first && l.first < r.first) || l.second < r.second;
+}
+inline bool operator == (const std::pair<ecs::entity_t, ecs::entity_t>& l, const std::pair<ecs::entity_t, ecs::entity_t>& r) {
+	return l.first==r.first && l.second==r.second;
+}
 
 static manager_collision_handle_response manager_handle_collision_bodies(
 	Manager &manager,
