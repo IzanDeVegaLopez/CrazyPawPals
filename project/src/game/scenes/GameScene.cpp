@@ -469,7 +469,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	auto chargingState = std::make_shared<WaitingState>();
 
 	auto windAttackState = std::make_shared<AttackingState>(
-		&tr, _p_tr, &weapon,
+		&tr, _p_tr, &weapon, false,
 		[&weapon, &tr, _p_tr]() { 
 			Vector2D shootPos = tr.getPos(); // Posición del enemigo
 			weapon.wind_attack(shootPos); 
@@ -477,7 +477,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	);
 
 	auto areaAttackState = std::make_shared<AttackingState>(
-		&tr, _p_tr, &weapon,
+		&tr, _p_tr, &weapon,false,
 		[&weapon, &tr]() {
 			Vector2D shootPos = tr.getPos(); // Posición del enemigo
 			weapon.area_attack(shootPos);
@@ -485,7 +485,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	);
 
 	auto dashAttackState = std::make_shared<AttackingState>(
-		&tr, _p_tr, &weapon,
+		&tr, _p_tr, &weapon,false,
 		[&weapon, &tr, _p_tr, &mc]() {
 			Vector2D shootPos = tr.getPos();
 			Vector2D shootDir = (_p_tr->getPos() - shootPos).normalize();
@@ -669,7 +669,9 @@ GameScene::spawn_sarno_rata(Vector2D posVec)
     // Estado inicial
     state->set_initial_state("Walking");
 }
+#pragma endregion
 
+#pragma region Michi Mafioso
 void GameScene::spawn_michi_mafioso(Vector2D posVec)
 {
 	auto&& manager = *Game::Instance()->get_mngr();
@@ -702,31 +704,55 @@ void GameScene::spawn_michi_mafioso(Vector2D posVec)
     // Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador cerca
     state->add_transition("Walking", "Attacking", [state_cm, _p_tr, &tr, dist_to_attack]() {
+		bool a = state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
+		if(a) {
+			std::cout << "Walking a Attacking" << std::endl;
+		}
         return state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
     });
 
 	// De: Attacking a: Walking, Condición: Jugador lejos
     state->add_transition("Attacking", "Walking", [state_cm, _p_tr, &tr, dist_to_attack]() {
+		bool a = !state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
+		if(a) {
+			std::cout << "Attacking a Walking" << std::endl;
+		}
         return !state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
     });
 
 	// De: Walking a: Backing, Condición: Jugador cerca
 	state->add_transition("Walking", "Backing", [state_cm, _p_tr, &tr, dist_to_fallback]() {
+		bool a = state_cm->is_player_near(_p_tr, &tr, dist_to_fallback);
+		if(a) {
+			std::cout << "Walking a Backing" << std::endl;
+		}
 		return state_cm->is_player_near(_p_tr, &tr, dist_to_fallback);
 	});
 	
 	// De: Backing a: Walking, Condición: Jugador lejos y Jugador lejos de ataque
 	state->add_transition("Backing", "Walking", [state_cm, _p_tr, &tr, dist_to_fallback, dist_to_attack]() {
+		bool a = !state_cm->is_player_near(_p_tr, &tr, dist_to_fallback) && !state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
+		if(a) {
+			std::cout << "Backing a Walking" << std::endl;
+		}
 		return !state_cm->is_player_near(_p_tr, &tr, dist_to_fallback) && !state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
 	});
 
 	// De: Attacking a: Backing, Condición: Jugador cerca
 	state->add_transition("Attacking", "Backing", [state_cm, _p_tr, &tr, dist_to_fallback]() {
+		bool a = state_cm->is_player_near(_p_tr, &tr, dist_to_fallback);
+		if(a) {
+			std::cout << "Attacking a Backing" << std::endl;
+		}
 		return state_cm->is_player_near(_p_tr, &tr, dist_to_fallback);
 	});
 
 	// De: Backing a: Attacking, Condición: Jugador lejos
 	state->add_transition("Backing", "Attacking", [state_cm, _p_tr, &tr, dist_to_fallback]() {
+		bool a = !state_cm->is_player_near(_p_tr, &tr, dist_to_fallback);
+		if(a) {
+			std::cout << "Backing a Attacking" << std::endl;
+		}
 		return !state_cm->is_player_near(_p_tr, &tr, dist_to_fallback);
 	});
 
@@ -796,7 +822,7 @@ void GameScene::spawn_boom(Vector2D posVec)
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc); 
-	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon, [e]() {Game::Instance()->get_mngr()->setAlive(e, false); });
+	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon, false, [e]() {Game::Instance()->get_mngr()->setAlive(e, false); }, 1);
 
 	//poner los estado a la state
 	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
