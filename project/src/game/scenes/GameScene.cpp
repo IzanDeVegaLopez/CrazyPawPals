@@ -704,55 +704,31 @@ void GameScene::spawn_michi_mafioso(Vector2D posVec)
     // Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador cerca
     state->add_transition("Walking", "Attacking", [state_cm, _p_tr, &tr, dist_to_attack]() {
-		bool a = state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
-		if(a) {
-			std::cout << "Walking a Attacking" << std::endl;
-		}
         return state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
     });
 
 	// De: Attacking a: Walking, Condición: Jugador lejos
     state->add_transition("Attacking", "Walking", [state_cm, _p_tr, &tr, dist_to_attack]() {
-		bool a = !state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
-		if(a) {
-			std::cout << "Attacking a Walking" << std::endl;
-		}
         return !state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
     });
 
 	// De: Walking a: Backing, Condición: Jugador cerca
 	state->add_transition("Walking", "Backing", [state_cm, _p_tr, &tr, dist_to_fallback]() {
-		bool a = state_cm->is_player_near(_p_tr, &tr, dist_to_fallback);
-		if(a) {
-			std::cout << "Walking a Backing" << std::endl;
-		}
 		return state_cm->is_player_near(_p_tr, &tr, dist_to_fallback);
 	});
 	
 	// De: Backing a: Walking, Condición: Jugador lejos y Jugador lejos de ataque
 	state->add_transition("Backing", "Walking", [state_cm, _p_tr, &tr, dist_to_fallback, dist_to_attack]() {
-		bool a = !state_cm->is_player_near(_p_tr, &tr, dist_to_fallback) && !state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
-		if(a) {
-			std::cout << "Backing a Walking" << std::endl;
-		}
 		return !state_cm->is_player_near(_p_tr, &tr, dist_to_fallback) && !state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
 	});
 
 	// De: Attacking a: Backing, Condición: Jugador cerca
 	state->add_transition("Attacking", "Backing", [state_cm, _p_tr, &tr, dist_to_fallback]() {
-		bool a = state_cm->is_player_near(_p_tr, &tr, dist_to_fallback);
-		if(a) {
-			std::cout << "Attacking a Backing" << std::endl;
-		}
 		return state_cm->is_player_near(_p_tr, &tr, dist_to_fallback);
 	});
 
 	// De: Backing a: Attacking, Condición: Jugador lejos
 	state->add_transition("Backing", "Attacking", [state_cm, _p_tr, &tr, dist_to_fallback]() {
-		bool a = !state_cm->is_player_near(_p_tr, &tr, dist_to_fallback);
-		if(a) {
-			std::cout << "Backing a Attacking" << std::endl;
-		}
 		return !state_cm->is_player_near(_p_tr, &tr, dist_to_fallback);
 	});
 
