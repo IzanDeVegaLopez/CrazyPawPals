@@ -8,6 +8,27 @@
 #include <cstdlib>
 #include <unordered_set>
 
+struct contact_pair {
+	ecs::entity_t body0;
+	ecs::entity_t body1;
+};
+
+static inline bool operator==(const contact_pair &lhs, const contact_pair &rhs) {
+	return lhs.body0 == rhs.body0 && lhs.body1 == rhs.body1;
+}
+static inline bool operator<(const contact_pair &lhs, const contact_pair &rhs) {
+	return lhs.body0 < rhs.body0 || (lhs.body0 == rhs.body0 && lhs.body1 < rhs.body1);
+}
+
+namespace std {
+	template <>
+	struct hash<contact_pair> {
+		size_t operator()(const contact_pair &pair) const {
+			return std::hash<ecs::entity_t>()(pair.body0) ^ std::hash<ecs::entity_t>()(pair.body1);
+		}
+	};
+}
+
 namespace ecs {
 
 Manager::Manager() :
@@ -245,12 +266,7 @@ enum manager_collision_handle_response {
 };
 typedef uint8_t manager_collision_handle_response_flags;
 
-inline bool operator < (const std::pair<ecs::entity_t,ecs::entity_t>& l, const std::pair<ecs::entity_t, ecs::entity_t>& r) {
-	return (l.first != r.first && l.first < r.first) || l.second < r.second;
-}
-inline bool operator == (const std::pair<ecs::entity_t, ecs::entity_t>& l, const std::pair<ecs::entity_t, ecs::entity_t>& r) {
-	return l.first==r.first && l.second==r.second;
-}
+
 
 static manager_collision_handle_response manager_handle_collision_bodies(
 	Manager &manager,
@@ -259,7 +275,7 @@ static manager_collision_handle_response manager_handle_collision_bodies(
 	collision_body &body0,
 	collision_body &body1,
 	seconds_f32 delta_time,
-	std::unordered_set<std::pair<ecs::entity_t, ecs::entity_t>>& pairs_already_checked,
+	std::unordered_set<contact_pair> &pairs_already_checked,
 	const collision_response_flags flags
 ) {
 #if DBG_COLLISIONS
@@ -299,8 +315,8 @@ static manager_collision_handle_response manager_handle_collision_bodies(
 				space1.previous_position.x = space1.position.x - response1_restitution.restitution_displacement.x;
 				space1.previous_position.y = space1.position.y - response1_restitution.restitution_displacement.y;
 			}
-			auto p0 = std::make_pair(entity0,entity1);
-			auto p1 = std::make_pair(entity1, entity0);
+			auto p0 = contact_pair{entity0,entity1};
+			auto p1 = contact_pair{entity1, entity0};
 			if (pairs_already_checked.find(p0) == pairs_already_checked.end()) {
 
 				contact_manifolds* contact0 = manager.getComponent<contact_manifolds>(entity0);
@@ -327,8 +343,8 @@ static manager_collision_handle_response manager_handle_collision_bodies(
 			return manager_collision_handle_response_collision;
 		}
 		case collision_response_option_body0_trigger: {
-			auto p0 = std::make_pair(entity0, entity1);
-			auto p1 = std::make_pair(entity1, entity0);
+			auto p0 = contact_pair{entity0,entity1};
+			auto p1 = contact_pair{entity1, entity0};
 			if (pairs_already_checked.find(p0) == pairs_already_checked.end()) {
 				trigger_manifolds* trigger0 = manager.getComponent<trigger_manifolds>(entity0);
 				if (trigger0 != nullptr) {
@@ -346,8 +362,8 @@ static manager_collision_handle_response manager_handle_collision_bodies(
 			return manager_collision_handle_response_trigger;
 		}
 		case collision_response_option_body1_trigger: {
-			auto p0 = std::make_pair(entity0, entity1);
-			auto p1 = std::make_pair(entity1, entity0);
+			auto p0 = contact_pair{entity0,entity1};
+			auto p1 = contact_pair{entity1, entity0};
 			if (pairs_already_checked.find(p0) == pairs_already_checked.end()) {
 				trigger_manifolds* trigger1 = manager.getComponent<trigger_manifolds>(entity1);
 				if (trigger1 != nullptr) {
@@ -365,8 +381,8 @@ static manager_collision_handle_response manager_handle_collision_bodies(
 			return manager_collision_handle_response_trigger;
 		}
 		case collision_response_option_body0_trigger | collision_response_option_body1_trigger: {
-			auto p0 = std::make_pair(entity0, entity1);
-			auto p1 = std::make_pair(entity1, entity0);
+			auto p0 = contact_pair{entity0,entity1};
+			auto p1 = contact_pair{entity1, entity0};
 			if (pairs_already_checked.find(p0) == pairs_already_checked.end()) {
 				trigger_manifolds* trigger0 = manager.getComponent<trigger_manifolds>(entity0);
 				trigger_manifolds* trigger1 = manager.getComponent<trigger_manifolds>(entity1);
@@ -460,7 +476,7 @@ static void manager_update_collisions(Manager &manager, const std::vector<ecs::e
 				auto &&other_body = collision_check.body1;
 				auto &&other_collisionable = collision_check.collisionable1;
 
-				std::unordered_set<std::pair<ecs::entity_t, ecs::entity_t>> aux_set;// = std::unordered_set<std::pair<ecs::entity_t, ecs::entity_t>>();
+				std::unordered_set<contact_pair> aux_set{};// = std::unordered_set<std::pair<ecs::entity_t, ecs::entity_t>>();
 				manager_collision_handle_response collided = manager_handle_collision_bodies(manager, entity, other_entity, body, other_body, delta_time_seconds, aux_set, (
 					((entity_collisionable.options & collisionable_option_trigger) != 0)
 						| (((other_collisionable.options & collisionable_option_trigger) != 0) << 1)
