@@ -171,43 +171,39 @@ void MythicScene::create_a_mythic(const GameStructs::ButtonProperties& bp)
         });
 }
 
-//void MythicScene::refresh_my_mythic(const std::vector<MythicItem*> ml)
-//{
-//    //auto* mngr = Game::Instance()->get_mngr();
-//    //auto infos = mngr->getEntities(ecs::grp::REWARDDECK);
-//
-//    //// Obtener la referencia al mazo actualizado
-//    //auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
-//    //auto* deck = mngr->getComponent<Deck>(player);
-//    //auto& updatedCardList = deck->all_cards().card_list(); // Obtener los nuevos punteros
-//
-//    //auto itInfo = infos.begin();
-//    //auto itCard = updatedCardList.begin();
-//    //auto it = cl.begin();
-//
-//    //// Refrescar las texturas y actualizar punteros
-//    //for (; it != cl.end() && itCard != updatedCardList.end(); ++it, ++itInfo, ++itCard) {
-//    //    auto img = mngr->getComponent<transformless_dyn_image>(*itInfo);
-//    //    img->set_texture(&sdlutils().images().at(*it));
-//
-//    //    // Actualizar la referencia a la carta en el boton
-//    //    auto buttonComp = mngr->getComponent<Button>(*itInfo);
-//    //    if (buttonComp) {
-//    //        static_cast<CardButton*>(buttonComp)->set_it(*itCard); // Metodo para actualizar puntero
-//    //    }
-//    //}
-//
-//    //// Rellenar con imagenes vacias si hay menos cartas en el nuevo mazo
-//    //for (; itInfo != infos.end(); ++itInfo) {
-//    //    auto img = mngr->getComponent<transformless_dyn_image>(*itInfo);
-//    //    img->set_texture(&sdlutils().images().at("initial_info"));
-//
-//    //    auto buttonComp = mngr->getComponent<Button>(*itInfo);
-//    //    if (buttonComp) {
-//    //        static_cast<CardButton*>(buttonComp)->set_it(nullptr); // Poner puntero a nullptr si no hay carta
-//    //    }
-//    //}
-//}
+void MythicScene::refresh_my_mythic(const std::vector<MythicItem*> ml)
+{
+    auto* mngr = Game::Instance()->get_mngr();
+    auto infos = mngr->getEntities(ecs::grp::MYTHICOBJS);
+
+    // Ref to updated mythics
+    auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
+    MythicComponent* _m_mythics = mngr->getComponent<MythicComponent>(player);
+    std::vector<MythicItem*> pMythics = _m_mythics->get_mythics();
+
+    //// Refrescar las texturas y actualizar punteros
+    //for (; it != cl.end() && itCard != updatedCardList.end(); ++it, ++itInfo, ++itCard) {
+    //    auto img = mngr->getComponent<transformless_dyn_image>(*itInfo);
+    //    img->set_texture(&sdlutils().images().at(*it));
+
+    //    // Actualizar la referencia a la carta en el boton
+    //    auto buttonComp = mngr->getComponent<Button>(*itInfo);
+    //    if (buttonComp) {
+    //        static_cast<CardButton*>(buttonComp)->set_it(*itCard); // Metodo para actualizar puntero
+    //    }
+    //}
+
+    //// Rellenar con imagenes vacias si hay menos cartas en el nuevo mazo
+    //for (; itInfo != infos.end(); ++itInfo) {
+    //    auto img = mngr->getComponent<transformless_dyn_image>(*itInfo);
+    //    img->set_texture(&sdlutils().images().at("initial_info"));
+
+    //    auto buttonComp = mngr->getComponent<Button>(*itInfo);
+    //    if (buttonComp) {
+    //        static_cast<CardButton*>(buttonComp)->set_it(nullptr); // Poner puntero a nullptr si no hay carta
+    //    }
+    //}
+}
 
 std::string MythicScene::select_mythic(GameStructs::MythicType mt)
 {
