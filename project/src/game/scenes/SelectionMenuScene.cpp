@@ -23,7 +23,7 @@
 #include <algorithm>
 SelectionMenuScene::SelectionMenuScene() 
     : Scene(ecs::scene::SELECTIONMENUSCENE), _weapon_selected(false), _deck_selected(false), _last_weapon_button(nullptr), _last_deck_button(nullptr), 
-    _num_cards_of_deck(6), _activate_play_button(false) {
+    _num_cards_of_deck(4), _activate_play_button(false) {
 }
 
 SelectionMenuScene::~SelectionMenuScene()
@@ -68,16 +68,16 @@ void SelectionMenuScene::create_weapon_buttons() {
 
     buttonPropTemplate.rect.position.x += offsetX;  // Move to the right
     GameStructs::ButtonProperties another_B = buttonPropTemplate;
-    another_B.sprite_key = "ramp_canon_button";
-    create_weapon_button(GameStructs::RAMP_CANON, another_B);
+    another_B.sprite_key = "arma6_button";
+    create_weapon_button(GameStructs::WEAPON6, another_B);
 
     buttonPropTemplate.rect.position.y += umbral; // Move to the next row
     buttonPropTemplate.rect.position.x = startX;  // Reset X to the initial position
     buttonPropTemplate.rect.position.x += offsetX;  // Move to the right
 
     GameStructs::ButtonProperties another2 = buttonPropTemplate;
-    another2.sprite_key = "ramp_canon_button";
-    create_weapon_button(GameStructs::RAMP_CANON, another2);
+    another2.sprite_key = "arma7_button";
+    create_weapon_button(GameStructs::WEAPON7, another2);
 }
 
 void SelectionMenuScene::create_deck_buttons() {
@@ -115,9 +115,25 @@ void SelectionMenuScene::initScene() {
     create_deck_infos();
     create_enter_button();
 }
+void SelectionMenuScene::reset() {
+    _weapon_selected = false;
+    _deck_selected = false;
+    if (_last_deck_button != nullptr) {
+        _last_deck_button->apply_filter(255,255,255);
+        _last_deck_button->swap_textures();
+    }
+    _last_deck_button = nullptr;
+    if (_last_weapon_button != nullptr) {
+        _last_weapon_button->apply_filter(255, 255, 255);
+        _last_weapon_button->swap_textures();
+    }
+    _last_weapon_button = nullptr;
+    _activate_play_button = false;
+}
 void SelectionMenuScene::enterScene()
 {
     Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::SELECTIONMENUSCENE);
+    reset();
 }
 
 void SelectionMenuScene::exitScene()
@@ -160,6 +176,12 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
         case GameStructs::LIGHTBRINGER:
             mngr->addComponent<Lightbringer>(player);
             break;
+        case GameStructs::WEAPON6:
+            mngr->addComponent<Rampage>(player);
+            break;
+        case GameStructs::WEAPON7:
+            mngr->addComponent<Revolver>(player);
+            break;
         default:
             break;
         }
@@ -200,6 +222,12 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
             break;
         case GameStructs::LIGHTBRINGER:
             s = "lightbringer_";
+            break;
+        case GameStructs::WEAPON6:
+            s = "arma6_";
+            break;
+        case GameStructs::WEAPON7:
+            s = "arma7_";
             break;
         default:
             break;

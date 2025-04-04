@@ -71,7 +71,6 @@ private:
 	//method to create button to exchange card
 	void create_reward_exchange_button(const GameStructs::ButtonProperties& bp);
 
-
 	void add_new_reward_card();
 
 };

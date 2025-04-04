@@ -11,6 +11,8 @@ namespace GameStructs {
 		PUMP_SHOTGUN,
 		RAMP_CANON,
 		LIGHTBRINGER,
+		WEAPON6,
+		WEAPON7,
 		LAST_WEAPON,
 	};
 	enum DeckType {
