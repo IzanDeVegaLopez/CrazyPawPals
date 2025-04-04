@@ -462,9 +462,10 @@ static void manager_update_collisions(Manager &manager, const std::vector<ecs::e
 				}
 			}
 		}
-		constexpr static const size_t max_collision_passes = 1;
+		constexpr static const size_t max_collision_passes = 4;
 		size_t last_pass_collision_count;
 		size_t pass_count = 0;
+		std::unordered_set<contact_pair> aux_set{};
 		do {
 			last_pass_collision_count = 0;
 			for (size_t i = 0; i < collision_checks.size(); ++i) {
@@ -476,11 +477,12 @@ static void manager_update_collisions(Manager &manager, const std::vector<ecs::e
 				auto &&other_body = collision_check.body1;
 				auto &&other_collisionable = collision_check.collisionable1;
 
-				std::unordered_set<contact_pair> aux_set{};// = std::unordered_set<std::pair<ecs::entity_t, ecs::entity_t>>();
-				manager_collision_handle_response collided = manager_handle_collision_bodies(manager, entity, other_entity, body, other_body, delta_time_seconds, aux_set, (
+				manager_collision_handle_response collided = manager_handle_collision_bodies(
+					manager, entity, other_entity, body, other_body, delta_time_seconds, aux_set, (
 					((entity_collisionable.options & collisionable_option_trigger) != 0)
 						| (((other_collisionable.options & collisionable_option_trigger) != 0) << 1)
-				));
+					)
+				);
 	
 				switch (collided) {
 				case manager_collision_handle_response_none:
@@ -494,11 +496,12 @@ static void manager_update_collisions(Manager &manager, const std::vector<ecs::e
 						displacement.x * displacement.x + displacement.y * displacement.y;
 					constexpr static const float epsilon_displacement_length_sqr = 0.0000001f;
 					if (displacement_length_sqr > epsilon_displacement_length_sqr) {	
-						entity_collisionable.transform.setPos(Vector2D{
+						// this is done with assignment operator instead of setPos method to prevent the displacement vector to be mutated this frame while the correction happens
+						entity_collisionable.transform.getPos() = (Vector2D{
 							body.body.space.position.x + (body.body.space.position.x - body.body.space.previous_position.x),
 							body.body.space.position.y + (body.body.space.position.y - body.body.space.previous_position.y),
 						});
-						other_collisionable.transform.setPos(Vector2D{
+						other_collisionable.transform.getPos() = (Vector2D{
 							other_body.body.space.position.x + (other_body.body.space.position.x - other_body.body.space.previous_position.x),
 							other_body.body.space.position.y + (other_body.body.space.position.y - other_body.body.space.previous_position.y),
 						});
