@@ -29,7 +29,7 @@ void MythicScene::initScene()
     //Background
     create_static_background(&sdlutils().images().at("reward"));
     //Reward Buttons
-    //create_reward_buttons();
+    create_reward_buttons();
     //Mythics
     //create_my_mythic();
 }
@@ -75,8 +75,9 @@ ecs::entity_t MythicScene::create_mythic_button(const GameStructs::ButtonPropert
         Game::Instance()->get_mngr()->getComponent<camera_component>(
             Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
     );
+
     //used for change the sprite once a button is clicked
-    //auto data = mngr->addComponent<RewardDataComponent>(e, bp.sprite_key);
+    auto data = mngr->addComponent<MythicDataComponent>(e, bp.sprite_key);
 
     buttonComp->connectClick([buttonComp, imgComp, this, e]() {
         if (_selected) {
@@ -197,13 +198,13 @@ std::string MythicScene::select_mythic(GameStructs::MythicType mt)
     std::string s = "";
     switch (mt)
     {
-    case GameStructs::BLOODCLAW: s = "mythic";
+    case GameStructs::BLOODCLAW: s = "mythic_bloodclaw";
         break;
-    case GameStructs::MANASWAP: s = "mythic";
+    case GameStructs::MANASWAP: s = "mythic_manaswap";
         break;
-    case GameStructs::SHIELDHARVEST: s = "mythic";
+    case GameStructs::SHIELDHARVEST: s = "mythic_shieldharvest";
         break;
-    case GameStructs::MANACATALYST: s = "mythic";
+    case GameStructs::MANACATALYST: s = "mythic_manacatalyst";
         break;
     default:
         break;
@@ -249,29 +250,28 @@ void MythicScene::create_reward_buttons()
     buttonPropTemplate.rect.position.x += umbral * 2;
     create_mythic_button(buttonPropTemplate);
 
-    //selected button
-    buttonPropTemplate.ID = ecs::grp::UI;
-    buttonPropTemplate.sprite_key = "confirm_reward";
-    buttonPropTemplate.rect.position = { 0.35f, 0.35f };
-    buttonPropTemplate.rect.size = { 0.3f, 0.15f };
-    create_reward_selected_button(buttonPropTemplate);
+    ////selected button
+    //buttonPropTemplate.ID = ecs::grp::UI;
+    //buttonPropTemplate.sprite_key = "confirm_reward";
+    //buttonPropTemplate.rect.position = { 0.35f, 0.35f };
+    //buttonPropTemplate.rect.size = { 0.3f, 0.15f };
+    //create_reward_selected_button(buttonPropTemplate);
 
 }
 
 void MythicScene::refresh_mythics()
 {
-    //auto* mngr = Game::Instance()->get_mngr();
-    //auto& mythic_cards = mngr->getEntities(ecs::grp::MYTHICOBJS);
-    //std::unordered_set<std::string> appeared_mythic;
-    //GameStructs::MythicType ct;
-    ////refresh the three reward card button
-    //for (auto& e : mythic_cards) {
-    //    auto s = get_unique_mythic(appeared_mythic);
-    //    auto img = mngr->getComponent<transformless_dyn_image>(e);
-    //    img->set_texture(&sdlutils().images().at(s.first));
-    //    auto data = mngr->getComponent<MythicDataComponent>(e);
-    //    data->set_data(s.first, s.second);
-    //}
+    auto* mngr = Game::Instance()->get_mngr();
+    auto& mythic_cards = mngr->getEntities(ecs::grp::MYTHICOBJS);
+    std::unordered_set<std::string> appeared_mythic;
+    //refresh the three reward card button
+    for (auto& e : mythic_cards) {
+        auto s = get_unique_mythic(appeared_mythic);
+        auto img = mngr->getComponent<transformless_dyn_image>(e);
+        img->set_texture(&sdlutils().images().at(s.first));
+        auto data = mngr->getComponent<MythicDataComponent>(e);
+        data->set_data(s.first, s.second);
+    }
 }
 
 void MythicScene::create_reward_selected_button(const GameStructs::ButtonProperties& bp)

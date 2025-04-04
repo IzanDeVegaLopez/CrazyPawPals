@@ -15,6 +15,7 @@
       "id": "piu",
       "file": "resources/images/characters/piu.png"
     },
+
     {
       "id": "p_revolver",
       "file": "resources/images/projectiles/revolver.png"
@@ -83,6 +84,7 @@
       "id": "p_lightbringer_amp",
       "file": "resources/images/projectiles/SDL_logo.png"
     },
+
     {
       "id": "card_kunai",
       "file": "resources/images/cards/card_kunai.png"
@@ -241,6 +243,7 @@
       "id": "ratatouille",
       "file": "resources/images/enemies/ratatouille.png"
     },
+
     {
       "id": "heart",
       "file": "resources/images/ui/heart.png"
@@ -444,6 +447,22 @@
     {
       "id": "mythic",
       "file": "resources/images/ui/mythic.png"
+    },
+    {
+      "id": "mythic_bloodclaw",
+      "file": "resources/images/ui/mythic_bloodclaw.png"
+    },
+    {
+      "id": "mythic_manaswap",
+      "file": "resources/images/ui/mythic_manaswap.png"
+    },
+    {
+      "id": "mythic_shieldharvest",
+      "file": "resources/images/ui/mythic_shieldharvest.png"
+    },
+    {
+      "id": "mythic_manacatalyst",
+      "file": "resources/images/ui/mythic_manacatalyst.png"
     },
     {
       "id": "reward_health",
