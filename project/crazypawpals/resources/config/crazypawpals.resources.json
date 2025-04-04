@@ -299,7 +299,7 @@
     },
     {
       "id": "ramp_canon_button",
-      "file": "resources/images/ui/rampage_b.png"
+      "file": "resources/images/ui/ramp_canon_b.png"
     },
     {
       "id": "ramp_canon_info",
@@ -311,7 +311,7 @@
     },
     {
       "id": "lightbringer_button",
-      "file": "resources/images/ui/rampage_b.png"
+      "file": "resources/images/ui/lightbringer_b.png"
     },
     {
       "id": "lightbringer_info",
@@ -319,6 +319,30 @@
     },
     {
       "id": "lightbringer_button_selected",
+      "file": "resources/images/ui/weapon_selected_b.png"
+    },
+    {
+      "id": "arma6_button",
+      "file": "resources/images/ui/arma6_b.png"
+    },
+    {
+      "id": "arma6_info",
+      "file": "resources/images/ui/rampage_b_info.png"
+    },
+    {
+      "id": "arma6_button_selected",
+      "file": "resources/images/ui/weapon_selected_b.png"
+    },
+    {
+      "id": "arma7_button",
+      "file": "resources/images/ui/arma7_b.png"
+    },
+    {
+      "id": "arma7_info",
+      "file": "resources/images/ui/revolver_b_info.png"
+    },
+    {
+      "id": "arma7_button_selected",
       "file": "resources/images/ui/weapon_selected_b.png"
     },
     {
