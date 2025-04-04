@@ -9,6 +9,7 @@ namespace ecs {
 class Manager;
 }
 class Scene;
+class GameScene;
 class Game: public Singleton<Game>  {
 public:
 	enum State {
@@ -29,6 +30,7 @@ public:
 	event_system::event_manager* get_event_mngr();
 	
 	Scene* get_currentScene();
+	GameScene* get_gameScene();
 	void change_Scene(State);
 	std::pair<int,int> get_world_half_size() const;
 

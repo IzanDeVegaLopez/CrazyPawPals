@@ -168,6 +168,11 @@ Scene* Game::get_currentScene() {
 	return _scenes[_current_scene_index];
 }
 
+GameScene* Game::get_gameScene()
+{
+	return static_cast<GameScene*>(_scenes[GAMESCENE]);
+}
+
 std::pair<int, int> Game::get_world_half_size() const
 {
 	return std::pair<int, int>(15,8);

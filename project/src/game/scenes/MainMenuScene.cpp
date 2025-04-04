@@ -1,12 +1,14 @@
 #include "MainMenuScene.h"
 #include "../../our_scripts/components/ui/Button.h"
 #include "../../our_scripts/components/rendering/transformless_dyn_image.h"
+#include "../../our_scripts/components/movement/Transform.h"
 #include "../GameStructs.h"
 #include "../../utils/Vector2D.h"
 #include "../../sdlutils/SDLUtils.h"
 #include "../../sdlutils/InputHandler.h"
 #include "../../ecs/Entity.h"
 #include "../../sdlutils/Texture.h"
+#include "GameScene.h"
 MainMenuScene::MainMenuScene() : Scene(ecs::scene::MAINMENUSCENE)
 {
 	auto* mngr = Game::Instance()->get_mngr();
@@ -48,7 +50,24 @@ void MainMenuScene::initScene()
 
 void MainMenuScene::enterScene()
 {
-    Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::MAINMENUSCENE);
+    auto&& manager = *Game::Instance()->get_mngr();
+    ecs::entity_t camera = manager.getHandler(ecs::hdlr::CAMERA);
+    ecs::entity_t player = manager.getHandler(ecs::hdlr::PLAYER);
+
+    if (player->get_currCmps_size()<=0) {
+        player = Game::Instance()->get_gameScene()->create_player();
+
+        if (manager.hasComponent<camera_follow>(camera)) {
+            manager.removeComponent<camera_follow>(camera);
+            manager.addComponent<camera_follow>(camera, camera_follow_descriptor{
+           .previous_position = manager.getComponent<camera_component>(camera)->cam.camera.position,
+           .lookahead_time = 1.0f,
+           .semi_reach_time = 2.5f
+                }, *manager.getComponent<camera_component>(camera), *manager.getComponent<Transform>(player));
+
+        }
+    }
+    Game::Instance()->get_mngr()->change_ent_scene(camera, ecs::scene::MAINMENUSCENE);
 }
 
 void MainMenuScene::exitScene()

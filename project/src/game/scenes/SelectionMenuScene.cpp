@@ -117,11 +117,21 @@ void SelectionMenuScene::initScene() {
 }
 void SelectionMenuScene::enterScene()
 {
+    _weapon_selected = false;
+    _deck_selected = false;
+    _activate_play_button = false;
+    _last_weapon_button = nullptr;
+    _last_deck_button = nullptr;
     Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::SELECTIONMENUSCENE);
 }
 
 void SelectionMenuScene::exitScene()
 {
+    auto* mngr = Game::Instance()->get_mngr();
+    _last_weapon_button->swap_textures();
+    _last_deck_button->swap_textures();
+    auto imgComp = mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::TOGAMEBUTTON));
+    imgComp->swap_textures();
 }
 
 
@@ -138,12 +148,11 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
         Game::Instance()->get_mngr()->getComponent<camera_component>(
             Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
     );
-    auto player = mngr->getHandler(ecs::hdlr::PLAYER);
 
-    buttonComp->connectClick([buttonComp, imgComp, mngr, wt, player, this]() {
+    buttonComp->connectClick([buttonComp, imgComp, mngr, wt, this]() {
         
         std::string s;
-
+        auto player = mngr->getHandler(ecs::hdlr::PLAYER);
         switch (wt) {
         case GameStructs::REVOLVER:
             mngr->addComponent<Revolver>(player);
@@ -220,7 +229,6 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
     auto* mngr = Game::Instance()->get_mngr();
     auto e = create_button(bp);
     auto buttonComp = mngr->getComponent<Button>(e);
-    auto player = mngr->getHandler(ecs::hdlr::PLAYER);
     //used for change the sprite once a button is clicked
     auto imgComp = mngr->addComponent<ImageForButton>(e,
         &sdlutils().images().at(bp.sprite_key),
@@ -230,9 +238,9 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
         Game::Instance()->get_mngr()->getComponent<camera_component>(
             Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
     );
-    buttonComp->connectClick([buttonComp, imgComp, mngr, player, dt, this]() {
+    buttonComp->connectClick([buttonComp, imgComp, mngr, dt, this]() {
         std::list<Card*> cl = {};
-        
+        auto player = mngr->getHandler(ecs::hdlr::PLAYER);
         switch (dt)
         {
         case GameStructs::ONE:

@@ -237,7 +237,7 @@ ecs::entity_t GameScene::create_player()
 			player_transform
 		),
 		new render_ordering{ 1 },
-		new Health(100, true),
+		new Health(10, true),
 		new ManaComponent(),
 		// new StopOnBorder(camera, 1.5f, 2.0f),
 		&player_rigidbody,
