@@ -27,4 +27,5 @@ public:
 	void update(uint32_t delta_time) override;
 	void render() override;
 	void start_new_wave();
+	void reset();
 };

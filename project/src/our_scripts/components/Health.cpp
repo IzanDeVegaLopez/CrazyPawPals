@@ -36,7 +36,7 @@ Health::takeDamage(int damage) {
 			event_system::event_receiver::Msg msg;
 			msg.int_value = _maxHealth * 0.2;//magic number random?
 			Game::Instance()->get_event_mngr()->fire_event(_is_player? event_system::player_dead : event_system::enemy_dead, msg);
-			Game::Instance()->get_mngr()->setAlive(_ent, false);
+			if(!_is_player)Game::Instance()->get_mngr()->setAlive(_ent, false);
 		}
 	}
 	else _shield -= damage;
@@ -45,6 +45,10 @@ Health::takeDamage(int damage) {
 void
 Health::setMaxHeatlh(int maxHeatlh) {
 	if (maxHeatlh > 0) _maxHealth = maxHeatlh;
+}
+void Health::resetCurrentHeatlh()
+{
+	_currentHealth = _maxHealth;
 }
 int
 Health::getHealth() const { return _currentHealth; }

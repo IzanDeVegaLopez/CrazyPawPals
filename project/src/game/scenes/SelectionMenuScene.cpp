@@ -138,6 +138,15 @@ void SelectionMenuScene::enterScene()
 
 void SelectionMenuScene::exitScene()
 {
+    _weapon_selected = false;
+    _deck_selected = false;
+    _last_weapon_button->swap_textures();
+    _last_deck_button->swap_textures();
+    _last_weapon_button = nullptr;
+    _last_deck_button = nullptr;
+    _activate_play_button = false;
+    auto* mngr = Game::Instance()->get_mngr();
+    mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::TOGAMEBUTTON))->swap_textures();
 }
 
 

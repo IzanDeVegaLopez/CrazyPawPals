@@ -31,9 +31,10 @@ void offset_dyn_image::update(uint32_t delta_time)
 {
     if (isDamaged) {
         damageTimer += delta_time;
-        if (damageTimer >=damage_color_duration) {
+        if (damageTimer >= damage_color_duration) {
             damageTimer = 0;
             isDamaged = false;
         }
     }
+    else damageTimer = 0;
 }
