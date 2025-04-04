@@ -216,11 +216,23 @@ std::string MythicScene::select_mythic(GameStructs::MythicType mt)
     {
     case GameStructs::BLOODCLAW: s = "mythic_bloodclaw";
         break;
-    case GameStructs::MANASWAP: s = "mythic_manaswap";
+    case GameStructs::PROFANEHOTLINE: s = "mythic";
         break;
-    case GameStructs::SHIELDHARVEST: s = "mythic_shieldharvest";
+    case GameStructs::CURTAINREAPER: s = "mythic";
         break;
-    case GameStructs::MANACATALYST: s = "mythic_manacatalyst";
+    case GameStructs::INCENSE: s = "mythic";
+        break;
+    case GameStructs::ARCANESURGE: s = "mythic";
+        break;
+    case GameStructs::BLOODPACT: s = "mythic";
+        break;
+    case GameStructs::PRETERNATURALFORCE: s = "mythic";
+        break;
+    case GameStructs::CLAWFILE: s = "mythic";
+        break;
+    case GameStructs::MEOWORNEVER: s = "mythic";
+        break;
+    case GameStructs::ZOOMIESINDUCER: s = "mythic";
         break;
     default:
         break;
