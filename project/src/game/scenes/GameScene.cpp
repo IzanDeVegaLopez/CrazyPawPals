@@ -151,7 +151,7 @@ static ecs::entity_t create_environment() {
 	auto&& manager = *Game::Instance()->get_mngr();
 	auto environment = manager.addEntity(ecs::scene::GAMESCENE);
 	auto &&tr = *manager.addComponent<Transform>(environment, Vector2D(-16.0, 9.0), Vector2D(0.0, 0.0), 0.0f, 0.05f);
-	auto &&rect = *manager.addComponent<rect_component>(environment, 0.0f, 0.0f, 32.0f, 18.0f);
+	auto &&rect = *manager.addComponent<rect_component>(environment, -0.5f, 0.5f, 35.0f, 20.0f);
 	(void)tr;
 	manager.addComponent<offset_dyn_image>(environment, rect_f32{
 		{0.0, 0.0},
@@ -985,7 +985,7 @@ void GameScene::spawn_wave_manager()
 void GameScene::spawn_fog()
 {
 	auto&& transform = *new Transform({ 0.0f, 0.0f }, { 0.0f,0.0f }, 0.0f, 1.0f);
-	auto&& rect = *new rect_component{ 0.0f, 0.0f, 20.0f, 20.0f};
+	auto&& rect = *new rect_component{ 0.0f, 0.0f, 35.0f, 20.0f};
 	dyn_image* this_fog_image = new dyn_image(
 		rect_f32{ {0,0},{1,1} },
 		rect,
