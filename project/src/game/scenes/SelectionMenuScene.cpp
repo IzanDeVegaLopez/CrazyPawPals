@@ -348,7 +348,6 @@ void SelectionMenuScene::create_enter_button() {
 
     buttonComp->connectClick([buttonComp, mngr, this]() {
         if (_weapon_selected && _deck_selected) {
-            std::cout << "miau"<<std::endl;
             Game::Instance()->change_Scene(Game::GAMESCENE);
         }
     }); 
