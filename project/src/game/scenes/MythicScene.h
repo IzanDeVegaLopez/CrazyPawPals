@@ -28,7 +28,7 @@ private:
 	//methods to show your actual mythic objects
 	void create_my_mythic();
 	//method to create the mythics i got
-	void create_a_mythic(const GameStructs::CardButtonProperties& bp);
+	void create_a_mythic(const GameStructs::ButtonProperties& bp);
 	void refresh_my_mythic(const std::vector<MythicItem*> ml); //ml - Mythic List
 
 	//General mythic part

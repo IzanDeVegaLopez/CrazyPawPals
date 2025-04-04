@@ -31,7 +31,7 @@ void MythicScene::initScene()
     //Reward Buttons
     create_reward_buttons();
     //Mythics
-    //create_my_mythic();
+    create_my_mythic();
 }
 
 void MythicScene::enterScene()
@@ -118,41 +118,57 @@ void MythicScene::create_my_mythic()
     //Get Player´s mythics
     auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
     if (player && !mngr->hasComponent<MythicComponent>(player)) {
-        //when we add these entities, our olayer doesnt have any deck as component
+        //when we add this
         mngr->addComponent<MythicComponent>(player);
     }
 
     MythicComponent* _m_mythics = mngr->getComponent<MythicComponent>(player);
     std::vector<MythicItem*> pMythics = _m_mythics->get_mythics();
 
-    for (MythicItem* mi : pMythics) {
-
-    }
-
-    //float umbral = 0.095f;
-    //auto iterator = _m_mythics->all_cards().card_list().begin();
-    GameStructs::ButtonProperties{
-
+    float umbral = 0.095f;
+    GameStructs::ButtonProperties propTemplate = {
+        { {0.01f, 0.65f}, {0.1f, 0.175f} },
+        0.0f, "", ecs::grp::MYTHICOBJS
     };
 
-   /* for (const auto& it : pDeck) {
-        propTemplate.sprite_key = it;
-        create_a_deck_card(propTemplate);
-        propTemplate.rect.position.x += umbral;
-        iterator++;
-        if (iterator == _m_deck->all_cards().card_list().end()) {
-            propTemplate.iterator = nullptr;
+    //Creates buttons related to player mythics
+    for (MythicItem* mi : pMythics) {
+        std::string typeName = typeid(*mi).name();
+        std::string prefix = "class ";
+        if (typeName.find(prefix) == 0) {  
+            typeName = typeName.substr(prefix.size()); 
+            for (int i = 0; i < typeName.size(); i++)
+            {
+                typeName = tolower(typeName[i]);
+            }
         }
-    }
-    for (int i = 0; i < 4; ++i) {
-        propTemplate.sprite_key = "initial_info";
-        create_a_deck_card(propTemplate);
+        propTemplate.sprite_key = "mythic_" + typeName;
+        create_a_mythic(propTemplate);
         propTemplate.rect.position.x += umbral;
-    }*/
+
+    }
 }
 
-void MythicScene::create_a_mythic(const GameStructs::CardButtonProperties& bp)
+void MythicScene::create_a_mythic(const GameStructs::ButtonProperties& bp)
 {
+    ecs::Manager* mngr = Game::Instance()->get_mngr();
+
+    //Button
+    auto e = create_button(bp);
+    auto buttonComp = mngr->getComponent<Button>(e);
+    auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
+    
+    //No need for connectClick (it does nothing)
+    buttonComp->connectHover([buttonComp, imgComp]() {
+        std::cout << "hover -> Mythic button: " << std::endl;
+        //filter
+        imgComp->apply_filter(128, 128, 128);
+        });
+    buttonComp->connectExit([buttonComp, imgComp]() {
+        std::cout << "exit -> Mythic button: " << std::endl;
+        //filter
+        imgComp->apply_filter(255, 255, 255);
+        });
 }
 
 //void MythicScene::refresh_my_mythic(const std::vector<MythicItem*> ml)
@@ -250,12 +266,12 @@ void MythicScene::create_reward_buttons()
     buttonPropTemplate.rect.position.x += umbral * 2;
     create_mythic_button(buttonPropTemplate);
 
-    ////selected button
-    //buttonPropTemplate.ID = ecs::grp::UI;
-    //buttonPropTemplate.sprite_key = "confirm_reward";
-    //buttonPropTemplate.rect.position = { 0.35f, 0.35f };
-    //buttonPropTemplate.rect.size = { 0.3f, 0.15f };
-    //create_reward_selected_button(buttonPropTemplate);
+    //selected button
+    buttonPropTemplate.ID = ecs::grp::UI;
+    buttonPropTemplate.sprite_key = "confirm_reward";
+    buttonPropTemplate.rect.position = { 0.35f, 0.35f };
+    buttonPropTemplate.rect.size = { 0.3f, 0.15f };
+    create_reward_selected_button(buttonPropTemplate);
 
 }
 
