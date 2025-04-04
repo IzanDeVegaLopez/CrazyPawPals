@@ -81,6 +81,10 @@ bool Game::init() {
 	// disable mipmap
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 	
+	// fullscreen mode
+	// HACK: uncomment this to fullscreen
+	// SDL_SetWindowFullscreen(sdlutils().window(), SDL_WINDOW_FULLSCREEN_DESKTOP);
+	
 	_mngr = new ecs::Manager();
 
 	// Inicializar el vector de escenas
