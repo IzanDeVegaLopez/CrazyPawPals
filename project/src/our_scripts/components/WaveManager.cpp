@@ -119,6 +119,11 @@ WaveManager::spawn_next_enemy() {
                 case super_michi_mafioso:
                     static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_super_michi_mafioso(posVec);
                     break;
+                case rata_basurera:
+                    //"posVec" es un vector tan grande que los enemigos aparecen fuera del mapa.
+                    //Si el enemigo se mueve da igual, pero este no se mueve nunca, asiq tiene que aparecer dentro del mapa.
+                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_rata_basurera({ 13,6 });
+                    break;
                 default: {
                     assert(false && "unreachable");
                     exit(EXIT_FAILURE);
@@ -158,6 +163,8 @@ void WaveManager::add_num_enemy()
 //---------------------------------------------------------------------------------------------------------------------------------
 void WaveManager::update(uint32_t delta_time) {
     _currentWaveTime = sdlutils().virtualTimer().currRealTime() - _currentWaveInitTime;
+
+    _current_wave_event->update(delta_time);
     //tries spawning enemies
     if (can_spawn_next_enemy())
         spawn_next_enemy();

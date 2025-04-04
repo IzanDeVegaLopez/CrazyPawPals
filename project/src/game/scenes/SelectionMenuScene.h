@@ -39,4 +39,6 @@ private:
 	int _num_cards_of_deck;
 
 	bool _activate_play_button;
+
+	void reset();
 };

@@ -66,6 +66,11 @@ static star_drop star_shower_event_create_star_drop(
         sdlutils().images().at("p_boom"),
         star_transform
     );
+    render_ordering &star_ordering = *manager.addComponent<render_ordering>(
+        star_entity,
+        64
+    );
+    (void)star_ordering;
     (void)star_image;
 
     Transform &shadow_transform = *manager.addComponent<Transform>(
@@ -89,16 +94,16 @@ static star_drop star_shower_event_create_star_drop(
         shadow_transform
     );
 
-    return {
-        mark_entity,
-        star_entity,
-        &star_transform,
-        &shadow_image,
-        &shadow_rect,
-        descriptor.damage_amount,
-        descriptor.fall_time,
-        descriptor.drop_radius,
-        drop_speed
+    return star_drop{
+        .mark_entity = mark_entity,
+        .star_entity = star_entity,
+        .star_transform = &star_transform,
+        .shadow_image = &shadow_image,
+        .shadow_rect = &shadow_rect,
+        .damage_amount = descriptor.damage_amount,
+        .remaining_fall_time = descriptor.fall_time,
+        .radius = descriptor.drop_radius,
+        .fall_speed = drop_speed
     };
 }
 
@@ -214,10 +219,6 @@ void star_shower_event::update(unsigned int delta_time) {
                     star_drop.star_transform->getPos()
                         + Vector2D{0.0, -1.0} * (star_drop.fall_speed * delta_time_seconds)
                 );
-                
-                if (i == 0) {
-                    std::cout << "position: " << star_drop.star_transform->getPos().getX() << ", " << star_drop.star_transform->getPos().getY() << std::endl;
-                }
                 star_drop.remaining_fall_time -= delta_time_seconds;
             }
         }

@@ -128,6 +128,10 @@ void PlayerHUD::render()
 #pragma endregion
 
 #pragma region cards
+	card_rendering_descriptor crd = card_rendering_descriptor();
+	crd.mana_cost_font_key = "ARIAL16";
+	crd.mana_cost_color = { 81, 100, 222, 255 };
+	crd.health_cost_color = { 200, 80, 100, 255 };
 	AnimationVars av = _deck->animation_vars();
 #pragma region camera_definition
 	camera_screen cam_screen = camera_screen();
@@ -137,19 +141,51 @@ void PlayerHUD::render()
 	//camera screen on pixels size
 	cam_screen.screen = { position.first, position.second };
 #pragma endregion
+	float percentual_time_to_card_in_position = (sdlutils().virtualTimer().currTime() - av._last_card_draw_time) / (float)av._card_draw_anim_duration;
+
+#pragma region cards_in_queue
+	auto it = _deck->get_draw_pile().rbegin();
+	int8_t card_pos_mod = _deck->get_draw_pile().size();
+
+	while (it != _deck->get_draw_pile().rend()) {
+		crd.mana_cost_subrect = { {0.1,0.2},{0,0} };
+		crd.card_image_key = "card_back";// : (*it)->get_name().data();
+		crd.mana_cost = (*it)->get_costs().get_mana();
+		crd.health_cost = (*it)->get_costs().get_health();
+		crd.health_cost_subrect = { {0.55,0.2},{0,0} };
+
+		card_rendering_descriptor_render(
+			crd,
+			cam_screen,
+			//take renderer
+			*sdlutils().renderer(),
+			//destination rect --> where will the card be placed (position, size in world units)
+			{ {-8,std::lerp((float)card_pos_mod + (_deck->last_milled_card()!=nullptr ? 2.0f : 1.0f),(float)card_pos_mod,std::min(percentual_time_to_card_in_position,1.0f))*1.0f - 3.5f},{2,2.5f}},
+			//src subrect --> if our image is only 1 take this parameters
+			//if we have a map of 5x6 cards and we wanted to render card (3,2) being first card(0,0), and last (4,5)
+			//values would be --> { {3/5, 2/6}, {1/5,1/6} }
+			{ {0,0},{1,1} },
+			//rotation
+			0,
+			//adittional options
+			//card_rendering_descriptor_options_none,
+			//card_rendering_descriptor_options_flip_horizontal,
+			//card_rendering_descriptor_options_flip_vertical,
+			//card_rendering_descriptor_options_full_subrect
+			card_rendering_descriptor_options_none
+		);
+		--card_pos_mod;
+		++it;
+	}
+#pragma endregion
 
 #pragma region hand_card
 	//Mostrar carta en la mano
 	//Mostrar n? cartas draw_pile and discard_pile
-	card_rendering_descriptor crd = card_rendering_descriptor();
 	//Position and scale for the cost --> both values from 0 to 1
 
 	//Funci�n que calcula la posici�n de una carta seg�n el tiempo
-	float percentual_time_to_card_in_position = (sdlutils().virtualTimer().currTime() - av._last_card_draw_time) / (float)av._card_draw_anim_duration;
-
-	crd.mana_cost_font_key = "ARIAL16";
-	crd.mana_cost_color = { 81, 100, 222, 255 };
-	crd.health_cost_color = { 200, 80, 100, 255 };
+	
 	if (_deck->hand() == nullptr) {
 		crd.card_image_key = "card_reloading";
 		crd.mana_cost_subrect = { {0,0.2},{0,0} };
@@ -169,7 +205,7 @@ void PlayerHUD::render()
 		//take renderer
 		*sdlutils().renderer(),
 		//destination rect --> where will the card be placed (position, size in world units)
-		{ {(float)std::lerp(-6,-8, std::min(percentual_time_to_card_in_position,1.0f)),-3.5f},{(percentual_time_to_card_in_position < 0.5f) ? (float)std::lerp(2,0,std::min(percentual_time_to_card_in_position * 2,1.0f)) : (float)std::lerp(0,2,std::min((percentual_time_to_card_in_position - 0.5f) * 2,1.0f)),2.5f} },
+		{ {-8.0f,std::lerp(-2.5f,-3.5f,std::min(1.0f,percentual_time_to_card_in_position))},{(percentual_time_to_card_in_position < 0.5f) ? (float)std::lerp(2,0,std::min(percentual_time_to_card_in_position * 2,1.0f)) : (float)std::lerp(0,2,std::min((percentual_time_to_card_in_position - 0.5f) * 2,1.0f)),2.5f}},
 		//src subrect --> if our image is only 1 take this parameters
 		//if we have a map of 5x6 cards and we wanted to render card (3,2) being first card(0,0), and last (4,5)
 		//values would be --> { {3/5, 2/6}, {1/5,1/6} }
@@ -197,7 +233,7 @@ void PlayerHUD::render()
 		crd.health_cost_subrect = { {0.0f,0.7f - 0.2f * scale},{0.4f,0.4f * scale} };
 		crd.mana_cost_color = { 81, 100, 222, 255 };
 		crd.health_cost_color = { 200, 80, 100, 255 };
-		crd.card_image_key = _deck->last_milled_card()->get_name().data();
+		crd.card_image_key = percentual_time_to_card_in_position < 0.5f ? "card_back" : _deck->last_milled_card()->get_name().data();
 		crd.mana_cost = _deck->last_milled_card()->get_costs().get_mana();
 
 		//Function for rendering a card
@@ -207,7 +243,7 @@ void PlayerHUD::render()
 			//take renderer
 			*sdlutils().renderer(),
 			//destination rect --> where will the card be placed (position, size in world units)
-			{ {-6,std::lerp(-3.0f,-2.5f,percentual_time_to_card_in_position)},{2,2.5f * scale} },
+			{ {std::lerp(-8.0f,-6.0f, std::min(percentual_time_to_card_in_position*4,1.0f)),std::lerp(-3.0f,-2.5f,percentual_time_to_card_in_position)},{(percentual_time_to_card_in_position < 0.25f) ? (float)std::lerp(2,0,std::min(percentual_time_to_card_in_position * 4,1.0f)) : (float)std::lerp(0,2,std::min((percentual_time_to_card_in_position - 0.25f) * 4,1.0f)),2.5f} },
 			//src subrect --> if our image is only 1 take this parameters
 			//if we have a map of 5x6 cards and we wanted to render card (3,2) being first card(0,0), and last (4,5)
 			//values would be --> { {3/5, 2/6}, {1/5,1/6} }
