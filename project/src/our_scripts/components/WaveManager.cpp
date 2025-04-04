@@ -163,6 +163,8 @@ void WaveManager::add_num_enemy()
 //---------------------------------------------------------------------------------------------------------------------------------
 void WaveManager::update(uint32_t delta_time) {
     _currentWaveTime = sdlutils().virtualTimer().currRealTime() - _currentWaveInitTime;
+
+    _current_wave_event->update(delta_time);
     //tries spawning enemies
     if (can_spawn_next_enemy())
         spawn_next_enemy();
