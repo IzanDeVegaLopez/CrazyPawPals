@@ -56,3 +56,18 @@ bool bullet_collision_component::check_if_valid_collision(ecs::entity_t ent_col)
         return false;
     }
 }
+
+
+
+void ratatouille_collision_component::on_contact(const collision_manifold& tm) {
+    ecs::entity_t entity_collided_with = (_ent == tm.body0) ? tm.body1 : tm.body0;
+    uint32_t current_time = sdlutils().virtualTimer().currTime();
+    auto&& manager = *Game::Instance()->get_mngr();
+    if (manager.hasComponent<player_collision_triggerer>(entity_collided_with)) {
+        if (current_time - last_damage_time >= damage_interval) {
+            auto health = manager.getComponent<Health>(entity_collided_with);
+            health->takeDamage(my_damage);
+            last_damage_time = current_time;  
+        }
+    }
+}

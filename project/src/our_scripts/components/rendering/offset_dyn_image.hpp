@@ -25,7 +25,6 @@ struct offset_dyn_image : public ecs::Component {
 
 	virtual void render() override;
 	void update(uint32_t delta_time) override;
-	void setRenderColor(int r, int g, int b);
 
 	//static_assert(false);
 	inline offset_dyn_image(

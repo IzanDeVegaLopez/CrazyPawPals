@@ -42,6 +42,8 @@
 #include "../../our_scripts/components/weapons/enemies/WeaponSarnoRata.h"
 #include "../../our_scripts/components/weapons/enemies/WeaponBoom.h"
 #include "../../our_scripts/components/weapons/enemies/WeaponCatKuza.h"
+#include "../../our_scripts/components/weapons/enemies/WeaponRataBasurera.h"
+#include "../../our_scripts/components/weapons/enemies/WeaponReyBasurero.h"
 #include "../../our_scripts/components/Health.h"
 #include "../../our_scripts/components/bullet_collision_component.hpp"
 #include "../../our_scripts/components/fog_collision_component.hpp"
@@ -178,7 +180,7 @@ void GameScene::initScene() {
 
 	manager.refresh();
 	create_environment();
-	spawn_catkuza(Vector2D{5.0f, 0.0f});
+	//spawn_catkuza(Vector2D{5.0f, 0.0f});
 	//spawn_super_michi_mafioso(Vector2D{5.0f, 0.0f});
 	spawn_fog();
 	spawn_wave_manager();
@@ -210,6 +212,9 @@ void GameScene::exitScene()
 {
 }
 
+//metodos de create/spawn
+
+#pragma region Player
 ecs::entity_t GameScene::create_player()
 {
 	auto &&manager = *Game::Instance()->get_mngr();
@@ -251,6 +256,9 @@ ecs::entity_t GameScene::create_player()
 	return player;
 }
 
+#pragma endregion
+
+#pragma region Enemy
 struct EnemySpawnConfig {
 	Transform* tr;
 	std::string spriteKey;
@@ -288,13 +296,11 @@ ecs::entity_t GameScene::create_enemy(EnemySpawnConfig&& ec){
 		&col
 	);
 
-	// BUG: ^^^^ justo ahí arriba se añade el weapon
-	//para ratatouille es necesario saber si es null weapon
-	//if (ec.weapon != nullptr)manager.addExistingComponent<Weapon>(e, ec.weapon);
-
 	return e;
 }
+#pragma endregion
 
+#pragma region Super Michi Mafioso
 void GameScene::spawn_super_michi_mafioso(Vector2D posVec)
 {
 	auto&& manager = *Game::Instance()->get_mngr();
@@ -405,23 +411,15 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec)
 	// Estado inicial
 	state->set_initial_state("Walking");
 }
+#pragma endregion
 
-
-void GameScene::add_transition(StateMachine& state, const std::string& from, const std::string& to, const std::function<bool()>& condition) {
-	state.add_transition(from, to, [condition]() {
-		return condition();
-	});
-}
-
+#pragma region Catkuza
 void 
 GameScene::spawn_catkuza(Vector2D posVec) {
 	auto&& manager = *Game::Instance()->get_mngr();
 	auto&& weapon = *new WeaponCatKuza();
 	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
-	/*auto&& rect = *new rect_component{ 0, 0,  1.5f * randSize, 2.0f * randSize };
-	auto &&rigidbody = *new rigidbody_component{rect_f32{{0.0f, -0.15f}, {0.5f, 0.6f}}, mass_f32{3.0f}, 0.05f};*/
-	
 	auto e = create_enemy(EnemySpawnConfig{ &tr, "catkuza", static_cast<Weapon*>(&weapon), 2, 2.0f, 2.25f });
 
 	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.05f, 5.0f, 20.0 * deccel_spawned_creatures_multi));
@@ -472,9 +470,6 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 			Vector2D shootDir = (_p_tr->getPos() - shootPos).normalize();
 
 			Vector2D dash_target = _p_tr->getPos() + shootDir * 1.8f;
-			/*std::cout << dash_target << std::endl;
-			mc.dash(dash_target, 1000);*/
-
 			weapon.dash_attack(shootPos, dash_target);
 		}
 	);
@@ -495,12 +490,10 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	state.add_state("Waiting", waitingState);
 
 	//Transiciones Patrón 1
-	add_transition(state, "Walking", "Charging",
+	state.add_transition("Walking", "Charging",
 		[state_cm, _p_tr, &tr, &weapon]() {
 			bool trans = state_cm->is_player_near(_p_tr, &tr, 5.0f) && state_cm->get_current_pattern() == "PATTERN_1";
 			if (trans) {
-				
-
 				state_cm->reset_cooldown("charging_duration", sdlutils().currRealTime());
 				weapon.set_player_pos(_p_tr->getPos());
 			}
@@ -508,12 +501,10 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 		}
 	);
 
-	add_transition(state, "Charging", "WindAttack",
+	state.add_transition("Charging", "WindAttack",
 		[state_cm, &weapon, _p_tr]() {
 			bool trans = state_cm->can_use("charging_duration", sdlutils().currRealTime());
 			if (trans) {
-				
-
 				state_cm->reset_cooldown("wind_attack_duration", sdlutils().currRealTime());
 				weapon.set_player_pos(_p_tr->getPos());
 			}
@@ -521,7 +512,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 		}
 	);
 
-	add_transition(state, "WindAttack", "Dash",
+	state.add_transition("WindAttack", "Dash",
 		[state_cm, &weapon, _p_tr]() {
 			bool trans = state_cm->can_use("wind_attack_duration", sdlutils().currRealTime());
 			if (trans ) {
@@ -534,32 +525,20 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 		}
 	);
 
-	/*add_transition(state, "Dash", "DashAttack",
-		[state_cm, &weapon, _p_tr]() {
-			std::cout << "PATTERN_1 DashAttack" << std::endl;
-			state_cm->reset_cooldown("dash_attack_duration", sdlutils().currRealTime());
-			return true;
-		}
-	);*/
-
-	add_transition(state, "Dash", "WindAttack2",
+	state.add_transition("Dash", "WindAttack2",
 		[state_cm]() {
 			bool trans = state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
 			if (trans) {
-				
-
 				state_cm->reset_cooldown("wind_attack_duration", sdlutils().currRealTime());
 			}
 			return trans;
 		}
 	);
 
-	add_transition(state, "WindAttack2", "Walking",
+	state.add_transition("WindAttack2", "Walking",
 		[state_cm]() {
 			bool trans = state_cm->can_use("wind_attack_duration", sdlutils().currRealTime());
 			if (trans) {
-				
-
 				state_cm->reset_cooldown("wind_attack_duration", sdlutils().currRealTime());
 				state_cm->switch_pattern();
 			}
@@ -569,7 +548,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 
 
 	// Transiciones Patrón 2
-	add_transition(state, "Walking", "Dash2",
+	state.add_transition("Walking", "Dash2",
 		[state_cm, _p_tr, &tr, &weapon]() {
 			bool trans =state_cm->get_current_pattern() == "PATTERN_2" && state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
 			if (trans) {
@@ -580,40 +559,37 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 		}
 	);
 
-	add_transition(state, "Dash2", "AreaAttack",
+	state.add_transition("Dash2", "AreaAttack",
 		[state_cm, _p_tr, &tr, &weapon]() {
 			
 			bool trans = state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
 			if (trans) {
 				state_cm->reset_cooldown("explosion_attack_duration", sdlutils().currRealTime());
-				
 			}
 			return trans;
 		}
 	);
 	
-	add_transition(state, "AreaAttack", "Dash3",
+	state.add_transition("AreaAttack", "Dash3",
 		[state_cm, _p_tr, &tr, &weapon]() {
 			
 			bool trans = state_cm->can_use("explosion_attack_duration", sdlutils().currRealTime());
 			if (trans) {
 				state_cm->reset_cooldown("dash_attack_duration", sdlutils().currRealTime());
-				
 				weapon.set_player_pos(_p_tr->getPos());
 			}
 			return trans;
 		}
 	);
 
-	add_transition(state, "Dash3", "DashAttack",
+	state.add_transition("Dash3", "DashAttack",
 		[state_cm, _p_tr, &tr, &weapon]() {
 			state_cm->reset_cooldown("dash_attack_duration", sdlutils().currRealTime());
-			
 			return true;
 		}
 	);
 
-	add_transition(state, "DashAttack", "Walking",
+	state.add_transition("DashAttack", "Walking",
 		[state_cm, _p_tr, &tr, &weapon]() {
 			bool trans = state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
 			if (trans) {
@@ -628,8 +604,9 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	// Estado inicial
 	state.set_initial_state("Walking");
 }
+#pragma endregion
 
-
+#pragma region Sarno Rata
 void 
 GameScene::spawn_sarno_rata(Vector2D posVec)
 {
@@ -664,7 +641,7 @@ GameScene::spawn_sarno_rata(Vector2D posVec)
 
 	// De: Attacking a: Walking, Condición: Jugador lejos
     state->add_transition("Attacking", "Walking", [state_cm, _p_tr, &tr]() {
-        return !state_cm->is_player_near(_p_tr, &tr, 3.0f);
+        return !state_cm->is_player_near(_p_tr, &tr, 1.1f);
     });
 
 	
@@ -735,7 +712,9 @@ void GameScene::spawn_michi_mafioso(Vector2D posVec)
     // Estado inicial
     state->set_initial_state("Walking");
 }
+#pragma endregion
 
+#pragma region Plim Plim
 void GameScene::spawn_plim_plim(Vector2D posVec)
 {
 	auto&& manager = *Game::Instance()->get_mngr();
@@ -774,8 +753,9 @@ void GameScene::spawn_plim_plim(Vector2D posVec)
     // Estado inicial
     state->set_initial_state("Walking");
 }
+#pragma endregion
 
-
+#pragma region Boom
 void GameScene::spawn_boom(Vector2D posVec)
 {
 	auto&& manager = *Game::Instance()->get_mngr();
@@ -810,20 +790,47 @@ void GameScene::spawn_boom(Vector2D posVec)
     // Estado inicial
     state->set_initial_state("Walking");
 }
+#pragma endregion
 
+#pragma region Ratatouille
 void GameScene::spawn_ratatouille(Vector2D posVec)
 {
+	//no llama al create enemy porque no tiene weapon, y va ser diferente las colisiones
+	float randSpeed = float(sdlutils().rand().nextInt(10, 20) / 10.0f);
+	int damage = 5;
 	auto&& manager = *Game::Instance()->get_mngr();
-	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
-	auto e = create_enemy(EnemySpawnConfig{ &tr, "ratatouille", nullptr, 2, 1.0f, 1.0f });
-	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.06, 5.0f, 20.0*deccel_spawned_creatures_multi));
+	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
+	auto&& rect = *new rect_component{ 0, 0,0.8f, 0.8f };
+	auto&& rigidbody = *new rigidbody_component(rect_f32{{0.0f, -0.15f}, {0.5f, 0.6f}}, mass_f32{3.0f}, 0.05f );
+	auto&& col = *new collisionable(tr, rigidbody, rect, collisionable_option_trigger );
+
+	auto e = create_entity(
+		ecs::grp::ENEMY,
+		ecs::scene::GAMESCENE,
+	    &tr,
+		&rect,
+		new dyn_image(
+			rect_f32{ {0,0},{1,1} },
+			rect,
+			manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam,
+			sdlutils().images().at("ratatouille"),
+			tr
+		),
+		new Health(10),
+		new FlipXController(),
+		new enemy_collision_triggerer(),
+		new id_component(),
+		new ratatouille_collision_component(damage,2),
+		&rigidbody,
+		&col
+	);
+
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.06* randSpeed, 5.0f* randSpeed, 20.0 * deccel_spawned_creatures_multi));
 
 	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
-
 	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
 
-	//	StateMachine(ConditionManager& conditionManager, Transform* playerTransform, Transform* enemyTransform, float dist);
 	auto state = manager.addComponent<StateMachine>(e);
 	auto state_cm = state->getConditionManager();
 
@@ -835,7 +842,7 @@ void GameScene::spawn_ratatouille(Vector2D posVec)
 	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
 	state->add_state("Rotating", std::static_pointer_cast<State>(rotatingState));
 
-	float dist_to_rotate = 4.0f;
+	float dist_to_rotate = 3.5f;
 
 	// Condiciones de cada estado
 	// De: Walking a: Rotating, Condición: Jugador cerca
@@ -845,14 +852,106 @@ void GameScene::spawn_ratatouille(Vector2D posVec)
 
 	// De: Rotating a: Walking, Condición: Jugador lejos
 	state->add_transition("Rotating", "Walking", [state_cm, _p_tr, &tr, dist_to_rotate]() {
-		return !state_cm->is_player_near(_p_tr, &tr, dist_to_rotate * 2);
+		return !state_cm->is_player_near(_p_tr, &tr, dist_to_rotate * 1.8f);
 		});
 
 
 	// Estado inicial
 	state->set_initial_state("Walking");
 }
+#pragma endregion
 
+#pragma region Rata_Basurera
+void GameScene::spawn_rata_basurera(Vector2D posVec) {
+
+	auto&& manager = *Game::Instance()->get_mngr();
+	auto&& weapon = *new WeaponRataBasurera();
+	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
+
+	auto e = create_enemy(EnemySpawnConfig{ &tr, "rata_basurera", static_cast<Weapon*>(&weapon), 2, 1.8f, 1.8f });
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.01, 0.1f, 20.0 * deccel_spawned_creatures_multi));
+
+	//Le pasamos el componente "Health" al componente "WeaponRataBasurera"
+	//para que al morir pueda generar al Rey del Basurero
+	weapon.sendHealthComponent(Game::Instance()->get_mngr()->getComponent<Health>(e));
+
+	ConditionManager conditionManager;
+
+	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
+
+	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
+
+	auto state = manager.addComponent<StateMachine>(e);
+
+	// Crear estados
+	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
+	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon);
+
+	//poner los estado a la state
+	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
+	state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));
+
+	// Condiciones de cada estado
+	// De: Walking a: Attacking, Condición: Jugador a distancia correcta
+	state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr]() {
+		return conditionManager.is_player_near(_p_tr, &tr, 50.0f);
+		});
+
+	// De: Attacking a: Walking, Condición: Jugador se aleja demasiado
+	state->add_transition("Attacking", "Walking", [&conditionManager, _p_tr, &tr]() {
+		return !conditionManager.is_player_near(_p_tr, &tr, 55.0f);
+		});
+
+	// Estado inicial
+	state->set_initial_state("Walking");
+
+}
+#pragma endregion
+
+#pragma region Rey_Basurero
+void GameScene::spawn_rey_basurero(Vector2D posVec) {
+
+	auto&& manager = *Game::Instance()->get_mngr();
+	auto&& weapon = *new WeaponReyBasurero();
+	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 1.0f);
+
+	auto e = create_enemy(EnemySpawnConfig{ &tr, "rey_basurero", static_cast<Weapon*>(&weapon), 2, 1.8f, 1.8f });
+	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.05, 2.5f, 20.0 * deccel_spawned_creatures_multi));
+
+
+	ConditionManager conditionManager;
+
+	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
+
+	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
+
+	auto state = manager.addComponent<StateMachine>(e);
+
+	// Crear estados
+	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
+	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon);
+
+	//poner los estado a la state
+	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
+	state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));
+
+	// Condiciones de cada estado
+	// De: Walking a: Attacking, Condición: Jugador a distancia correcta
+	state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr]() {
+		return conditionManager.is_player_near(_p_tr, &tr, 7.0f);
+		});
+
+	// De: Attacking a: Walking, Condición: Jugador lejose aleja demasiado
+	state->add_transition("Attacking", "Walking", [&conditionManager, _p_tr, &tr]() {
+		return !conditionManager.is_player_near(_p_tr, &tr, 10.0f);
+		});
+
+	// Estado inicial
+	state->set_initial_state("Walking");
+}
+#pragma endregion
+
+#pragma region Waves
 void GameScene::spawn_wave_manager()
 {
 	auto ent = create_entity(
@@ -893,6 +992,9 @@ void GameScene::spawn_fog()
 	);
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::FOGGROUP, ent);
 }
+#pragma endregion
+
+#pragma region Hud
 void GameScene::create_hud()
 {
 	auto ent = create_entity(
@@ -901,9 +1003,9 @@ void GameScene::create_hud()
 		new HUD());
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::HUD_ENTITY, ent);
 }
+#pragma endregion
 
-
-
+#pragma region Proyectile
 void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid)
 {
 	auto manager = Game::Instance()->get_mngr();
@@ -935,55 +1037,7 @@ void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs
 	if(bp.collision_filter==GameStructs::collide_with::enemy || bp.collision_filter == GameStructs::collide_with::all)
 		manager->addComponent<collision_registration_by_id>(e);
 }
-
-void GameScene::check_collision() {
-	auto* mngr = Game::Instance()->get_mngr();
-	auto player = mngr->getHandler(ecs::hdlr::PLAYER);
-	if (player != nullptr) {
-		//player transform
-		auto pTR = mngr->getComponent<Transform>(player);
-
-		//enemy array
-		auto& enemies = mngr->getEntities(ecs::grp::ENEMY);
-
-		//player bullet array
-		auto& pBullets = mngr->getEntities(ecs::grp::PLAYERBULLETS);
-
-		//Enemy-PlayerBullet collision
-		for (auto e : enemies) {
-			//check if the actual enemy is alive
-			if (mngr->isAlive(e)) {
-				//actual enemy transform
-				auto eTR = mngr->getComponent<Transform>(e);
-				auto&& eRT = *mngr->getComponent<rect_component>(e);
-				for (auto b : pBullets) {
-					auto bTR = mngr->getComponent<Transform>(b);
-					if (Collisions::collides(eTR->getPos(), eRT.rect.size.x, eRT.rect.size.y, //
-						bTR->getPos(), eRT.rect.size.x, eRT.rect.size.y)) {
-						int bDamage = mngr->getComponent<BulletData>(b)->damage();
-						auto eHealth = mngr->getComponent<Health>(e);
-						eHealth->takeDamage(bDamage);
-					}
-				}
-			}
-		}
-
-		// EnemyBullets-Player collision
-		auto& eBullets = mngr->getEntities(ecs::grp::ENEMYBULLETS);
-		for (auto b : eBullets) {
-			if (mngr->isAlive(b)) {
-				auto bTR = mngr->getComponent<Transform>(b);
-				auto&& bRT = *mngr->getComponent<rect_component>(b);
-				if (Collisions::collides(pTR->getPos(), bRT.rect.size.x, bRT.rect.size.y, //
-					bTR->getPos(), bRT.rect.size.x, bRT.rect.size.y)) {
-					auto pHealth = mngr->getComponent<Health>(player);
-					int bDamage = mngr->getComponent<BulletData>(b)->damage();
-					pHealth->takeDamage(bDamage);
-				}
-			}
-		}
-	}
-}
+#pragma endregion
 
 void GameScene::event_callback0(const event_system::event_receiver::Msg& m) {
 	deccel_spawned_creatures_multi *= m.float_value;

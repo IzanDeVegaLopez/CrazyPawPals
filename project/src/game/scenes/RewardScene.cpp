@@ -18,8 +18,8 @@
 #include <iostream>
 
 RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr), _selected_button(nullptr),
-_lr(nullptr), _selected(false), _activate_confirm_button(false), 
-_chosen_card(nullptr), _activate_exchange_button(false)
+_lr(nullptr), _selected(false), _activate_confirm_button(false), _chosen_card(nullptr), 
+_activate_exchange_button(false), _last_deck_card_img(nullptr)
 {
 }
 
@@ -38,8 +38,8 @@ void RewardScene::enterScene()
     auto* mngr = Game::Instance()->get_mngr();
     auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
     auto _m_deck = mngr->getComponent<Deck>(player);
-    auto& pDeck = _m_deck->card_names();
-    refresh_my_deck_cards(pDeck);
+    auto& draw = _m_deck->move_discard_to_draw().card_list();
+    refresh_my_deck_cards(draw);
     refresh_rewards();
     check_number();
     Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::REWARDSCENE);
@@ -50,6 +50,7 @@ void RewardScene::exitScene()
     change_pos(false);
 }
 
+//method to get a unique card (used to prevent repeated rewards)
 std::pair<std::string, GameStructs::CardType> RewardScene::get_unique_card(std::unordered_set<std::string>& appeared_cards) {
     std::string sprite;
     GameStructs::CardType ct;
@@ -62,6 +63,7 @@ std::pair<std::string, GameStructs::CardType> RewardScene::get_unique_card(std::
     return { sprite, ct };
 }
 
+//method to return a string used for the render part
 std::string RewardScene::select_card(GameStructs::CardType ct) {
     std::string s = "";
     switch (ct)
@@ -76,9 +78,9 @@ std::string RewardScene::select_card(GameStructs::CardType ct) {
         break;
     case GameStructs::MINIGUN: s = "reward_card_minigun";
         break;
-    case GameStructs::SPRAY: s = "reward_card_spray";
+    case GameStructs::SPRAY: s = "reward_card_cardSpray";
         break;
-    case GameStructs::ELDRITCH_BLAST: s = "reward_card_eldritch_blast";
+    case GameStructs::ELDRITCH_BLAST: s = "reward_card_eldritchBlast";
         break;
     case GameStructs::COMMUNE: s = "reward_card_commune";
         break;
@@ -86,12 +88,12 @@ std::string RewardScene::select_card(GameStructs::CardType ct) {
         break;
     case GameStructs::FULGUR: s = "reward_card_fulgur";
         break;
-    case GameStructs::QUICK_FEET: s = "reward_card_quick_feet";
+    case GameStructs::QUICK_FEET: s = "reward_card_quickFeet";
         break;
     default:
         break;
     }
-    std::cout << "reward card: " + s << std::endl;
+    //std::cout << "reward card: " + s << std::endl;
     return s;
 }
 
@@ -99,7 +101,6 @@ void RewardScene::refresh_rewards() {
     auto* mngr = Game::Instance()->get_mngr();
     auto& rewards_cards = mngr->getEntities(ecs::grp::REWARDCARDS);
     std::unordered_set<std::string> appeared_cards;
-    GameStructs::CardType ct;
     //refresh the three reward card button
     for (auto& e : rewards_cards) {
         auto s = get_unique_card(appeared_cards);
@@ -113,13 +114,16 @@ void RewardScene::refresh_rewards() {
 }
 
 void RewardScene::change_pos(bool enter) {
+    //auxiliar lambda function to swap positions
     auto swap_positions = [](transformless_dyn_image* img1, transformless_dyn_image* img2) {
         auto aux = img1->destination_rect.position.x;
         img1->destination_rect.position.x = img2->destination_rect.position.x;
         img2->destination_rect.position.x = aux;
         };
 
+#pragma region obtain references
     auto* mngr = Game::Instance()->get_mngr();
+    //third reward
     auto& rewardCard = mngr->getEntities(ecs::grp::REWARDCARDS)[2];
 
     // players health
@@ -134,21 +138,21 @@ void RewardScene::change_pos(bool enter) {
 
     auto bRewardButton = mngr->getComponent<Button>(rewardCard);
     auto hRewardButton = mngr->getComponent<Button>(healthReward);
+#pragma endregion
+
+#pragma region health reward activation
 
     if (enter) { //if we need to activate the heal reward
         if ((float)act / (float)max <= 0.2f) {
             swap_positions(img, healImg);
-            bRewardButton->update_collider();
-            hRewardButton->update_collider();
         }
     }
     else { //in other case, the condition to swap changes
         if ((float)act / (float)max > 0.2f) {
             swap_positions(img, healImg);
-            bRewardButton->update_collider();
-            hRewardButton->update_collider();
         }
     }
+#pragma endregion
 }
 
 void RewardScene::create_reward_buttons() {
@@ -305,31 +309,35 @@ void RewardScene::create_a_deck_card(const GameStructs::CardButtonProperties& bp
     auto* mngr = Game::Instance()->get_mngr();
 
     auto e = create_card_button(bp);
-    auto buttonComp = mngr->getComponent<Button>(e);
+    auto buttonComp = mngr->getComponent<CardButton>(e);
     auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
     buttonComp->connectClick([buttonComp, imgComp, this, bp] {
         imgComp->destination_rect.size = { imgComp->_original_w,  imgComp->_original_h };
         _selected_button = buttonComp;
-        imgComp->destination_rect.position.y = bp.rect.position.y + 0.25f;
+        auto it = buttonComp->It();
         //only assign a valid iterator
-        if (bp.iterator != nullptr && bp.iterator != _selected_card) {
-            _selected_card = bp.iterator;
-            
-            std::cout << "card selected "<< std::endl;
+        if (bp.iterator != nullptr && it != _selected_card) {
+
+            _selected_card = it;
+            imgComp->destination_rect.position.y -= 0.05f;
+            if (_last_deck_card_img != nullptr) _last_deck_card_img->destination_rect.position.y += 0.05f;
+            _last_deck_card_img = static_cast<ImageForButton*>(imgComp);
+            std::cout << "card selected: "<< std::endl;
         }
         });
 
     buttonComp->connectHover([buttonComp, imgComp]() {
         std::cout << "hover -> Reward button: " << std::endl;
         //filter
-        //imgComp->apply_filter(128, 128, 128);
-        imgComp->destination_rect.position.y -= 0.125f;
-        //imgComp->destination_rect.size = { imgComp->destination_rect.size.x * 1.25f,  imgComp->destination_rect.size.y * 1.25f };
+        imgComp->apply_filter(128, 128, 128);
+        /*imgComp->destination_rect.position.y -= 0.125f;*/
+       /* imgComp->destination_rect.size = { imgComp->destination_rect.size.x * 1.25f,  imgComp->destination_rect.size.y * 1.25f };*/
         });
     buttonComp->connectExit([buttonComp, imgComp]() {
         std::cout << "exit -> Reward button: " << std::endl;
-        imgComp->destination_rect.position.y += 0.125f;
+        /*imgComp->destination_rect.position.y += 0.125f;*/
         //filter
+        imgComp->apply_filter(255, 255, 255);
         //imgComp->destination_rect.size = { imgComp->destination_rect.size.x / 1.25f,  imgComp->destination_rect.size.y / 1.25f };
         });
 }
@@ -344,24 +352,30 @@ void RewardScene::create_my_deck_cards() {
         mngr->addComponent<Deck>(player);
     }
     auto _m_deck = mngr->getComponent<Deck>(player);
-    auto& pDeck = _m_deck->card_names();
+    auto& pDeck = _m_deck->move_discard_to_draw().card_list();
 
     float umbral = 0.095f;
-    auto iterator = _m_deck->all_cards().card_list().begin();
+    auto iterator = pDeck.begin();
     GameStructs::CardButtonProperties propTemplate = {
         { {0.01f, 0.65f}, {0.1f, 0.175f} },
         0.0f, "", ecs::grp::REWARDDECK, *iterator
     };
 
     for (const auto& it : pDeck) {
-        propTemplate.sprite_key = it;
+#pragma region convert a class name to a string
+        std::string typeName = typeid(*it).name();
+        std::string prefix = "class ";
+        if (typeName.find(prefix) == 0) {  // Si empieza con "class "
+            typeName = typeName.substr(prefix.size());  // Elimina "class "
+            typeName[0] = tolower(typeName[0]);
+        }
+#pragma endregion
+        propTemplate.sprite_key = "card_"+typeName;
         create_a_deck_card(propTemplate);
         propTemplate.rect.position.x += umbral;
         iterator++;
-        if (iterator == _m_deck->all_cards().card_list().end()) {
-            propTemplate.iterator = nullptr;
-        }
     }
+    propTemplate.iterator = nullptr;
     for (int i = 0; i < 4; ++i) {
         propTemplate.sprite_key = "initial_info";
         create_a_deck_card(propTemplate);
@@ -369,40 +383,45 @@ void RewardScene::create_my_deck_cards() {
     }
 }
 
-void RewardScene::refresh_my_deck_cards(const std::list<std::string>& cl) {
+void RewardScene::refresh_my_deck_cards(const std::list<Card*>& cl) {
     auto* mngr = Game::Instance()->get_mngr();
     auto infos = mngr->getEntities(ecs::grp::REWARDDECK);
 
-    // Obtener la referencia al mazo actualizado
-    auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
-    auto* deck = mngr->getComponent<Deck>(player);
-    auto& updatedCardList = deck->all_cards().card_list(); // Obtener los nuevos punteros
+    auto itRewardInfo = infos.begin();
 
-    auto itInfo = infos.begin();
-    auto itCard = updatedCardList.begin();
-    auto it = cl.begin();
-
-    // Refrescar las texturas y actualizar punteros
-    for (; it != cl.end() && itCard != updatedCardList.end(); ++it, ++itInfo, ++itCard) {
-        auto img = mngr->getComponent<transformless_dyn_image>(*itInfo);
-        img->set_texture(&sdlutils().images().at(*it));
-
-        // Actualizar la referencia a la carta en el boton
-        auto buttonComp = mngr->getComponent<Button>(*itInfo);
-        if (buttonComp) {
-            static_cast<CardButton*>(buttonComp)->set_it(*itCard); // Metodo para actualizar puntero
+    //refresh my deck info and represent it
+    for (auto c : cl) {
+        //obtain each ones component
+        auto img = mngr->getComponent<transformless_dyn_image>(*itRewardInfo);
+       
+        #pragma region convert a class name to a string
+        std::string typeName = typeid(*c).name();
+        std::string prefix = "class ";
+        if (typeName.find(prefix) == 0) {  // Si empieza con "class "
+            typeName = typeName.substr(prefix.size());  // Elimina "class "
+            typeName[0] = tolower(typeName[0]);
         }
+        #pragma endregion
+
+        //change to the newest texture
+        img->set_texture(&sdlutils().images().at("card_"+typeName));
+        //Refresh the pointer saved in the component
+        auto buttonComp = mngr->getComponent<Button>(*itRewardInfo);
+        if (buttonComp) {
+            static_cast<CardButton*>(buttonComp)->set_it(c);
+        }
+        ++itRewardInfo;
     }
 
-    // Rellenar con imagenes vacias si hay menos cartas en el nuevo mazo
-    for (; itInfo != infos.end(); ++itInfo) {
-        auto img = mngr->getComponent<transformless_dyn_image>(*itInfo);
-        img->set_texture(&sdlutils().images().at("initial_info"));
+    //refresh rest of the deck infos (blank infos)
+    for (; itRewardInfo != infos.end(); ++itRewardInfo) {
+        auto img = mngr->getComponent<transformless_dyn_image>(*itRewardInfo);
+            img->set_texture(&sdlutils().images().at("initial_info"));
 
-        auto buttonComp = mngr->getComponent<Button>(*itInfo);
-        if (buttonComp) {
-            static_cast<CardButton*>(buttonComp)->set_it(nullptr); // Poner puntero a nullptr si no hay carta
-        }
+            auto buttonComp = mngr->getComponent<Button>(*itRewardInfo);
+            if (buttonComp) {
+                static_cast<CardButton*>(buttonComp)->set_it(nullptr); // Poner puntero a nullptr si no hay carta
+            }
     }
 }
 
@@ -502,7 +521,7 @@ void RewardScene::add_new_reward_card() {
     if (c != nullptr) {
         _m_deck->add_card_to_deck(c);
         //Refresh deck
-        auto& pDeck = _m_deck->card_names();
+        auto& pDeck = _m_deck->move_discard_to_draw().card_list();
         refresh_my_deck_cards(pDeck);
         
     }
@@ -514,14 +533,16 @@ void RewardScene::check_number()
     auto* mngr = Game::Instance()->get_mngr();
     auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
     auto _m_deck = mngr->getComponent<Deck>(player);
-    auto& pDeck = _m_deck->card_names();
+    auto& pDeck = _m_deck->move_discard_to_draw().card_list();
     if (pDeck.size() < 4)
     {
         _activate_exchange_button = false;
+        _activate_confirm_button = true;
     }
     else if (pDeck.size() >= 4 && pDeck.size() < 10)
     {
         _activate_exchange_button = true;
+        _activate_confirm_button = true;
     }
     else if (pDeck.size() == 10)
     {
@@ -549,32 +570,44 @@ void RewardScene::create_reward_exchange_button(const GameStructs::ButtonPropert
     buttonComp->connectClick([buttonComp, this] 
         {
             //if we dont have enough card to exchange, ignore this callback
-            if (_selected || _activate_exchange_button || _chosen_card == nullptr) return;
+            if (_selected || _activate_exchange_button || _selected_card == nullptr) return;
+            _lr->apply_filter(255, 255, 255);
+            _lr->swap_textures();
             _selected = true;
             remove_deck_card();
             add_new_reward_card();
+            _last_deck_card_img->destination_rect.position.y += 0.05f;
         });
     buttonComp->connectHover([buttonComp, imgComp, this]() {
-        
+        if (_selected) return;
+        imgComp->apply_filter(128, 128, 128);
         });
     buttonComp->connectExit([buttonComp, imgComp, this]() {
-
+        imgComp->apply_filter(255, 255, 255);
         });
 }
 
 void RewardScene::update(uint32_t delta_time) {
    Scene::update(delta_time);
-   if (!_activate_confirm_button && _lr != nullptr) {
+
+   if (_activate_confirm_button && _lr != nullptr) {
        auto mngr = Game::Instance()->get_mngr();
        auto imgCompConfirm = mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::CONFIRMREWARD));
        imgCompConfirm->swap_textures();
-       _activate_confirm_button = true;
+       _activate_confirm_button = false;
    }
 
-   if (_activate_exchange_button && _lr != nullptr && _chosen_card != nullptr) {
+   if (_activate_exchange_button && _lr != nullptr && _selected_card != nullptr) {
        auto mngr = Game::Instance()->get_mngr();
        auto imgCompExchange = mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::EXCHANGEBUTTON));
        imgCompExchange->swap_textures();
+       imgCompExchange->destination_rect.position = {0.1f, imgCompExchange->destination_rect.position.y};
+
+       auto imgCompConfirm = mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::CONFIRMREWARD));
+       imgCompConfirm->destination_rect.position = { 0.5f, imgCompConfirm->destination_rect.position.y };
+
+       auto buttonC = mngr->getComponent<Button>(mngr->getHandler(ecs::hdlr::CONFIRMREWARD));
+       auto buttonE = mngr->getComponent<Button>(mngr->getHandler(ecs::hdlr::EXCHANGEBUTTON));
        _activate_exchange_button = false;
    }
 }

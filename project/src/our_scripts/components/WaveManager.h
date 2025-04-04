@@ -21,7 +21,8 @@ enum enemyType {
     boom = 4,
     ratatouille = 5,
     catkuza = 6,
-    super_michi_mafioso = 7
+    super_michi_mafioso = 7,
+    rata_basurera = 8
 };
 
 class Fog;
@@ -73,7 +74,7 @@ public:
     inline events get_current_event() { return _current_event; }
     void event_callback0(const Msg& m) override;
     void add_num_enemy();
-
+    void newEnemy() { _numEnemies++; _enemiesSpawned++; };
 private:
     void choose_new_event();
     void endwave();

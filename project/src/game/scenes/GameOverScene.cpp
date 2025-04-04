@@ -28,7 +28,8 @@ GameOverScene::~GameOverScene()
 {
 }
 void GameOverScene::initScene() {
-    /*create_enter_button();*/
+    create_static_background(&sdlutils().images().at("game_over"));
+    create_enter_button();
 }
 void GameOverScene::enterScene()
 {
@@ -41,16 +42,16 @@ void GameOverScene::exitScene()
 void GameOverScene::render() {
     Scene::render();
 }
-//void GameOverScene::create_enter_button() {
-//    GameStructs::ButtonProperties bp = {
-//         { {0.5f, 0.5f},{0.3f, 0.125f} },
-//         0.0f, "enter_game"
-//    };
-//    auto* mngr = Game::Instance()->get_mngr();
-//    auto e = create_button(bp);
-//    auto buttonComp = mngr->getComponent<Button>(e);
-//
-//    buttonComp->connectClick([buttonComp, mngr, this]() {
-//        Game::Instance()->change_Scene(Game::MAINMENU);
-//    }); 
-//}
+void GameOverScene::create_enter_button() {
+    GameStructs::ButtonProperties bp = {
+         { {0.4f, 0.5f},{0.3f, 0.125f} },
+         0.0f, "enter_game"
+    };
+    auto* mngr = Game::Instance()->get_mngr();
+    auto e = create_button(bp);
+    auto buttonComp = mngr->getComponent<Button>(e);
+
+    buttonComp->connectClick([buttonComp, mngr, this]() {
+        Game::Instance()->change_Scene(Game::MAINMENU);
+    }); 
+}

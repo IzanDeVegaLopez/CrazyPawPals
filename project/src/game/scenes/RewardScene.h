@@ -22,11 +22,12 @@ private:
 	//methods to show your actual deck info
 	void create_my_deck_cards();
 	void create_a_deck_card(const GameStructs::CardButtonProperties& bp);
-	void refresh_my_deck_cards(const std::list<std::string>& cl);
+	void refresh_my_deck_cards(const std::list<Card*>& cl);
 
 	//deck cards part
 	Button* _selected_button;
 	Card* _selected_card;
+	ImageForButton* _last_deck_card_img;
 
 	ImageForButton* _lr;
 

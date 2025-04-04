@@ -28,7 +28,7 @@ void Fog::update(uint32_t delta_time) {
 		if (fogPercentage <= 1 - 0.0005) {
 			fogPercentage += 0.0005;
 		}
-		std::cout << "Fog: " << fogPercentage * 100 << "%" << std::endl;
+		//std::cout << "Fog: " << fogPercentage * 100 << "%" << std::endl;
 
 		fogRect->setSize(orSize * (1 - fogPercentage));
 	}

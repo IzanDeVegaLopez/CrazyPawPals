@@ -18,8 +18,8 @@ void fog_collision_component::on_contact(const collision_manifold& tm)
         
         //std::cout << "entity_collided_with: " << entity_collided_with << ", Game::Instance()->get_mngr()->getHandler(ecs::hdlr::PLAYER): " << Game::Instance()->get_mngr()->getHandler(ecs::hdlr::PLAYER) << std::endl;
         fogCollidingTimer = sdlutils().virtualTimer().currRealTime();
-        std::cout << Game::Instance()->get_mngr()->hasComponent<player_collision_triggerer>(entity_collided_with) << std::endl;
-        std::cout << "1 vT: " << sdlutils().virtualTimer().currRealTime() << " fogCT: " << fogCollidingTimer << std::endl;
+        //std::cout << Game::Instance()->get_mngr()->hasComponent<player_collision_triggerer>(entity_collided_with) << std::endl;
+        //std::cout << "1 vT: " << sdlutils().virtualTimer().currRealTime() << " fogCT: " << fogCollidingTimer << std::endl;
     }
 }
 
@@ -27,7 +27,7 @@ void fog_collision_component::update(uint32_t delta_time) {
 	on_trigger<fog_collision_component>::update(delta_time);
 	if (sdlutils().virtualTimer().currRealTime() > fogCollidingTimer + 500) {
 		damagingPlayer = true;
-        std::cout << (damagingPlayer ? "" : "NOT ") << "damaging player" << std::endl;
+        //std::cout << (damagingPlayer ? "" : "NOT ") << "damaging player" << std::endl;
 	}
     else
     {

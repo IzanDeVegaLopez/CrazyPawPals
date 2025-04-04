@@ -7,7 +7,9 @@
 
 
 void offset_dyn_image::render() {
-    if (isDamaged)setRenderColor(255, 0, 0);
+
+    isDamaged ? texture.apply_filter(255, 0, 0) : texture.apply_filter(255, 255, 255);
+
     const SDL_Rect destination = SDL_Rect_screen_rect_from_global({
         .position = {
             .x = transform.getPos().getX() + output_rect.rect.position.x - offset.x * output_rect.rect.size.x,
@@ -22,7 +24,7 @@ void offset_dyn_image::render() {
         .w = int(subrect.size.x * float(texture.width())),
         .h = int(subrect.size.y * float(texture.height()))
         }, destination, transform.getRot(), nullptr, flip);
-    setRenderColor(255, 255, 255);
+    
 }
 
 void offset_dyn_image::update(uint32_t delta_time)
@@ -34,7 +36,4 @@ void offset_dyn_image::update(uint32_t delta_time)
             isDamaged = false;
         }
     }
-}
-void offset_dyn_image::setRenderColor(int r, int g, int b) {
-    SDL_SetTextureColorMod(&texture.get_texture(), r, g, b);
 }

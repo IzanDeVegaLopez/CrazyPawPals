@@ -6,7 +6,7 @@ RotatingState::RotatingState(Transform* tr, Transform* playerTr, MovementControl
     : _tr(tr), _movementController(mc), _playerTr(playerTr), _angle(0.0f), _center(), _radius(0.0f) {}
 void
 RotatingState::enter() {
-    _center = _playerTr->getPos();
+    _center = { _playerTr->getPos().getX() + (_playerTr->getWidth() / 2),_playerTr->getPos().getY() + (_playerTr->getHeight() / 2) };
     _radius = (_tr->getPos() - _center).magnitude();
     _angle = std::atan2(_tr->getPos().getY() - _center.getY(), _tr->getPos().getX() - _center.getX());
 }
@@ -17,8 +17,10 @@ RotatingState::update(uint32_t delta_time) {
 
     Vector2D newPosition = _center + Vector2D(_radius * std::cos(_angle), _radius * std::sin(_angle));
 
-    Vector2D moveDirection = (newPosition - _tr->getPos());
+    Vector2D moveDirection = newPosition - _tr->getPos();
 
-    _movementController->set_input(moveDirection);
+    _movementController->set_input(newPosition - _tr->getPos());
+
+    _tr->setPos(newPosition);
 }
 void RotatingState::exit() {};
