@@ -288,6 +288,10 @@
       "file": "resources/images/ui/background.png"
     },
     {
+      "id": "background",
+      "file": "resources/images/ui/complete_background.png"
+    },
+    {
       "id": "controls",
       "file": "resources/images/enviroment/controls.png"
     },

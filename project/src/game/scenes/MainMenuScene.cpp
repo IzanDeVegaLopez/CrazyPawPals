@@ -12,10 +12,10 @@
 
 MainMenuScene::MainMenuScene() : Scene(ecs::scene::MAINMENUSCENE)
 {
-    create_static_background(&sdlutils().images().at("start"));
+    create_static_background(&sdlutils().images().at("background"));
 
     GameStructs::ButtonProperties buttonPropTemplate = { 
-        { {0.315f, 0.25f},{0.375f, 0.3f} },
+        { {0.315f, 0.25f},{0.355f, 0.28f} },
         0.0f, ""
     };
 
