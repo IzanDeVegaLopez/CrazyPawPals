@@ -31,6 +31,7 @@ private:
 
 	//reward part
 	bool _heal;
+	bool _activate_heal; //flag to save if we need to activate heal reward
 
 	ImageForButton* _lr;
 

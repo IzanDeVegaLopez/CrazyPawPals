@@ -18,10 +18,9 @@
 
 RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr), _selected_button(nullptr),
 _heal(false), _lr(nullptr),
-_selected(false), _activate_confirm_button(false), _chosen_card(nullptr), _activate_exchange_button(false), _last_deck_card_img(nullptr)
+_selected(false), _activate_confirm_button(false), _chosen_card(nullptr), _activate_exchange_button(false), _last_deck_card_img(nullptr), _activate_heal(false)
 {
 }
-
 RewardScene::~RewardScene()
 {
 }
@@ -47,6 +46,32 @@ void RewardScene::enterScene()
 void RewardScene::exitScene()
 {
     change_pos(false);
+    _lr = nullptr;
+    _selected = false;
+    _heal = false;
+
+
+    if (_last_deck_card_img != nullptr)  _last_deck_card_img->destination_rect.position.y -= 0.05f;
+    _last_deck_card_img = nullptr;
+    _selected_card = nullptr;
+
+    _selected_button = nullptr;
+
+    _chosen_card = nullptr;
+
+    _activate_confirm_button = false;
+    _activate_exchange_button = false;
+    _activate_heal = false;
+
+    auto* mngr = Game::Instance()->get_mngr();
+    auto cb = mngr->getHandler(ecs::hdlr::CONFIRMREWARD);
+    auto eb = mngr->getHandler(ecs::hdlr::EXCHANGEBUTTON);
+
+    auto cImg = mngr->getComponent<ImageForButton>(cb);
+    cImg->apply_filter(255,255,255);
+    cImg->swap_textures();
+    cImg->apply_filter(255, 255, 255);
+
 }
 
 //method to get a unique card (used to prevent repeated rewards)
@@ -144,12 +169,12 @@ void RewardScene::change_pos(bool enter) {
     if (enter) { //if we need to activate the heal reward
         if ((float)act / (float)max <= 0.2f) {
             swap_positions(img, healImg);
+            _activate_heal = true;
         }
     }
     else { //in other case, the condition to swap changes
-        if ((float)act / (float)max > 0.2f) {
-            swap_positions(img, healImg);
-        }
+        //we only swap if player has chosen heal reward;
+        if (_activate_heal)swap_positions(img, healImg);
     }
 #pragma endregion
 }
@@ -313,7 +338,7 @@ void RewardScene::create_a_deck_card(const GameStructs::CardButtonProperties& bp
     auto buttonComp = mngr->getComponent<CardButton>(e);
     auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
     buttonComp->connectClick([buttonComp, imgComp, this, bp] {
-        if (_selected) return;
+        if (_selected || _heal) return;
         imgComp->destination_rect.size = { imgComp->_original_w,  imgComp->_original_h };
         _selected_button = buttonComp;
         auto it = buttonComp->It();
@@ -453,9 +478,11 @@ void RewardScene::create_reward_selected_button(const GameStructs::ButtonPropert
             //heal a 20%
             int hn = phealth->getMaxHealth() * 2 / 10;
             phealth->heal(hn);
+            _selected = true;
+            Game::Instance()->change_Scene(Game::GAMESCENE);
         }
         //we only select a reward if previously we have chosen something
-        if (_lr != nullptr && !_selected) {
+        else if (_lr != nullptr && !_selected) {
             _lr->apply_filter(255, 255, 255);
             _lr->swap_textures();
             _selected = true;
