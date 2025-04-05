@@ -30,11 +30,7 @@ private:
 	ImageForButton* _last_deck_card_img;
 
 	//reward part
-	bool _health;
-	bool _card;
-	bool _object;
-	bool _upgrade;
-
+	bool _heal;
 
 	ImageForButton* _lr;
 
