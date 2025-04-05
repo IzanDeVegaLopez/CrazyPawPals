@@ -662,7 +662,7 @@ GameScene::spawn_sarno_rata(Vector2D posVec)
     // Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador cerca
     state->add_transition("Walking", "Attacking", [state_cm, _p_tr, &tr]() {
-        return state_cm->is_player_near(_p_tr, &tr, 1.7f);
+        return state_cm->is_player_near(_p_tr, &tr, 1.5f);
     });
 
 	// De: Attacking a: Walking, Condición: Jugador lejos
@@ -703,8 +703,8 @@ void GameScene::spawn_michi_mafioso(Vector2D posVec)
     state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));
     state->add_state("Backing", std::static_pointer_cast<State>(backingState));
 
-	float dist_to_attack=4.0f;
-	float dist_to_fallback=3.0f;
+	float dist_to_attack=3.0f;
+	float dist_to_fallback=2.5f;
 
     // Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador cerca
