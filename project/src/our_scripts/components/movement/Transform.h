@@ -96,7 +96,6 @@ public:
 	void update(uint32_t delta_time) override {
 		(void)delta_time;
 		previous_position = _pos;
-		
 		// const float delta_time_seconds = (delta_time / 1000.0f);
 		// _pos = _pos + _dir * delta_time_seconds;
 		_pos = _pos + _dir;

@@ -143,6 +143,10 @@ void Game::start() {
 			continue;
 		}
 		_scenes[_current_scene_index]->update(delta_time_milliseconds);
+
+		//Transform* tr = Game::Instance()->get_mngr()->getComponent<Transform>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::PLAYER));
+		//std::cout << "PLAYER: " << tr->getPos().getX() << "," << tr->getPos().getY() << std::endl;
+
 		_mngr->refresh();
 
 

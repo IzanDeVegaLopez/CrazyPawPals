@@ -85,13 +85,13 @@ WaveManager::spawn_next_enemy() {
             float rn = rnGen(gen); // (-0.35, 0.35)
             
             // Distancia
-            float _min_distance = Game::Instance()->get_world_half_size().first + Game::Instance()->get_world_half_size().first * 0.1;
-            float _op_dist = _min_distance * (-rn);
+            //float _min_distance = Game::Instance()->get_world_half_size().first + Game::Instance()->get_world_half_size().second * 0.1;
+            //float _op_dist = _min_distance * (-rn);
 
             //DEBUG
             // Medio de la pantalla + angulo * distancia
-            Vector2D posVec = Vector2D(Game::Instance()->get_world_half_size().first + cos(rAng) * (_min_distance + _op_dist), Game::Instance()->get_world_half_size().second + sin(rAng) * (_min_distance + _op_dist));
-            
+            Vector2D posVec = Vector2D(cos(rAng) *Game::Instance()->get_world_half_size().first, Game::Instance()->get_world_half_size().second * sin(rAng));
+            std::cout << posVec << std::endl;
             //assert(_enemiesSpawned < (1 << 7));
             // FIXME: define enum values
             switch (_waves[_currentWave].second[_enemiesSpawned])
