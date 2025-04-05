@@ -279,19 +279,20 @@ void PlayerHUD::render()
 #pragma region mythics
 	const auto& mythics = _mythics->get_mythics();
 	if (mythics.size() > 0) {
-		float icon_size = 0.02f; 
-		float start_x = 0.15 + (max_health * health_scale);
-		float start_y = 0.82;
+		float icon_size = 0.05f; 
+		float start_x = 0.02;
+		float start_y = 0.02;
 
 		for (auto mythic : mythics) {
 			Texture* texture = mythic->get_texture();
 			rect_f32 mythics_rect = 
-				rect_f32_screen_rect_from_viewport(rect_f32({ start_x, start_y }, { icon_size, icon_size * 1.5f }), _camera->cam.screen);
+				rect_f32_screen_rect_from_viewport(rect_f32({ start_x, start_y }, { icon_size, icon_size * 1.75f }), _camera->cam.screen);
 			SDL_Rect mythics_rect_true{ (int)mythics_rect.position.x, (int)mythics_rect.position.y, (int)mythics_rect.size.x, (int)mythics_rect.size.y };
 			texture->render(mythics_rect_true);
 			start_x += icon_size + 0.01f;
 		}
 	}
+
 #pragma endregion
 
 #pragma region timer

@@ -211,10 +211,6 @@ void GameScene::enterScene()
 
 void GameScene::exitScene()
 {
-	auto* mngr = Game::Instance()->get_mngr();
-	auto player = mngr->getHandler(ecs::hdlr::PLAYER);
-	mngr->removeComponent<KeyboardPlayerCtrl>(player);
-	mngr->removeComponent<PlayerHUD>(player);
 }
 
 //metodos de create/spawn
@@ -248,7 +244,8 @@ ecs::entity_t GameScene::create_player()
 		&player_rigidbody,
 		&player_collisionable,
 		new MovementController(0.1f, 5.0f, 20.0f * deccel_spawned_creatures_multi),
-		new player_collision_triggerer()
+		new player_collision_triggerer(),
+		new id_component()
 		);
 
 	//si tiene mas de una animacion
@@ -265,14 +262,6 @@ void GameScene::reset_player()
 {
 	auto&& mngr = *Game::Instance()->get_mngr();
 	auto player = mngr.getHandler(ecs::hdlr::PLAYER);
-
-	mngr.removeComponent<Weapon>(player);
-	mngr.removeComponent<MythicComponent>(player);
-	mngr.removeComponent<Deck>(player);
-	mngr.removeComponent<KeyboardPlayerCtrl>(player);
-	mngr.removeComponent<PlayerHUD>(player);
-
-
 	mngr.getComponent<dyn_image_with_frames>(player)->isDamaged = false;
 	auto tr = mngr.getComponent<Transform>(player);
 		 tr->setPos({ 0.0f, 0.0f });	
@@ -1013,9 +1002,9 @@ void GameScene::spawn_fog()
 		&rect,
 		this_fog,
 		this_fog_image,
-		new fog_collision_component(),
 		&fog_rigidbody,
-		&fog_collisionable
+		&fog_collisionable,
+		new fog_collision_component()
 
 	);
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::FOGGROUP, ent);
