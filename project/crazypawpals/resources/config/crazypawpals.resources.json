@@ -285,7 +285,7 @@
     },
     {
       "id": "start",
-      "file": "resources/images/enviroment/start.png"
+      "file": "resources/images/ui/background.png"
     },
     {
       "id": "controls",
@@ -396,12 +396,25 @@
       "file": "resources/images/ui/play.png"
     },
     {
+      "id": "enter_game_selected",
+      "file": "resources/images/ui/play_selected.png"
+    },
+    {
       "id": "controls_button",
       "file": "resources/images/ui/controls.png"
+    },
+    
+    {
+      "id": "controls_button_selected",
+      "file": "resources/images/ui/controls_selected.png"
     },
     {
       "id": "exit_game",
       "file": "resources/images/ui/exit.png"
+    },
+    {
+      "id": "exit_game_selected",
+      "file": "resources/images/ui/exit_selected.png"
     },
     {
       "id": "mythic",

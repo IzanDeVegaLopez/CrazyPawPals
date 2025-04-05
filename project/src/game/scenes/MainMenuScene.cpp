@@ -1,16 +1,17 @@
 #include "MainMenuScene.h"
 #include "../../our_scripts/components/ui/Button.h"
 #include "../../our_scripts/components/rendering/transformless_dyn_image.h"
+#include "../../our_scripts/components/rendering/ImageForButton.h"
+
 #include "../GameStructs.h"
 #include "../../utils/Vector2D.h"
 #include "../../sdlutils/SDLUtils.h"
 #include "../../sdlutils/InputHandler.h"
 #include "../../ecs/Entity.h"
 #include "../../sdlutils/Texture.h"
+
 MainMenuScene::MainMenuScene() : Scene(ecs::scene::MAINMENUSCENE)
 {
-	auto* mngr = Game::Instance()->get_mngr();
-
     create_static_background(&sdlutils().images().at("start"));
 
     GameStructs::ButtonProperties buttonPropTemplate = { 
@@ -41,76 +42,108 @@ MainMenuScene::~MainMenuScene()
 
 }
 
-void MainMenuScene::initScene()
+void 
+MainMenuScene::initScene()
 {
 
 }
 
-void MainMenuScene::enterScene()
+void 
+MainMenuScene::enterScene()
 {
     Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::MAINMENUSCENE);
 }
 
-void MainMenuScene::exitScene()
+void 
+MainMenuScene::exitScene()
 {
-
 }
-void MainMenuScene::create_start_button(const GameStructs::ButtonProperties& bp) {
+
+void 
+MainMenuScene::create_start_button(const GameStructs::ButtonProperties& bp) {
     auto* mngr = Game::Instance()->get_mngr();
     auto e = create_button(bp);
+
+    auto imgComp = mngr->addComponent<ImageForButton>(e,
+        &sdlutils().images().at(bp.sprite_key),
+        &sdlutils().images().at(bp.sprite_key + "_selected"),
+        bp.rect,
+        0,
+        Game::Instance()->get_mngr()->getComponent<camera_component>(
+        Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
+    );
+
     auto buttonComp = mngr->getComponent<Button>(e);
-    auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
     buttonComp->connectClick([buttonComp, imgComp, mngr]() {
-        imgComp->apply_filter(255, 255, 255);
+        imgComp->swap_textures();
         Game::Instance()->change_Scene(Game::SELECTIONMENU);
         });
 
     buttonComp->connectHover([buttonComp, imgComp]() {
-        imgComp->apply_filter(128, 128, 128);
+        imgComp->swap_textures();
         });
     buttonComp->connectExit([buttonComp, imgComp]() {
-        imgComp->apply_filter(255, 255, 255);
+        imgComp->swap_textures();
         });
 }
 
-void MainMenuScene::create_controls_button(const GameStructs::ButtonProperties& bp)
+void 
+MainMenuScene::create_controls_button(const GameStructs::ButtonProperties& bp)
 {
     auto* mngr = Game::Instance()->get_mngr();
     auto e = create_button(bp);
-    auto buttonComp = mngr->getComponent<Button>(e);
-    auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
-    buttonComp->connectClick([buttonComp, imgComp, mngr]() {
-        
+    auto imgComp = mngr->addComponent<ImageForButton>(e,
+        &sdlutils().images().at(bp.sprite_key),
+        &sdlutils().images().at(bp.sprite_key + "_selected"),
+        bp.rect,
+        0,
+        Game::Instance()->get_mngr()->getComponent<camera_component>(
+            Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
+    );
 
+    auto buttonComp = mngr->getComponent<Button>(e);
+    buttonComp->connectClick([buttonComp, imgComp, mngr]() {
         Game::Instance()->change_Scene(Game::CONTROLSSCENE);
-        imgComp->apply_filter(255, 255, 255);
+        imgComp->swap_textures();
         });
 
     buttonComp->connectHover([buttonComp, imgComp]() {
-        imgComp->apply_filter(128, 128, 128);
+        imgComp->swap_textures();
         });
     buttonComp->connectExit([buttonComp, imgComp]() {
-        imgComp->apply_filter(255, 255, 255);
+        imgComp->swap_textures();
         });
 }
 
-void MainMenuScene::create_exit_button(const GameStructs::ButtonProperties& bp)
+void 
+MainMenuScene::create_exit_button(const GameStructs::ButtonProperties& bp)
 {
     auto* mngr = Game::Instance()->get_mngr();
     auto e = create_button(bp);
-    auto buttonComp = mngr->getComponent<Button>(e);
-    auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
-    buttonComp->connectClick([buttonComp, imgComp, mngr]() {
-        
+    auto imgComp = mngr->addComponent<ImageForButton>(e,
+        &sdlutils().images().at(bp.sprite_key),
+        &sdlutils().images().at(bp.sprite_key + "_selected"),
+        bp.rect,
+        0,
+        Game::Instance()->get_mngr()->getComponent<camera_component>(
+            Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
+    );
 
-        Game::Instance()->set_exit(true);
+    auto buttonComp = mngr->getComponent<Button>(e);
+    
+    buttonComp->connectClick([buttonComp, imgComp, mngr]() {
         imgComp->apply_filter(255, 255, 255);
+        imgComp->swap_textures();
+        Game::Instance()->set_exit(true);
     });
 
     buttonComp->connectHover([buttonComp, imgComp]() {
-        imgComp->apply_filter(128, 128, 128);
-        });
-    buttonComp->connectExit([buttonComp, imgComp]() {
         imgComp->apply_filter(255, 255, 255);
-        });
+        imgComp->swap_textures();
+    });
+    
+    buttonComp->connectExit([buttonComp, imgComp]() {
+        imgComp->apply_filter(255, 255, 255);           
+        imgComp->swap_textures();
+    });
 }
