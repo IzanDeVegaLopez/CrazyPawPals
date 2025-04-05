@@ -214,11 +214,14 @@ void Deck::set_primed(bool prime)
 
 CardList& Deck::move_discard_to_draw() {
 	_discard_pile.move_from_this_to(_draw_pile);
+	return _draw_pile;
+}
+CardList& Deck::move_all_to_draw() {
+	_discard_pile.move_from_this_to(_draw_pile);
 	if (_hand != nullptr) _draw_pile.add_card(_hand);
 	_hand = nullptr;
 	return _draw_pile;
 }
-
 void Deck::initComponent()
 {
 	_mana = Game::Instance()->get_mngr()->getComponent<ManaComponent>(_ent);

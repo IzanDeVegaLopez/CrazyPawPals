@@ -83,8 +83,10 @@ public:
 
 	void initComponent() override;
 
-	//only for menus 
 	CardList& move_discard_to_draw();
+
+	//only for menus 
+	CardList& move_all_to_draw();
 
 	inline bool empty_hand() { return _hand == nullptr; }
 	inline bool is_reloading() { return _is_reloading; }

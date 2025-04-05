@@ -351,7 +351,7 @@ void RewardScene::create_my_deck_cards() {
         mngr->addComponent<Deck>(player);
     }
     auto _m_deck = mngr->getComponent<Deck>(player);
-    auto& pDeck = _m_deck->move_discard_to_draw().card_list();
+    auto& pDeck = _m_deck->move_all_to_draw().card_list();
 
     float umbral = 0.095f;
     auto iterator = pDeck.begin();
