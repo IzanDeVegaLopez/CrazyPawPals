@@ -4,7 +4,7 @@
 #include <iostream>
 
 #pragma region BloodClaw
-BloodClaw::BloodClaw() :MythicItem("BloodClaw")
+BloodClaw::BloodClaw() :MythicItem("BloodClaw", "m_blood_claw")
 {
 	auto manager = Game::Instance()->get_mngr();
 	_health = manager->getComponent<Health>(_player);

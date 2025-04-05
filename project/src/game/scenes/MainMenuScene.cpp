@@ -15,7 +15,7 @@ MainMenuScene::MainMenuScene() : Scene(ecs::scene::MAINMENUSCENE)
     create_static_background(&sdlutils().images().at("start"));
 
     GameStructs::ButtonProperties buttonPropTemplate = { 
-        { {0.365f, 0.25f},{0.375f, 0.2325f} },
+        { {0.315f, 0.25f},{0.375f, 0.3f} },
         0.0f, ""
     };
 
@@ -75,13 +75,13 @@ MainMenuScene::create_start_button(const GameStructs::ButtonProperties& bp) {
 
     auto buttonComp = mngr->getComponent<Button>(e);
     buttonComp->connectClick([buttonComp, imgComp, mngr]() {
-        imgComp->apply_filter(128, 128, 128);
+        imgComp->apply_filter(200, 200, 200);
         imgComp->swap_textures();
         Game::Instance()->change_Scene(Game::SELECTIONMENU);
     });
 
     buttonComp->connectHover([buttonComp, imgComp]() {
-        imgComp->apply_filter(128, 128, 128);
+        imgComp->apply_filter(200, 200, 200);
         imgComp->swap_textures();
     });
 
@@ -107,13 +107,13 @@ MainMenuScene::create_controls_button(const GameStructs::ButtonProperties& bp)
 
     auto buttonComp = mngr->getComponent<Button>(e);
     buttonComp->connectClick([buttonComp, imgComp, mngr]() {
-        imgComp->apply_filter(128, 128, 128);
+        imgComp->apply_filter(200, 200, 200);
         imgComp->swap_textures();
         Game::Instance()->change_Scene(Game::CONTROLSSCENE);
     });
 
     buttonComp->connectHover([buttonComp, imgComp]() {
-        imgComp->apply_filter(128, 128, 128);
+        imgComp->apply_filter(200, 200, 200);
         imgComp->swap_textures();
 
     });
@@ -141,13 +141,13 @@ MainMenuScene::create_exit_button(const GameStructs::ButtonProperties& bp)
     auto buttonComp = mngr->getComponent<Button>(e);
     
     buttonComp->connectClick([buttonComp, imgComp, mngr]() {
-        imgComp->apply_filter(128, 128, 128);
+        imgComp->apply_filter(200, 200, 200);
         imgComp->swap_textures();
         Game::Instance()->set_exit(true);
     });
 
     buttonComp->connectHover([buttonComp, imgComp]() {
-        imgComp->apply_filter(128, 128, 128);
+        imgComp->apply_filter(200, 200, 200);
         imgComp->swap_textures();
     });
     
