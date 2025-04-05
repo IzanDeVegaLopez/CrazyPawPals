@@ -15,7 +15,7 @@ MainMenuScene::MainMenuScene() : Scene(ecs::scene::MAINMENUSCENE)
     create_static_background(&sdlutils().images().at("start"));
 
     GameStructs::ButtonProperties buttonPropTemplate = { 
-        { {0.365f, 0.25f},{0.275f, 0.1225f} },
+        { {0.365f, 0.25f},{0.375f, 0.2325f} },
         0.0f, ""
     };
 
@@ -76,15 +76,19 @@ MainMenuScene::create_start_button(const GameStructs::ButtonProperties& bp) {
     auto buttonComp = mngr->getComponent<Button>(e);
     buttonComp->connectClick([buttonComp, imgComp, mngr]() {
         imgComp->swap_textures();
+        imgComp->apply_filter(255, 255, 255);
         Game::Instance()->change_Scene(Game::SELECTIONMENU);
-        });
+    });
 
     buttonComp->connectHover([buttonComp, imgComp]() {
         imgComp->swap_textures();
-        });
+        imgComp->apply_filter(255, 255, 255);
+    });
+
     buttonComp->connectExit([buttonComp, imgComp]() {
         imgComp->swap_textures();
-        });
+        imgComp->apply_filter(255, 255, 255);
+    });
 }
 
 void 
@@ -105,14 +109,19 @@ MainMenuScene::create_controls_button(const GameStructs::ButtonProperties& bp)
     buttonComp->connectClick([buttonComp, imgComp, mngr]() {
         Game::Instance()->change_Scene(Game::CONTROLSSCENE);
         imgComp->swap_textures();
-        });
+        imgComp->apply_filter(255, 255, 255);
+    });
 
     buttonComp->connectHover([buttonComp, imgComp]() {
         imgComp->swap_textures();
-        });
+        imgComp->apply_filter(255, 255, 255);
+
+    });
+
     buttonComp->connectExit([buttonComp, imgComp]() {
         imgComp->swap_textures();
-        });
+        imgComp->apply_filter(255, 255, 255);
+    });
 }
 
 void 
@@ -132,8 +141,8 @@ MainMenuScene::create_exit_button(const GameStructs::ButtonProperties& bp)
     auto buttonComp = mngr->getComponent<Button>(e);
     
     buttonComp->connectClick([buttonComp, imgComp, mngr]() {
-        imgComp->apply_filter(255, 255, 255);
         imgComp->swap_textures();
+        imgComp->apply_filter(255, 255, 255);
         Game::Instance()->set_exit(true);
     });
 
@@ -143,7 +152,7 @@ MainMenuScene::create_exit_button(const GameStructs::ButtonProperties& bp)
     });
     
     buttonComp->connectExit([buttonComp, imgComp]() {
-        imgComp->apply_filter(255, 255, 255);           
         imgComp->swap_textures();
+        imgComp->apply_filter(255, 255, 255);           
     });
 }
