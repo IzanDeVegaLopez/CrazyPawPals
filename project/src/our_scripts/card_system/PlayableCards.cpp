@@ -131,7 +131,7 @@ Recover::Recover() :Card("card_recover", Resources(1,2),DRAW_PILE){
 }
 void 
 Recover::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position) {
-	d.move_discard_to_draw();
+	d.move_discard_to_draw(false);
 }
 #pragma endregion
 

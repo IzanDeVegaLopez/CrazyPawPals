@@ -151,71 +151,6 @@
       "id": "card_recover",
       "file": "resources/images/cards/carta.png"
     },
-
-    {
-      "id": "reward_card_kunai",
-      "file": "resources/images/cards/card_kunai.png"
-    },
-    {
-      "id": "reward_card",
-      "file": "resources/images/cards/card.png"
-    },
-    {
-      "id": "reward_card_fireball",
-      "file": "resources/images/cards/card_fireball.png"
-    },
-    {
-      "id": "reward_card_minigun",
-      "file": "resources/images/cards/card_minigun.png"
-    },
-    {
-      "id": "reward_card_reloading",
-      "file": "resources/images/cards/card_reloading.png"
-    },
-    {
-      "id": "reward_card_lighting",
-      "file": "resources/images/cards/card_lighting.png"
-    },
-    {
-      "id": "reward_card_cardSpray",
-      "file": "resources/images/cards/card_spray.png"
-    },
-    {
-      "id": "reward_card_back",
-      "file": "resources/images/cards/card_back.png"
-    },
-    {
-      "id": "reward_card_eldritchBlast",
-      "file": "resources/images/cards/card_eldritch_blast.png"
-    },
-    {
-      "id": "reward_card_primordia",
-      "file": "resources/images/cards/carta.png"
-    },
-    {
-      "id": "reward_card_commune",
-      "file": "resources/images/cards/card_commune.png"
-    },
-    {
-      "id": "reward_card_evoke",
-      "file": "resources/images/cards/carta.png"
-    },
-    {
-      "id": "reward_card_fulgur",
-      "file": "resources/images/cards/carta.png"
-    },
-    {
-      "id": "reward_card_placeholder",
-      "file": "resources/images/cards/carta.png"
-    },
-    {
-      "id": "reward_card_quickFeet",
-      "file": "resources/images/cards/carta.png"
-    },
-    {
-      "id": "reward_card_recover",
-      "file": "resources/images/cards/carta.png"
-    },
     {
       "id": "boom",
       "file": "resources/images/enemies/boom.png"
@@ -486,11 +421,19 @@
     },
     {
       "id": "exchange_reward",
-      "file": "resources/images/ui/confirm_reward.png"
+      "file": "resources/images/ui/exchange_reward.png"
     },
     {
       "id": "game_over",
       "file": "resources/images/enviroment/game_over.png"
+    },
+    {
+      "id": "back",
+      "file": "resources/images/ui/back.png"
+    },
+    {
+      "id": "new_round",
+      "file": "resources/images/ui/start.png"
     }
   ], 
   "messages" : [
