@@ -35,7 +35,10 @@ Health::takeDamage(int damage) {
 		if (_currentHealth <= 0) {
 			event_system::event_receiver::Msg msg;
 			msg.int_value = _maxHealth * 0.2;//magic number random?
-			Game::Instance()->get_event_mngr()->fire_event(_is_player? event_system::player_dead : event_system::enemy_dead, msg);
+			
+			if (_is_player)
+				Game::Instance()->get_event_mngr()->fire_event(event_system::player_dead, msg);
+			else Game::Instance()->get_event_mngr()->fire_event(event_system::enemy_dead, msg);
 			if(!_is_player)Game::Instance()->get_mngr()->setAlive(_ent, false);
 		}
 	}

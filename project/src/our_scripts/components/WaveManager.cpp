@@ -18,6 +18,8 @@ WaveManager::WaveManager() :
     _waveActive(false),
     _enemiesSpawned(0),
     _enemiesKilled(0),
+    _nextSpawn(0),
+    _numEnemies(0),
     _totalSpawnTime(10000.0f),
     _current_wave_event(new no_event(this))
 {
@@ -211,6 +213,7 @@ void WaveManager::start_new_wave()
     _enemiesSpawned = 0;
     _enemiesKilled = 0;
     _numEnemies = 0;
+    _nextSpawn = 0;
     fog->setFog(false);
 
     for (int i : _waves[_currentWave].second) {
