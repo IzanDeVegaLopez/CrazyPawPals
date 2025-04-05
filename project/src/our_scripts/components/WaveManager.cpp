@@ -74,7 +74,7 @@ WaveManager::update(uint32_t delta_time) {
 // Spawnear enemigos fuera de la pantalla
 void 
 WaveManager::spawn_next_enemy() {
-    // return; // FIXME: remove this line to enable enemy spawning
+    return; // FIXME: remove this line to enable enemy spawning
             // RANDOM
             std::random_device rd;
             std::mt19937 gen(rd());

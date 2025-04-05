@@ -273,7 +273,16 @@ bool collision_body_check(
         const float dy = b.y - a.y;
         const float dx_x = x.x - a.x;
         const float dy_y = x.y - a.y;
-        return (dx_x * dx + dy_y * dy) / (dx * dx + dy * dy);
+
+        const float numerator = dx_x * dx + dy_y * dy;
+        const float denominator = dx * dx + dy * dy;
+        if (numerator == 0.0f && denominator == 0.0f) {
+            return 1.0f;
+        } else if (denominator == 0.0f) {
+            return 0.0f;
+        } else {
+            return (numerator / denominator);
+        }
     };
     
     out_contact = collision_contact{
@@ -403,11 +412,4 @@ collision_response_pairs collision_body_resolve(
         .penetration_responses = {p0, p1},
         .restitution_responses = {r0, r1},
     };
-    // if (dot(remaining_displacement_body0, remaining_displacement_body1) >= dot(body0_restitution_response.restitution_displacement, body1_restitution_response.restitution_displacement)) {
-    // } else {
-    //     return collision_response_pairs{
-    //         .penetration_responses = {body0_penetration_response, body1_penetration_response},
-    //         .restitution_responses = {body0_restitution_response, body1_restitution_response},
-    //     };
-    // }
 }

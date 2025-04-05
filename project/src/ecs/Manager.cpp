@@ -495,16 +495,25 @@ static void manager_update_collisions(Manager &manager, const std::vector<ecs::e
 					const float displacement_length_sqr = 
 						displacement.x * displacement.x + displacement.y * displacement.y;
 					constexpr static const float epsilon_displacement_length_sqr = 0.0000001f;
-					if (displacement_length_sqr > epsilon_displacement_length_sqr) {	
+					//if (displacement_length_sqr > epsilon_displacement_length_sqr) {	
+					{
 						// this is done with assignment operator instead of setPos method to prevent the displacement vector to be mutated this frame while the correction happens
+						const auto previous0{entity_collisionable.transform.getPos()};
+						const auto previous1{other_collisionable.transform.getPos()};
 						entity_collisionable.transform.getPos() = (Vector2D{
-							body.body.space.position.x + (body.body.space.position.x - body.body.space.previous_position.x),
-							body.body.space.position.y + (body.body.space.position.y - body.body.space.previous_position.y),
+							body.body.space.position.x + (body.body.space.position.x - body.body.space.previous_position.x) * 0.5f,
+							body.body.space.position.y + (body.body.space.position.y - body.body.space.previous_position.y) * 0.5f,
 						});
 						other_collisionable.transform.getPos() = (Vector2D{
-							other_body.body.space.position.x + (other_body.body.space.position.x - other_body.body.space.previous_position.x),
-							other_body.body.space.position.y + (other_body.body.space.position.y - other_body.body.space.previous_position.y),
+							other_body.body.space.position.x + (other_body.body.space.position.x - other_body.body.space.previous_position.x) * 0.5f,
+							other_body.body.space.position.y + (other_body.body.space.position.y - other_body.body.space.previous_position.y) * 0.5f,
 						});
+
+						body.body.space.previous_position.x = previous0.getX();
+						body.body.space.previous_position.y = previous0.getY();
+
+						other_body.body.space.previous_position.x = previous1.getX();
+						other_body.body.space.previous_position.y = previous1.getY();
 	
 						++last_pass_collision_count;
 					}
