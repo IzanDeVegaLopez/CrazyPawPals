@@ -70,6 +70,4 @@ public:
 	virtual std::string& get_name() {
 		return _name;
 	}
-
-	virtual std::string return_card_name() = 0;
 };
