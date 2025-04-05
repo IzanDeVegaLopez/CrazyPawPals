@@ -248,7 +248,8 @@ ecs::entity_t GameScene::create_player()
 		&player_rigidbody,
 		&player_collisionable,
 		new MovementController(0.1f, 5.0f, 20.0f * deccel_spawned_creatures_multi),
-		new player_collision_triggerer()
+		new player_collision_triggerer(),
+		new id_component()
 		);
 
 	//si tiene mas de una animacion
