@@ -68,6 +68,7 @@ public:
     void update(uint32_t delta_time) override;
     void initComponent() override;
     void start_new_wave();
+    void reset_wave_manager();
 
     inline Uint32 get_wave_time() { return _currentWaveTime; }
     inline int get_current_wave() { return _currentWave; }

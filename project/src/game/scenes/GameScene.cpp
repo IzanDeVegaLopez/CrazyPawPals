@@ -151,7 +151,7 @@ static ecs::entity_t create_environment() {
 	auto&& manager = *Game::Instance()->get_mngr();
 	auto environment = manager.addEntity(ecs::scene::GAMESCENE);
 	auto &&tr = *manager.addComponent<Transform>(environment, Vector2D(-16.0, 9.0), Vector2D(0.0, 0.0), 0.0f, 0.05f);
-	auto &&rect = *manager.addComponent<rect_component>(environment, 0.0f, 0.0f, 32.0f, 18.0f);
+	auto &&rect = *manager.addComponent<rect_component>(environment, -0.5f, 0.5f, 35.0f, 20.0f);
 	(void)tr;
 	manager.addComponent<offset_dyn_image>(environment, rect_f32{
 		{0.0, 0.0},
@@ -254,6 +254,27 @@ ecs::entity_t GameScene::create_player()
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::PLAYER, player);
 
 	return player;
+}
+
+void GameScene::reset_player()
+{
+	auto&& mngr = *Game::Instance()->get_mngr();
+	auto player = mngr.getHandler(ecs::hdlr::PLAYER);
+
+	mngr.removeComponent<Weapon>(player);
+	mngr.removeComponent<MythicComponent>(player);
+	mngr.removeComponent<Deck>(player);
+	mngr.removeComponent<KeyboardPlayerCtrl>(player);
+	mngr.removeComponent<PlayerHUD>(player);
+
+
+	mngr.getComponent<dyn_image_with_frames>(player)->isDamaged = false;
+	auto tr = mngr.getComponent<Transform>(player);
+		 tr->setPos({ 0.0f, 0.0f });	
+		 tr->setDir({ 0.0f, 0.0f });	
+
+	mngr.getComponent<AnimationComponent>(player)->play_animation("idle");
+	mngr.getComponent<Health>(player)->resetCurrentHeatlh();
 }
 
 #pragma endregion
@@ -448,7 +469,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	auto chargingState = std::make_shared<WaitingState>();
 
 	auto windAttackState = std::make_shared<AttackingState>(
-		&tr, _p_tr, &weapon,
+		&tr, _p_tr, &weapon, false,
 		[&weapon, &tr, _p_tr]() { 
 			Vector2D shootPos = tr.getPos(); // Posición del enemigo
 			weapon.wind_attack(shootPos); 
@@ -456,7 +477,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	);
 
 	auto areaAttackState = std::make_shared<AttackingState>(
-		&tr, _p_tr, &weapon,
+		&tr, _p_tr, &weapon,false,
 		[&weapon, &tr]() {
 			Vector2D shootPos = tr.getPos(); // Posición del enemigo
 			weapon.area_attack(shootPos);
@@ -464,7 +485,7 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 	);
 
 	auto dashAttackState = std::make_shared<AttackingState>(
-		&tr, _p_tr, &weapon,
+		&tr, _p_tr, &weapon,false,
 		[&weapon, &tr, _p_tr, &mc]() {
 			Vector2D shootPos = tr.getPos();
 			Vector2D shootDir = (_p_tr->getPos() - shootPos).normalize();
@@ -648,7 +669,9 @@ GameScene::spawn_sarno_rata(Vector2D posVec)
     // Estado inicial
     state->set_initial_state("Walking");
 }
+#pragma endregion
 
+#pragma region Michi Mafioso
 void GameScene::spawn_michi_mafioso(Vector2D posVec)
 {
 	auto&& manager = *Game::Instance()->get_mngr();
@@ -775,7 +798,7 @@ void GameScene::spawn_boom(Vector2D posVec)
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc); 
-	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon, [e]() {Game::Instance()->get_mngr()->setAlive(e, false); });
+	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon, false, [e]() {Game::Instance()->get_mngr()->setAlive(e, false); }, 1);
 
 	//poner los estado a la state
 	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
@@ -964,7 +987,7 @@ void GameScene::spawn_wave_manager()
 void GameScene::spawn_fog()
 {
 	auto&& transform = *new Transform({ 0.0f, 0.0f }, { 0.0f,0.0f }, 0.0f, 1.0f);
-	auto&& rect = *new rect_component{ 0.0f, 0.0f, 20.0f, 20.0f};
+	auto&& rect = *new rect_component{ 0.0f, 0.0f, 35.0f, 20.0f};
 	dyn_image* this_fog_image = new dyn_image(
 		rect_f32{ {0,0},{1,1} },
 		rect,
@@ -1043,5 +1066,10 @@ void GameScene::event_callback0(const event_system::event_receiver::Msg& m) {
 	deccel_spawned_creatures_multi *= m.float_value;
 }
 void GameScene::event_callback1(const event_system::event_receiver::Msg& m) {
+	auto&& mngr = *Game::Instance()->get_mngr();
+	reset_player();
+	mngr.getComponent<WaveManager>(mngr.getHandler(ecs::hdlr::WAVE))->reset_wave_manager();
+	mngr.getComponent<HUD>(mngr.getHandler(ecs::hdlr::HUD_ENTITY))->reset();
+
 	Game::Instance()->change_Scene(Game::GAMEOVER);
 }

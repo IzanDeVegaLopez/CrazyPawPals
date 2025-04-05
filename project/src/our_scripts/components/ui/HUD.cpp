@@ -89,3 +89,10 @@ void HUD::start_new_wave()
 		_displaying_wave_event = true;
 	}
 }
+
+void HUD::reset()
+{
+	_current_event = NONE;
+	_current_wave_event_time = 0;
+	_displaying_wave_event = false;
+}

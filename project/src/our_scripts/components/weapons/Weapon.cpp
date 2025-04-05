@@ -27,12 +27,16 @@ Weapon::set_attack_size(float w, float h) {
 }
 bool
 Weapon::shoot(const Vector2D& target) {
+	bool canShoot = false;
+
 	auto& pos = _tr->getPos();
-	if (sdlutils().virtualTimer().currTime() >= _lastShoot + _cooldown) {
+	if (sdlutils().virtualTimer().currTime() >= _lastShoot + _cooldown) { // Check if the cooldown has passed
+		canShoot = true;
 		Vector2D shootPos = { pos.getX(), pos.getY() };
 		Vector2D shootDir = (target - shootPos).normalize();
 		callback(shootPos, shootDir);
 		_lastShoot = sdlutils().virtualTimer().currTime();
-		return true;
-	}return false;
+	}
+	
+	return canShoot;
 }

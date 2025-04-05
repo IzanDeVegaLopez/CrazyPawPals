@@ -8,7 +8,7 @@ class AttackingState : public State
 public:
 	using OnAttackCallback = std::function<void()>;
 
-	AttackingState(Transform* tr, Transform* playerTr, Weapon* weapon, OnAttackCallback onAttackCallback = nullptr, int attact_times = 1);
+	AttackingState(Transform* tr, Transform* playerTr, Weapon* weapon, bool can_attack = true, OnAttackCallback onAttackCallback = nullptr, int attact_times = 1);
 	void enter() override;
 	void update(uint32_t delta_time) override;
 	void exit() override;
@@ -21,4 +21,6 @@ protected:
 
 	int _attack_times;
 	int _contador;
+
+	bool _can_attack;
 };
