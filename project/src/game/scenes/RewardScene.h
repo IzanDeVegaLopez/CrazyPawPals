@@ -54,8 +54,8 @@ private:
 	void create_reward_buttons();
 	void refresh_rewards();
 
-	//TODO: method to create next round button
-	void create_next_round_button() {};
+	//method to create next round button
+	void create_next_round_button();
 
 	//method to change the position between health button and a card button
 	void change_pos(bool enter);

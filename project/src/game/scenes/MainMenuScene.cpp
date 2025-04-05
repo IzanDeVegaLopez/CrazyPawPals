@@ -14,7 +14,7 @@ MainMenuScene::MainMenuScene() : Scene(ecs::scene::MAINMENUSCENE)
     create_static_background(&sdlutils().images().at("start"));
 
     GameStructs::ButtonProperties buttonPropTemplate = { 
-        { {0.365f, 0.25f},{0.3f, 0.1625f} },
+        { {0.365f, 0.25f},{0.275f, 0.1225f} },
         0.0f, ""
     };
 
@@ -61,9 +61,8 @@ void MainMenuScene::create_start_button(const GameStructs::ButtonProperties& bp)
     auto buttonComp = mngr->getComponent<Button>(e);
     auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
     buttonComp->connectClick([buttonComp, imgComp, mngr]() {
-        
-        Game::Instance()->change_Scene(Game::SELECTIONMENU);
         imgComp->apply_filter(255, 255, 255);
+        Game::Instance()->change_Scene(Game::SELECTIONMENU);
         });
 
     buttonComp->connectHover([buttonComp, imgComp]() {

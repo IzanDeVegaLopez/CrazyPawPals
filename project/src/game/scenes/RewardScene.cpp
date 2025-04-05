@@ -67,27 +67,27 @@ std::string RewardScene::select_card(GameStructs::CardType ct) {
     std::string s = "";
     switch (ct)
     {
-    case GameStructs::FIREBALL: s = "reward_card_fireball";
+    case GameStructs::FIREBALL: s = "card_fireball";
         break;
-    case GameStructs::LIGHTING: s = "reward_card_lighting";
+    case GameStructs::LIGHTING: s = "card_lighting";
         break;
-    case GameStructs::KUNAI: s = "reward_card_kunai";
+    case GameStructs::KUNAI: s = "card_kunai";
         break;
-    case GameStructs::RECOVER: s = "reward_card_recover";
+    case GameStructs::RECOVER: s = "card_recover";
         break;
-    case GameStructs::MINIGUN: s = "reward_card_minigun";
+    case GameStructs::MINIGUN: s = "card_minigun";
         break;
-    case GameStructs::SPRAY: s = "reward_card_cardSpray";
+    case GameStructs::SPRAY: s = "card_cardSpray";
         break;
-    case GameStructs::ELDRITCH_BLAST: s = "reward_card_eldritchBlast";
+    case GameStructs::ELDRITCH_BLAST: s = "card_eldritchBlast";
         break;
-    case GameStructs::COMMUNE: s = "reward_card_commune";
+    case GameStructs::COMMUNE: s = "card_commune";
         break;
-    case GameStructs::EVOKE: s = "reward_card_evoke";
+    case GameStructs::EVOKE: s = "card_evoke";
         break;
-    case GameStructs::FULGUR: s = "reward_card_fulgur";
+    case GameStructs::FULGUR: s = "card_fulgur";
         break;
-    case GameStructs::QUICK_FEET: s = "reward_card_quickFeet";
+    case GameStructs::QUICK_FEET: s = "card_quickFeet";
         break;
     default:
         break;
@@ -311,6 +311,7 @@ void RewardScene::create_a_deck_card(const GameStructs::CardButtonProperties& bp
     auto buttonComp = mngr->getComponent<CardButton>(e);
     auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
     buttonComp->connectClick([buttonComp, imgComp, this, bp] {
+        if (_selected) return;
         imgComp->destination_rect.size = { imgComp->_original_w,  imgComp->_original_h };
         _selected_button = buttonComp;
         auto it = buttonComp->It();
@@ -325,9 +326,10 @@ void RewardScene::create_a_deck_card(const GameStructs::CardButtonProperties& bp
         }
         });
 
-    buttonComp->connectHover([buttonComp, imgComp]() {
+    buttonComp->connectHover([buttonComp, imgComp, this]() {
         //std::cout << "hover -> Reward button: " << std::endl;
         //filter
+        if (_selected) return;
         imgComp->apply_filter(128, 128, 128);
         /*imgComp->destination_rect.position.y -= 0.125f;*/
        /* imgComp->destination_rect.size = { imgComp->destination_rect.size.x * 1.25f,  imgComp->destination_rect.size.y * 1.25f };*/
@@ -579,6 +581,7 @@ void RewardScene::create_reward_exchange_button(const GameStructs::ButtonPropert
             remove_deck_card();
             add_new_reward_card();
             _last_deck_card_img->destination_rect.position.y += 0.05f;
+            Game::Instance()->change_Scene(Game::GAMESCENE);
         });
     buttonComp->connectHover([buttonComp, imgComp, this]() {
         if (_selected) return;
@@ -612,4 +615,29 @@ void RewardScene::update(uint32_t delta_time) {
        auto buttonE = mngr->getComponent<Button>(mngr->getHandler(ecs::hdlr::EXCHANGEBUTTON));
        _activate_exchange_button = false;
    }
+}
+void RewardScene::create_next_round_button() {
+   
+    GameStructs::ButtonProperties bp = {
+            { {0.4f, 0.5f},{0.3f, 0.125f} },
+            0.0f, "next_round", ecs::grp::UI
+    };
+    auto* mngr = Game::Instance()->get_mngr();
+    auto e = create_button(bp);
+    mngr->setHandler(ecs::hdlr::NEXTROUNDBUTTON, e);
+    auto imgComp = mngr->addComponent<ImageForButton>(e,
+        &sdlutils().images().at("initial_info"),
+        &sdlutils().images().at(bp.sprite_key),
+        bp.rect,
+        0,
+        Game::Instance()->get_mngr()->getComponent<camera_component>(
+            Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
+    );
+
+
+    auto buttonComp = mngr->getComponent<Button>(e);
+
+    buttonComp->connectClick([buttonComp, mngr, this]() { if (_selected) Game::Instance()->change_Scene(Game::REWARDSCENE); });
+    buttonComp->connectHover([buttonComp, imgComp, this]() { imgComp->apply_filter(128, 128, 128);});
+    buttonComp->connectExit([buttonComp, imgComp, this]() { imgComp->apply_filter(255, 255, 255);});
 }

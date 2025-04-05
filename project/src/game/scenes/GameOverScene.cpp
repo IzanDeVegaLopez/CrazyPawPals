@@ -44,14 +44,18 @@ void GameOverScene::render() {
 }
 void GameOverScene::create_enter_button() {
     GameStructs::ButtonProperties bp = {
-         { {0.4f, 0.5f},{0.3f, 0.125f} },
-         0.0f, "enter_game"
+         { {0.375f, 0.65f},{0.3f, 0.125f} },
+         0.0f, "back"
     };
     auto* mngr = Game::Instance()->get_mngr();
     auto e = create_button(bp);
     auto buttonComp = mngr->getComponent<Button>(e);
+    auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
 
-    buttonComp->connectClick([buttonComp, mngr, this]() {
+    buttonComp->connectClick([buttonComp, imgComp, mngr, this]() {
+        imgComp->apply_filter(255, 255, 255);
         Game::Instance()->change_Scene(Game::MAINMENU);
     }); 
+    buttonComp->connectHover([buttonComp, imgComp, this]() { imgComp->apply_filter(128, 128, 128);});
+    buttonComp->connectExit([buttonComp, imgComp, this]() { imgComp->apply_filter(255, 255, 255);});
 }
