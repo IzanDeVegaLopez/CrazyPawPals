@@ -16,4 +16,5 @@ struct fog_collision_component : public on_trigger<fog_collision_component> {
     inline fog_collision_component() : on_trigger<fog_collision_component>() {};
     void update(uint32_t delta_time) override;
     void on_contact(const collision_manifold&);
+    void reset();
 };

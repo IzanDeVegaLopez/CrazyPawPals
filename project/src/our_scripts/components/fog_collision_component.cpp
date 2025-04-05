@@ -18,6 +18,11 @@ void fog_collision_component::on_contact(const collision_manifold& tm)
     }
 }
 
+void fog_collision_component::reset()
+{
+    last_fog_time_collided_by_player.clear();
+}
+
 void fog_collision_component::update(uint32_t delta_time) {
 	on_trigger<fog_collision_component>::update(delta_time);
     for (auto& pair : last_fog_time_collided_by_player) {

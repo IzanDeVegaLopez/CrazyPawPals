@@ -198,6 +198,7 @@ void GameScene::enterScene()
 
 	auto d = mngr->getComponent<Deck>(player);
 	d->reload();
+	mngr->getComponent<fog_collision_component>(mngr->getHandler(ecs::hdlr::FOGGROUP))->reset();
 	//d->
 	//d->initComponent();
 
@@ -272,6 +273,7 @@ void GameScene::reset_player()
 	mngr.removeComponent<Deck>(player);
 	mngr.removeComponent<KeyboardPlayerCtrl>(player);
 	mngr.removeComponent<PlayerHUD>(player);
+	mngr.removeComponent<id_component>(player);
 
 
 	mngr.getComponent<dyn_image_with_frames>(player)->isDamaged = false;
@@ -1075,7 +1077,6 @@ void GameScene::event_callback1(const event_system::event_receiver::Msg& m) {
 	auto&& mngr = *Game::Instance()->get_mngr();
 	reset_player();
 	mngr.getComponent<WaveManager>(mngr.getHandler(ecs::hdlr::WAVE))->reset_wave_manager();
-	mngr.getComponent<HUD>(mngr.getHandler(ecs::hdlr::HUD_ENTITY))->reset();
 
 	Game::Instance()->change_Scene(Game::GAMEOVER);
 }
