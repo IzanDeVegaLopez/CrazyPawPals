@@ -455,6 +455,10 @@
     {
       "id": "m_blood_pact",
       "file": "resources/images/ui/mythics/m_blood_pact.png"
+    },
+    {
+      "id": "m_claw_file",
+      "file": "resources/images/ui/mythics/m_claw_file.png"
     }
 
   ], 
