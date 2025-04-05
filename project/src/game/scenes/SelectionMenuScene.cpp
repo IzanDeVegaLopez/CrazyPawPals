@@ -118,17 +118,28 @@ void SelectionMenuScene::initScene() {
 void SelectionMenuScene::reset() {
     _weapon_selected = false;
     _deck_selected = false;
+    //we need to clean the filter of both side texture
     if (_last_deck_button != nullptr) {
         _last_deck_button->apply_filter(255,255,255);
         _last_deck_button->swap_textures();
+        _last_deck_button->apply_filter(255, 255, 255);
     }
     _last_deck_button = nullptr;
     if (_last_weapon_button != nullptr) {
         _last_weapon_button->apply_filter(255, 255, 255);
         _last_weapon_button->swap_textures();
+        _last_weapon_button->apply_filter(255, 255, 255);
     }
     _last_weapon_button = nullptr;
+
     _activate_play_button = false;
+    
+    auto* mngr = Game::Instance()->get_mngr();
+    auto& deckInfo = mngr->getEntities(ecs::grp::DECKINFO);
+    for (auto& d : deckInfo) {
+        auto img = mngr->getComponent<transformless_dyn_image>(d);
+        img->set_texture(&sdlutils().images().at("initial_info"));
+    }
 }
 void SelectionMenuScene::enterScene()
 {
@@ -138,15 +149,22 @@ void SelectionMenuScene::enterScene()
 
 void SelectionMenuScene::exitScene()
 {
-    _weapon_selected = false;
+    /*_weapon_selected = false;
     _deck_selected = false;
     _last_weapon_button->swap_textures();
     _last_deck_button->swap_textures();
     _last_weapon_button = nullptr;
     _last_deck_button = nullptr;
     _activate_play_button = false;
+    */
+    reset();
     auto* mngr = Game::Instance()->get_mngr();
     mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::TOGAMEBUTTON))->swap_textures();
+
+    auto playB = mngr->getHandler(ecs::hdlr::TOGAMEBUTTON);
+    auto playImg = mngr->getComponent<ImageForButton>(playB);
+    playImg->apply_filter(255, 255, 255);
+
 }
 
 
@@ -282,7 +300,7 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
             cl = { new CardSpray(), new Lighting(), new Minigun(), new Kunai()};
             break;
         case GameStructs::FOUR:
-            cl = { new Kunai(), new EldritchBlast(), new Commune(), new QuickFeet()};
+            cl = { new Kunai(), new EldritchBlast(), new QuickFeet (), new Kunai()};
             break;
         default:
             break;
@@ -301,6 +319,7 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
             //register the clicked button
         }
         else if (_last_deck_button == nullptr) { //special case: first click
+            imgComp->apply_filter(255, 255, 255);
             imgComp->swap_textures();
         }
         _last_deck_button = imgComp;
@@ -365,8 +384,8 @@ void SelectionMenuScene::set_concrete_deck_info(const std::list<Card*>& cl) {
 }
 void SelectionMenuScene::create_enter_button() {
     GameStructs::ButtonProperties bp = {
-         { {0.4f, 0.5f},{0.3f, 0.125f} },
-         0.0f, "enter_game", ecs::grp::UI
+         { {0.4f, 0.4f},{0.3f, 0.125f} },
+         0.0f, "new_round", ecs::grp::UI
     };
     auto* mngr = Game::Instance()->get_mngr();
     auto e = create_button(bp);
@@ -383,11 +402,14 @@ void SelectionMenuScene::create_enter_button() {
 
     auto buttonComp = mngr->getComponent<Button>(e);
 
-    buttonComp->connectClick([buttonComp, mngr, this]() {
+    buttonComp->connectClick([buttonComp, mngr, imgComp,this]() {
         if (_weapon_selected && _deck_selected) {
+            imgComp->apply_filter(255, 255, 255);
             Game::Instance()->change_Scene(Game::GAMESCENE);
         }
     }); 
+    buttonComp->connectHover([buttonComp, imgComp, this]() { imgComp->apply_filter(128, 128, 128);});
+    buttonComp->connectExit([buttonComp, imgComp, this]() { imgComp->apply_filter(255, 255, 255);});
 }
 void SelectionMenuScene::update(uint32_t delta_time) {
     Scene::update(delta_time);

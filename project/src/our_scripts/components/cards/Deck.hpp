@@ -83,7 +83,8 @@ public:
 
 	void initComponent() override;
 
-	CardList& move_discard_to_draw();
+	//only for menus 
+	CardList& move_discard_to_draw(bool menu = true);
 
 	//only for menus 
 	CardList& move_all_to_draw();
