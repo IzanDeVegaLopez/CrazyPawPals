@@ -17,7 +17,7 @@
 #include <iostream>
 
 RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr), _selected_button(nullptr),
-_health(false),_card(false), _object(false), _upgrade(false), _lr(nullptr),
+_heal(false), _lr(nullptr),
 _selected(false), _activate_confirm_button(false), _chosen_card(nullptr), _activate_exchange_button(false), _last_deck_card_img(nullptr)
 {
 }
@@ -227,6 +227,7 @@ void RewardScene::create_reward_health_button(const GameStructs::ButtonPropertie
                 resize(_lr, 1.0f / 1.1f);
             }
             _lr = imgComp;
+            _heal = true;
         }
     });
     buttonComp->connectHover([buttonComp, imgComp, this]() {
@@ -279,6 +280,7 @@ void RewardScene::create_reward_card_button(const GameStructs::ButtonProperties&
             }
             _lr = imgComp;
             _chosen_card = e;
+            _heal = false;
         }
     });
     buttonComp->connectHover([buttonComp, imgComp, this]() {
@@ -353,7 +355,7 @@ void RewardScene::create_my_deck_cards() {
         mngr->addComponent<Deck>(player);
     }
     auto _m_deck = mngr->getComponent<Deck>(player);
-    auto& pDeck = _m_deck->move_all_to_draw().card_list();
+    auto& pDeck = _m_deck->move_discard_to_draw(true).card_list();
 
     float umbral = 0.095f;
     auto iterator = pDeck.begin();
@@ -444,6 +446,14 @@ void RewardScene::create_reward_selected_button(const GameStructs::ButtonPropert
     imgComp->swap_textures();
     mngr->setHandler(ecs::hdlr::CONFIRMREWARD,e);
     buttonComp->connectClick([buttonComp, this, imgComp] {
+        if (_heal) {
+            auto* mngr = Game::Instance()->get_mngr();
+            auto player = mngr->getHandler(ecs::hdlr::PLAYER);
+            auto phealth = mngr->getComponent<Health>(player);
+            //heal a 20%
+            int hn = phealth->getMaxHealth() * 2 / 10;
+            phealth->heal(hn);
+        }
         //we only select a reward if previously we have chosen something
         if (_lr != nullptr && !_selected) {
             _lr->apply_filter(255, 255, 255);
