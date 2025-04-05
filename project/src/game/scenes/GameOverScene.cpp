@@ -53,9 +53,9 @@ void GameOverScene::create_enter_button() {
     auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
 
     buttonComp->connectClick([buttonComp, imgComp, mngr, this]() {
-        imgComp->apply_filter(255, 255, 255);
+        imgComp->_filter = false;
         Game::Instance()->change_Scene(Game::MAINMENU);
     }); 
-    buttonComp->connectHover([buttonComp, imgComp, this]() { imgComp->apply_filter(128, 128, 128);});
-    buttonComp->connectExit([buttonComp, imgComp, this]() { imgComp->apply_filter(255, 255, 255);});
+    buttonComp->connectHover([buttonComp, imgComp, this]() { imgComp->_filter = true;});
+    buttonComp->connectExit([buttonComp, imgComp, this]() { imgComp->_filter = false;});
 }

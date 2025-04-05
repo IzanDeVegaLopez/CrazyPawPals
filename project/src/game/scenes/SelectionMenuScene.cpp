@@ -120,15 +120,15 @@ void SelectionMenuScene::reset() {
     _deck_selected = false;
     //we need to clean the filter of both side texture
     if (_last_deck_button != nullptr) {
-        _last_deck_button->apply_filter(255,255,255);
+        _last_deck_button->_filter = false;
         _last_deck_button->swap_textures();
-        _last_deck_button->apply_filter(255, 255, 255);
+        _last_deck_button->_filter = false;
     }
     _last_deck_button = nullptr;
     if (_last_weapon_button != nullptr) {
-        _last_weapon_button->apply_filter(255, 255, 255);
+        _last_weapon_button->_filter = false;
         _last_weapon_button->swap_textures();
-        _last_weapon_button->apply_filter(255, 255, 255);
+        _last_weapon_button->_filter = false;
     }
     _last_weapon_button = nullptr;
 
@@ -163,7 +163,7 @@ void SelectionMenuScene::exitScene()
 
     auto playB = mngr->getHandler(ecs::hdlr::TOGAMEBUTTON);
     auto playImg = mngr->getComponent<ImageForButton>(playB);
-    playImg->apply_filter(255, 255, 255);
+    playImg->_filter = false;
 
 }
 
@@ -217,7 +217,7 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
 
         if (imgComp != _last_weapon_button) {
             //swap the actual buttons textures
-            imgComp->apply_filter(255, 255, 255);
+            imgComp->_filter = false;
             imgComp->swap_textures();
         }
 
@@ -261,14 +261,14 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
         }
         s += "info";
         infoImg->set_texture(&sdlutils().images().at(s));
-        imgComp->apply_filter(128,128,128);
+        imgComp->_filter = true;
     });
     buttonComp->connectExit([buttonComp, imgComp,mngr]() {
         auto& info = mngr->getEntities(ecs::grp::WEAPONINFO);
         assert(!info.empty());
         auto infoImg = mngr->getComponent<transformless_dyn_image>(info[0]);
         infoImg->set_texture(&sdlutils().images().at("initial_info"));
-        imgComp->apply_filter(255, 255, 255);
+        imgComp->_filter = false;
     });
 }
 void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const GameStructs::ButtonProperties& bp) {
@@ -313,23 +313,23 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
 
         //swap the actual buttons textures
         if (_last_deck_button != nullptr && _last_deck_button != imgComp) {
-            imgComp->apply_filter(255, 255, 255);
+            imgComp->_filter = false;
             imgComp->swap_textures();
             _last_deck_button->swap_textures();
             //register the clicked button
         }
         else if (_last_deck_button == nullptr) { //special case: first click
-            imgComp->apply_filter(255, 255, 255);
+            imgComp->_filter = false;
             imgComp->swap_textures();
         }
         _last_deck_button = imgComp;
     });
 
     buttonComp->connectHover([buttonComp, imgComp]() {
-        imgComp->apply_filter(128, 128, 128);
+        imgComp->_filter = true;
         });
     buttonComp->connectExit([buttonComp, imgComp]() {
-        imgComp->apply_filter(255, 255, 255);
+        imgComp->_filter = false;
         });
 }
 void SelectionMenuScene::create_deck_info(const rect_f32& rect) {
@@ -404,12 +404,12 @@ void SelectionMenuScene::create_enter_button() {
 
     buttonComp->connectClick([buttonComp, mngr, imgComp,this]() {
         if (_weapon_selected && _deck_selected) {
-            imgComp->apply_filter(255, 255, 255);
+            imgComp->_filter = false;
             Game::Instance()->change_Scene(Game::GAMESCENE);
         }
     }); 
-    buttonComp->connectHover([buttonComp, imgComp, this]() { imgComp->apply_filter(128, 128, 128);});
-    buttonComp->connectExit([buttonComp, imgComp, this]() { imgComp->apply_filter(255, 255, 255);});
+    buttonComp->connectHover([buttonComp, imgComp, this]() { imgComp->_filter = true;});
+    buttonComp->connectExit([buttonComp, imgComp, this]() { imgComp->_filter = false;});
 }
 void SelectionMenuScene::update(uint32_t delta_time) {
     Scene::update(delta_time);
