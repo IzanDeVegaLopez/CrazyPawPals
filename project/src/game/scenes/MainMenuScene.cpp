@@ -75,19 +75,19 @@ MainMenuScene::create_start_button(const GameStructs::ButtonProperties& bp) {
 
     auto buttonComp = mngr->getComponent<Button>(e);
     buttonComp->connectClick([buttonComp, imgComp, mngr]() {
+        imgComp->apply_filter(128, 128, 128);
         imgComp->swap_textures();
-        imgComp->apply_filter(255, 255, 255);
         Game::Instance()->change_Scene(Game::SELECTIONMENU);
     });
 
     buttonComp->connectHover([buttonComp, imgComp]() {
+        imgComp->apply_filter(128, 128, 128);
         imgComp->swap_textures();
-        imgComp->apply_filter(255, 255, 255);
     });
 
     buttonComp->connectExit([buttonComp, imgComp]() {
-        imgComp->swap_textures();
         imgComp->apply_filter(255, 255, 255);
+        imgComp->swap_textures();
     });
 }
 
@@ -107,20 +107,20 @@ MainMenuScene::create_controls_button(const GameStructs::ButtonProperties& bp)
 
     auto buttonComp = mngr->getComponent<Button>(e);
     buttonComp->connectClick([buttonComp, imgComp, mngr]() {
-        Game::Instance()->change_Scene(Game::CONTROLSSCENE);
+        imgComp->apply_filter(128, 128, 128);
         imgComp->swap_textures();
-        imgComp->apply_filter(255, 255, 255);
+        Game::Instance()->change_Scene(Game::CONTROLSSCENE);
     });
 
     buttonComp->connectHover([buttonComp, imgComp]() {
+        imgComp->apply_filter(128, 128, 128);
         imgComp->swap_textures();
-        imgComp->apply_filter(255, 255, 255);
 
     });
 
     buttonComp->connectExit([buttonComp, imgComp]() {
-        imgComp->swap_textures();
         imgComp->apply_filter(255, 255, 255);
+        imgComp->swap_textures();
     });
 }
 
@@ -141,18 +141,18 @@ MainMenuScene::create_exit_button(const GameStructs::ButtonProperties& bp)
     auto buttonComp = mngr->getComponent<Button>(e);
     
     buttonComp->connectClick([buttonComp, imgComp, mngr]() {
+        imgComp->apply_filter(128, 128, 128);
         imgComp->swap_textures();
-        imgComp->apply_filter(255, 255, 255);
         Game::Instance()->set_exit(true);
     });
 
     buttonComp->connectHover([buttonComp, imgComp]() {
-        imgComp->apply_filter(255, 255, 255);
+        imgComp->apply_filter(128, 128, 128);
         imgComp->swap_textures();
     });
     
     buttonComp->connectExit([buttonComp, imgComp]() {
-        imgComp->swap_textures();
-        imgComp->apply_filter(255, 255, 255);           
+        imgComp->apply_filter(255, 255, 255);
+        imgComp->swap_textures(); 
     });
 }
