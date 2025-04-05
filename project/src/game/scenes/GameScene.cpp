@@ -657,12 +657,12 @@ GameScene::spawn_sarno_rata(Vector2D posVec)
     // Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador cerca
     state->add_transition("Walking", "Attacking", [state_cm, _p_tr, &tr]() {
-        return state_cm->is_player_near(_p_tr, &tr, 1.0f);
+        return state_cm->is_player_near(_p_tr, &tr, 1.7f);
     });
 
 	// De: Attacking a: Walking, Condición: Jugador lejos
     state->add_transition("Attacking", "Walking", [state_cm, _p_tr, &tr]() {
-        return !state_cm->is_player_near(_p_tr, &tr, 1.1f);
+        return !state_cm->is_player_near(_p_tr, &tr, 1.3f);
     });
 
 	
