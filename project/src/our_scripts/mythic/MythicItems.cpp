@@ -123,7 +123,7 @@ void ArcaneSurge::update(uint32_t dt) {
 #pragma endregion
 
 #pragma region BloodPact
-BloodPact::BloodPact() :MythicItem("BloodPact")
+BloodPact::BloodPact() :MythicItem("BloodPact", "m_blood_pact")
 {
 	auto manager = Game::Instance()->get_mngr();
 	_mana = manager->getComponent<ManaComponent>(_player);

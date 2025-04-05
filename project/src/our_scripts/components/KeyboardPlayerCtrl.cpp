@@ -87,7 +87,7 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
         _my->add_mythic(new PreternaturalForce());
     } 
     if (ihdlr.keyDownEvent() && ihdlr.isKeyDown(SDL_SCANCODE_Z)) {
-        _my->add_mythic(new BloodClaw());
+        _my->add_mythic(new BloodPact());
     }
     if (ihdlr.keyDownEvent() && ihdlr.isKeyDown(SDL_SCANCODE_X)) {
         _my->add_mythic(new ProfaneHotline());
