@@ -181,11 +181,10 @@ void GameScene::initScene() {
 	manager.refresh();
 	create_environment();
 	// spawn_catkuza(Vector2D{5.0f, 0.0f});
-	spawn_super_michi_mafioso(Vector2D{5.0f, 0.0f});
+	//spawn_super_michi_mafioso(Vector2D{5.0f, 0.0f});
 	spawn_fog();
 	spawn_wave_manager();
 	create_hud();
-
 }
 
 void GameScene::enterScene()

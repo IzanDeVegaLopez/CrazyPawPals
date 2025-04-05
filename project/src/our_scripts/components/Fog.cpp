@@ -26,10 +26,20 @@ void Fog::update(uint32_t delta_time) {
 	}
 	else {
 		if (fogPercentage <= 1 - 0.0005) {
-			fogPercentage += 0.0005;
+			//10 seconds of wave * 1000 ms is a second
+			fogPercentage += delta_time / (float)(10000);
 		}
 		//std::cout << "Fog: " << fogPercentage * 100 << "%" << std::endl;
 
 		fogRect->setSize(orSize * (1 - fogPercentage));
 	}
+}
+
+void Fog::setFog(bool fogActive_)
+{
+	if (!fogActive_) {
+		fogRect->setSize(orSize);
+		fogTransform->setWidth(orW);
+		fogTransform->setHeight(orH);
+	}fogActive = fogActive_;
 }

@@ -18,7 +18,7 @@ public:
 	void update(uint32_t delta_time) override;
 
 	bool getFogActive() { return fogActive; }
-	inline void setFog(bool fogActive_) { fogActive = fogActive_; }
+	void setFog(bool fogActive_);
 
 private:
 	bool fogActive = false;

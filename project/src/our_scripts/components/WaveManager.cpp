@@ -74,7 +74,6 @@ WaveManager::update(uint32_t delta_time) {
 // Spawnear enemigos fuera de la pantalla
 void 
 WaveManager::spawn_next_enemy() {
-    return; // FIXME: remove this line to enable enemy spawning
             // RANDOM
             std::random_device rd;
             std::mt19937 gen(rd());
@@ -173,7 +172,7 @@ void WaveManager::update(uint32_t delta_time) {
     if (is_wave_finished())
         endwave();
 
-    if (_currentWaveTime > 49 * 1000 && !is_wave_finished()) {
+    if (_currentWaveTime > 50 * 1000 && !is_wave_finished()) {
         activateFog();
     }
 
