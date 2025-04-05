@@ -152,7 +152,7 @@ void CardSpray::on_play(Deck& d, const Vector2D* player_position, const Vector2D
 	bp.width = 0.7;
 	bp.life_time = 3;
 	bp.damage = 2;
-	bp.sprite_key = "card_spray";
+	bp.sprite_key = "p_card_spray";
 	bp.collision_filter = GameStructs::collide_with::enemy;
 
 	patrons::ShotgunPatron(bp, ecs::grp::BULLET, 75, 3);

@@ -231,12 +231,12 @@ void RewardScene::create_reward_health_button(const GameStructs::ButtonPropertie
     });
     buttonComp->connectHover([buttonComp, imgComp, this]() {
         if (_selected) return;
-        std::cout << "hover -> Reward button: " << std::endl;
+        //std::cout << "hover -> Reward button: " << std::endl;
         //filter
         imgComp->apply_filter(128, 128, 128);
     });
     buttonComp->connectExit([buttonComp, imgComp]() {
-        std::cout << "exit -> Reward button: " << std::endl;
+        //std::cout << "exit -> Reward button: " << std::endl;
         //filter
         imgComp->apply_filter(255, 255, 255);
     });
@@ -266,10 +266,10 @@ void RewardScene::create_reward_card_button(const GameStructs::ButtonProperties&
 
     buttonComp->connectClick([buttonComp, imgComp, this, e]() {
         if (_selected) {
-            std::cout << "already selected" << std::endl;
+            //std::cout << "already selected" << std::endl;
         }
         else {
-            std::cout << "left click -> reward card button" << std::endl;
+            //std::cout << "left click -> reward card button" << std::endl;
             if (_lr == nullptr) {
                 resize(imgComp, 1.1f);
             }
@@ -283,12 +283,12 @@ void RewardScene::create_reward_card_button(const GameStructs::ButtonProperties&
     });
     buttonComp->connectHover([buttonComp, imgComp, this]() {
         if (_selected) return;
-        std::cout << "hover -> Reward button: " << std::endl;
+        //std::cout << "hover -> Reward button: " << std::endl;
         //filter
         imgComp->apply_filter(128, 128, 128);
         });
     buttonComp->connectExit([buttonComp, imgComp]() {
-        std::cout << "exit -> Reward button: " << std::endl;
+        //std::cout << "exit -> Reward button: " << std::endl;
         //filter
         imgComp->apply_filter(255, 255, 255);
         });
@@ -321,19 +321,19 @@ void RewardScene::create_a_deck_card(const GameStructs::CardButtonProperties& bp
             imgComp->destination_rect.position.y -= 0.05f;
             if (_last_deck_card_img != nullptr) _last_deck_card_img->destination_rect.position.y += 0.05f;
             _last_deck_card_img = static_cast<ImageForButton*>(imgComp);
-            std::cout << "card selected: "<< std::endl;
+            //std::cout << "card selected: "<< std::endl;
         }
         });
 
     buttonComp->connectHover([buttonComp, imgComp]() {
-        std::cout << "hover -> Reward button: " << std::endl;
+        //std::cout << "hover -> Reward button: " << std::endl;
         //filter
         imgComp->apply_filter(128, 128, 128);
         /*imgComp->destination_rect.position.y -= 0.125f;*/
        /* imgComp->destination_rect.size = { imgComp->destination_rect.size.x * 1.25f,  imgComp->destination_rect.size.y * 1.25f };*/
         });
     buttonComp->connectExit([buttonComp, imgComp]() {
-        std::cout << "exit -> Reward button: " << std::endl;
+        //std::cout << "exit -> Reward button: " << std::endl;
         /*imgComp->destination_rect.position.y += 0.125f;*/
         //filter
         imgComp->apply_filter(255, 255, 255);
@@ -362,14 +362,16 @@ void RewardScene::create_my_deck_cards() {
 
     for (const auto& it : pDeck) {
 #pragma region convert a class name to a string
-        std::string typeName = typeid(*it).name();
+        std::string typeName = it->get_name();
+        /* Unnecessary
         std::string prefix = "class ";
         if (typeName.find(prefix) == 0) {  // Si empieza con "class "
             typeName = typeName.substr(prefix.size());  // Elimina "class "
             typeName[0] = tolower(typeName[0]);
         }
+        */
 #pragma endregion
-        propTemplate.sprite_key = "card_"+typeName;
+        propTemplate.sprite_key = /*"card_"+*/typeName;
         create_a_deck_card(propTemplate);
         propTemplate.rect.position.x += umbral;
         iterator++;
@@ -446,16 +448,17 @@ void RewardScene::create_reward_selected_button(const GameStructs::ButtonPropert
             _lr->swap_textures();
             _selected = true;
             add_new_reward_card();
+            Game::Instance()->change_Scene(Game::GAMESCENE);
         }
     });
     buttonComp->connectHover([buttonComp, imgComp, this]() {
         if (_selected) return;
-        std::cout << "hover -> Reward selected button: " << std::endl;
+        //std::cout << "hover -> Reward selected button: " << std::endl;
         //filter
         imgComp->apply_filter(128, 128, 128);
     });
     buttonComp->connectExit([buttonComp, imgComp, this]() {
-        std::cout << "exit -> Reward selected button: " << std::endl;
+        //std::cout << "exit -> Reward selected button: " << std::endl;
         //filter
         imgComp->apply_filter(255, 255, 255);
     });

@@ -194,11 +194,13 @@ void GameScene::enterScene()
 	auto player = mngr->getHandler(ecs::hdlr::PLAYER);
 	auto w = mngr->getComponent<Weapon>(player);
 
-	w->initComponent();
+	//w->initComponent();
 	mngr->addComponent<MythicComponent>(player);
 
 	auto d = mngr->getComponent<Deck>(player);
-	d->initComponent();
+	d->reload();
+	//d->
+	//d->initComponent();
 
 	mngr->addComponent<KeyboardPlayerCtrl>(player);
 	mngr->addComponent<PlayerHUD>(player);
@@ -210,6 +212,10 @@ void GameScene::enterScene()
 
 void GameScene::exitScene()
 {
+	auto* mngr = Game::Instance()->get_mngr();
+	auto player = mngr->getHandler(ecs::hdlr::PLAYER);
+	mngr->removeComponent<KeyboardPlayerCtrl>(player);
+	mngr->removeComponent<PlayerHUD>(player);
 }
 
 //metodos de create/spawn

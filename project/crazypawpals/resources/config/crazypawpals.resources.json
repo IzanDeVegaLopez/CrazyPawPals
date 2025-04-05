@@ -84,6 +84,10 @@
       "file": "resources/images/projectiles/SDL_logo.png"
     },
     {
+      "id": "p_card_spray",
+      "file": "resources/images/projectiles/p_cardSpray.png"
+    },
+    {
       "id": "card_kunai",
       "file": "resources/images/cards/card_kunai.png"
     },
@@ -212,7 +216,6 @@
       "id": "reward_card_recover",
       "file": "resources/images/cards/carta.png"
     },
-
     {
       "id": "boom",
       "file": "resources/images/enemies/boom.png"

@@ -198,22 +198,7 @@ WaveManager::activateFog() {
 
 void 
 WaveManager::enterRewardsMenu() {
-    _current_wave_event->end_wave_callback();
-
-    choose_new_event();
-
-    // Esto tiene que ir después del menu de recompensas
-    _currentWave++;
-    _currentWaveTime = 0;
-    _totalSpawnTime = _waves[_currentWave].first;
-	_enemiesSpawned = 0;
-	_enemiesKilled = 0;
-    _numEnemies = 0;
-    fog->setFog(false);
-
-	for (int i : _waves[_currentWave].second) {
-		if (i != 0) _numEnemies++;
-	}
+    Game::Instance()->change_Scene(Game::REWARDSCENE);
 }
 
 void WaveManager::start_new_wave()
@@ -267,6 +252,7 @@ void WaveManager::endwave()
 {
     //std::cout << "oleada superada con éxito meow" << std::endl;
     _current_wave_event->end_wave_callback();
+    fog->setFog(false);
     enterRewardsMenu();
 
 }
