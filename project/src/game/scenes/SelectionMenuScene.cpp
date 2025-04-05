@@ -118,17 +118,28 @@ void SelectionMenuScene::initScene() {
 void SelectionMenuScene::reset() {
     _weapon_selected = false;
     _deck_selected = false;
+    //we need to clean the filter of both side texture
     if (_last_deck_button != nullptr) {
         _last_deck_button->apply_filter(255,255,255);
         _last_deck_button->swap_textures();
+        _last_deck_button->apply_filter(255, 255, 255);
     }
     _last_deck_button = nullptr;
     if (_last_weapon_button != nullptr) {
         _last_weapon_button->apply_filter(255, 255, 255);
         _last_weapon_button->swap_textures();
+        _last_weapon_button->apply_filter(255, 255, 255);
     }
     _last_weapon_button = nullptr;
+
     _activate_play_button = false;
+    
+    auto* mngr = Game::Instance()->get_mngr();
+    auto& deckInfo = mngr->getEntities(ecs::grp::DECKINFO);
+    for (auto& d : deckInfo) {
+        auto img = mngr->getComponent<transformless_dyn_image>(d);
+        img->set_texture(&sdlutils().images().at("initial_info"));
+    }
 }
 void SelectionMenuScene::enterScene()
 {
@@ -138,13 +149,15 @@ void SelectionMenuScene::enterScene()
 
 void SelectionMenuScene::exitScene()
 {
-    _weapon_selected = false;
+    /*_weapon_selected = false;
     _deck_selected = false;
     _last_weapon_button->swap_textures();
     _last_deck_button->swap_textures();
     _last_weapon_button = nullptr;
     _last_deck_button = nullptr;
     _activate_play_button = false;
+    */
+    reset();
     auto* mngr = Game::Instance()->get_mngr();
     mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::TOGAMEBUTTON))->swap_textures();
 }
@@ -282,7 +295,7 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
             cl = { new CardSpray(), new Lighting(), new Minigun(), new Kunai()};
             break;
         case GameStructs::FOUR:
-            cl = { new Kunai(), new EldritchBlast(), new Commune(), new QuickFeet()};
+            cl = { new Kunai(), new EldritchBlast(), new Recover(), new Kunai()};
             break;
         default:
             break;
@@ -385,7 +398,7 @@ void SelectionMenuScene::create_enter_button() {
 
     buttonComp->connectClick([buttonComp, mngr, this]() {
         if (_weapon_selected && _deck_selected) {
-            Game::Instance()->change_Scene(Game::GAMESCENE);
+            Game::Instance()->change_Scene(Game::GAMEOVER);
         }
     }); 
 }
