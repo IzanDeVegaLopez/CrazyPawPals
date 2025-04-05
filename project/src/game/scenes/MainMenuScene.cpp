@@ -57,6 +57,7 @@ MainMenuScene::enterScene()
 void 
 MainMenuScene::exitScene()
 {
+
 }
 
 void 
@@ -75,7 +76,7 @@ MainMenuScene::create_start_button(const GameStructs::ButtonProperties& bp) {
 
     auto buttonComp = mngr->getComponent<Button>(e);
     buttonComp->connectClick([buttonComp, imgComp, mngr]() {
-        imgComp->_filter = true;
+        imgComp->_filter = false;
         imgComp->swap_textures();
         Game::Instance()->change_Scene(Game::SELECTIONMENU);
     });
