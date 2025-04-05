@@ -73,7 +73,7 @@ struct collision_manifold {
             }), collision_tick(0), body0(nullptr), body1(nullptr) {
     }
 };
-static constexpr int8_t collision_manifolds_capacity = 8;
+static constexpr int8_t collision_manifolds_capacity = 32;
 
 template <ecs::cmp::cmpId COMPONENT_ID>
 struct collision_manifolds : ecs::Component {
