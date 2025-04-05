@@ -1013,9 +1013,9 @@ void GameScene::spawn_fog()
 		&rect,
 		this_fog,
 		this_fog_image,
-		new fog_collision_component(),
 		&fog_rigidbody,
-		&fog_collisionable
+		&fog_collisionable,
+		new fog_collision_component()
 
 	);
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::FOGGROUP, ent);
