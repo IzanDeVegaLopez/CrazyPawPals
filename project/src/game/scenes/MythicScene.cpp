@@ -42,7 +42,8 @@ void MythicScene::enterScene()
     MythicComponent* _m_mythics = mngr->getComponent<MythicComponent>(player);
     std::vector<MythicItem*> pMythics = _m_mythics->get_mythics();
     //refresh_my_mythic(pMythics);
-    refresh_mythics();
+    //refresh_mythics();
+    Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::MYTHICSCENE);
 }
 
 void MythicScene::exitScene()
@@ -125,9 +126,9 @@ void MythicScene::create_my_mythic()
     MythicComponent* _m_mythics = mngr->getComponent<MythicComponent>(player);
     std::vector<MythicItem*> pMythics = _m_mythics->get_mythics();
 
-    float umbral = 0.095f;
+    float umbral = 0.1f;
     GameStructs::ButtonProperties propTemplate = {
-        { {0.01f, 0.65f}, {0.1f, 0.175f} },
+        { {0.05f, 0.65f}, {0.1f, 0.175f} },
         0.0f, "", ecs::grp::MYTHICOBJS
     };
 
@@ -145,7 +146,6 @@ void MythicScene::create_my_mythic()
         propTemplate.sprite_key = "mythic_" + typeName;
         create_a_mythic(propTemplate);
         propTemplate.rect.position.x += umbral;
-
     }
 }
 
@@ -176,33 +176,37 @@ void MythicScene::refresh_my_mythic(const std::vector<MythicItem*> ml)
     auto* mngr = Game::Instance()->get_mngr();
     auto infos = mngr->getEntities(ecs::grp::MYTHICOBJS);
 
-    // Ref to updated mythics
-    auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
-    MythicComponent* _m_mythics = mngr->getComponent<MythicComponent>(player);
-    std::vector<MythicItem*> pMythics = _m_mythics->get_mythics();
+    auto itMythicInfo = infos.begin();
 
-    //// Refrescar las texturas y actualizar punteros
-    //for (; it != cl.end() && itCard != updatedCardList.end(); ++it, ++itInfo, ++itCard) {
-    //    auto img = mngr->getComponent<transformless_dyn_image>(*itInfo);
-    //    img->set_texture(&sdlutils().images().at(*it));
+    //refresh my deck info and represent it
+    for (MythicItem* m : ml) {
+        //obtain each ones component
+        auto img = mngr->getComponent<transformless_dyn_image>(*itMythicInfo);
 
-    //    // Actualizar la referencia a la carta en el boton
-    //    auto buttonComp = mngr->getComponent<Button>(*itInfo);
-    //    if (buttonComp) {
-    //        static_cast<CardButton*>(buttonComp)->set_it(*itCard); // Metodo para actualizar puntero
-    //    }
-    //}
+        //Get texture name
+        std::string typeName = typeid(*m).name();
+        std::string prefix = "class ";
+        if (typeName.find(prefix) == 0) {
+            typeName = typeName.substr(prefix.size());
+            for (int i = 0; i < typeName.size(); i++)
+            {
+                typeName = tolower(typeName[i]);
+            }
+        }
 
-    //// Rellenar con imagenes vacias si hay menos cartas en el nuevo mazo
-    //for (; itInfo != infos.end(); ++itInfo) {
-    //    auto img = mngr->getComponent<transformless_dyn_image>(*itInfo);
-    //    img->set_texture(&sdlutils().images().at("initial_info"));
+        //change to the newest texture
+        img->set_texture(&sdlutils().images().at("mythic_" + typeName));
+        ++itMythicInfo;
+    }
 
-    //    auto buttonComp = mngr->getComponent<Button>(*itInfo);
-    //    if (buttonComp) {
-    //        static_cast<CardButton*>(buttonComp)->set_it(nullptr); // Poner puntero a nullptr si no hay carta
-    //    }
-    //}
+    //refresh rest of the deck infos (blank infos)
+    for (; itMythicInfo != infos.end(); ++itMythicInfo) {
+        auto img = mngr->getComponent<transformless_dyn_image>(*itMythicInfo);
+        img->set_texture(&sdlutils().images().at("initial_info")); //Change to emptyMythic
+
+        auto buttonComp = mngr->getComponent<Button>(*itMythicInfo);
+
+    }
 }
 
 std::string MythicScene::select_mythic(GameStructs::MythicType mt)
@@ -212,23 +216,23 @@ std::string MythicScene::select_mythic(GameStructs::MythicType mt)
     {
     case GameStructs::BLOODCLAW: s = "mythic_bloodclaw";
         break;
-    case GameStructs::PROFANEHOTLINE: s = "mythic";
+    case GameStructs::PROFANEHOTLINE: s = "mythic_profanehotline";
         break;
-    case GameStructs::CURTAINREAPER: s = "mythic";
+    case GameStructs::CURTAINREAPER: s = "mythic_curtainreaper";
         break;
-    case GameStructs::INCENSE: s = "mythic";
+    case GameStructs::INCENSE: s = "mythic_incense";
         break;
-    case GameStructs::ARCANESURGE: s = "mythic";
+    case GameStructs::ARCANESURGE: s = "mythic_arcanesurge";
         break;
-    case GameStructs::BLOODPACT: s = "mythic";
+    case GameStructs::BLOODPACT: s = "mythic_bloodpact";
         break;
-    case GameStructs::PRETERNATURALFORCE: s = "mythic";
+    case GameStructs::PRETERNATURALFORCE: s = "mythic_preternaturalforce";
         break;
-    case GameStructs::CLAWFILE: s = "mythic";
+    case GameStructs::CLAWFILE: s = "mythic_clawfile";
         break;
-    case GameStructs::MEOWORNEVER: s = "mythic";
+    case GameStructs::MEOWORNEVER: s = "mythic_meowornever";
         break;
-    case GameStructs::ZOOMIESINDUCER: s = "mythic";
+    case GameStructs::ZOOMIESINDUCER: s = "mythic_zoomiesinducer";
         break;
     default:
         break;
@@ -285,15 +289,15 @@ void MythicScene::create_reward_buttons()
 
 void MythicScene::refresh_mythics()
 {
-    auto* mngr = Game::Instance()->get_mngr();
-    auto& mythic_cards = mngr->getEntities(ecs::grp::MYTHICOBJS);
+    ecs::Manager* mngr = Game::Instance()->get_mngr();
+    std::vector<ecs::entity_t> mythic_cards = mngr->getEntities(ecs::grp::MYTHICOBJS);
     std::unordered_set<std::string> appeared_mythic;
     //refresh the three reward card button
-    for (auto& e : mythic_cards) {
+    for (ecs::entity_t e : mythic_cards) {
         auto s = get_unique_mythic(appeared_mythic);
-        auto img = mngr->getComponent<transformless_dyn_image>(e);
+        transformless_dyn_image* img = mngr->getComponent<transformless_dyn_image>(e);
         img->set_texture(&sdlutils().images().at(s.first));
-        auto data = mngr->getComponent<MythicDataComponent>(e);
+        MythicDataComponent* data = mngr->getComponent<MythicDataComponent>(e);
         data->set_data(s.first, s.second);
     }
 }
