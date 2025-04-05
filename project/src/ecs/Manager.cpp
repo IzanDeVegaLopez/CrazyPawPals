@@ -8,6 +8,27 @@
 #include <cstdlib>
 #include <unordered_set>
 
+struct contact_pair {
+	ecs::entity_t body0;
+	ecs::entity_t body1;
+};
+
+static inline bool operator==(const contact_pair &lhs, const contact_pair &rhs) {
+	return lhs.body0 == rhs.body0 && lhs.body1 == rhs.body1;
+}
+static inline bool operator<(const contact_pair &lhs, const contact_pair &rhs) {
+	return lhs.body0 < rhs.body0 || (lhs.body0 == rhs.body0 && lhs.body1 < rhs.body1);
+}
+
+namespace std {
+	template <>
+	struct hash<contact_pair> {
+		size_t operator()(const contact_pair &pair) const {
+			return std::hash<ecs::entity_t>()(pair.body0) ^ std::hash<ecs::entity_t>()(pair.body1);
+		}
+	};
+}
+
 namespace ecs {
 
 Manager::Manager() :
@@ -245,6 +266,8 @@ enum manager_collision_handle_response {
 };
 typedef uint8_t manager_collision_handle_response_flags;
 
+
+
 static manager_collision_handle_response manager_handle_collision_bodies(
 	Manager &manager,
 	const ecs::entity_t entity0,
@@ -252,6 +275,7 @@ static manager_collision_handle_response manager_handle_collision_bodies(
 	collision_body &body0,
 	collision_body &body1,
 	seconds_f32 delta_time,
+	std::unordered_set<contact_pair> &pairs_already_checked,
 	const collision_response_flags flags
 ) {
 #if DBG_COLLISIONS
@@ -291,64 +315,96 @@ static manager_collision_handle_response manager_handle_collision_bodies(
 				space1.previous_position.x = space1.position.x - response1_restitution.restitution_displacement.x;
 				space1.previous_position.y = space1.position.y - response1_restitution.restitution_displacement.y;
 			}
-			
-			contact_manifolds *contact0 = manager.getComponent<contact_manifolds>(entity0);
-			contact_manifolds *contact1 = manager.getComponent<contact_manifolds>(entity1);
-			if (contact0 != nullptr) {
-				contact0->manifolds[contact0->count & (contact0->manifolds.size() - 1)].contact = contact;
-				contact0->manifolds[contact0->count & (contact0->manifolds.size() - 1)].collision_tick = sdlutils().virtualTimer().currTime();
-				contact0->manifolds[contact0->count & (contact0->manifolds.size() - 1)].body0 = entity0;
-				contact0->manifolds[contact0->count & (contact0->manifolds.size() - 1)].body1 = entity1;
-				++contact0->count;
-			}
-			if (contact1 != nullptr) {
-				contact1->manifolds[contact1->count & (contact1->manifolds.size() - 1)].contact = contact;
-				contact1->manifolds[contact1->count & (contact1->manifolds.size() - 1)].collision_tick = sdlutils().virtualTimer().currTime();
-				contact1->manifolds[contact1->count & (contact1->manifolds.size() - 1)].body0 = entity0;
-				contact1->manifolds[contact1->count & (contact1->manifolds.size() - 1)].body1 = entity1;
-				++contact0->count;
+			auto p0 = contact_pair{entity0,entity1};
+			auto p1 = contact_pair{entity1, entity0};
+			if (pairs_already_checked.find(p0) == pairs_already_checked.end()) {
+
+				contact_manifolds* contact0 = manager.getComponent<contact_manifolds>(entity0);
+				contact_manifolds* contact1 = manager.getComponent<contact_manifolds>(entity1);
+				if (contact0 != nullptr) {
+					contact0->manifolds[contact0->count & (contact0->manifolds.size() - 1)].contact = contact;
+					contact0->manifolds[contact0->count & (contact0->manifolds.size() - 1)].collision_tick = sdlutils().virtualTimer().currTime();
+					contact0->manifolds[contact0->count & (contact0->manifolds.size() - 1)].body0 = entity0;
+					contact0->manifolds[contact0->count & (contact0->manifolds.size() - 1)].body1 = entity1;
+					++contact0->count;
+				}
+				if (contact1 != nullptr) {
+					contact1->manifolds[contact1->count & (contact1->manifolds.size() - 1)].contact = contact;
+					contact1->manifolds[contact1->count & (contact1->manifolds.size() - 1)].collision_tick = sdlutils().virtualTimer().currTime();
+					contact1->manifolds[contact1->count & (contact1->manifolds.size() - 1)].body0 = entity0;
+					contact1->manifolds[contact1->count & (contact1->manifolds.size() - 1)].body1 = entity1;
+					++contact1->count;
+				}
+				auto it0 = pairs_already_checked.insert(p0);
+				auto it1 = pairs_already_checked.insert(p1);
+				assert(it0.second);
+				assert(it1.second);
 			}
 			return manager_collision_handle_response_collision;
 		}
 		case collision_response_option_body0_trigger: {
-			trigger_manifolds *trigger0 = manager.getComponent<trigger_manifolds>(entity0);
-			if (trigger0 != nullptr) {
-				trigger0->manifolds[trigger0->count & (trigger0->manifolds.size() - 1)].contact = contact;
-				trigger0->manifolds[trigger0->count & (trigger0->manifolds.size() - 1)].collision_tick = sdlutils().virtualTimer().currTime();
-				trigger0->manifolds[trigger0->count & (trigger0->manifolds.size() - 1)].body0 = entity0;
-				trigger0->manifolds[trigger0->count & (trigger0->manifolds.size() - 1)].body1 = entity1;
-				++trigger0->count;
+			auto p0 = contact_pair{entity0,entity1};
+			auto p1 = contact_pair{entity1, entity0};
+			if (pairs_already_checked.find(p0) == pairs_already_checked.end()) {
+				trigger_manifolds* trigger0 = manager.getComponent<trigger_manifolds>(entity0);
+				if (trigger0 != nullptr) {
+					trigger0->manifolds[trigger0->count & (trigger0->manifolds.size() - 1)].contact = contact;
+					trigger0->manifolds[trigger0->count & (trigger0->manifolds.size() - 1)].collision_tick = sdlutils().virtualTimer().currTime();
+					trigger0->manifolds[trigger0->count & (trigger0->manifolds.size() - 1)].body0 = entity0;
+					trigger0->manifolds[trigger0->count & (trigger0->manifolds.size() - 1)].body1 = entity1;
+					++trigger0->count;
+				}
+				auto it0 = pairs_already_checked.insert(p0);
+				auto it1 = pairs_already_checked.insert(p1);
+				assert(it0.second);
+				assert(it1.second);
 			}
 			return manager_collision_handle_response_trigger;
 		}
 		case collision_response_option_body1_trigger: {
-			trigger_manifolds *trigger1 = manager.getComponent<trigger_manifolds>(entity1);
-			if (trigger1 != nullptr) {
-				trigger1->manifolds[trigger1->count & (trigger1->manifolds.size() - 1)].contact = contact;
-				trigger1->manifolds[trigger1->count & (trigger1->manifolds.size() - 1)].collision_tick = sdlutils().virtualTimer().currTime();
-				trigger1->manifolds[trigger1->count & (trigger1->manifolds.size() - 1)].body0 = entity0;
-				trigger1->manifolds[trigger1->count & (trigger1->manifolds.size() - 1)].body1 = entity1;
-				++trigger1->count;
+			auto p0 = contact_pair{entity0,entity1};
+			auto p1 = contact_pair{entity1, entity0};
+			if (pairs_already_checked.find(p0) == pairs_already_checked.end()) {
+				trigger_manifolds* trigger1 = manager.getComponent<trigger_manifolds>(entity1);
+				if (trigger1 != nullptr) {
+					trigger1->manifolds[trigger1->count & (trigger1->manifolds.size() - 1)].contact = contact;
+					trigger1->manifolds[trigger1->count & (trigger1->manifolds.size() - 1)].collision_tick = sdlutils().virtualTimer().currTime();
+					trigger1->manifolds[trigger1->count & (trigger1->manifolds.size() - 1)].body0 = entity0;
+					trigger1->manifolds[trigger1->count & (trigger1->manifolds.size() - 1)].body1 = entity1;
+					++trigger1->count;
+				}
+				auto it0 = pairs_already_checked.insert(p0);
+				auto it1 = pairs_already_checked.insert(p1);
+				assert(it0.second);
+				assert(it1.second);
 			}
 			return manager_collision_handle_response_trigger;
 		}
 		case collision_response_option_body0_trigger | collision_response_option_body1_trigger: {
-			trigger_manifolds *trigger0 = manager.getComponent<trigger_manifolds>(entity0);
-			trigger_manifolds *trigger1 = manager.getComponent<trigger_manifolds>(entity1);
+			auto p0 = contact_pair{entity0,entity1};
+			auto p1 = contact_pair{entity1, entity0};
+			if (pairs_already_checked.find(p0) == pairs_already_checked.end()) {
+				trigger_manifolds* trigger0 = manager.getComponent<trigger_manifolds>(entity0);
+				trigger_manifolds* trigger1 = manager.getComponent<trigger_manifolds>(entity1);
 
-			if (trigger0 != nullptr) {
-				trigger0->manifolds[trigger0->count & (trigger0->manifolds.size() - 1)].contact = contact;
-				trigger0->manifolds[trigger0->count & (trigger0->manifolds.size() - 1)].collision_tick = sdlutils().virtualTimer().currTime();
-				trigger0->manifolds[trigger0->count & (trigger0->manifolds.size() - 1)].body0 = entity0;
-				trigger0->manifolds[trigger0->count & (trigger0->manifolds.size() - 1)].body1 = entity1;
-				++trigger0->count;
-			}
-			if (trigger1 != nullptr) {
-				trigger1->manifolds[trigger1->count & (trigger1->manifolds.size() - 1)].contact = contact;
-				trigger1->manifolds[trigger1->count & (trigger1->manifolds.size() - 1)].collision_tick = sdlutils().virtualTimer().currTime();
-				trigger1->manifolds[trigger1->count & (trigger1->manifolds.size() - 1)].body0 = entity0;
-				trigger1->manifolds[trigger1->count & (trigger1->manifolds.size() - 1)].body1 = entity1;
-				++trigger1->count;
+				if (trigger0 != nullptr) {
+					trigger0->manifolds[trigger0->count & (trigger0->manifolds.size() - 1)].contact = contact;
+					trigger0->manifolds[trigger0->count & (trigger0->manifolds.size() - 1)].collision_tick = sdlutils().virtualTimer().currTime();
+					trigger0->manifolds[trigger0->count & (trigger0->manifolds.size() - 1)].body0 = entity0;
+					trigger0->manifolds[trigger0->count & (trigger0->manifolds.size() - 1)].body1 = entity1;
+					++trigger0->count;
+				}
+				if (trigger1 != nullptr) {
+					trigger1->manifolds[trigger1->count & (trigger1->manifolds.size() - 1)].contact = contact;
+					trigger1->manifolds[trigger1->count & (trigger1->manifolds.size() - 1)].collision_tick = sdlutils().virtualTimer().currTime();
+					trigger1->manifolds[trigger1->count & (trigger1->manifolds.size() - 1)].body0 = entity0;
+					trigger1->manifolds[trigger1->count & (trigger1->manifolds.size() - 1)].body1 = entity1;
+					++trigger1->count;
+				}
+				auto it0 = pairs_already_checked.insert(p0);
+				auto it1 = pairs_already_checked.insert(p1);
+				assert(it0.second);
+				assert(it1.second);
 			}
 			return manager_collision_handle_response_trigger;
 		}
@@ -406,10 +462,10 @@ static void manager_update_collisions(Manager &manager, const std::vector<ecs::e
 				}
 			}
 		}
-		
-		constexpr static const size_t max_collision_passes = 1;
+		constexpr static const size_t max_collision_passes = 4;
 		size_t last_pass_collision_count;
 		size_t pass_count = 0;
+		std::unordered_set<contact_pair> aux_set{};
 		do {
 			last_pass_collision_count = 0;
 			for (size_t i = 0; i < collision_checks.size(); ++i) {
@@ -421,10 +477,12 @@ static void manager_update_collisions(Manager &manager, const std::vector<ecs::e
 				auto &&other_body = collision_check.body1;
 				auto &&other_collisionable = collision_check.collisionable1;
 
-				manager_collision_handle_response collided = manager_handle_collision_bodies(manager, entity, other_entity, body, other_body, delta_time_seconds, (
+				manager_collision_handle_response collided = manager_handle_collision_bodies(
+					manager, entity, other_entity, body, other_body, delta_time_seconds, aux_set, (
 					((entity_collisionable.options & collisionable_option_trigger) != 0)
 						| (((other_collisionable.options & collisionable_option_trigger) != 0) << 1)
-				));
+					)
+				);
 	
 				switch (collided) {
 				case manager_collision_handle_response_none:
@@ -438,11 +496,12 @@ static void manager_update_collisions(Manager &manager, const std::vector<ecs::e
 						displacement.x * displacement.x + displacement.y * displacement.y;
 					constexpr static const float epsilon_displacement_length_sqr = 0.0000001f;
 					if (displacement_length_sqr > epsilon_displacement_length_sqr) {	
-						entity_collisionable.transform.setPos(Vector2D{
+						// this is done with assignment operator instead of setPos method to prevent the displacement vector to be mutated this frame while the correction happens
+						entity_collisionable.transform.getPos() = (Vector2D{
 							body.body.space.position.x + (body.body.space.position.x - body.body.space.previous_position.x),
 							body.body.space.position.y + (body.body.space.position.y - body.body.space.previous_position.y),
 						});
-						other_collisionable.transform.setPos(Vector2D{
+						other_collisionable.transform.getPos() = (Vector2D{
 							other_body.body.space.position.x + (other_body.body.space.position.x - other_body.body.space.previous_position.x),
 							other_body.body.space.position.y + (other_body.body.space.position.y - other_body.body.space.previous_position.y),
 						});

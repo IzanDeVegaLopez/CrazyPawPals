@@ -307,6 +307,8 @@ bool collision_body_check_broad(const collision_body &body0, const collision_bod
 
 static vec2_f32 vec2_f32_reflect(const vec2_f32 normal, const vec2_f32 v) {
     const float dot = v.x * normal.x + v.y * normal.y;
+
+    // v' = v - 2 * (v . n) * n
     return vec2_f32{
         .x = v.x - 2.0f * dot * normal.x,
         .y = v.y - 2.0f * dot * normal.y,
@@ -367,8 +369,8 @@ collision_response_pairs collision_body_resolve(
     const vec2_f32 reflected_displacement_body0 = vec2_f32_reflect(contact.normal, remaining_displacement_body0);
     const collision_restitution_response body0_restitution_response{
         .restitution_displacement = vec2_f32{
-            .x = reflected_displacement_body0.x * restitution_body0_coefficient,
-            .y = reflected_displacement_body0.y * restitution_body0_coefficient,
+            .x = -reflected_displacement_body0.x * restitution_body0_coefficient,
+            .y = -reflected_displacement_body0.y * restitution_body0_coefficient,
         },
     };
     
@@ -380,23 +382,32 @@ collision_response_pairs collision_body_resolve(
         },
     };
     
-    if (dot(remaining_displacement_body0, remaining_displacement_body1) > dot(body0_restitution_response.restitution_displacement, body1_restitution_response.restitution_displacement)) {
-        const collision_restitution_response r0 =
-            dot(remaining_displacement_body0, contact.normal) > 0.0f
-            ? collision_restitution_response{remaining_displacement_body0}
-            : body0_restitution_response;
-        const collision_restitution_response r1 =
-            dot(remaining_displacement_body1, contact.normal) < 0.0f
-            ? collision_restitution_response{remaining_displacement_body1}
-            : body1_restitution_response;
-        return collision_response_pairs{
-            .penetration_responses = {body0_penetration_response, body1_penetration_response},
-            .restitution_responses = {r0, r1},
-        };
-    } else {
-        return collision_response_pairs{
-            .penetration_responses = {body0_penetration_response, body1_penetration_response},
-            .restitution_responses = {body0_restitution_response, body1_restitution_response},
-        };
-    }
+    const collision_restitution_response r0 =
+        dot(remaining_displacement_body0, contact.normal) > dot(body0_restitution_response.restitution_displacement, contact.normal)
+        ? collision_restitution_response{remaining_displacement_body0}
+        : body0_restitution_response;
+    const collision_restitution_response r1 =
+        dot(remaining_displacement_body1, contact.normal) < dot(body1_restitution_response.restitution_displacement, contact.normal)
+        ? collision_restitution_response{remaining_displacement_body1}
+        : body1_restitution_response;
+    
+    const collision_penetration_response p0 =
+        dot(remaining_displacement_body0, contact.normal) > 0.0f
+        ? collision_penetration_response{remaining_displacement_body0}
+        : body0_penetration_response;
+    const collision_penetration_response p1 =
+        dot(remaining_displacement_body1, contact.normal) < 0.0f
+        ? collision_penetration_response{remaining_displacement_body1}
+        : body1_penetration_response;
+    return collision_response_pairs{
+        .penetration_responses = {p0, p1},
+        .restitution_responses = {r0, r1},
+    };
+    // if (dot(remaining_displacement_body0, remaining_displacement_body1) >= dot(body0_restitution_response.restitution_displacement, body1_restitution_response.restitution_displacement)) {
+    // } else {
+    //     return collision_response_pairs{
+    //         .penetration_responses = {body0_penetration_response, body1_penetration_response},
+    //         .restitution_responses = {body0_restitution_response, body1_restitution_response},
+    //     };
+    // }
 }
