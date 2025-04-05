@@ -26,15 +26,32 @@ void WeaponSuperMichiMafioso::create_area(Vector2D shootPos, Vector2D shootDir, 
 }
 
 void WeaponSuperMichiMafioso::attack1(Vector2D shootDir) {
+	int scale = 2;
+	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
+	bp.dir = shootDir;
+	bp.speed = 0;
+	bp.width = _attack_width * scale;
+	bp.height = _attack_height * scale;
+
 	if (_warning) {
-		create_area(_last_shootPos, shootDir, "p_super_michi_mafioso", 0, 0, 1.0f, 2);
+		bp.init_pos =_last_shootPos;
+		bp.damage = 1.0f;
+		bp.life_time = 1.0f;
+		bp.sprite_key = "p_super_michi_mafioso";
+		bp.collision_filter = GameStructs::collide_with::player;
 		_warning = false;
 	}
 	else {
-		create_area(_player_tr->getPos(), shootDir, "attack_warning", 1.0f, 0, 1.0f, 2);
 		_last_shootPos = _player_tr->getPos();
+		bp.init_pos = _last_shootPos;
+		bp.damage = 0;
+		bp.life_time = 0.4f;
+		bp.sprite_key ="attack_warning";
+		bp.collision_filter = GameStructs::collide_with::none;
 		_warning = true;
 	}
+
+	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::ENEMYBULLETS);
 }
 void WeaponSuperMichiMafioso::attack2(Vector2D shootPos, Vector2D shootDir) {
 	create_area(shootPos, shootDir, "p_super_michi_mafioso", _damage, _speed, 2.0f);
