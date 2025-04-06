@@ -232,6 +232,12 @@ void RewardScene::create_reward_buttons() {
     buttonPropTemplate.sprite_key = "exchange_reward";
     buttonPropTemplate.rect.position = { 1.1f, 0.35f };
     create_reward_exchange_button(buttonPropTemplate);
+
+    //next round button
+    buttonPropTemplate.ID = ecs::grp::UI;
+    buttonPropTemplate.sprite_key = "enter_game";
+    buttonPropTemplate.rect.position = { 2.0f, 0.35f };
+    create_next_round_button(buttonPropTemplate);
 }
 
 void RewardScene::create_reward_health_button(const GameStructs::ButtonProperties& bp) {
@@ -418,7 +424,7 @@ void RewardScene::create_my_deck_cards() {
         iterator++;
     }
     propTemplate.iterator = nullptr;
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 6; ++i) {
         propTemplate.sprite_key = "initial_info";
         create_a_deck_card(propTemplate);
         propTemplate.rect.position.x += umbral;
@@ -432,23 +438,14 @@ void RewardScene::refresh_my_deck_cards(const std::list<Card*>& cl) {
     auto itRewardInfo = infos.begin();
 
     //refresh my deck info and represent it
-    for (auto c : cl) {
+    for (auto& c : cl) {
         //obtain each ones component
         auto img = mngr->getComponent<transformless_dyn_image>(*itRewardInfo);
        
-        /*
-        #pragma region convert a class name to a string
-        std::string typeName = typeid(*c).name();
-        std::string prefix = "class ";
-        if (typeName.find(prefix) == 0) {  // Si empieza con "class "
-            typeName = typeName.substr(prefix.size());  // Elimina "class "
-            typeName[0] = tolower(typeName[0]);
-        }
-        #pragma endregion
-        */
+        std::string typeName = c->get_name();
 
         //change to the newest texture
-        img->set_texture(&sdlutils().images().at(c->get_name()));
+        img->set_texture(&sdlutils().images().at(typeName));
         //Refresh the pointer saved in the component
         auto buttonComp = mngr->getComponent<Button>(*itRewardInfo);
         if (buttonComp) {
@@ -489,8 +486,8 @@ void RewardScene::create_reward_selected_button(const GameStructs::ButtonPropert
             auto* mngr = Game::Instance()->get_mngr();
             auto player = mngr->getHandler(ecs::hdlr::PLAYER);
             auto phealth = mngr->getComponent<Health>(player);
-            //heal a 20%
-            int hn = phealth->getMaxHealth() * 2 / 10;
+            //heal a 50%
+            int hn = phealth->getMaxHealth() * 5 / 10;
             phealth->heal(hn);
             _selected = true;
             Game::Instance()->change_Scene(Game::GAMESCENE);
@@ -564,9 +561,9 @@ void RewardScene::add_new_reward_card() {
     case GameStructs::EVOKE:
         c = new Evoke();
         break;
-    case GameStructs::FULGUR:
+    /*case GameStructs::FULGUR:
         c = new Fulgur();
-        break;
+        break;*/
     case GameStructs::QUICK_FEET:
         c = new QuickFeet();
         break;
@@ -589,12 +586,12 @@ void RewardScene::check_number()
     auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
     auto _m_deck = mngr->getComponent<Deck>(player);
     auto& pDeck = _m_deck->move_discard_to_draw().card_list();
-    if (pDeck.size() < 4)
+    if (pDeck.size() < 8)
     {
         _activate_exchange_button = false;
         _activate_confirm_button = true;
     }
-    else if (pDeck.size() >= 4 && pDeck.size() < 10)
+    else if (pDeck.size() >= 8 && pDeck.size() < 10)
     {
         _activate_exchange_button = true;
         _activate_confirm_button = true;
@@ -667,29 +664,22 @@ void RewardScene::update(uint32_t delta_time) {
        auto buttonE = mngr->getComponent<Button>(mngr->getHandler(ecs::hdlr::EXCHANGEBUTTON));
        _activate_exchange_button = false;
    }
+
+   if (_selected) {
+       auto mngr = Game::Instance()->get_mngr();
+       auto imgCompNext = mngr->getComponent<transformless_dyn_image>(mngr->getHandler(ecs::hdlr::NEXTROUNDBUTTON));
+       imgCompNext->destination_rect.position = {0.4f,0.5f};
+
+   }
 }
-void RewardScene::create_next_round_button() {
-   
-    GameStructs::ButtonProperties bp = {
-            { {0.4f, 0.5f},{0.3f, 0.125f} },
-            0.0f, "next_round", ecs::grp::UI
-    };
+void RewardScene::create_next_round_button(const GameStructs::ButtonProperties& bp) {
     auto* mngr = Game::Instance()->get_mngr();
     auto e = create_button(bp);
     mngr->setHandler(ecs::hdlr::NEXTROUNDBUTTON, e);
-    auto imgComp = mngr->addComponent<ImageForButton>(e,
-        &sdlutils().images().at("initial_info"),
-        &sdlutils().images().at(bp.sprite_key),
-        bp.rect,
-        0,
-        Game::Instance()->get_mngr()->getComponent<camera_component>(
-            Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
-    );
-
-
+    auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
     auto buttonComp = mngr->getComponent<Button>(e);
 
-    buttonComp->connectClick([buttonComp, mngr, this]() { if (_selected) Game::Instance()->change_Scene(Game::REWARDSCENE); });
+    buttonComp->connectClick([buttonComp, mngr, this]() { if (_selected) Game::Instance()->change_Scene(Game::GAMESCENE); });
     buttonComp->connectHover([buttonComp, imgComp, this]() { imgComp->_filter = true;});
     buttonComp->connectExit([buttonComp, imgComp, this]() { imgComp->_filter = false;});
 }
