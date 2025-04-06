@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-RampCanon::RampCanon() : Weapon(3, 750.0f, 0.5f, 0.1f, "p_rampage", 1.0f, 1.0f){ 
+RampCanon::RampCanon() : Weapon(3, 750.0f, 0.5f, 0.1f, "p_ramp_canon", 1.15f, 1.15f){ 
 	auto player = Game::Instance()->get_mngr()->getHandler(ecs::hdlr::PLAYER);
 	_mana = Game::Instance()->get_mngr()->getComponent<ManaComponent>(player);
 	assert(_mana != nullptr);

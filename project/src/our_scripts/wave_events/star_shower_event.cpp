@@ -63,7 +63,7 @@ static star_drop star_shower_event_create_star_drop(
         rect_f32_full_subrect,
         star_rect,
         camera,
-        sdlutils().images().at("p_boom"),
+        sdlutils().images().at("meteroid"),
         star_transform
     );
     render_ordering &star_ordering = *manager.addComponent<render_ordering>(

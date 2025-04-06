@@ -24,8 +24,16 @@
       "file": "resources/images/projectiles/p_pump_shotgun.png"
     },
     {
-      "id": "p_canon",
-      "file": "resources/images/projectiles/canon.png"
+      "id": "p_ramp_canon",
+      "file": "resources/images/projectiles/ramp_canon.png"
+    },
+    {
+      "id": "p_lightbringer",
+      "file": "resources/images/projectiles/lightbringer.png"
+    },
+    {
+      "id": "p_lightbringer_amp",
+      "file": "resources/images/projectiles/lightbringer.png"
     },
     {
       "id": "p_kunai",
@@ -49,7 +57,7 @@
     },
     {
       "id": "p_sarno_rata",
-      "file": "resources/images/projectiles/SDL_logo.png"
+      "file": "resources/images/projectiles/sarno_rata.png"
     },
     {
       "id": "p_michi_mafioso",
@@ -74,14 +82,6 @@
     {
       "id": "attack_warning",
       "file": "resources/images/projectiles/attack_warning.png"
-    },
-    {
-      "id": "p_lightbringer",
-      "file": "resources/images/projectiles/SDL_logo.png"
-    },
-    {
-      "id": "p_lightbringer_amp",
-      "file": "resources/images/projectiles/SDL_logo.png"
     },
     {
       "id": "p_card_spray",
@@ -137,7 +137,7 @@
     },
     {
       "id": "card_fulgur",
-      "file": "resources/images/cards/carta.png"
+      "file": "resources/images/cards/card_fulgur.png"
     },
     {
       "id": "card_placeholder",
@@ -407,7 +407,7 @@
       "id": "controls_button",
       "file": "resources/images/ui/buttons/controls.png"
     },
-    
+
     {
       "id": "controls_button_selected",
       "file": "resources/images/ui/buttons/controls_selected.png"
@@ -463,6 +463,10 @@
     {
       "id": "m_blood_pact",
       "file": "resources/images/ui/mythics/m_blood_pact.png"
+    },
+    {
+      "id": "meteroid",
+      "file": "resources/images/projectiles/meteroid.png"
     }
 
   ], 

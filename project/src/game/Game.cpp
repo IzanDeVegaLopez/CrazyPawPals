@@ -83,7 +83,7 @@ bool Game::init() {
 	
 	// fullscreen mode
 	// HACK: uncomment this to fullscreen
-	// SDL_SetWindowFullscreen(sdlutils().window(), SDL_WINDOW_FULLSCREEN_DESKTOP);
+	SDL_SetWindowFullscreen(sdlutils().window(), SDL_WINDOW_FULLSCREEN_DESKTOP);
 	
 	_mngr = new ecs::Manager();
 
