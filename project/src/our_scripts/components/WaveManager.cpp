@@ -18,9 +18,7 @@ WaveManager::WaveManager() :
     _waveActive(false),
     _enemiesSpawned(0),
     _enemiesKilled(0),
-    _nextSpawn(0),
     _numEnemies(0),
-    _totalSpawnTime(10000.0f),
     _current_wave_event(new no_event(this))
 {
     event_system::event_manager::Instance()->suscribe_to_event(event_system::enemy_dead, this, &event_system::event_receiver::event_callback0);
@@ -73,88 +71,99 @@ WaveManager::update(uint32_t delta_time) {
 }
 */
 
-// Spawnear enemigos fuera de la pantalla
-void 
-WaveManager::spawn_next_enemy() {
-            // RANDOM
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        // rAng entre (0, 360)
-        std::uniform_real_distribution<float> rAngGen(0.0f, 360.0f);
-        // rn entre (-0.35, 0.35)
-        std::uniform_real_distribution<float> rnGen(-0.35f, 0.35f);
-        float rAng = rAngGen(gen); // (0, 360)
-        float rn = rnGen(gen); // (-0.35, 0.35)
-            
-        // Distancia
-        //float _min_distance = Game::Instance()->get_world_half_size().first + Game::Instance()->get_world_half_size().second * 0.1;
-        //float _op_dist = _min_distance * (-rn);
-
-        //DEBUG
-        // Medio de la pantalla + angulo * distancia
-        Vector2D posVec = Vector2D(cos(rAng) *Game::Instance()->get_world_half_size().first, Game::Instance()->get_world_half_size().second * sin(rAng));
-        //std::cout << posVec << std::endl;
-        //assert(_enemiesSpawned < (1 << 7));
-        // FIXME: define enum values
-        switch (_waves[_currentWave].second[_enemiesSpawned])
-        {
-            case none:
-                break;
-		    case sarno_rata:
-                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_sarno_rata(posVec);
-			    break;
-            case michi_mafioso:
-                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_michi_mafioso(posVec);
-			    break;
-		    case plim_plim:
-                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_plim_plim(posVec);
-                break;
-            case boom:
-                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_boom(posVec);
-			    break;
-            case ratatouille:
-                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_ratatouille(posVec);
-                break;
-            case catkuza:
-                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_catkuza(posVec);
-                break;
-            case super_michi_mafioso:
-                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_super_michi_mafioso(posVec);
-                break;
-            case rata_basurera:
-                //"posVec" es un vector tan grande que los enemigos aparecen fuera del mapa.
-                //Si el enemigo se mueve da igual, pero este no se mueve nunca, asiq tiene que aparecer dentro del mapa.
-                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_rata_basurera({ 13,6 });
-                break;
-            default: {
-                assert(false && "unreachable");
-                exit(EXIT_FAILURE);
-                break;
-			        
-            }
-        }
-        // Tiempo
-        _min_time = _totalSpawnTime / _waves[_currentWave].second.size();
-        _op_time = _min_time * rn;
-        _nextSpawn = _currentWaveTime + (_min_time + _op_time);
-
-        _enemiesSpawned++;
-    /*else {
-        _waveActive = true; // después de que se spawnee el último enemigo
-        //std::cout << "WAVE ACTIVE" << std::endl;
-    }*/
-}
-
 bool WaveManager::can_spawn_next_enemy()
 {
-    return _enemiesSpawned < _waves[_currentWave].second.size() && _currentWaveTime > _nextSpawn;
+    return _next_spawn_time > sdlutils().currTime() && tokens_for_this_wave > 0;
 }
 
 bool WaveManager::is_wave_finished()
 {
     //TODO: Necesitamos no notificar los enemigos que son creados por otros
     //std::cout << "enemies_killed: " << _enemiesKilled << "   numEnemies: " << _numEnemies << "    enemies_spawned: " << _enemiesSpawned << std::endl;
-    return _enemiesKilled >= _numEnemies;
+    return _enemiesKilled >= _numEnemies && _all_enemies_already_spawned;
+}
+
+//Chooses enemies in _enemy_types_for_current_wave
+void WaveManager::initialize_next_wave_params(bool normal_wave)
+{
+    tokens_for_this_wave = _currentWave * spawn_tokens_gained_per_wave + spawn_tokens_at_wave_0;
+
+
+    uint8_t cheaper_enemy;
+    for (uint8_t i = 0; i < 3; ++i) {
+        uint8_t j = 0;
+        do {
+            j = 0;
+            //Chooses new random enemy
+            _enemy_types_for_current_wave[i] = sdlutils().rand().nextInt(0, (int)super_michi_mafioso);
+        } while (
+            j < i && //This is false for (i==0)
+            _enemy_types_for_current_wave[j] != _enemy_types_for_current_wave[i] && //This is false if enemy chosen for index 1 || 2 is alredy taken in index 0
+            ++j < i && //This is false for (i==1)
+            _enemy_types_for_current_wave[j] != _enemy_types_for_current_wave[i]  //This is false if enemy chosen for index 2 is alredy taken in index 1
+        );
+        cheaper_enemy = std::min(cheaper_enemy,enemy_spawn_data[_enemy_types_for_current_wave[i]].enemies_group_spawn_cost);
+    }
+    time_max_between_enemy_spawns_on_this_wave = max_spawn_wave_time / (tokens_for_this_wave / cheaper_enemy);
+    _next_spawn_time = sdlutils().currTime() + time_max_between_enemy_spawns_on_this_wave;
+    //Si no es normal wave spawnea tb un bos
+}
+
+void WaveManager::spawn_next_group_of_enemies()
+{
+    //ONLY ENTERS HERE IF TOKENS LEFT > 0 
+    //rest tokens
+    uint8_t index = sdlutils().rand().nextInt(0, 3);
+    //tokens can only be -1 at worst at end of the round (cause I know that there will always be at least a 2 cost enemy on the group)
+    while ((tokens_for_this_wave - enemy_spawn_data[_enemy_types_for_current_wave[index]].enemies_group_spawn_cost) < -1) {
+        index = ++index % 3;
+        std::cout << (tokens_for_this_wave - enemy_spawn_data[_enemy_types_for_current_wave[index]].enemies_group_spawn_cost) << std::endl;
+    }
+    tokens_for_this_wave -= enemy_spawn_data[_enemy_types_for_current_wave[index]].enemies_group_spawn_cost;
+    //spawn enemies
+    enemy_spawn_caller* esc;
+    GameScene* scene = static_cast<GameScene*>(Game::Instance()->get_currentScene());
+    switch ((enemyType)_enemy_types_for_current_wave[index])
+    {
+        case sarno_rata:
+            esc = new enemy_spawn_caller([scene](Vector2D v) {scene->spawn_sarno_rata(v); });
+            break;
+        case michi_mafioso:
+            esc = new enemy_spawn_caller([scene](Vector2D v) {scene->spawn_michi_mafioso(v); });
+            break;
+        case plim_plim:
+            esc = new enemy_spawn_caller([scene](Vector2D v) {scene->spawn_plim_plim(v); });
+            break;
+        case boom:
+            esc = new enemy_spawn_caller([scene](Vector2D v) {scene->spawn_boom(v); });
+            break;
+        case ratatouille:
+            esc = new enemy_spawn_caller([scene](Vector2D v) {scene->spawn_ratatouille(v); });
+            break;
+        case catkuza:
+            esc = new enemy_spawn_caller([scene](Vector2D v) {scene->spawn_catkuza(v); });
+            break;
+        case super_michi_mafioso:
+            esc = new enemy_spawn_caller([scene](Vector2D v) {scene->spawn_super_michi_mafioso(v); });
+            break;
+        case rata_basurera:
+            esc = new enemy_spawn_caller([scene](Vector2D v) {scene->spawn_rata_basurera(v); });
+            break;
+        default: {
+            assert(false && "unreachable");
+            exit(EXIT_FAILURE);
+            break;
+        }
+    }
+    for (uint8_t i = 0; i < enemy_spawn_data[_enemy_types_for_current_wave[index]].number_of_enemies_simultaneous_spawn; ++i) {
+        esc->spawn_callback();
+    }
+    delete esc;
+    _numEnemies += enemy_spawn_data[_enemy_types_for_current_wave[index]].number_of_enemies_simultaneous_spawn;
+    //sets next spawn time
+    _next_spawn_time = sdlutils().currTime() + (uint32_t)(time_max_between_enemy_spawns_on_this_wave * (sdlutils().rand().nextInt(0,100) * 0.3+0.7));
+
+    _all_enemies_already_spawned = tokens_for_this_wave <= 0;
 }
 
 void WaveManager::add_num_enemy()
@@ -169,7 +178,7 @@ void WaveManager::update(uint32_t delta_time) {
     _current_wave_event->update(delta_time);
     //tries spawning enemies
     if (can_spawn_next_enemy())
-        spawn_next_enemy();
+        spawn_next_group_of_enemies();
 
     if (is_wave_finished())
         endwave();
@@ -205,19 +214,16 @@ WaveManager::enterRewardsMenu() {
 void WaveManager::start_new_wave()
 {
     _currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
+    //Si es oleada de boss es true
+    initialize_next_wave_params(_currentWave%5==0);
 
     // Esto tiene que ir después del menu de recompensas
     _currentWaveTime = 0;
-    _totalSpawnTime = _waves[_currentWave].first;
     _enemiesSpawned = 0;
     _enemiesKilled = 0;
     _numEnemies = 0;
-    _nextSpawn = 0;
     fog->setFog(false);
 
-    for (int i : _waves[_currentWave].second) {
-        if (i != none) _numEnemies++;
-    }
     auto& mngr = *Game::Instance()->get_mngr();
     auto enemies = mngr.getEntities(ecs::grp::ENEMY);
     for (auto e : enemies) {
@@ -238,6 +244,7 @@ void WaveManager::endwave()
     //std::cout << "oleada superada con éxito meow" << std::endl;
     _current_wave_event->end_wave_callback();
     _currentWave++;
+    _all_enemies_already_spawned = false;
     fog->setFog(false);
     enterRewardsMenu();
 
@@ -302,4 +309,16 @@ void WaveManager::choose_new_event()
 
     _current_wave_event->start_wave_callback();
     //TODO elegir evento y llamar a la función de iniciar
+}
+
+void enemy_spawn_caller::spawn_callback()
+{
+    //Choose random spawn pos
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> rAngGen(0.0f, 360.0f);
+    float rAng = rAngGen(gen); // (0, 360)
+    Vector2D posVec = Vector2D(cos(rAng) * Game::Instance()->get_world_half_size().first, Game::Instance()->get_world_half_size().second * sin(rAng));
+    //spawn
+    spawn_call(posVec);
 }
