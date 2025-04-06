@@ -233,11 +233,11 @@ void RewardScene::create_reward_buttons() {
     buttonPropTemplate.rect.position = { 1.1f, 0.35f };
     create_reward_exchange_button(buttonPropTemplate);
 
-    //next round button
-    buttonPropTemplate.ID = ecs::grp::UI;
-    buttonPropTemplate.sprite_key = "enter_game";
-    buttonPropTemplate.rect.position = { 2.0f, 0.35f };
-    create_next_round_button(buttonPropTemplate);
+    ////next round button
+    //buttonPropTemplate.ID = ecs::grp::UI;
+    //buttonPropTemplate.sprite_key = "enter_game";
+    //buttonPropTemplate.rect.position = { 2.0f, 0.35f };
+    //create_next_round_button(buttonPropTemplate);
 }
 
 void RewardScene::create_reward_health_button(const GameStructs::ButtonProperties& bp) {
@@ -361,7 +361,7 @@ void RewardScene::create_a_deck_card(const GameStructs::CardButtonProperties& bp
         imgComp->destination_rect.size = { imgComp->_original_w,  imgComp->_original_h };
         auto it = buttonComp->It();
         //only assign a valid iterator
-        if (bp.iterator != nullptr && it != _selected_card) {
+        if (it != _selected_card) {
 
             _selected_card = it;
             imgComp->destination_rect.position.y -= 0.05f;
@@ -424,7 +424,7 @@ void RewardScene::create_my_deck_cards() {
         iterator++;
     }
     propTemplate.iterator = nullptr;
-    for (int i = 0; i < 6; ++i) {
+    for (int i = 0; i < 4; ++i) {
         propTemplate.sprite_key = "initial_info";
         create_a_deck_card(propTemplate);
         propTemplate.rect.position.x += umbral;
@@ -490,7 +490,6 @@ void RewardScene::create_reward_selected_button(const GameStructs::ButtonPropert
             int hn = phealth->getMaxHealth() * 5 / 10;
             phealth->heal(hn);
             _selected = true;
-            Game::Instance()->change_Scene(Game::GAMESCENE);
         }
         //we only select a reward if previously we have chosen something
         else if (_lr != nullptr && !_selected) {
@@ -498,8 +497,8 @@ void RewardScene::create_reward_selected_button(const GameStructs::ButtonPropert
             _lr->swap_textures();
             _selected = true;
             add_new_reward_card();
-            Game::Instance()->change_Scene(Game::GAMESCENE);
         }
+        Game::Instance()->change_Scene(Game::GAMESCENE);
     });
     buttonComp->connectHover([buttonComp, imgComp, this]() {
         if (_selected) return;
@@ -586,17 +585,17 @@ void RewardScene::check_number()
     auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
     auto _m_deck = mngr->getComponent<Deck>(player);
     auto& pDeck = _m_deck->move_discard_to_draw().card_list();
-    if (pDeck.size() < 8)
+    if (pDeck.size() < 6)
     {
         _activate_exchange_button = false;
         _activate_confirm_button = true;
     }
-    else if (pDeck.size() >= 8 && pDeck.size() < 10)
+    else if (pDeck.size() >= 6 && pDeck.size() < 8)
     {
         _activate_exchange_button = true;
         _activate_confirm_button = true;
     }
-    else if (pDeck.size() == 10)
+    else if (pDeck.size() == 8)
     {
         _activate_confirm_button = false;
         _activate_exchange_button = true;
@@ -631,6 +630,7 @@ void RewardScene::create_reward_exchange_button(const GameStructs::ButtonPropert
             add_new_reward_card();
             _last_deck_card_img->destination_rect.position.y += 0.05f;
             Game::Instance()->change_Scene(Game::GAMESCENE);
+
         });
     buttonComp->connectHover([buttonComp, imgComp, this]() {
         if (_selected) return;
@@ -665,12 +665,12 @@ void RewardScene::update(uint32_t delta_time) {
        _activate_exchange_button = false;
    }
 
-   if (_selected) {
+  /* if (_selected) {
        auto mngr = Game::Instance()->get_mngr();
        auto imgCompNext = mngr->getComponent<transformless_dyn_image>(mngr->getHandler(ecs::hdlr::NEXTROUNDBUTTON));
        imgCompNext->destination_rect.position = {0.4f,0.5f};
 
-   }
+   }*/
 }
 void RewardScene::create_next_round_button(const GameStructs::ButtonProperties& bp) {
     auto* mngr = Game::Instance()->get_mngr();
