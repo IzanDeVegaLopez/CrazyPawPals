@@ -367,17 +367,13 @@ void SelectionMenuScene::create_weapon_info() {
 
 void SelectionMenuScene::set_concrete_deck_info(const std::list<Card*>& cl) {
     auto mngr = Game::Instance()->get_mngr();
-    auto infos = mngr->getEntities(ecs::grp::DECKINFO);
+    auto& infos = mngr->getEntities(ecs::grp::DECKINFO);
 
     auto itInfo = infos.begin();
     for (auto it = cl.begin(); it != cl.end() && itInfo != infos.end(); ++it, ++itInfo) {
         auto img = mngr->getComponent<transformless_dyn_image>(*itInfo);
-        std::string typeName = typeid(**it).name();
-        std::string prefix = "class ";
-        if (typeName.find(prefix) == 0) {  // Si empieza con "class "
-            typeName = typeName.substr(prefix.size());  // Elimina "class "
-        }
-        img->set_texture(&sdlutils().images().at("card_" + typeName + "_info"));
+        std::string typeName = (*it)->get_name();
+        img->set_texture(&sdlutils().images().at(typeName + "_info"));
     }
 }
 void SelectionMenuScene::create_enter_button() {
