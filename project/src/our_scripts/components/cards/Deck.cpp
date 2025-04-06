@@ -134,10 +134,17 @@ void Deck::reload() noexcept
 		event_system::event_manager::Instance()->fire_event(event_system::shuffle, event_system::event_receiver::Msg());
 		//Puts all cards on discard
 		if (_hand != nullptr) {
-			_discard_pile.add_card(std::move(_hand));
+			if(_hand->get_discard_destination()!=DESTROY)
+				_discard_pile.add_card(std::move(_hand));
 			_hand = nullptr;
 		}
-		_draw_pile.move_from_this_to(_discard_pile);
+		//_draw_pile.move_from_this_to(_discard_pile);
+		while (!_draw_pile.empty()) {
+			Card* c = _draw_pile.pop_first();
+			if (c->get_discard_destination() != DESTROY) {
+				_discard_pile.add_card(c);
+			}
+		}
 		_primed = false;
 	}
 }
@@ -215,8 +222,19 @@ void Deck::set_primed(bool prime)
 CardList& Deck::move_discard_to_draw(bool menu) {
 	_discard_pile.move_from_this_to(_draw_pile);
 	if (menu) {
-		if (_hand != nullptr) _draw_pile.add_card(_hand);
-		_hand = nullptr;
+		std::erase_if(_draw_pile.card_list(), [](Card* c) { return c->get_discard_destination() == DESTROY; });
+		if (_hand != nullptr) {
+			if (_hand->get_discard_destination() != DESTROY)
+				_discard_pile.add_card(std::move(_hand));
+			_hand = nullptr;
+		}
+		//_draw_pile.move_from_this_to(_discard_pile);
+		while (!_discard_pile.empty()) {
+			Card* c = _discard_pile.pop_first();
+			if (c->get_discard_destination() != DESTROY) {
+				_draw_pile.add_card(c);
+			}
+		}
 	}
 	return _draw_pile;
 }
