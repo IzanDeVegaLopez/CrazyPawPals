@@ -47,7 +47,7 @@ struct transformless_dyn_image : public ecs::Component {
 			int(rect.size.y)
 		}; //SDL_Rect_screen_rect_from_global(destination_rect, my_camera_screen);
 		*/
-		_filter ? texture->apply_filter(128, 128, 128) : texture->apply_filter(255, 255, 255);
+		_filter ? texture->apply_filter(220, 220, 220) : texture->apply_filter(255, 255, 255);
 		SDL_Rect destination = get_destination_rect();
 		const SDL_Rect source = { 0, 0, texture->width(), texture->height() };
 		if (!source.x) {
