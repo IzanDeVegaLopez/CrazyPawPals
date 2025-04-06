@@ -193,12 +193,14 @@ void GameScene::enterScene()
 	auto* mngr = Game::Instance()->get_mngr();
 	auto player = mngr->getHandler(ecs::hdlr::PLAYER);
 	auto w = mngr->getComponent<Weapon>(player);
+	mngr->addComponent<id_component>(player);
 
 	//w->initComponent();
 	mngr->addComponent<MythicComponent>(player);
 
 	auto d = mngr->getComponent<Deck>(player);
 	d->reload();
+	mngr->getComponent<fog_collision_component>(mngr->getHandler(ecs::hdlr::FOGGROUP))->reset();
 	//d->
 	//d->initComponent();
 
@@ -263,10 +265,18 @@ void GameScene::reset_player()
 {
 	auto&& mngr = *Game::Instance()->get_mngr();
 	auto player = mngr.getHandler(ecs::hdlr::PLAYER);
+
+	mngr.removeComponent<Weapon>(player);
+	mngr.removeComponent<MythicComponent>(player);
+	mngr.removeComponent<Deck>(player);
+	mngr.removeComponent<KeyboardPlayerCtrl>(player);
+	mngr.removeComponent<PlayerHUD>(player);
+
+
 	mngr.getComponent<dyn_image_with_frames>(player)->isDamaged = false;
 	auto tr = mngr.getComponent<Transform>(player);
-		 tr->setPos({ 0.0f, 0.0f });	
-		 tr->setDir({ 0.0f, 0.0f });	
+		tr->setPos({ 0.0f, 0.0f });	
+		tr->setDir({ 0.0f, 0.0f });	
 
 	mngr.getComponent<AnimationComponent>(player)->play_animation("idle");
 	mngr.getComponent<Health>(player)->resetCurrentHeatlh();
@@ -1065,8 +1075,8 @@ void GameScene::event_callback0(const event_system::event_receiver::Msg& m) {
 void GameScene::event_callback1(const event_system::event_receiver::Msg& m) {
 	auto&& mngr = *Game::Instance()->get_mngr();
 	reset_player();
+	deccel_spawned_creatures_multi = 1;
 	mngr.getComponent<WaveManager>(mngr.getHandler(ecs::hdlr::WAVE))->reset_wave_manager();
-	mngr.getComponent<HUD>(mngr.getHandler(ecs::hdlr::HUD_ENTITY))->reset();
 
 	Game::Instance()->change_Scene(Game::GAMEOVER);
 }

@@ -218,6 +218,11 @@ void WaveManager::start_new_wave()
     for (int i : _waves[_currentWave].second) {
         if (i != none) _numEnemies++;
     }
+    auto& mngr = *Game::Instance()->get_mngr();
+    auto enemies = mngr.getEntities(ecs::grp::ENEMY);
+    for (auto e : enemies) {
+        mngr.setAlive(e, false);
+    }
 
     choose_new_event();
 }
@@ -225,27 +230,6 @@ void WaveManager::start_new_wave()
 void WaveManager::reset_wave_manager()
 {
     _currentWave = 0;
-    _currentWaveTime = 0;
-    _waveActive = false;
-    _enemiesSpawned = 0;
-    _enemiesKilled = 0;
-    _numEnemies = 0;
-    _nextSpawn = 0;
-    _min_time = 0;
-    _op_time = 0;
-    _totalSpawnTime = _waves[_currentWave].first;
-    _currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
-
-    _current_wave_event = (std::unique_ptr<wave_event>)new no_event(this);
-    _current_wave_event->start_wave_callback();
-
-    if (fog) fog->setFog(false);
-
-    auto& mngr = *Game::Instance()->get_mngr();
-    auto enemies = mngr.getEntities(ecs::grp::ENEMY);
-    for (auto e : enemies) {
-        mngr.setAlive(e, false);
-    }
 }
 
 
