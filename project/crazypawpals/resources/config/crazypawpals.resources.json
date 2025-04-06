@@ -133,7 +133,7 @@
     },
     {
       "id": "card_evoke",
-      "file": "resources/images/cards/carta.png"
+      "file": "resources/images/cards/card_evoke.png"
     },
     {
       "id": "card_fulgur",
@@ -145,11 +145,11 @@
     },
     {
       "id": "card_quickFeet",
-      "file": "resources/images/cards/carta.png"
+      "file": "resources/images/cards/card_quick_feet.png"
     },
     {
       "id": "card_recover",
-      "file": "resources/images/cards/carta.png"
+      "file": "resources/images/cards/card_recover.png"
     },
     {
       "id": "boom",
@@ -297,7 +297,7 @@
     },
     {
       "id": "selection",
-      "file": "resources/images/enviroment/selection.jpg"
+      "file": "resources/images/enviroment/selection.png"
     },
     {
       "id": "reward",

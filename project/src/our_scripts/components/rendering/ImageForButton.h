@@ -11,8 +11,6 @@ public:
 
 	void swap_textures();
 
-	inline virtual void apply_filter(int r, int g, int b) override{ _selected_tex->apply_filter(r, g, b); };
-
 protected:
 	Texture* _selected_tex;
 };
