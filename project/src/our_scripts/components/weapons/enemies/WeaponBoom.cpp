@@ -12,7 +12,7 @@ WeaponBoom::callback(Vector2D shootPos, Vector2D shootDir) {
 	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
 	//float dist = 0.1;
 	bp.dir = shootDir;
-	bp.init_pos = shootPos;
+	bp.init_pos = shootPos + shootDir.normalize() * 1.5;
 	bp.speed = _speed;
 	bp.damage = _damage;
 	bp.life_time = 2;
