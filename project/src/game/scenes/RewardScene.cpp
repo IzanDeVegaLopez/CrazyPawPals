@@ -424,7 +424,7 @@ void RewardScene::create_my_deck_cards() {
         iterator++;
     }
     propTemplate.iterator = nullptr;
-    for (int i = 0; i < 6; ++i) {
+    for (int i = 0; i < 4; ++i) {
         propTemplate.sprite_key = "initial_info";
         create_a_deck_card(propTemplate);
         propTemplate.rect.position.x += umbral;
@@ -586,17 +586,17 @@ void RewardScene::check_number()
     auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
     auto _m_deck = mngr->getComponent<Deck>(player);
     auto& pDeck = _m_deck->move_discard_to_draw().card_list();
-    if (pDeck.size() < 8)
+    if (pDeck.size() < 6)
     {
         _activate_exchange_button = false;
         _activate_confirm_button = true;
     }
-    else if (pDeck.size() >= 8 && pDeck.size() < 10)
+    else if (pDeck.size() >= 6 && pDeck.size() < 8)
     {
         _activate_exchange_button = true;
         _activate_confirm_button = true;
     }
-    else if (pDeck.size() == 10)
+    else if (pDeck.size() == 8)
     {
         _activate_confirm_button = false;
         _activate_exchange_button = true;
