@@ -399,6 +399,7 @@ void RewardScene::refresh_my_deck_cards(const std::list<Card*>& cl) {
         //obtain each ones component
         auto img = mngr->getComponent<transformless_dyn_image>(*itRewardInfo);
        
+        /*
         #pragma region convert a class name to a string
         std::string typeName = typeid(*c).name();
         std::string prefix = "class ";
@@ -407,9 +408,10 @@ void RewardScene::refresh_my_deck_cards(const std::list<Card*>& cl) {
             typeName[0] = tolower(typeName[0]);
         }
         #pragma endregion
+        */
 
         //change to the newest texture
-        img->set_texture(&sdlutils().images().at("card_"+typeName));
+        img->set_texture(&sdlutils().images().at(c->get_name()));
         //Refresh the pointer saved in the component
         auto buttonComp = mngr->getComponent<Button>(*itRewardInfo);
         if (buttonComp) {
