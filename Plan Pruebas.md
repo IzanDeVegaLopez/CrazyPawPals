@@ -11,6 +11,7 @@
 **Observación directa + Entrevistas.**  
 
 ### Desarrollo de la Prueba
+
 En ambos institutos disponemos de una sala con ordenadores. Recibiremos a los jugadores en grupos de 4\. Les haremos pasar hacia un puesto con un ordenador cada uno. Y para cada niño dispondremos de 2 observadores.  
 
 Los niños tendrán el juego en el menú inicial, y se les pedirá que jueguen al juego desde este punto sin información adicional dada por parte de los observadores. La prueba terminará después de 4 minutos. Al acabar el tiempo se pasará a la fase de la entrevista.
@@ -49,7 +50,8 @@ Una vez finalizadas las preguntas y recogidas las respuestas, se les agradecerá
 | **2**  | Primera acción que realiza el tester: | 1) Nada.<br> 2) Moverse.<br> 3) Disparar.<br> 4) Usar carta.<br> 5) Recargar.|
 | **3**  | Tiempo que tarda el tester en realizar su primera acción: | `X segundos` |
 | **4**  | Primera acción que realiza el tester al encontrarse con un enemigo: | 1) Nada.<br> 2) Huir.<br> 3) Acercarse.<br> 4) Disparar. |
-| **6**  |  Si el jugador llega a disparar o usar por primera vez, describir que procede a hacer con el sistema de cartas. Posibles reacciones incluyen pero no están limitadas a: | 1) Nada.<br> 2) Seguir disparando (sin pensar mucho).<br> 3) Examinar los tipos de disparo.<br> 4) Examinar el slot de la carta. |
+| **5**  | Tiempo que tarda *desde que aparece en pantalla el primer enemigo*  en darse cuenta que es un enemigo: | `X segundos`|
+| **6**  | Si el jugador llega a disparar o usar por primera vez, describir que procede a hacer con el sistema de cartas. Posibles reacciones incluyen pero no están limitadas a: | 1) Nada.<br> 2) Seguir disparando (sin pensar mucho).<br> 3) Examinar los tipos de disparo.<br> 4) Examinar el slot de la carta. |
 | **7**  | El jugador intenta esquivar los proyectiles enemigos. | 1) Si.<br> 2) No.<br>|
 | **8**  | Si la ha tenido ¿que carta ha causado una reacción emocional perceptible al usarla? | 1) Nada.<br> 2) X carta.<br>|
 | **9**  | Ataque más usado. | 1) M1.<br> 2) M2.<br>|
