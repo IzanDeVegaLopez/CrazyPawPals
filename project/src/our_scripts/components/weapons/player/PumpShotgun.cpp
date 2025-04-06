@@ -4,14 +4,14 @@
 
 
 PumpShotgun::PumpShotgun() : Weapon(1, 900.0f, 1.5f, 0.6f, "p_pump_shotgun",1.0f,1.0f), _has_mill(false) {
-	event_system::event_manager::Instance()->suscribe_to_event(event_system::mill, this, &event_system::event_receiver::event_callback0);
+	event_system::event_manager::Instance()->suscribe_to_event(event_system::mill, this, &event_system::event_receiver::event_callback1);
 }
 
 PumpShotgun::~PumpShotgun() {
-	event_system::event_manager::Instance()->unsuscribe_to_event(event_system::mill, this, &event_system::event_receiver::event_callback0);
+	event_system::event_manager::Instance()->unsuscribe_to_event(event_system::mill, this, &event_system::event_receiver::event_callback1);
 }
 
-void PumpShotgun::event_callback0(const event_system::event_receiver::Msg& m)
+void PumpShotgun::event_callback1(const event_system::event_receiver::Msg& m)
 {
 	_has_mill = true;
 }
