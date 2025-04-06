@@ -49,6 +49,7 @@ class WaveManager : public event_system::event_receiver, public ecs::Component {
             sarno_rata, sarno_rata, plim_plim, none, none,
             plim_plim, plim_plim }
         },
+        //wave3
         { 15000,{
             plim_plim, michi_mafioso, michi_mafioso, none,
             boom, plim_plim, none,

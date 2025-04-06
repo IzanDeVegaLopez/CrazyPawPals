@@ -77,68 +77,68 @@ WaveManager::update(uint32_t delta_time) {
 void 
 WaveManager::spawn_next_enemy() {
             // RANDOM
-            std::random_device rd;
-            std::mt19937 gen(rd());
-            // rAng entre (0, 360)
-            std::uniform_real_distribution<float> rAngGen(0.0f, 360.0f);
-            // rn entre (-0.35, 0.35)
-            std::uniform_real_distribution<float> rnGen(-0.35f, 0.35f);
-            float rAng = rAngGen(gen); // (0, 360)
-            float rn = rnGen(gen); // (-0.35, 0.35)
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        // rAng entre (0, 360)
+        std::uniform_real_distribution<float> rAngGen(0.0f, 360.0f);
+        // rn entre (-0.35, 0.35)
+        std::uniform_real_distribution<float> rnGen(-0.35f, 0.35f);
+        float rAng = rAngGen(gen); // (0, 360)
+        float rn = rnGen(gen); // (-0.35, 0.35)
             
-            // Distancia
-            //float _min_distance = Game::Instance()->get_world_half_size().first + Game::Instance()->get_world_half_size().second * 0.1;
-            //float _op_dist = _min_distance * (-rn);
+        // Distancia
+        //float _min_distance = Game::Instance()->get_world_half_size().first + Game::Instance()->get_world_half_size().second * 0.1;
+        //float _op_dist = _min_distance * (-rn);
 
-            //DEBUG
-            // Medio de la pantalla + angulo * distancia
-            Vector2D posVec = Vector2D(cos(rAng) *Game::Instance()->get_world_half_size().first, Game::Instance()->get_world_half_size().second * sin(rAng));
-            std::cout << posVec << std::endl;
-            //assert(_enemiesSpawned < (1 << 7));
-            // FIXME: define enum values
-            switch (_waves[_currentWave].second[_enemiesSpawned])
-            {
-                case none:
-                    break;
-		        case sarno_rata:
-                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_sarno_rata(posVec);
-			        break;
-                case michi_mafioso:
-                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_michi_mafioso(posVec);
-			        break;
-		        case plim_plim:
-                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_plim_plim(posVec);
-                    break;
-                case boom:
-                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_boom(posVec);
-			        break;
-                case ratatouille:
-                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_ratatouille(posVec);
-                    break;
-                case catkuza:
-                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_catkuza(posVec);
-                    break;
-                case super_michi_mafioso:
-                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_super_michi_mafioso(posVec);
-                    break;
-                case rata_basurera:
-                    //"posVec" es un vector tan grande que los enemigos aparecen fuera del mapa.
-                    //Si el enemigo se mueve da igual, pero este no se mueve nunca, asiq tiene que aparecer dentro del mapa.
-                    static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_rata_basurera({ 13,6 });
-                    break;
-                default: {
-                    assert(false && "unreachable");
-                    exit(EXIT_FAILURE);
-                    break;
+        //DEBUG
+        // Medio de la pantalla + angulo * distancia
+        Vector2D posVec = Vector2D(cos(rAng) *Game::Instance()->get_world_half_size().first, Game::Instance()->get_world_half_size().second * sin(rAng));
+        //std::cout << posVec << std::endl;
+        //assert(_enemiesSpawned < (1 << 7));
+        // FIXME: define enum values
+        switch (_waves[_currentWave].second[_enemiesSpawned])
+        {
+            case none:
+                break;
+		    case sarno_rata:
+                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_sarno_rata(posVec);
+			    break;
+            case michi_mafioso:
+                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_michi_mafioso(posVec);
+			    break;
+		    case plim_plim:
+                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_plim_plim(posVec);
+                break;
+            case boom:
+                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_boom(posVec);
+			    break;
+            case ratatouille:
+                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_ratatouille(posVec);
+                break;
+            case catkuza:
+                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_catkuza(posVec);
+                break;
+            case super_michi_mafioso:
+                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_super_michi_mafioso(posVec);
+                break;
+            case rata_basurera:
+                //"posVec" es un vector tan grande que los enemigos aparecen fuera del mapa.
+                //Si el enemigo se mueve da igual, pero este no se mueve nunca, asiq tiene que aparecer dentro del mapa.
+                static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_rata_basurera({ 13,6 });
+                break;
+            default: {
+                assert(false && "unreachable");
+                exit(EXIT_FAILURE);
+                break;
 			        
-                }
             }
-            // Tiempo
-            _min_time = _totalSpawnTime / _waves[_currentWave].second.size();
-            _op_time = _min_time * rn;
-            _nextSpawn = _currentWaveTime + (_min_time + _op_time);
+        }
+        // Tiempo
+        _min_time = _totalSpawnTime / _waves[_currentWave].second.size();
+        _op_time = _min_time * rn;
+        _nextSpawn = _currentWaveTime + (_min_time + _op_time);
 
-            _enemiesSpawned++;
+        _enemiesSpawned++;
     /*else {
         _waveActive = true; // después de que se spawnee el último enemigo
         //std::cout << "WAVE ACTIVE" << std::endl;
@@ -207,7 +207,6 @@ void WaveManager::start_new_wave()
     _currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
 
     // Esto tiene que ir después del menu de recompensas
-    _currentWave++;
     _currentWaveTime = 0;
     _totalSpawnTime = _waves[_currentWave].first;
     _enemiesSpawned = 0;
@@ -217,7 +216,7 @@ void WaveManager::start_new_wave()
     fog->setFog(false);
 
     for (int i : _waves[_currentWave].second) {
-        if (i) _numEnemies++;
+        if (i != none) _numEnemies++;
     }
 
     choose_new_event();
@@ -254,6 +253,7 @@ void WaveManager::endwave()
 {
     //std::cout << "oleada superada con éxito meow" << std::endl;
     _current_wave_event->end_wave_callback();
+    _currentWave++;
     fog->setFog(false);
     enterRewardsMenu();
 
