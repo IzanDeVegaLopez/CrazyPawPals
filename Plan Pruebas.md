@@ -34,43 +34,44 @@ Las preguntas a hacer están en el anexo 2\.
 Una vez finalizadas las preguntas y recogidas las respuestas, se les agradecerá y se les pedirá que vuelvan a clase.  
 
 **ANEXO 1: Cuestiones de Observación:**  
-0\.   Anotar lo que hace el tester en el menú principal:
+
+1\.   Anotar lo que hace el tester en el menú principal:
 	1\) Darle a play directamente    2\) inspeccionar los botones de selección y darle a play con las por defecto		3\) ir escogiendo todas las armas y elegir unas distintas a las por defecto	4\) escoger de forma que parece random o sin saber lo que está haciendo armas distintas a las por defecto
 
 
-1\. Primera acción que realiza el tester:  
+2\. Primera acción que realiza el tester:  
 	1\) Nada	2\) Desplazarse	3\) Disparar	4\) Usar	5\) Recargar 
 
    
-2\. Tiempo que tarda el tester en realizar su primera acción:
+3\. Tiempo que tarda el tester en realizar su primera acción:
 	X segundos
 
    
-3\. Primera acción que realiza el tester al encontrarse con un enemigo:  
+4\. Primera acción que realiza el tester al encontrarse con un enemigo:  
 	1\) Nada	2\) Huir	3\) Acercarse	4\) Disparar
 
 
-4\.  Tiempo que tarda *desde que aparece en pantalla el primer enemigo*  en darse cuenta que es un enemigo:  
-   X segundos  
+5\.  Tiempo que tarda *desde que aparece en pantalla el primer enemigo*  en darse cuenta que es un enemigo:  
+	X segundos  
 
    
-5\.   Si el jugador llega a disparar o usar por primera vez, describir que procede a hacer con el sistema de cartas. Posibles reacciones incluyen pero no están limitadas a:
+6\.   Si el jugador llega a disparar o usar por primera vez, describir que procede a hacer con el sistema de cartas. Posibles reacciones incluyen pero no están limitadas a:
 	1\) Nada	2\) Seguir disparando (sin pensar mucho)	3\) Examinar los tipos de disparo	4\) Examinar el slot de la carta 
 
 
-6\.   El jugador intenta esquivar los proyectiles enemigos
+7\.   El jugador intenta esquivar los proyectiles enemigos
 	1\) Sí.	2\) No
 
 
-7\.   Si la ha tenido ¿que carta ha causado una reacción emocional perceptible al usarla?
+8\.   Si la ha tenido ¿que carta ha causado una reacción emocional perceptible al usarla?
 	1) Nada	2\) X carta
 
 
-8\.   Ataque más usado
+9\.   Ataque más usado
 	1\) M1	2\) M2
 
 
-9\. ¿Qué hace el tester cuando se ha quedado sin maná?
+10\. ¿Qué hace el tester cuando se ha quedado sin maná?
 	1\) Nada, no ocurre	2\) Intenta seguir disparando y arriesgándose pero no puede	3\) Se da cuenta y cambia de estrategia (huir)
 
 
