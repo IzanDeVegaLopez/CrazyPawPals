@@ -30,9 +30,9 @@ SelectionMenuScene::~SelectionMenuScene()
 {
 }
 void SelectionMenuScene::create_weapon_buttons() {
-    float umbral = 0.1f;
-    float offsetX = 0.0675f;  // Distance between buttons on the X axis
-    float startX = 0.8f;   // Starting position of the first button on X
+    float umbral = 0.0075f;
+    float offsetX = 0.05f;  // Distance between buttons on the X axis
+    float startX = 0.725f;   // Starting position of the first button on X
     float startY = 0.025f; // Starting position of the first button on Y
 
     GameStructs::ButtonProperties buttonPropTemplate = {
@@ -54,30 +54,29 @@ void SelectionMenuScene::create_weapon_buttons() {
     pump_shotgun_B.sprite_key = "pump_shotgun_button";
     create_weapon_button(GameStructs::PUMP_SHOTGUN, pump_shotgun_B);
 
-    buttonPropTemplate.rect.position.y += umbral; // Move to the next row
-    buttonPropTemplate.rect.position.x = startX;  // Reset X to the initial position
-
-    GameStructs::ButtonProperties ramp_canon_B = buttonPropTemplate;
-    ramp_canon_B.sprite_key = "ramp_canon_button";
-    create_weapon_button(GameStructs::RAMP_CANON, ramp_canon_B);
+    buttonPropTemplate.rect.position.x += offsetX;  // Move to the right
+    GameStructs::ButtonProperties rampCanonB = buttonPropTemplate;
+    rampCanonB.sprite_key = "ramp_canon_button";
+    create_weapon_button(GameStructs::RAMP_CANON, rampCanonB);
 
     buttonPropTemplate.rect.position.x += offsetX;  // Move to the right
     GameStructs::ButtonProperties lightbringerB = buttonPropTemplate;
     lightbringerB.sprite_key = "lightbringer_button";
     create_weapon_button(GameStructs::LIGHTBRINGER, lightbringerB);
 
-    buttonPropTemplate.rect.position.x += offsetX;  // Move to the right
-    GameStructs::ButtonProperties another_B = buttonPropTemplate;
-    another_B.sprite_key = "arma6_button";
-    create_weapon_button(GameStructs::WEAPON6, another_B);
+    //we ll add these two when we have other weapon implemented
+    //buttonPropTemplate.rect.position.x += offsetX;  // Move to the right
+    //GameStructs::ButtonProperties another_B = buttonPropTemplate;
+    //another_B.sprite_key = "arma6_button";
+    //create_weapon_button(GameStructs::WEAPON6, another_B);
 
-    buttonPropTemplate.rect.position.y += umbral; // Move to the next row
-    buttonPropTemplate.rect.position.x = startX;  // Reset X to the initial position
-    buttonPropTemplate.rect.position.x += offsetX;  // Move to the right
+    //buttonPropTemplate.rect.position.y += umbral; // Move to the next row
+    //buttonPropTemplate.rect.position.x = startX;  // Reset X to the initial position
+    //buttonPropTemplate.rect.position.x += offsetX;  // Move to the right
 
-    GameStructs::ButtonProperties another2 = buttonPropTemplate;
-    another2.sprite_key = "arma7_button";
-    create_weapon_button(GameStructs::WEAPON7, another2);
+    //GameStructs::ButtonProperties another2 = buttonPropTemplate;
+    //another2.sprite_key = "arma7_button";
+    //create_weapon_button(GameStructs::WEAPON7, another2);
 }
 
 void SelectionMenuScene::create_deck_buttons() {
@@ -231,9 +230,8 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
     });
     buttonComp->connectHover([buttonComp, imgComp, mngr, wt]() {
         std::string s;
-        auto& info = mngr->getEntities(ecs::grp::WEAPONINFO);
-        assert(!info.empty());
-        auto infoImg = mngr->getComponent<transformless_dyn_image>(info[0]);
+        auto info = mngr->getHandler(ecs::hdlr::WEAPONINFO);
+        auto infoImg = mngr->getComponent<transformless_dyn_image>(info);
         switch (wt) {
         case GameStructs::REVOLVER:
             s = "revolver_";
@@ -264,9 +262,8 @@ void SelectionMenuScene::create_weapon_button(GameStructs::WeaponType wt, const 
         imgComp->_filter = true;
     });
     buttonComp->connectExit([buttonComp, imgComp,mngr]() {
-        auto& info = mngr->getEntities(ecs::grp::WEAPONINFO);
-        assert(!info.empty());
-        auto infoImg = mngr->getComponent<transformless_dyn_image>(info[0]);
+        auto info = mngr->getHandler(ecs::hdlr::WEAPONINFO); 
+        auto infoImg = mngr->getComponent<transformless_dyn_image>(info); 
         infoImg->set_texture(&sdlutils().images().at("initial_info"));
         imgComp->_filter = false;
     });
@@ -291,7 +288,7 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
         switch (dt)
         {
         case GameStructs::ONE:
-            cl = { new Prime(), new Primordia(), new Prime(), new Prime()};
+            cl = { new Evoke(), new Recover(), new Kunai(), new Commune()};
             break;
         case GameStructs::TWO: 
             cl = { new Fireball(), new CardSpray(), new Lighting(), new Minigun()};
@@ -346,7 +343,7 @@ void SelectionMenuScene::create_deck_info(const rect_f32& rect) {
 }
 void SelectionMenuScene::create_deck_infos() {
     float umbral = 0.14f;
-    rect_f32 r = {{ 0.065f, 0.225f }, { 0.3f, 0.1425f }};
+    rect_f32 r = {{ 0.035f, 0.225f }, { 0.3f, 0.1425f }};
     for (int i = 0; i < _num_cards_of_deck; ++i) {
         create_deck_info(r); 
         r.position.y += umbral;
@@ -354,9 +351,9 @@ void SelectionMenuScene::create_deck_infos() {
 }
 void SelectionMenuScene::create_weapon_info() {
    // rect_f32 rect = {{1.3f, 0.25f} ,{0.75f, 0.5f}};
-    rect_f32 rect = { {0.5f, 0.025f} ,{0.3f, 0.225f} };
+    rect_f32 rect = { {0.7f, 0.15f} ,{0.3f, 0.225f} };
     ecs::entity_t e = create_entity(
-        ecs::grp::WEAPONINFO,
+        ecs::grp::UI,
         ecs::scene::SELECTIONMENUSCENE,
         new transformless_dyn_image
         (rect,
@@ -364,7 +361,8 @@ void SelectionMenuScene::create_weapon_info() {
             Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam,
             &sdlutils().images().at("initial_info"))
     );
-    auto i = Game::Instance()->get_mngr();
+    auto mngr = Game::Instance()->get_mngr();
+    mngr->setHandler(ecs::hdlr::WEAPONINFO, e);
 }
 
 void SelectionMenuScene::set_concrete_deck_info(const std::list<Card*>& cl) {
@@ -384,7 +382,7 @@ void SelectionMenuScene::set_concrete_deck_info(const std::list<Card*>& cl) {
 }
 void SelectionMenuScene::create_enter_button() {
     GameStructs::ButtonProperties bp = {
-         { {0.4f, 0.4f},{0.3f, 0.125f} },
+         { {0.375f, 0.4f},{0.3f, 0.125f} },
          0.0f, "new_round", ecs::grp::UI
     };
     auto* mngr = Game::Instance()->get_mngr();

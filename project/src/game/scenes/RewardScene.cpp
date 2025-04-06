@@ -125,8 +125,6 @@ std::string RewardScene::select_card(GameStructs::CardType ct) {
         break;
     case GameStructs::EVOKE: s = "card_evoke";
         break;
-    case GameStructs::FULGUR: s = "card_fulgur";
-        break;
     case GameStructs::QUICK_FEET: s = "card_quickFeet";
         break;
     default:
