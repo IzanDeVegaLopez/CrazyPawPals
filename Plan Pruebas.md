@@ -20,7 +20,7 @@ Durante la fase de entrevista se harán varias preguntas a los jugadores. Esta f
 **Procedimiento para la observación:**  
 	Se esperará a que los *4 ordenadores* estén ocupados por los *4 testers de cada ronda*. Entonces, se les abrirá una instancia nueva de la aplicación. *que inicia* *en el menú principal*. Jugarán al juego principal.
 
-	Después de esto da comienzo la partida y la observación. Durante la observación tan solo nos dirigimos a los tester en las siguientes circunstancias y proveyendo la siguiente información:
+Después de esto da comienzo la partida y la observación. Durante la observación tan solo nos dirigimos a los tester en las siguientes circunstancias y proveyendo la siguiente información:
 
 - si se buggea y pierden el control o salen fuera de límites, los observadores  reiniciará la aplicación, comenzando de nuevo  
 - si no encuentran a todos los enemigos de la oleada y no saben qué hacer, *no se les dará indicaciones adicionales*; habrá flechas in-game que indican la dirección de los enemigos restantes (02/04/2025)
@@ -32,40 +32,48 @@ Durante la fase de entrevista se harán varias preguntas a los jugadores. Esta f
 Las preguntas a hacer están en el anexo 2\.  
 	Tras responder a una pregunta, si el contenido de la respuesta contesta a esta y el tester quiere seguir expresando su opinión, se le permitirá agradecidamente y el “entrevistador secundario” prestará especial atención al contenido que pueda ser de utilidad y no esté listado en los *temas* del *anexo 2*.  
 Una vez finalizadas las preguntas y recogidas las respuestas, se les agradecerá y se les pedirá que vuelvan a clase.  
+
 **ANEXO 1: Cuestiones de Observación:**  
-	      0\.   Anotar lo que hace el tester en el menú principal:
+0\.   Anotar lo que hace el tester en el menú principal:
+	1\) Darle a play directamente    2\) inspeccionar los botones de selección y darle a play con las por defecto		3\) ir escogiendo todas las armas y elegir unas distintas a las por defecto	4\) escoger de forma que parece random o sin saber lo que está haciendo armas distintas a las por defecto
 
-1) *Darle a play directamente    2\) inspeccionar los botones de selección y darle a play con las por defecto		3\) ir escogiendo todas las armas y elegir unas distintas a las por defecto	4\) escoger de forma que parece random o sin saber lo que está haciendo armas distintas a las por defecto*  
-1. Primera acción que realiza el tester:  
-   *1\) Nada	2\) Desplazarse	3\) Disparar	4\) Usar	5\) Recargar*  
-2. Tiempo que tarda el tester en realizar su primera acción:
 
-   \_\_\_s
+1\. Primera acción que realiza el tester:  
+	1\) Nada	2\) Desplazarse	3\) Disparar	4\) Usar	5\) Recargar 
 
-3. Primera acción que realiza el tester al encontrarse con un enemigo:  
-1) *Nada	2\) Huir	3\) Acercarse	4\) Disparar*
+   
+2\. Tiempo que tarda el tester en realizar su primera acción:
+	X segundos
 
-	      4\.  Tiempo que tarda *desde que aparece en pantalla el primer enemigo*  en darse cuenta que es un enemigo:  
-	\_\_\_s  
- 	     5\.   Si el jugador llega a disparar o usar por primera vez, describir que procede a hacer con el sistema de cartas. Posibles reacciones incluyen pero no están limitadas a:
+   
+3\. Primera acción que realiza el tester al encontrarse con un enemigo:  
+	1\) Nada	2\) Huir	3\) Acercarse	4\) Disparar
 
-1) Nada	2\) Seguir disparando (sin pensar mucho)	3\) Examinar los tipos de disparo	4\) Examinar el slot de la carta 
 
-      6\.   El jugador intenta esquivar los proyectiles enemigos
+4\.  Tiempo que tarda *desde que aparece en pantalla el primer enemigo*  en darse cuenta que es un enemigo:  
+   X segundos  
 
-1) Sí.	2\) No
+   
+5\.   Si el jugador llega a disparar o usar por primera vez, describir que procede a hacer con el sistema de cartas. Posibles reacciones incluyen pero no están limitadas a:
+	1\) Nada	2\) Seguir disparando (sin pensar mucho)	3\) Examinar los tipos de disparo	4\) Examinar el slot de la carta 
 
-   7\.   Si la ha tenido ¿que carta ha causado una reacción emocional perceptible al usarla?
 
-1) *Nada	2\) \_\_\_ carta*
+6\.   El jugador intenta esquivar los proyectiles enemigos
+	1\) Sí.	2\) No
 
-   8\.   Ataque más usado
 
-1) M1	2\) M2
+7\.   Si la ha tenido ¿que carta ha causado una reacción emocional perceptible al usarla?
+	1) Nada	2\) X carta
 
-               9\. ¿Qué hace el tester cuando se ha quedado sin maná?
 
-1) *Nada, no ocurre	2\) Intenta seguir disparando y arriesgándose pero no puede	3\) Se da cuenta y cambia de estrategia (huir)*
+8\.   Ataque más usado
+	1\) M1	2\) M2
+
+
+9\. ¿Qué hace el tester cuando se ha quedado sin maná?
+	1\) Nada, no ocurre	2\) Intenta seguir disparando y arriesgándose pero no puede	3\) Se da cuenta y cambia de estrategia (huir)
+
+
 
 **ANEXO 2: Preguntas de la entrevista:**  
 P1. ¿Te has sentido abrumado durante el gameplay? ¿O aburrido porque lo tenías todo controlado? Queremos saber si lo que tenías a tu disposición es adecuado al número de amenazas presentes.  
