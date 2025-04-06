@@ -68,5 +68,5 @@ private:
 	void create_reward_exchange_button(const GameStructs::ButtonProperties& bp);
 
 	void add_new_reward_card();
-
+	void create_next_round_button(const GameStructs::ButtonProperties& bp);
 };

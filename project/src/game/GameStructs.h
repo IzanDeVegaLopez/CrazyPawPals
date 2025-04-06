@@ -63,7 +63,7 @@ namespace GameStructs {
 		ELDRITCH_BLAST,
 		COMMUNE,
 		EVOKE,
-		FULGUR,
+		//FULGUR,
 		QUICK_FEET,
 		LAST_CARD,
 	};
