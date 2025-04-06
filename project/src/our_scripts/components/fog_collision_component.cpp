@@ -27,7 +27,7 @@ void fog_collision_component::update(uint32_t delta_time) {
 	on_trigger<fog_collision_component>::update(delta_time);
 	if (sdlutils().virtualTimer().currRealTime() > fogCollidingTimer + 500) {
 		damagingPlayer = true;
-        std::cout << (damagingPlayer ? "" : "NOT ") << "damaging player" << std::endl;
+        //std::cout << (damagingPlayer ? "" : "NOT ") << "damaging player" << std::endl;
 	}
     else
     {

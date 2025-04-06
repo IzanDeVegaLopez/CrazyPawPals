@@ -242,6 +242,10 @@
       "file": "resources/images/enemies/ratatouille.png"
     },
     {
+      "id": "paw_patrol",
+      "file": "resources/images/enemies/paw_patrol.png"
+    },
+    {
       "id": "heart",
       "file": "resources/images/ui/heart.png"
     },

@@ -12,7 +12,7 @@ Weapon::Weapon(int damage, float cd_ms, float distance, float speed, const std::
 	_attack_width(w), _attack_height(h), _lastShoot(0.0f), _tr(nullptr) 
 {
 	_baseDamage = _damage;
-	event_system::event_manager::Instance()->suscribe_to_event(event_system::double_damage_totem, this, &event_system::event_receiver::event_callback0);
+	//event_system::event_manager::Instance()->suscribe_to_event(event_system::double_damage_totem, this, &event_system::event_receiver::event_callback0);
 }
 
 void 

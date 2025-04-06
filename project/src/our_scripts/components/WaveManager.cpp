@@ -9,6 +9,8 @@
 #include "../wave_events/no_event.hpp"
 #include "../wave_events/ice_skating_event.hpp"
 #include "../wave_events/star_shower_event.hpp"
+#include "../wave_events/double_damage_totem_event.hpp"
+#include "../wave_events/paw_patrol_event.hpp"
 
 // 1 segundo = 1000 ticks (ms)
 WaveManager::WaveManager() :
@@ -22,10 +24,12 @@ WaveManager::WaveManager() :
     _current_wave_event(new no_event(this))
 {
     event_system::event_manager::Instance()->suscribe_to_event(event_system::enemy_dead, this, &event_system::event_receiver::event_callback0);
+    event_system::event_manager::Instance()->suscribe_to_event(event_system::delete_event_created_thingies, this, &event_system::event_receiver::event_callback1);
 }
 
 WaveManager::~WaveManager() {
     event_system::event_manager::Instance()->unsuscribe_to_event(event_system::enemy_dead, this, &event_system::event_receiver::event_callback0);
+    event_system::event_manager::Instance()->unsuscribe_to_event(event_system::delete_event_created_thingies, this, &event_system::event_receiver::event_callback1);
 }
 
 void
@@ -244,13 +248,21 @@ void WaveManager::event_callback0(const Msg& m)
     _enemiesKilled++;
 }
 
+void WaveManager::event_callback1(const Msg& m)
+{
+    //ELIMINATE EVENT CREATED ENTITIES
+    auto event_thingie = Game::Instance()->get_mngr()->getHandler(ecs::hdlr::WAVE_EVENTS_RESERVED_HANDLER);
+    if(event_thingie) //Si no es nullptr
+        Game::Instance()->get_mngr()->setAlive(event_thingie, false);
+}
+
 void WaveManager::choose_new_event()
 {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<int> rnd_gen(NONE,EVENTS_MAX - 1);
-    _current_event = events(rnd_gen(gen));
     
+    _current_event = events(sdlutils().rand().nextInt(-1,EVENTS_MAX));
+    //THIS IS DEBUG BABES
+    _current_event = PAW_PATROL;
+    //-------------------
     switch(_current_event) {
     case NONE:
         _current_wave_event = (std::unique_ptr<wave_event>)new no_event(this);
@@ -287,6 +299,14 @@ void WaveManager::choose_new_event()
         );
         break;
     }
+    case PAW_PATROL:
+        _current_wave_event = (std::unique_ptr<wave_event>)new paw_patrol_event(this);
+        static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_event_paw_patrol({0,0});
+        break;
+    case DOUBLE_DAMAGE_TOTEM:
+        _current_wave_event = (std::unique_ptr<wave_event>)new double_damage_totem_event(this);
+        static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_event_totem({0,0});
+        break;
     default: {
         assert(false && "unrachable"); // event_choser_went_wrong
         std::exit(EXIT_FAILURE);

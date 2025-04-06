@@ -19,7 +19,7 @@ void paw_patrol_collision_component::on_contact(const collision_manifold& tm)
         if (manager.hasComponent<Health>(entity_collided_with)) {
             auto health = manager.getComponent<Health>(entity_collided_with);
             health->takeDamage(my_damage);
-            Game::Instance()->get_mngr()->setAlive(_ent, health->getHealth() > 0);
+            //Game::Instance()->get_mngr()->setAlive(_ent, health->getHealth() > 0);
         }
     }
 }

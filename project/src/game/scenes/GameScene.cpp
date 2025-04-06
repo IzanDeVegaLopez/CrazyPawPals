@@ -74,8 +74,6 @@
 GameScene::GameScene() : Scene(ecs::scene::GAMESCENE){
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::change_deccel, this, &event_system::event_receiver::event_callback0);
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::player_dead, this, &event_system::event_receiver::event_callback1);
-	event_system::event_manager::Instance()->suscribe_to_event(event_system::double_damage_totem, this, &event_system::event_receiver::event_callback2);
-	event_system::event_manager::Instance()->suscribe_to_event(event_system::paw_patrol, this, &event_system::event_receiver::event_callback3);
 }
 GameScene::~GameScene() {
 	event_system::event_manager::Instance()->unsuscribe_to_event(event_system::change_deccel, this, &event_system::event_receiver::event_callback0);
@@ -881,6 +879,7 @@ void GameScene::spawn_event_totem(Vector2D posVec) {
 		&rigidbody,
 		&col
 	);
+	manager.setHandler(ecs::hdlr::WAVE_EVENTS_RESERVED_HANDLER,e);
 
 	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.06f, 5.0f, 20.0f * deccel_spawned_creatures_multi));
 
@@ -921,10 +920,11 @@ void GameScene::spawn_event_paw_patrol(Vector2D posVec) {
 			*tr
 		),
 		new Health(1000),
-		new paw_patrol_collision_component(dmg, GameStructs::player),
 		&rigidbody,
-		&col
+		&col,
+		new paw_patrol_collision_component(dmg, GameStructs::player)
 	);
+	manager.setHandler(ecs::hdlr::WAVE_EVENTS_RESERVED_HANDLER, e);
 	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.08f, 5.0f, 20.0f * deccel_spawned_creatures_multi));
 
 	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
@@ -952,12 +952,12 @@ void GameScene::spawn_event_paw_patrol(Vector2D posVec) {
 
 	// Condiciones de cada estado
 	// De: Walking a: Waiting, Condición: tiempo
-	state->add_transition("Walking", "Waiting", [state_cm, _p_tr, &tr]() {
+	state->add_transition("Walking", "Waiting", [state_cm, _p_tr, tr]() {
 		return state_cm->is_player_near(_p_tr, tr, 15.0f);
 		});
 
 	// De: Waiting a: Dashing, Condición: Jugador cerca
-	state->add_transition("Waiting", "Dashing", [state_cm, _p_tr, &tr]() {
+	state->add_transition("Waiting", "Dashing", [state_cm, _p_tr, tr]() {
 		bool trans = state_cm->can_use("waiting_duration", sdlutils().currRealTime());
 		if (trans) {
 			state_cm->reset_cooldown("dash_duration", sdlutils().currRealTime());

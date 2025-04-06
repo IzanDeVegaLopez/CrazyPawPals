@@ -10,6 +10,8 @@ enum events {
     NONE = -1, // 0xffffffffff
     ICE_SKATE = 0,  // 0x00000000
     STAR_SHOWER = 1,
+    PAW_PATROL = 2,
+    DOUBLE_DAMAGE_TOTEM = 3,
     EVENTS_MAX
 };
 
@@ -72,6 +74,7 @@ public:
     inline int get_current_wave() { return _currentWave; }
     inline events get_current_event() { return _current_event; }
     void event_callback0(const Msg& m) override;
+    void event_callback1(const Msg& m) override;
     void add_num_enemy();
 
 private:
