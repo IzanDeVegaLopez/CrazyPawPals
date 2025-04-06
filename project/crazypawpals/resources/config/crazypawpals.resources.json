@@ -457,6 +457,10 @@
       "file": "resources/images/ui/mythics/m_blood_claw.png"
     },
     {
+      "id": "m_curtain_reaper",
+      "file": "resources/images/ui/mythics/m_curtain_reaper.png"
+    },
+    {
       "id": "m_blood_pact",
       "file": "resources/images/ui/mythics/m_blood_pact.png"
     }

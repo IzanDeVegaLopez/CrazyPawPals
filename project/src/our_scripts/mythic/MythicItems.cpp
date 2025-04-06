@@ -46,7 +46,7 @@ ProfaneHotline::apply_effects() {
 #pragma endregion
 
 #pragma region CurtainReaper
-CurtainReaper::CurtainReaper() :MythicItem("CurtainReaper")
+CurtainReaper::CurtainReaper() :MythicItem("CurtainReaper", "m_curtain_reaper")
 {
 	_health = Game::Instance()->get_mngr()->getComponent<Health>(_player);
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::enemy_dead, this, &event_system::event_receiver::event_callback0);
