@@ -192,6 +192,7 @@ void GameScene::enterScene()
 	auto* mngr = Game::Instance()->get_mngr();
 	auto player = mngr->getHandler(ecs::hdlr::PLAYER);
 	auto w = mngr->getComponent<Weapon>(player);
+	mngr->addComponent<id_component>(player);
 
 	//w->initComponent();
 	mngr->addComponent<MythicComponent>(player);
@@ -269,7 +270,6 @@ void GameScene::reset_player()
 	mngr.removeComponent<Deck>(player);
 	mngr.removeComponent<KeyboardPlayerCtrl>(player);
 	mngr.removeComponent<PlayerHUD>(player);
-	mngr.removeComponent<id_component>(player);
 
 
 	mngr.getComponent<dyn_image_with_frames>(player)->isDamaged = false;
