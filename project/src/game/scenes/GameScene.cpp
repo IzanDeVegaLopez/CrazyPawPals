@@ -795,6 +795,8 @@ void GameScene::spawn_boom(Vector2D posVec)
 	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
 
 	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
+
+	Health* health = manager.getComponent<Health>(e); // el primero por ahr
 	
 //	StateMachine(ConditionManager& conditionManager, Transform* playerTransform, Transform* enemyTransform, float dist);
 	auto state = manager.addComponent<StateMachine>(e);
@@ -802,7 +804,7 @@ void GameScene::spawn_boom(Vector2D posVec)
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc); 
-	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon, false, [e]() {Game::Instance()->get_mngr()->setAlive(e, false); }, 1);
+	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon, false, [health]() {health->takeDamage(health->getMaxHealth()); }, 1);
 
 	//poner los estado a la state
 	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));

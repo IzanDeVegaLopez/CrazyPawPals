@@ -29,7 +29,7 @@ void HUD::update(uint32_t delta_time)
 void HUD::render()
 {
 #pragma region number
-	int wavenum = _wm->get_current_wave();
+	int wavenum = _wm->get_current_wave() + 1;
 	rect_f32 num = rect_f32_screen_rect_from_viewport(rect_f32({ 0.85,0.1 }, { 0.07,0.05 }), _camera->cam.screen);
 	SDL_Rect numtrue{ 
 		int(num.position.x),

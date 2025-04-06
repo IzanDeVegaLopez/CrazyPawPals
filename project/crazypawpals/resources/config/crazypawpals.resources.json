@@ -133,7 +133,7 @@
     },
     {
       "id": "card_evoke",
-      "file": "resources/images/cards/carta.png"
+      "file": "resources/images/cards/card_evoke.png"
     },
     {
       "id": "card_fulgur",
@@ -145,11 +145,11 @@
     },
     {
       "id": "card_quickFeet",
-      "file": "resources/images/cards/carta.png"
+      "file": "resources/images/cards/card_quick_feet.png"
     },
     {
       "id": "card_recover",
-      "file": "resources/images/cards/carta.png"
+      "file": "resources/images/cards/card_recover.png"
     },
     {
       "id": "boom",
@@ -181,19 +181,19 @@
     },
     {
       "id": "heart",
-      "file": "resources/images/ui/heart.png"
+      "file": "resources/images/ui/hud/heart.png"
     },
     {
       "id": "manaorb",
-      "file": "resources/images/ui/caffeinefull.png"
+      "file": "resources/images/ui/hud/caffeinefull.png"
     },
     {
       "id": "manaorbempty",
-      "file": "resources/images/ui/caffeinempty.png"
+      "file": "resources/images/ui/hud/caffeinempty.png"
     },
     {
       "id": "prime",
-      "file": "resources/images/ui/prime.png"
+      "file": "resources/images/ui/hud/prime.png"
     },
     {
       "id": "floor",
@@ -201,91 +201,95 @@
     },
     {
       "id": "revolver_button",
-      "file": "resources/images/ui/revolver_b.png"
+      "file": "resources/images/ui/weapons/revolver_b.png"
     },
     {
       "id": "revolver_info",
-      "file": "resources/images/ui/revolver_b_info.png"
+      "file": "resources/images/ui/infos/revolver_b_info.png"
     },
     {
       "id": "revolver_button_selected",
-      "file": "resources/images/ui/weapon_selected_b.png"
+      "file": "resources/images/ui/weapons/weapon_selected_b.png"
     },
     {
       "id": "rampage_button",
-      "file": "resources/images/ui/rampage_b.png"
+      "file": "resources/images/ui/weapons/rampage_b.png"
     },
     {
       "id": "rampage_info",
-      "file": "resources/images/ui/rampage_b_info.png"
+      "file": "resources/images/ui/infos/rampage_b_info.png"
     },
     {
       "id": "rampage_button_selected",
-      "file": "resources/images/ui/weapon_selected_b.png"
+      "file": "resources/images/ui/weapons/weapon_selected_b.png"
     },
     {
       "id": "pump_shotgun_button",
-      "file": "resources/images/ui/pump_shotgun_b.png"
+      "file": "resources/images/ui/weapons/pump_shotgun_b.png"
     },
     {
       "id": "pump_shotgun_info",
-      "file": "resources/images/ui/pump_shotgun_b_info.png"
+      "file": "resources/images/ui/infos/pump_shotgun_b_info.png"
     },
     {
       "id": "pump_shotgun_button_selected",
-      "file": "resources/images/ui/weapon_selected_b.png"
+      "file": "resources/images/ui/weapons/weapon_selected_b.png"
     },
     {
       "id": "ramp_canon_button",
-      "file": "resources/images/ui/ramp_canon_b.png"
+      "file": "resources/images/ui/weapons/ramp_canon_b.png"
     },
     {
       "id": "ramp_canon_info",
-      "file": "resources/images/ui/ramp_canon_b_info.png"
+      "file": "resources/images/ui/infos/ramp_canon_b_info.png"
     },
     {
       "id": "ramp_canon_button_selected",
-      "file": "resources/images/ui/weapon_selected_b.png"
+      "file": "resources/images/ui/weapons/weapon_selected_b.png"
     },
     {
       "id": "lightbringer_button",
-      "file": "resources/images/ui/lightbringer_b.png"
+      "file": "resources/images/ui/weapons/lightbringer_b.png"
     },
     {
       "id": "lightbringer_info",
-      "file": "resources/images/ui/lightbringer_b_info.png"
+      "file": "resources/images/ui/infos/lightbringer_b_info.png"
     },
     {
       "id": "lightbringer_button_selected",
-      "file": "resources/images/ui/weapon_selected_b.png"
+      "file": "resources/images/ui/weapons/weapon_selected_b.png"
     },
     {
       "id": "arma6_button",
-      "file": "resources/images/ui/arma6_b.png"
+      "file": "resources/images/ui/weapons/arma6_b.png"
     },
     {
       "id": "arma6_info",
-      "file": "resources/images/ui/rampage_b_info.png"
+      "file": "resources/images/ui/infos/rampage_b_info.png"
     },
     {
       "id": "arma6_button_selected",
-      "file": "resources/images/ui/weapon_selected_b.png"
+      "file": "resources/images/ui/weapons/weapon_selected_b.png"
     },
     {
       "id": "arma7_button",
-      "file": "resources/images/ui/arma7_b.png"
+      "file": "resources/images/ui/weapons/arma7_b.png"
     },
     {
       "id": "arma7_info",
-      "file": "resources/images/ui/revolver_b_info.png"
+      "file": "resources/images/ui/infos/revolver_b_info.png"
     },
     {
       "id": "arma7_button_selected",
-      "file": "resources/images/ui/weapon_selected_b.png"
+      "file": "resources/images/ui/weapons/weapon_selected_b.png"
     },
     {
       "id": "start",
       "file": "resources/images/ui/background.png"
+    },
+    {
+      "id": "background",
+      "file": "resources/images/ui/complete_background.png"
     },
     {
       "id": "controls",
@@ -293,7 +297,7 @@
     },
     {
       "id": "selection",
-      "file": "resources/images/enviroment/selection.jpg"
+      "file": "resources/images/enviroment/selection.png"
     },
     {
       "id": "reward",
@@ -418,7 +422,7 @@
     },
     {
       "id": "reward_health",
-      "file": "resources/images/ui/reward_health.png"
+      "file": "resources/images/ui/rewards/reward_health.png"
     },
     {
       "id": "reward_selected",
@@ -455,10 +459,6 @@
     {
       "id": "m_blood_pact",
       "file": "resources/images/ui/mythics/m_blood_pact.png"
-    },
-    {
-      "id": "m_claw_file",
-      "file": "resources/images/ui/mythics/m_claw_file.png"
     }
 
   ], 

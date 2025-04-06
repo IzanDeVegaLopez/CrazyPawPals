@@ -25,19 +25,19 @@ private:
 	void refresh_my_deck_cards(const std::list<Card*>& cl);
 
 	//deck cards part
-	Button* _selected_button;
 	Card* _selected_card;
 	ImageForButton* _last_deck_card_img;
 
 	//reward part
 	bool _heal;
-
+	bool _activate_heal; //flag to save if we need to activate heal reward
 	ImageForButton* _lr;
 
 	bool _selected;
 	bool _activate_confirm_button; //to add cards to deck
 	bool _activate_exchange_button; //to exchange cards from deck
 	ecs::entity_t _chosen_card;
+	bool _exchange;
 
 
 	//method to select a card randomly

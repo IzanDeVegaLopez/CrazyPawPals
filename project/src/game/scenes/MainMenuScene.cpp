@@ -12,10 +12,10 @@
 
 MainMenuScene::MainMenuScene() : Scene(ecs::scene::MAINMENUSCENE)
 {
-    create_static_background(&sdlutils().images().at("start"));
+    create_static_background(&sdlutils().images().at("background"));
 
     GameStructs::ButtonProperties buttonPropTemplate = { 
-        { {0.365f, 0.25f},{0.375f, 0.2325f} },
+        { {0.35f, 0.32f},{0.30f, 0.25f} },
         0.0f, ""
     };
 
@@ -25,13 +25,13 @@ MainMenuScene::MainMenuScene() : Scene(ecs::scene::MAINMENUSCENE)
     create_start_button(startB);
 
     //Boton controls
-    buttonPropTemplate.rect.position.y += 0.2f;
+    buttonPropTemplate.rect.position.y += 0.18f;
     GameStructs::ButtonProperties controlsB = buttonPropTemplate;
     controlsB.sprite_key = "controls_button";
     create_controls_button(controlsB);
 
     //Boton exit
-    buttonPropTemplate.rect.position.y += 0.2f;
+    buttonPropTemplate.rect.position.y += 0.18f;
     GameStructs::ButtonProperties exitB = buttonPropTemplate;
     exitB.sprite_key = "exit_game";
     create_exit_button(exitB);
@@ -57,6 +57,7 @@ MainMenuScene::enterScene()
 void 
 MainMenuScene::exitScene()
 {
+
 }
 
 void 
@@ -75,18 +76,18 @@ MainMenuScene::create_start_button(const GameStructs::ButtonProperties& bp) {
 
     auto buttonComp = mngr->getComponent<Button>(e);
     buttonComp->connectClick([buttonComp, imgComp, mngr]() {
-        imgComp->apply_filter(128, 128, 128);
+        imgComp->_filter = false;
         imgComp->swap_textures();
         Game::Instance()->change_Scene(Game::SELECTIONMENU);
     });
 
     buttonComp->connectHover([buttonComp, imgComp]() {
-        imgComp->apply_filter(128, 128, 128);
+        imgComp->_filter = true;
         imgComp->swap_textures();
     });
 
     buttonComp->connectExit([buttonComp, imgComp]() {
-        imgComp->apply_filter(255, 255, 255);
+        imgComp->_filter = false;
         imgComp->swap_textures();
     });
 }
@@ -107,19 +108,20 @@ MainMenuScene::create_controls_button(const GameStructs::ButtonProperties& bp)
 
     auto buttonComp = mngr->getComponent<Button>(e);
     buttonComp->connectClick([buttonComp, imgComp, mngr]() {
-        imgComp->apply_filter(128, 128, 128);
+        imgComp->_filter = false;
         imgComp->swap_textures();
+        imgComp->_filter = false;
         Game::Instance()->change_Scene(Game::CONTROLSSCENE);
     });
 
     buttonComp->connectHover([buttonComp, imgComp]() {
-        imgComp->apply_filter(128, 128, 128);
+        imgComp->_filter = true;
         imgComp->swap_textures();
 
     });
 
     buttonComp->connectExit([buttonComp, imgComp]() {
-        imgComp->apply_filter(255, 255, 255);
+        imgComp->_filter = false;
         imgComp->swap_textures();
     });
 }
@@ -141,18 +143,18 @@ MainMenuScene::create_exit_button(const GameStructs::ButtonProperties& bp)
     auto buttonComp = mngr->getComponent<Button>(e);
     
     buttonComp->connectClick([buttonComp, imgComp, mngr]() {
-        imgComp->apply_filter(128, 128, 128);
+        imgComp->_filter = true;
         imgComp->swap_textures();
         Game::Instance()->set_exit(true);
     });
 
     buttonComp->connectHover([buttonComp, imgComp]() {
-        imgComp->apply_filter(128, 128, 128);
+        imgComp->_filter = true;
         imgComp->swap_textures();
     });
     
     buttonComp->connectExit([buttonComp, imgComp]() {
-        imgComp->apply_filter(255, 255, 255);
+        imgComp->_filter = false;
         imgComp->swap_textures(); 
     });
 }

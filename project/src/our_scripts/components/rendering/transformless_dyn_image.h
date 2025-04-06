@@ -19,13 +19,13 @@ struct transformless_dyn_image : public ecs::Component {
 	bool active = true;
 	float _original_w;
 	float _original_h;
-
+	bool _filter;
 	transformless_dyn_image(
 		const rect_f32 subrect,
 		float rotation,
 		const camera_screen& camera,
 		Texture* texture
-	) : destination_rect(subrect), my_camera_screen(camera), texture(texture), my_rotation(rotation), _original_w(subrect.size.x), _original_h(subrect.size.y)
+	) : destination_rect(subrect), my_camera_screen(camera), texture(texture), my_rotation(rotation), _original_w(subrect.size.x), _original_h(subrect.size.y), _filter(false)
 	{
 	}
 
@@ -47,6 +47,7 @@ struct transformless_dyn_image : public ecs::Component {
 			int(rect.size.y)
 		}; //SDL_Rect_screen_rect_from_global(destination_rect, my_camera_screen);
 		*/
+		_filter ? texture->apply_filter(220, 220, 220) : texture->apply_filter(255, 255, 255);
 		SDL_Rect destination = get_destination_rect();
 		const SDL_Rect source = { 0, 0, texture->width(), texture->height() };
 		if (!source.x) {
@@ -59,7 +60,5 @@ struct transformless_dyn_image : public ecs::Component {
 	void set_active(bool v) {
 		active = v;
 	}
-
-	inline virtual void apply_filter(int r, int g, int b) { texture->apply_filter(r, g, b); };
 
 };
