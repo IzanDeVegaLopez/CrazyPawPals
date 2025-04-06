@@ -276,19 +276,21 @@ static manager_collision_handle_response manager_handle_collision_bodies(
 	collision_body &body1,
 	seconds_f32 delta_time,
 	std::unordered_set<contact_pair> &pairs_already_checked,
+	collision_contact &out_contact,
 	const collision_response_flags flags
 ) {
 #if DBG_COLLISIONS
 	dbg_collision_fill_rect(manager, body0, body1);
 #endif
 	if (!collision_body_check_broad(body0, body1)) {
+		out_contact = collision_contact{};
 		return manager_collision_handle_response_none;
 	}
 
-	collision_contact contact;
+	collision_contact &contact = out_contact;
 	if (collision_body_check(body0, body1, delta_time, contact)) {
 #if DBG_COLLISIONS
-		dbg_collsion_fill_point_pair(manager, contact, body0, body1);
+		//dbg_collsion_fill_point_pair(manager, contact, body0, body1);
 #endif
 		switch (flags & (collision_response_option_body0_trigger | collision_response_option_body1_trigger)) {
 		case collision_response_option_none: {
@@ -431,11 +433,11 @@ static void manager_update_collisions(Manager &manager, const std::vector<ecs::e
 		struct collision_check {
 			ecs::entity_t entity0;
 			collision_body body0;
-			collisionable &collisionable0;
+			collisionable *collisionable0;
 			
 			ecs::entity_t entity1;
 			collision_body body1;
-			collisionable &collisionable1;
+			collisionable *collisionable1;
 		};
 		std::vector<collision_check> collision_checks;
 		for (size_t i = 0; i < entities.size(); i++) {
@@ -453,10 +455,10 @@ static void manager_update_collisions(Manager &manager, const std::vector<ecs::e
 						collision_checks.push_back(collision_check{
 							.entity0 = entity,
 							.body0 = body,
-							.collisionable0 = *entity_collisionable,
+							.collisionable0 = entity_collisionable,
 							.entity1 = other_entity,
 							.body1 = other_body,
-							.collisionable1 = *other_collisionable,
+							.collisionable1 = other_collisionable,
 						});
 					}
 				}
@@ -468,17 +470,19 @@ static void manager_update_collisions(Manager &manager, const std::vector<ecs::e
 		std::unordered_set<contact_pair> aux_set{};
 		do {
 			last_pass_collision_count = 0;
+			float previous_interpenetration_sqr = std::numeric_limits<float>::max();
 			for (size_t i = 0; i < collision_checks.size(); ++i) {
-				auto &&collision_check = collision_checks[i];
-				auto &&entity = collision_check.entity0;
-				auto &&body = collision_check.body0;
-				auto &&entity_collisionable = collision_check.collisionable0;
-				auto &&other_entity = collision_check.entity1;
-				auto &&other_body = collision_check.body1;
-				auto &&other_collisionable = collision_check.collisionable1;
+				auto &&check = collision_checks[i];
+				auto &&entity = check.entity0;
+				auto &&body = check.body0;
+				auto &&entity_collisionable = *check.collisionable0;
+				auto &&other_entity = check.entity1;
+				auto &&other_body = check.body1;
+				auto &&other_collisionable = *check.collisionable1;
 
+				collision_contact contact;
 				manager_collision_handle_response collided = manager_handle_collision_bodies(
-					manager, entity, other_entity, body, other_body, delta_time_seconds, aux_set, (
+					manager, entity, other_entity, body, other_body, delta_time_seconds, aux_set, contact, (
 					((entity_collisionable.options & collisionable_option_trigger) != 0)
 						| (((other_collisionable.options & collisionable_option_trigger) != 0) << 1)
 					)
@@ -500,21 +504,45 @@ static void manager_update_collisions(Manager &manager, const std::vector<ecs::e
 						// this is done with assignment operator instead of setPos method to prevent the displacement vector to be mutated this frame while the correction happens
 						const auto previous0{entity_collisionable.transform.getPos()};
 						const auto previous1{other_collisionable.transform.getPos()};
+						const vec2_f32 restitution0{
+							.x = (body.body.space.position.x - body.body.space.previous_position.x),
+							.y = (body.body.space.position.y - body.body.space.previous_position.y),
+						};
+						const vec2_f32 restitution1{
+							.x = (other_body.body.space.position.x - other_body.body.space.previous_position.x),
+							.y = (other_body.body.space.position.y - other_body.body.space.previous_position.y),
+						};
+						
+#if DBG_COLLISIONS
+						dbg_col.dbg_pos[0][dbg_col.dbg_pos_size] = position2_f32{
+							other_collisionable.transform.getPos().getX(),
+							other_collisionable.transform.getPos().getY(),
+						};
+						dbg_col.dbg_pos[1][dbg_col.dbg_pos_size] = position2_f32{
+							.x = other_collisionable.transform.getPos().getX() + (other_body.body.space.position.x - other_collisionable.transform.getPos().getX()) * (1.0f + 20.0f),
+							.y = other_collisionable.transform.getPos().getY() + (other_body.body.space.position.y - other_collisionable.transform.getPos().getY()) * (1.0f + 20.0f),
+						};
+						++dbg_col.dbg_pos_size;
+						
+						dbg_col.dbg_pos[0][dbg_col.dbg_pos_size] = position2_f32{
+							other_collisionable.transform.getPos().getX(),
+							other_collisionable.transform.getPos().getY(),
+						};
+						dbg_col.dbg_pos[1][dbg_col.dbg_pos_size] = position2_f32{
+							.x = other_collisionable.transform.getPos().getX() + restitution1.x * 200,
+							.y = other_collisionable.transform.getPos().getY() + restitution1.y * 200,
+						};
+						++dbg_col.dbg_pos_size;
+#endif
+						
 						entity_collisionable.transform.getPos() = (Vector2D{
-							body.body.space.position.x + (body.body.space.position.x - body.body.space.previous_position.x) * 0.5f,
-							body.body.space.position.y + (body.body.space.position.y - body.body.space.previous_position.y) * 0.5f,
+							body.body.space.position.x + restitution0.x * delta_time_seconds,	
+							body.body.space.position.y + restitution0.y * delta_time_seconds,	
 						});
 						other_collisionable.transform.getPos() = (Vector2D{
-							other_body.body.space.position.x + (other_body.body.space.position.x - other_body.body.space.previous_position.x) * 0.5f,
-							other_body.body.space.position.y + (other_body.body.space.position.y - other_body.body.space.previous_position.y) * 0.5f,
-						});
-
-						body.body.space.previous_position.x = previous0.getX();
-						body.body.space.previous_position.y = previous0.getY();
-
-						other_body.body.space.previous_position.x = previous1.getX();
-						other_body.body.space.previous_position.y = previous1.getY();
-	
+							other_body.body.space.position.x + restitution1.x * delta_time_seconds,
+							other_body.body.space.position.y + restitution1.y * delta_time_seconds,
+						});	
 						++last_pass_collision_count;
 					}
 					break;
@@ -526,6 +554,16 @@ static void manager_update_collisions(Manager &manager, const std::vector<ecs::e
 					std::exit(EXIT_FAILURE);
 				}
 				}
+
+				constexpr static const auto dot = [](const vec2_f32 a, const vec2_f32 b) -> float {
+					return a.x * b.x + a.y * b.y;
+				};
+				const float interpenetration_sqr = dot(contact.penetration.penetration, contact.penetration.penetration);
+				if (interpenetration_sqr > previous_interpenetration_sqr) {
+					assert(i > 0 && "fatal error: on first iteration interpenetration_sqr is greater than previous_interpenetration_sqr");
+					std::swap(collision_checks[i], collision_checks[i - 1]);
+				}
+				previous_interpenetration_sqr = interpenetration_sqr;
 			}
 			++pass_count;
 		} while (last_pass_collision_count > 0 && pass_count < max_collision_passes);

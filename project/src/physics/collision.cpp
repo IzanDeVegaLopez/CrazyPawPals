@@ -378,8 +378,8 @@ collision_response_pairs collision_body_resolve(
     const vec2_f32 reflected_displacement_body0 = vec2_f32_reflect(contact.normal, remaining_displacement_body0);
     const collision_restitution_response body0_restitution_response{
         .restitution_displacement = vec2_f32{
-            .x = -reflected_displacement_body0.x * restitution_body0_coefficient,
-            .y = -reflected_displacement_body0.y * restitution_body0_coefficient,
+            .x = reflected_displacement_body0.x * restitution_body0_coefficient,
+            .y = reflected_displacement_body0.y * restitution_body0_coefficient,
         },
     };
     

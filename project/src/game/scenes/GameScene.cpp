@@ -97,10 +97,10 @@ static game_scene_map_walls game_scene_create_map_walls(ecs::Manager &manager, c
 
 	constexpr static const float wall_thickness = 1.0f;
 	const std::array<position2_f32, game_scene_map_walls::size()> wall_positions{
-		position2_f32{scene_limits.position.x - scene_limits.size.x * 0.5f - wall_thickness * 0.25f, 	scene_limits.position.y														 },
-		position2_f32{scene_limits.position.x + scene_limits.size.x * 0.5f + wall_thickness * 0.25f, 	scene_limits.position.y														 },
-		position2_f32{scene_limits.position.x,															scene_limits.position.y - scene_limits.size.y * 0.5f - wall_thickness * 0.25f},
-		position2_f32{scene_limits.position.x,															scene_limits.position.y + scene_limits.size.y * 0.5f + wall_thickness * 0.25f}
+		position2_f32{scene_limits.position.x - scene_limits.size.x * 0.5f - 0.001f /*- wall_thickness * 0.25f-*/, 	scene_limits.position.y														 },
+		position2_f32{scene_limits.position.x + scene_limits.size.x * 0.5f + 0.001f /*+ wall_thickness * 0.25f-*/, 	scene_limits.position.y														 },
+		position2_f32{scene_limits.position.x,															scene_limits.position.y - scene_limits.size.y * 0.5f - 0.001f /*- wall_thickness * 0.25f*/},
+		position2_f32{scene_limits.position.x,															scene_limits.position.y + scene_limits.size.y * 0.5f + 0.001f /*+ wall_thickness * 0.25f*/}
 	};
 	
 	constexpr static const auto vec_from_position = [](const position2_f32 position) -> Vector2D {
@@ -121,10 +121,10 @@ static game_scene_map_walls game_scene_create_map_walls(ecs::Manager &manager, c
 	};
 
 	const std::array<rigidbody_component *, game_scene_map_walls::size()> wall_rigidbodies{
-		new rigidbody_component{rect_f32_full_subrect, inverse_mass_f32{0.00000000f}, 0.0f},
-		new rigidbody_component{rect_f32_full_subrect, inverse_mass_f32{0.00000000f}, 0.0f},
-		new rigidbody_component{rect_f32_full_subrect, inverse_mass_f32{0.00000000f}, 0.0f},
-		new rigidbody_component{rect_f32_full_subrect, inverse_mass_f32{0.00000000f}, 0.0f}
+		new rigidbody_component{rect_f32_full_subrect, inverse_mass_f32{0.00000000f}, 1.0f},
+		new rigidbody_component{rect_f32_full_subrect, inverse_mass_f32{0.00000000f}, 1.0f},
+		new rigidbody_component{rect_f32_full_subrect, inverse_mass_f32{0.00000000f}, 1.0f},
+		new rigidbody_component{rect_f32_full_subrect, inverse_mass_f32{0.00000000f}, 1.0f}
 	};
 	const std::array<collisionable *, game_scene_map_walls::size()> wall_collisionables{
 		new collisionable{*wall_transforms[0], *wall_rigidbodies[0], *wall_rects[0], collisionable_option_none},
@@ -181,7 +181,8 @@ void GameScene::initScene() {
 	manager.refresh();
 	create_environment();
 	// spawn_catkuza(Vector2D{5.0f, 0.0f});
-	//spawn_super_michi_mafioso(Vector2D{5.0f, 0.0f});
+	// spawn_super_michi_mafioso(Vector2D{5.0f, 0.0f});
+	// spawn_sarno_rata(Vector2D{5.0f, 0.0f});
 	spawn_fog();
 	spawn_wave_manager();
 	create_hud();
