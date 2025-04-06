@@ -1,49 +1,37 @@
 #include "AttackingState.h"
 
-#include "../../game/GameScene.h"
-#include "../components/Health.h"
-#include "../components/Transform.h"
-#include "../components/EnemyStateMachine.h"
-#include "../components/Weapon.h"
+#include "../../game/scenes/GameScene.h"
+#include "../components/movement/Transform.h"
+#include "../components/weapons/Weapon.h"
 
 
-AttackingState::AttackingState(float dist, Transform* tr,
-	Health* health, Weapon* weapon, EnemyStateMachine* stateMachine,
-	Transform* playerTr) :
-	_tr(tr), _health(health), _weapon(weapon),
-	_stateMachine(stateMachine), _playerTr(playerTr), _dist(dist){
+AttackingState::AttackingState(Transform* tr, Transform* playerTr, Weapon* weapon, bool can_attack, OnAttackCallback onAttackCallback, int attact_times) :
+	_tr(tr), _playerTr(playerTr), _weapon(weapon), _onAttackCallback(onAttackCallback), _attack_times(attact_times), _contador(0), _can_attack(can_attack) {
 }
 
 void AttackingState::enter() {
-	/*_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
-	_health = Game::Instance()->get_mngr()->getComponent<Health>(_ent);
-	_weapon = Game::Instance()->get_mngr()->getComponent<Weapon>(_ent);
-	_stateMachine = Game::Instance()->get_mngr()->getComponent<EnemyStateMachine>(_ent);
-	auto playerEntities = Game::Instance()->get_mngr()->getEntities(ecs::grp::PLAYER);
-	if (!playerEntities.empty()) {
-		_playerTr = Game::Instance()->get_mngr()->getComponent<Transform>(playerEntities[0]);
+	if (_contador < _attack_times) {
+		_contador++;
+		Vector2D _target = _playerTr->getPos();
+		_weapon->shoot(_target);
+
+		if (_onAttackCallback) _onAttackCallback();
 	}
-	else {
-		std::cerr << "Error: No se encontr� el jugador.\n";
-	}*/
 }
 
 void AttackingState::update(uint32_t delta_time) {
 	(void)delta_time;
-	if (_tr == nullptr || _health == nullptr || _stateMachine == nullptr || _playerTr == nullptr ||_weapon==nullptr) return;
-	
-	Vector2D _target = _playerTr->getPos();
-	_weapon->shoot(_target);
+	if (_tr == nullptr || _playerTr == nullptr ||_weapon==nullptr) return;
 
-	if (std::abs(_tr - _playerTr) > _dist) {
-		_stateMachine->setState(EnemyStateMachine::WALKING);
-	}
+	if (_contador < _attack_times || _can_attack) {
+		_contador++;   
+		Vector2D _target = _playerTr->getPos();
+		_weapon->shoot(_target);
 
-
-	if (_health->getHealth() <= 0) {
-		//_stateMachine->setState(EnemyStateMachine::INACTIVE);
+		if (_onAttackCallback) _onAttackCallback();
 	}
 }
 
 void AttackingState::exit() {
+	_contador = 0;
 }

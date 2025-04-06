@@ -1,21 +1,18 @@
 #include "State.h"
 
 class Transform;
-class Health;
-class EnemyStateMachine;
-class entity_t;
-class WalkingState : public State
-{
+class MovementController;
+
+class WalkingState : public State {
 protected:
-	EnemyStateMachine* _stateMachine;
 	Transform* _tr;
 	Transform* _playerTr;
-	Health* _health;
-	float _dist;
+	MovementController* _movementController;
+	
+	bool _to_destination;
 public:
-	WalkingState(float dist, Transform* tr,
-		Health* health,	EnemyStateMachine* stateMachine,
-		Transform* playerTr);
+	WalkingState(Transform* tr, Transform* playerTr, MovementController* movementController, bool toDestination = false);
+	~WalkingState() {};
 	void enter() override;
 	void update(uint32_t delta_time) override;
 	void exit() override;

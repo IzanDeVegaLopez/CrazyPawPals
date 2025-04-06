@@ -190,11 +190,11 @@ public:
 	// returns the vector of all entities
 	//
 	inline const auto& getEntities(grpId_t gId = ecs::grp::DEFAULT) {
-		return _entsByGroup[gId];;
+		return _entsByGroup[gId];
 	}
 
 	inline const auto& getEntitiesByScene(sceneId_t sId = ecs::scene::GAMESCENE) {
-		return _entsByScene[sId];;
+		return _entsByScene[sId];
 	}
 
 	// associates the entity 'e' to the handler 'hId'
@@ -232,12 +232,7 @@ public:
 
 	// update all entities in a certain Scene (Group)
 	//
-	void update(sceneId_t sId,Uint32 dt) {
-		auto& _entity = getEntitiesByScene(sId);
-		for (auto &ents : _entity) {
-			update(ents, dt);
-		}
-	}
+	void update(sceneId_t sId,Uint32 dt);
 	// render all entities in a certain Scene (Group)
 	//
 	void render(sceneId_t sId);
@@ -260,6 +255,14 @@ public:
 			for (auto i = 0u; i < n; i++)
 				update(ents[i], dt);
 		}
+	}
+
+	inline void change_ent_scene(entity_t e, ecs::sceneId_t new_scene_id) {
+		//Quitar de escena actual
+		
+		//añadir a la cola de otra escena
+		e->_sId = new_scene_id;
+		_pendingEntities.push_back(e);
 	}
 
 	// eliminate dead entities (the implementation of this method

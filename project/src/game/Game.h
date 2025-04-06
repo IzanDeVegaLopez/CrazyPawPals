@@ -13,22 +13,17 @@ class Game: public Singleton<Game>  {
 public:
 	enum State {
 		MAINMENU,
-		GAMESCENE,
+		CONTROLSSCENE,
 		SELECTIONMENU,
+		GAMESCENE,
+		REWARDSCENE,
+		GAMEOVER,
 		NUM_SCENE,
 	};
 	friend Singleton<Game>;
 	virtual ~Game();
 	bool init();
 	void start();
-
-
-	ecs::entity_t createSarnoRata(Vector2D);
-	ecs::entity_t createPlimPlim(Vector2D);
-	ecs::entity_t createBoom(Vector2D);
-	ecs::entity_t createMichiMafioso(Vector2D);
-
-	ecs::entity_t create_environment();
 
 	ecs::Manager* get_mngr();
 	event_system::event_manager* get_event_mngr();
@@ -37,12 +32,16 @@ public:
 	void change_Scene(State);
 	std::pair<int,int> get_world_half_size() const;
 
+	//bool para salir del bucle principal
+	bool exit;
+	inline void set_exit(bool b) { exit = b; }
+	bool get_exit() { return exit; }
+
+
 private:
 	int _current_scene_index = -1;
 	std::vector<Scene*> _scenes;
 	std::pair<int, int> _screen_size = std::make_pair(960,540);
 	Game();
 	ecs::Manager* _mngr;
-
-	void create_scenes();
 };
