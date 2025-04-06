@@ -84,7 +84,7 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
         _my->add_mythic(new ZoomiesInducer());
     }  
       if (ihdlr.keyDownEvent() &&ihdlr.isKeyDown(SDL_SCANCODE_G)) {
-        _my->add_mythic(new PreternaturalForce());
+        _my->add_mythic(new BloodClaw());
     } 
     if (ihdlr.keyDownEvent() && ihdlr.isKeyDown(SDL_SCANCODE_Z)) {
         _my->add_mythic(new BloodClaw());

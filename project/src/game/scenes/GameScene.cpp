@@ -211,10 +211,6 @@ void GameScene::enterScene()
 
 void GameScene::exitScene()
 {
-	auto* mngr = Game::Instance()->get_mngr();
-	auto player = mngr->getHandler(ecs::hdlr::PLAYER);
-	mngr->removeComponent<KeyboardPlayerCtrl>(player);
-	mngr->removeComponent<PlayerHUD>(player);
 }
 
 //metodos de create/spawn
@@ -266,14 +262,6 @@ void GameScene::reset_player()
 {
 	auto&& mngr = *Game::Instance()->get_mngr();
 	auto player = mngr.getHandler(ecs::hdlr::PLAYER);
-
-	mngr.removeComponent<Weapon>(player);
-	mngr.removeComponent<MythicComponent>(player);
-	mngr.removeComponent<Deck>(player);
-	mngr.removeComponent<KeyboardPlayerCtrl>(player);
-	mngr.removeComponent<PlayerHUD>(player);
-
-
 	mngr.getComponent<dyn_image_with_frames>(player)->isDamaged = false;
 	auto tr = mngr.getComponent<Transform>(player);
 		 tr->setPos({ 0.0f, 0.0f });	

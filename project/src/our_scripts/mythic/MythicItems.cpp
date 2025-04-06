@@ -157,7 +157,7 @@ PreternaturalForce::apply_effects() {
 
 
 #pragma region ClawFile
-ClawFile::ClawFile() :MythicItem("ClawFile"), _set(false)
+ClawFile::ClawFile() :MythicItem("ClawFile","m_claw_file"), _set(false)
 {
 	auto manager = Game::Instance()->get_mngr();
 	_deck = manager->getComponent<Deck>(_player);
