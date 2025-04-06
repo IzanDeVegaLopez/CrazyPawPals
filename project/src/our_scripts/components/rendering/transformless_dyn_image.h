@@ -59,6 +59,7 @@ struct transformless_dyn_image : public ecs::Component {
 	void set_active(bool v) {
 		active = v;
 	}
-	inline void apply_filter(int r, int g, int b) { texture->apply_filter(r, g, b); };
+
+	inline virtual void apply_filter(int r, int g, int b) { texture->apply_filter(r, g, b); };
 
 };

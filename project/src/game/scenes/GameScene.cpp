@@ -212,10 +212,6 @@ void GameScene::enterScene()
 
 void GameScene::exitScene()
 {
-	auto* mngr = Game::Instance()->get_mngr();
-	auto player = mngr->getHandler(ecs::hdlr::PLAYER);
-	mngr->removeComponent<KeyboardPlayerCtrl>(player);
-	mngr->removeComponent<PlayerHUD>(player);
 }
 
 //metodos de create/spawn
@@ -278,8 +274,8 @@ void GameScene::reset_player()
 
 	mngr.getComponent<dyn_image_with_frames>(player)->isDamaged = false;
 	auto tr = mngr.getComponent<Transform>(player);
-		 tr->setPos({ 0.0f, 0.0f });	
-		 tr->setDir({ 0.0f, 0.0f });	
+		tr->setPos({ 0.0f, 0.0f });	
+		tr->setDir({ 0.0f, 0.0f });	
 
 	mngr.getComponent<AnimationComponent>(player)->play_animation("idle");
 	mngr.getComponent<Health>(player)->resetCurrentHeatlh();
