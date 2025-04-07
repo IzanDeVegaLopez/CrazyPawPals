@@ -1,11 +1,15 @@
 // This file is part of the course TPV2@UCM - Samir Genaim
-
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include<crtdbg.h>
 #include <iostream>
 
 #include "game/Game.h"
 
 int main(int, char**) {
 
+	//para buscar donde esta el memory leaks
+	//_CrtSetBreakAlloc(165116); 
 	try {
 		if(Game::Init())Game::Instance()->start();
 	}
@@ -22,5 +26,6 @@ int main(int, char**) {
 		std::cerr << "Caught and exception of unknown type ...";
 	}
 
+	_CrtDumpMemoryLeaks();
 	return 0;
 }
