@@ -15,9 +15,11 @@ private:
 public:
 	__CMPID_DECL__(ecs::cmp::GAMEPAD_PLAYER_CTRL);
 	inline GamePadPlayerCtrl() {
+        /*
 		for (int i = 0; i < SDL_NumJoysticks(); ++i) {
 			std::cout << SDL_JoystickNameForIndex(i);
 		}
+        */
 	}
     inline void initComponent() {
         /*
