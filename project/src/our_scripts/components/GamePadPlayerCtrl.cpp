@@ -8,13 +8,8 @@
 #include "our_scripts/components/cards/Deck.hpp"
 #include "our_scripts/components/weapons/Weapon.h"
 
-
 void GamePadPlayerCtrl::initComponent()
 {
-    /*
-    _tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
-    assert(_tr != nullptr);
-    */
     _mc = Game::Instance()->get_mngr()->getComponent<MovementController>(_ent);
     assert(_mc != nullptr);
 
