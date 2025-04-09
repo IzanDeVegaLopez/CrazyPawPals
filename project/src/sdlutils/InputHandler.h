@@ -241,7 +241,7 @@ private:
 
 		SDL_JoystickEventState(SDL_ENABLE);
 		_joystick = SDL_JoystickOpen(0);
-		assert(_joystick != nullptr);
+		//assert(_joystick != nullptr);
 
 		return true;
 	}
