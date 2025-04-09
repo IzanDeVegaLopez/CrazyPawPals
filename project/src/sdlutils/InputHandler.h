@@ -60,7 +60,7 @@ public:
 
 		switch (event.type) {
 		case SDL_JOYAXISMOTION:
-			std::cout << "?:  " << std::to_string(event.jaxis.axis) << std::endl;
+			//std::cout << "?:  " << std::to_string(event.jaxis.axis) << std::endl;
 			//DEAD_ZONE
 			//if ((event.jaxis.value < -3200) || (event.jaxis.value > 3200))
 			//{
