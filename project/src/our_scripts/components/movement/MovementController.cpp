@@ -25,7 +25,10 @@ MovementController::initComponent() {
 
 void MovementController::set_input(Vector2D vec) {
 	if (!_dashing) {
-		_input = vec.normalize();
+		if (vec.magnitude() > 1)
+			_input = vec.normalize();
+		else
+			_input = vec;
 	}
 }
 

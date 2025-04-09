@@ -58,6 +58,7 @@
 #include "../../our_scripts/components/collision_triggerers.hpp"
 #include "../../our_scripts/components/id_component.h"
 #include "../../our_scripts/components/collision_registration_by_id.h"
+#include "../../our_scripts/components/GamePadPlayerCtrl.hpp"
 
 #include "../../our_scripts/card_system/PlayableCards.hpp"
 #include "../../our_scripts/card_system/CardUpgrade.hpp"
@@ -205,6 +206,7 @@ void GameScene::enterScene()
 	//d->initComponent();
 
 	mngr->addComponent<KeyboardPlayerCtrl>(player);
+	mngr->addComponent<GamePadPlayerCtrl>(player);
 	mngr->addComponent<PlayerHUD>(player);
 	mngr->getComponent<WaveManager>(mngr->getHandler(ecs::hdlr::WAVE))->start_new_wave();
 	mngr->getComponent<HUD>(mngr->getHandler(ecs::hdlr::HUD_ENTITY))->start_new_wave();
@@ -270,6 +272,7 @@ void GameScene::reset_player()
 	mngr.removeComponent<MythicComponent>(player);
 	mngr.removeComponent<Deck>(player);
 	mngr.removeComponent<KeyboardPlayerCtrl>(player);
+	mngr.removeComponent<GamePadPlayerCtrl>(player);
 	mngr.removeComponent<PlayerHUD>(player);
 
 
