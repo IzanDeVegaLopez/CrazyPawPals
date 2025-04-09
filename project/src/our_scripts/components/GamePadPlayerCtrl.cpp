@@ -44,12 +44,14 @@ void GamePadPlayerCtrl::update(Uint32 delta_time)
     else _dy->play_animation("idle");
     if (ih().isControllerButtonDown(InputHandler::CONTROLLER_BUTTONS::LT)) {
         _dc->use_card(&_reticle_position);
+        ih().consume(InputHandler::CONTROLLER_BUTTONS::LT);
     }
     if (ih().isControllerButtonDown(InputHandler::CONTROLLER_BUTTONS::RT)) {
         auto dir = ih().getRStick();
         if (!_dc->empty_hand() && _w->shoot(dir.getX(), dir.getY())) {
             //position2_f32 mouse_pos = Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->mouse_world_position; 
             _dc->discard_card();
+            ih().consume(InputHandler::CONTROLLER_BUTTONS::RT);
         }
     }
     if (ih().isControllerButtonDown(InputHandler::CONTROLLER_BUTTONS::B)) {

@@ -35,7 +35,9 @@ public:
 		Y = 2,
 		X = 3,
 		LT = 4,
-		RT = 5
+		RT = 5,
+		_aux_LT = 6,
+		_aux_RT = 7
 	};
 	enum LAST_DEVICE_ACTIVE : uint8_t {
 		KEYBOARD,
@@ -86,12 +88,16 @@ public:
 			}
 				  //LT
 			case 4: {
-				_controller_buttons_pressed[LT] = event.jaxis.value > 0;
+				bool aux = event.jaxis.value > 0;
+				_controller_buttons_pressed[LT] = aux && !_controller_buttons_pressed[_aux_LT];
+				_controller_buttons_pressed[_aux_LT] = aux;
 				break;
 			}
 				  //RT
 			case 5: {
-				_controller_buttons_pressed[RT] = event.jaxis.value > 0;
+				bool aux = event.jaxis.value > 0;
+				_controller_buttons_pressed[RT] = aux && !_controller_buttons_pressed[_aux_RT];
+				_controller_buttons_pressed[_aux_RT] = aux;
 				break;
 			}
 			}
@@ -171,6 +177,9 @@ public:
 		
 		
 		//std::cout << "L (" << _lStickPos.getX() << "," << _lStickPos.getY() << ")   -   R (" << _rStickPos.getX() << "," << _rStickPos.getY() << ")" << std::endl;
+	}
+	inline void consume(CONTROLLER_BUTTONS b) {
+		_controller_buttons_pressed[b] = false;
 	}
 
 	// close window event
