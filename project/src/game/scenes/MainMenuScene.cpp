@@ -111,7 +111,7 @@ MainMenuScene::create_controls_button(const GameStructs::ButtonProperties& bp)
         imgComp->_filter = false;
         imgComp->swap_textures();
         imgComp->_filter = false;
-        Game::Instance()->change_Scene(Game::CONTROLSSCENE);
+        Game::Instance()->change_Scene(Game::TUTORIAL);
     });
 
     buttonComp->connectHover([buttonComp, imgComp]() {

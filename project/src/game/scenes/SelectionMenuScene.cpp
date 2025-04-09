@@ -130,9 +130,8 @@ void SelectionMenuScene::reset() {
         _last_weapon_button->_filter = false;
     }
     _last_weapon_button = nullptr;
-
     _activate_play_button = false;
-    
+
     auto* mngr = Game::Instance()->get_mngr();
     auto& deckInfo = mngr->getEntities(ecs::grp::DECKINFO);
     for (auto& d : deckInfo) {
@@ -156,9 +155,8 @@ void SelectionMenuScene::exitScene()
     _last_deck_button = nullptr;
     _activate_play_button = false;
     */
-    reset();
     auto* mngr = Game::Instance()->get_mngr();
-    mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::TOGAMEBUTTON))->swap_textures();
+    if(_activate_play_button)mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::TOGAMEBUTTON))->swap_textures();
 
     auto playB = mngr->getHandler(ecs::hdlr::TOGAMEBUTTON);
     auto playImg = mngr->getComponent<ImageForButton>(playB);

@@ -63,10 +63,10 @@ public:
     void reset_wave_manager();
 
     inline Uint32 get_wave_time() { return _currentWaveTime; }
+    inline void reset_wave_time() { _currentWaveTime = 0; }
     inline int get_current_wave() { return _currentWave; }
     inline events get_current_event() { return _current_event; }
     void event_callback0(const Msg& m) override;
-    void add_num_enemy();
     void newEnemy() { _numEnemies++; _enemiesSpawned++; };
 private:
     void choose_new_event();
@@ -74,14 +74,11 @@ private:
     void activateFog();
     bool areAllEnemiesDead();
     void enterRewardsMenu();
-    void spawnWave();
     bool can_spawn_next_enemy();
-    void spawn_next_enemy();
     bool is_wave_finished();
 
     void spawn_next_group_of_enemies();
     void initialize_next_wave_params(bool normal_wave);
-    void assign_tokens_for_this_wave();
     Uint32 _currentWaveTime = 0; //tiempo actual (post calculo, inicial en constructor)
     Uint32 _currentWaveInitTime; // cuándo empezó la oleada
     Uint32 _waveTime; // cuánto dura la oleada (CONSTRUCTOR)

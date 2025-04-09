@@ -27,6 +27,7 @@
 #include "scenes/GameScene.h"
 #include "scenes/GameOverScene.h"
 #include "scenes/RewardScene.h"
+#include "scenes/TutorialScene.h"
 
 
 using namespace std;
@@ -108,6 +109,10 @@ bool Game::init() {
 	
 	_scenes[REWARDSCENE] = new RewardScene();
 	_scenes[REWARDSCENE]->initScene();
+
+
+	_scenes[TUTORIAL] = new TutorialScene();
+	_scenes[TUTORIAL]->initScene();
 
 	change_Scene(MAINMENU);
 	return true;

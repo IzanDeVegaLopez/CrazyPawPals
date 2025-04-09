@@ -33,7 +33,7 @@ RampCanon::callback(Vector2D shootPos, Vector2D shootDir) {
 		bp.weapon_type = GameStructs::RAMP_CANON;// weapon type for collision
 		bp.collision_filter = GameStructs::collide_with::enemy;
 
-		static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
+		Game::Instance()->get_currentScene()->create_proyectile(bp, ecs::grp::BULLET);
 	}
 	//else std::cout << "No hay suficiente mana para disparar" << std::endl;
 	

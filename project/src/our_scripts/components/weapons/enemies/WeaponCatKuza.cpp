@@ -75,7 +75,7 @@ void WeaponCatKuza::dash_attack(Vector2D shootPos, Vector2D shoot_end_pos) {
 	for (int i = 0; i < _dash_p; ++i) {
 		bp.init_pos = shootPos + espacio * i;
 
-		static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
+		Game::Instance()->get_currentScene()->create_proyectile(bp, ecs::grp::BULLET);
 	}
 }
 

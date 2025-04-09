@@ -59,11 +59,10 @@
 #include "../../our_scripts/components/id_component.h"
 #include "../../our_scripts/components/collision_registration_by_id.h"
 #include "../../our_scripts/components/GamePadPlayerCtrl.hpp"
+#include "../../our_scripts/components/rigidbody_component.hpp"
 
 #include "../../our_scripts/card_system/PlayableCards.hpp"
 #include "../../our_scripts/card_system/CardUpgrade.hpp"
-
-#include "../../our_scripts/components/rigidbody_component.hpp"
 
 #include "../../our_scripts/components/MythicComponent.h"
 
@@ -80,9 +79,11 @@ GameScene::~GameScene() {
 	event_system::event_manager::Instance()->unsuscribe_to_event(event_system::player_dead, this, &event_system::event_receiver::event_callback1);
 }
 
+float GameScene::deccel_spawned_creatures_multi = 1;
+
 struct game_scene_map_walls {
 	std::array<ecs::entity_t, 4> wall_entities;
-	std::array<collisionable *, 4> wall_collisionables;
+	std::array<collisionable*, 4> wall_collisionables;
 
 	constexpr static size_t size() {
 		return 4;
@@ -148,9 +149,9 @@ static game_scene_map_walls game_scene_create_map_walls(ecs::Manager &manager, c
 	};
 }
 
-static ecs::entity_t create_environment() {
+ecs::entity_t GameScene::create_environment(ecs::sceneId_t scene) {
 	auto&& manager = *Game::Instance()->get_mngr();
-	auto environment = manager.addEntity(ecs::scene::GAMESCENE);
+	auto environment = manager.addEntity(scene);
 	auto &&tr = *manager.addComponent<Transform>(environment, Vector2D(-16.0, 9.0), Vector2D(0.0, 0.0), 0.0f, 0.05f);
 	auto &&rect = *manager.addComponent<rect_component>(environment, -0.5f, 0.5f, 35.0f, 20.0f);
 	(void)tr;
@@ -159,7 +160,7 @@ static ecs::entity_t create_environment() {
 		{1.0, 1.0}
 	}, position2_f32{0.0f, 0.0f}, rect, manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam, sdlutils().images().at("floor"), tr);
 	manager.addComponent<render_ordering>(environment, 0);
-	game_scene_create_map_walls(manager, ecs::scene::GAMESCENE, GameScene::default_scene_bounds);
+	game_scene_create_map_walls(manager, scene, GameScene::default_scene_bounds);
 	return environment;
 }
 
@@ -171,13 +172,8 @@ void GameScene::initScene() {
 		| rendering::camera_creation_descriptor_options::camera_creation_descriptor_options_clamp;
 	ecs::entity_t camera = rendering::create_camera(ecs::scene::GAMESCENE, flags, nullptr);
 	ecs::entity_t player = create_player();
-
-	auto &&manager = *Game::Instance()->get_mngr();
-	manager.addComponent<camera_follow>(camera, camera_follow_descriptor{
-		.previous_position = manager.getComponent<camera_component>(camera)->cam.camera.position,
-		.lookahead_time = 1.0f,
-		.semi_reach_time = 2.5f
-	}, *manager.getComponent<camera_component>(camera), *manager.getComponent<Transform>(player));
+	auto&& manager = *Game::Instance()->get_mngr();
+	manager.setHandler(ecs::hdlr::PLAYER, player);
 
 	manager.refresh();
 	create_environment();
@@ -191,37 +187,45 @@ void GameScene::initScene() {
 
 void GameScene::enterScene()
 {
-	auto* mngr = Game::Instance()->get_mngr();
-	auto player = mngr->getHandler(ecs::hdlr::PLAYER);
-	auto w = mngr->getComponent<Weapon>(player);
-	mngr->addComponent<id_component>(player);
+	auto&& manager = *Game::Instance()->get_mngr();
+	auto player = manager.getHandler(ecs::hdlr::PLAYER);
 
-	//w->initComponent();
-	mngr->addComponent<MythicComponent>(player);
+	auto camera = manager.getHandler(ecs::hdlr::CAMERA);
+	Game::Instance()->get_mngr()->change_ent_scene(camera, ecs::scene::GAMESCENE);
 
-	auto d = mngr->getComponent<Deck>(player);
+	manager.addComponent<camera_follow>(camera, camera_follow_descriptor{
+		.previous_position = manager.getComponent<camera_component>(camera)->cam.camera.position,
+		.lookahead_time = 1.0f,
+		.semi_reach_time = 2.5f
+		}, *manager.getComponent<camera_component>(camera), *manager.getComponent<Transform>(player));
+
+	manager.refresh();
+
+	manager.addComponent<id_component>(player);
+	manager.addComponent<MythicComponent>(player);
+
+	auto d = manager.getComponent<Deck>(player);
 	d->reload();
-	mngr->getComponent<fog_collision_component>(mngr->getHandler(ecs::hdlr::FOGGROUP))->reset();
-	//d->
-	//d->initComponent();
 
-	mngr->addComponent<KeyboardPlayerCtrl>(player);
-	mngr->addComponent<GamePadPlayerCtrl>(player);
-	mngr->addComponent<PlayerHUD>(player);
-	mngr->getComponent<WaveManager>(mngr->getHandler(ecs::hdlr::WAVE))->start_new_wave();
-	mngr->getComponent<HUD>(mngr->getHandler(ecs::hdlr::HUD_ENTITY))->start_new_wave();
+	manager.getComponent<fog_collision_component>(manager.getHandler(ecs::hdlr::FOGGROUP))->reset();
 
-	Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::GAMESCENE);
+	manager.addComponent<KeyboardPlayerCtrl>(player);
+	manager.addComponent<GamePadPlayerCtrl>(player);
+	manager.addComponent<PlayerHUD>(player);
+	manager.getComponent<WaveManager>(manager.getHandler(ecs::hdlr::WAVE))->start_new_wave();
+	manager.getComponent<HUD>(manager.getHandler(ecs::hdlr::HUD_ENTITY))->start_new_wave();
 }
 
 void GameScene::exitScene()
 {
+	auto&& manager = *Game::Instance()->get_mngr();
+	manager.getComponent<WaveManager>(manager.getHandler(ecs::hdlr::WAVE))->reset_wave_time();
 }
 
 //metodos de create/spawn
 
 #pragma region Player
-ecs::entity_t GameScene::create_player()
+ecs::entity_t GameScene::create_player(ecs::sceneId_t scene)
 {
 	auto &&manager = *Game::Instance()->get_mngr();
 	auto &&camera = manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam;
@@ -232,7 +236,7 @@ ecs::entity_t GameScene::create_player()
 	auto &&player_collisionable = *new collisionable{player_transform, player_rigidbody, player_rect, collisionable_option_none};
 	ecs::entity_t player = create_entity(
 		ecs::grp::PLAYER,
-		ecs::scene::GAMESCENE,
+		scene,
 		&player_transform,
 		&player_rect,
 		new dyn_image_with_frames(
@@ -257,8 +261,6 @@ ecs::entity_t GameScene::create_player()
 	auto* anim = manager.addComponent<AnimationComponent>(player);
 	anim->add_animation("andar", 1, 5, 100);
 	anim->add_animation("idle", 0, 0, 100);
-
-	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::PLAYER, player);
 
 	return player;
 }
@@ -297,7 +299,7 @@ struct EnemySpawnConfig {
 	float height;
 };
 
-ecs::entity_t GameScene::create_enemy(EnemySpawnConfig&& ec){
+ecs::entity_t GameScene::create_enemy(EnemySpawnConfig&& ec, ecs::sceneId_t scene){
 	auto&& manager = *Game::Instance()->get_mngr();
 
 	float randSize = float(sdlutils().rand().nextInt(6, 10)) / 10.0f;
@@ -306,7 +308,7 @@ ecs::entity_t GameScene::create_enemy(EnemySpawnConfig&& ec){
 	auto &&col = *new collisionable{*ec.tr, rigidbody, rect, collisionable_option_none};
 	auto e = create_entity(
 		ecs::grp::ENEMY,
-		ecs::scene::GAMESCENE,
+		scene,
 		ec.tr,
 		&rect,
 		new dyn_image(
@@ -330,7 +332,7 @@ ecs::entity_t GameScene::create_enemy(EnemySpawnConfig&& ec){
 #pragma endregion
 
 #pragma region Super Michi Mafioso
-void GameScene::spawn_super_michi_mafioso(Vector2D posVec)
+void GameScene::spawn_super_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 {
 	auto&& manager = *Game::Instance()->get_mngr();
 	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
@@ -339,7 +341,7 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec)
 	auto&& weapon = *new WeaponSuperMichiMafioso(_p_tr);
 	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
-	auto e = create_enemy(EnemySpawnConfig{ &tr, "super_michi_mafioso", static_cast<Weapon*>(&weapon), 20, 1.75f, 2.25f });
+	auto e = create_enemy(EnemySpawnConfig{ &tr, "super_michi_mafioso", static_cast<Weapon*>(&weapon), 20, 1.75f, 2.25f }, scene);
 	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.01, 3.0f, 15.0f*deccel_spawned_creatures_multi));
 
 	auto state = manager.addComponent<StateMachine>(e);
@@ -444,12 +446,12 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec)
 
 #pragma region Catkuza
 void 
-GameScene::spawn_catkuza(Vector2D posVec) {
+GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene) {
 	auto&& manager = *Game::Instance()->get_mngr();
 	auto&& weapon = *new WeaponCatKuza();
 	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
-	auto e = create_enemy(EnemySpawnConfig{ &tr, "catkuza", static_cast<Weapon*>(&weapon), 2, 2.0f, 2.25f });
+	auto e = create_enemy(EnemySpawnConfig{ &tr, "catkuza", static_cast<Weapon*>(&weapon), 2, 2.0f, 2.25f }, scene);
 
 	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.05f, 5.0f, 20.0 * deccel_spawned_creatures_multi));
 
@@ -637,13 +639,13 @@ GameScene::spawn_catkuza(Vector2D posVec) {
 
 #pragma region Sarno Rata
 void 
-GameScene::spawn_sarno_rata(Vector2D posVec)
+GameScene::spawn_sarno_rata(Vector2D posVec, ecs::sceneId_t scene)
 {
 	auto&& manager = *Game::Instance()->get_mngr();
 	auto &&weapon = *new WeaponSarnoRata();
 	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 1.0f);
 
-	auto e = create_enemy(EnemySpawnConfig{ &tr, "sarno_rata", static_cast<Weapon*>(&weapon), 8, 1.125f, 1.5f });
+	auto e = create_enemy(EnemySpawnConfig{ &tr, "sarno_rata", static_cast<Weapon*>(&weapon), 8, 1.125f, 1.5f }, scene);
 	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.05, 5.0f, 20.0 * deccel_spawned_creatures_multi));
 
 	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
@@ -680,13 +682,13 @@ GameScene::spawn_sarno_rata(Vector2D posVec)
 #pragma endregion
 
 #pragma region Michi Mafioso
-void GameScene::spawn_michi_mafioso(Vector2D posVec)
+void GameScene::spawn_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 {
 	auto&& manager = *Game::Instance()->get_mngr();
 	auto &&weapon = *new WeaponMichiMafioso();
 	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
-	auto e = create_enemy(EnemySpawnConfig{ &tr, "michi_mafioso", static_cast<Weapon*>(&weapon), 2, 1.0f, 1.125f });
+	auto e = create_enemy(EnemySpawnConfig{ &tr, "michi_mafioso", static_cast<Weapon*>(&weapon), 2, 1.0f, 1.125f }, scene);
 	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.01, 5.0f, 20.0 * deccel_spawned_creatures_multi));
 
 	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
@@ -746,13 +748,13 @@ void GameScene::spawn_michi_mafioso(Vector2D posVec)
 #pragma endregion
 
 #pragma region Plim Plim
-void GameScene::spawn_plim_plim(Vector2D posVec)
+void GameScene::spawn_plim_plim(Vector2D posVec, ecs::sceneId_t scene)
 {
 	auto&& manager = *Game::Instance()->get_mngr();
 	auto &&weapon = *new WeaponPlimPlim();
 	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
-	auto e = create_enemy(EnemySpawnConfig{ &tr, "plim_plim", static_cast<Weapon*>(&weapon), 2, 1.0f, 1.0f });
+	auto e = create_enemy(EnemySpawnConfig{ &tr, "plim_plim", static_cast<Weapon*>(&weapon), 2, 1.0f, 1.0f }, scene);
 	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.02, 5.0f, 20.0 * deccel_spawned_creatures_multi));
 
 	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
@@ -787,13 +789,13 @@ void GameScene::spawn_plim_plim(Vector2D posVec)
 #pragma endregion
 
 #pragma region Boom
-void GameScene::spawn_boom(Vector2D posVec)
+void GameScene::spawn_boom(Vector2D posVec, ecs::sceneId_t scene)
 {
 	auto&& manager = *Game::Instance()->get_mngr();
 	auto &&weapon =* new WeaponBoom();
 	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
-	auto e = create_enemy(EnemySpawnConfig{ &tr, "boom", static_cast<Weapon*>(&weapon), 2, 1.8f, 1.8f });
+	auto e = create_enemy(EnemySpawnConfig{ &tr, "boom", static_cast<Weapon*>(&weapon), 2, 1.8f, 1.8f }, scene);
 	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.08,5.0f, 20.0 * deccel_spawned_creatures_multi));
 
 	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
@@ -826,7 +828,7 @@ void GameScene::spawn_boom(Vector2D posVec)
 #pragma endregion
 
 #pragma region Ratatouille
-void GameScene::spawn_ratatouille(Vector2D posVec)
+void GameScene::spawn_ratatouille(Vector2D posVec, ecs::sceneId_t scene)
 {
 	//no llama al create enemy porque no tiene weapon, y va ser diferente las colisiones
 	float randSpeed = float(sdlutils().rand().nextInt(10, 20) / 10.0f);
@@ -895,13 +897,13 @@ void GameScene::spawn_ratatouille(Vector2D posVec)
 #pragma endregion
 
 #pragma region Rata_Basurera
-void GameScene::spawn_rata_basurera(Vector2D posVec) {
+void GameScene::spawn_rata_basurera(Vector2D posVec, ecs::sceneId_t scene) {
 
 	auto&& manager = *Game::Instance()->get_mngr();
 	auto&& weapon = *new WeaponRataBasurera();
 	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
-	auto e = create_enemy(EnemySpawnConfig{ &tr, "rata_basurera", static_cast<Weapon*>(&weapon), 2, 1.8f, 1.8f });
+	auto e = create_enemy(EnemySpawnConfig{ &tr, "rata_basurera", static_cast<Weapon*>(&weapon), 2, 1.8f, 1.8f }, scene);
 	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.01, 0.1f, 20.0 * deccel_spawned_creatures_multi));
 
 	//Le pasamos el componente "Health" al componente "WeaponRataBasurera"
@@ -942,13 +944,13 @@ void GameScene::spawn_rata_basurera(Vector2D posVec) {
 #pragma endregion
 
 #pragma region Rey_Basurero
-void GameScene::spawn_rey_basurero(Vector2D posVec) {
+void GameScene::spawn_rey_basurero(Vector2D posVec, ecs::sceneId_t scene) {
 
 	auto&& manager = *Game::Instance()->get_mngr();
 	auto&& weapon = *new WeaponReyBasurero();
 	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 1.0f);
 
-	auto e = create_enemy(EnemySpawnConfig{ &tr, "rey_basurero", static_cast<Weapon*>(&weapon), 2, 1.8f, 1.8f });
+	auto e = create_enemy(EnemySpawnConfig{ &tr, "rey_basurero", static_cast<Weapon*>(&weapon), 2, 1.8f, 1.8f }, scene);
 	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.05, 2.5f, 20.0 * deccel_spawned_creatures_multi));
 
 
@@ -1028,18 +1030,18 @@ void GameScene::spawn_fog()
 #pragma endregion
 
 #pragma region Hud
-void GameScene::create_hud()
+void GameScene::create_hud(ecs::sceneId_t scene)
 {
 	auto ent = create_entity(
 		ecs::grp::DEFAULT,
-		ecs::scene::GAMESCENE,
+		scene,
 		new HUD());
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::HUD_ENTITY, ent);
 }
 #pragma endregion
 
 #pragma region Proyectile
-void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid)
+void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid, ecs::sceneId_t scene)
 {
 	auto manager = Game::Instance()->get_mngr();
 	(void)gid;
@@ -1051,7 +1053,7 @@ void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs
 	
 	auto e = create_entity(
 		gid,
-		ecs::scene::GAMESCENE,
+		scene,
 		&transform,
 		&rect,
 		new dyn_image(
@@ -1069,6 +1071,10 @@ void GameScene::generate_proyectile(const GameStructs::BulletProperties& bp, ecs
 	);
 	if(bp.collision_filter==GameStructs::collide_with::enemy || bp.collision_filter == GameStructs::collide_with::all)
 		manager->addComponent<collision_registration_by_id>(e);
+}
+void GameScene::create_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid)
+{
+	generate_proyectile(bp, gid);
 }
 #pragma endregion
 

@@ -467,6 +467,42 @@
     {
       "id": "meteroid",
       "file": "resources/images/projectiles/meteroid.png"
+    },
+    {
+      "id": "popup_move",
+      "file": "resources/images/ui/tutorial/movimiento.png"
+    },
+    {
+      "id": "popup_attack",
+      "file": "resources/images/ui/tutorial/ataque.png"
+    },
+    {
+      "id": "popup_use_card",
+      "file": "resources/images/ui/tutorial/usar_carta.png"
+    },
+    {
+      "id": "popup_reload",
+      "file": "resources/images/ui/tutorial/reload.png"
+    },
+    {
+      "id": "pop_up_player_hud",
+      "file": "resources/images/ui/tutorial/player_hud.png"
+    },
+    {
+      "id": "popup_enemy",
+      "file": "resources/images/ui/tutorial/enemy.png"
+    },
+    {
+      "id": "popup_oleada",
+      "file": "resources/images/ui/tutorial/oleada.png"
+    },
+    {
+      "id": "popup_recompensa",
+      "file": "resources/images/ui/tutorial/recompensa.png"
+    },
+    {
+      "id": "popup_ganar",
+      "file": "resources/images/ui/tutorial/ganar.png"
     }
 
   ], 

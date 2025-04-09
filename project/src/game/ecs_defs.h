@@ -67,7 +67,8 @@
     ENEMYBULLETS,\
 	STAR_DROP, \
     REWARDCARDS,\
-    REWARDDECK
+    REWARDDECK,\
+	TUTORIALPOPUPS
 
 // Scene list
 //
@@ -77,12 +78,14 @@
 	CONTROLSSCENE,\
 	SELECTIONMENUSCENE,\
 	GAMEOVERSCENE,\
-	REWARDSCENE
+	REWARDSCENE,\
+	TUTORIALSCENE
 
 // Handlers list - must have at least one element
 //
 #define _HDLRS_LIST_ \
     PLAYER, \
+	TUTORIALPLAYER,\
     WAVE, \
 	GAMEINFO, \
 	CAMERA, \
