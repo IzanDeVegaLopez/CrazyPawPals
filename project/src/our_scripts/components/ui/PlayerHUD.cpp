@@ -5,7 +5,12 @@
 #include "../../../rendering/card_rendering.hpp"
 #include "../WaveManager.h"
 #include "../../mythic/MythicItem.h"
-PlayerHUD::PlayerHUD() : _tex_orb(&sdlutils().images().at("manaorb")), _tex_orb_empty(&sdlutils().images().at("manaorbempty")), _tex_prime(&sdlutils().images().at("prime"))
+#include "../../components/GamePadPlayerCtrl.hpp"
+#include "../../components/KeyboardPlayerCtrl.h"
+#include <sdlutils/InputHandler.h>
+PlayerHUD::PlayerHUD() 
+	: _tex_orb(&sdlutils().images().at("manaorb")), _tex_orb_empty(&sdlutils().images().at("manaorbempty")), 
+	_tex_prime(&sdlutils().images().at("prime")), _tex_reticle(&sdlutils().images().at("reticle"))
 {
 
 }
@@ -22,6 +27,8 @@ void PlayerHUD::initComponent()
 	_deck = Game::Instance()->get_mngr()->getComponent<Deck>(_ent);
 	_camera = Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA));
 	_mythics = Game::Instance()->get_mngr()->getComponent<MythicComponent>(_ent);
+	_gpc = Game::Instance()->get_mngr()->getComponent<GamePadPlayerCtrl>(_ent);
+	_kpc = Game::Instance()->get_mngr()->getComponent<KeyboardPlayerCtrl>(_ent);
 }
 
 void PlayerHUD::update(uint32_t delta_time)
@@ -273,6 +280,14 @@ void PlayerHUD::render()
 		_tex_prime->render(primetrue);
 	}
 #pragma endregion
+#pragma endregion
+
+#pragma region reticle
+	Vector2D my_ret_pos_aux = ih().getLastDevice() == InputHandler::CONTROLLER ? _gpc->get_reticle_position() : _kpc->get_reticle_position();
+	my_ret_pos_aux += Vector2D({-0.35,0.35});
+	rect_f32 r_a_r = rect_f32_screen_rect_from_global(rect_f32({my_ret_pos_aux.getX(),my_ret_pos_aux.getY()}, {0.7,0.7}), _camera->cam);
+	SDL_Rect reticle_rect = build_sdlrect(r_a_r.position.x, r_a_r.position.y, r_a_r.size.x, r_a_r.size.y);
+	_tex_reticle->render(reticle_rect);
 #pragma endregion
 
 
