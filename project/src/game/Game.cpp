@@ -27,6 +27,7 @@
 #include "scenes/GameScene.h"
 #include "scenes/GameOverScene.h"
 #include "scenes/RewardScene.h"
+#include "../our_scripts/log_writer_to_csv.hpp"
 
 
 using namespace std;
@@ -50,6 +51,9 @@ Game::~Game() {
 	if (SDLUtils::HasInstance())
 		SDLUtils::Release();
 
+	if (log_writer_to_csv::HasInstance())
+		log_writer_to_csv::Release();
+
 }
 
 bool Game::init() {
@@ -72,6 +76,11 @@ bool Game::init() {
 
 	if (!event_system::event_manager::Init()) {
 		std::cerr << "Something went wrong while initializing event_system"
+			<< std::endl;
+		return false;
+	}
+	if (!log_writer_to_csv::Init()) {
+		std::cerr << "Something went wrong while initializing log_writer_to_csv"
 			<< std::endl;
 		return false;
 	}
