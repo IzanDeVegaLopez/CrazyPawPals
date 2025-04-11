@@ -1,4 +1,5 @@
 #include "RewardScene.h"
+
 #include "../../our_scripts/components/ui/Button.h"
 #include "../GameStructs.h"
 #include "../../utils/Vector2D.h"
@@ -535,8 +536,8 @@ void RewardScene::remove_deck_card()
 
 void RewardScene::add_new_reward_card() {
     assert(_chosen_card != nullptr);
-    
-    //We get the reference to the deck
+
+    //Once reward is picked, checks number of cards in deck
     auto* mngr = Game::Instance()->get_mngr();
     auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
     auto _m_deck = mngr->getComponent<Deck>(player);

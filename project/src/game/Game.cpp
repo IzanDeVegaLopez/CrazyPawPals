@@ -19,6 +19,7 @@
 #include "../our_scripts/components/rendering/rect_component.hpp"
 #include "../our_scripts/components/weapons/player/Revolver.h"
 #include "../our_scripts/components/weapons/player/Rampage.h"
+
 //Scenes for SceneManager
 #include "scenes/Scene.h"
 #include "scenes/MainMenuScene.h"
@@ -29,6 +30,8 @@
 #include "scenes/RewardScene.h"
 #include "scenes/TutorialScene.h"
 #include "../our_scripts/log_writer_to_csv.hpp"
+#include "scenes/MythicScene.h"
+#include "scenes/UpgradeScene.h"
 
 
 using namespace std;
@@ -100,8 +103,6 @@ bool Game::init() {
 	// Inicializar el vector de escenas
 	_scenes.resize(NUM_SCENE);
 
-	//_scenes[MAINMENU] = new MainMenuScene();
-
 	_scenes[GAMESCENE] = new GameScene();
 	_scenes[GAMESCENE]->initScene();
 
@@ -123,6 +124,11 @@ bool Game::init() {
 	_scenes[REWARDSCENE] = new RewardScene();
 	_scenes[REWARDSCENE]->initScene();
 
+	_scenes[MYTHICSCENE] = new MythicScene();
+	_scenes[MYTHICSCENE]->initScene();
+
+	//_scenes[UPGRADESCENE] = new UpgradeScene();
+	//_scenes[UPGRADESCENE]->initScene();
 
 	change_Scene(MAINMENU);
 	return true;
