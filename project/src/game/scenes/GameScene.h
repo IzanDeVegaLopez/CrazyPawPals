@@ -35,7 +35,7 @@ public:
 	static void spawn_super_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene = ecs::scene::GAMESCENE);
 	static void spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene = ecs::scene::GAMESCENE);
 
-	static void create_hud(ecs::sceneId_t scene = ecs::scene::GAMESCENE);
+	static ecs::entity_t create_hud(ecs::sceneId_t scene = ecs::scene::GAMESCENE);
 	static ecs::entity_t create_environment(ecs::sceneId_t scene = ecs::scene::GAMESCENE);
 
 	static void generate_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid, ecs::sceneId_t scene = ecs::scene::GAMESCENE);

@@ -92,8 +92,12 @@ bool Game::init() {
 	_scenes.resize(NUM_SCENE);
 
 	//_scenes[MAINMENU] = new MainMenuScene();
+
 	_scenes[GAMESCENE] = new GameScene();
 	_scenes[GAMESCENE]->initScene();
+
+	_scenes[TUTORIAL] = new TutorialScene();
+	_scenes[TUTORIAL]->initScene();
 
 	_scenes[MAINMENU] = new MainMenuScene();
 	_scenes[MAINMENU]->initScene();
@@ -110,9 +114,6 @@ bool Game::init() {
 	_scenes[REWARDSCENE] = new RewardScene();
 	_scenes[REWARDSCENE]->initScene();
 
-
-	_scenes[TUTORIAL] = new TutorialScene();
-	_scenes[TUTORIAL]->initScene();
 
 	change_Scene(MAINMENU);
 	return true;

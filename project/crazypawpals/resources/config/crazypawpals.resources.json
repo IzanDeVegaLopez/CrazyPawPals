@@ -497,12 +497,20 @@
       "file": "resources/images/ui/tutorial/oleada.png"
     },
     {
+      "id": "popup_objetos_miticos",
+      "file": "resources/images/ui/tutorial/objetos_miticos.png"
+    },
+    {
       "id": "popup_recompensa",
       "file": "resources/images/ui/tutorial/recompensa.png"
     },
     {
       "id": "popup_ganar",
       "file": "resources/images/ui/tutorial/ganar.png"
+    },
+    {
+      "id": "boton_mainmenu_tutorial",
+      "file": "resources/images/ui/tutorial/boton.png"
     }
 
   ], 

@@ -19,17 +19,19 @@
 #include "../../our_scripts/components/id_component.h"
 #include "../../our_scripts/components/weapons/player/Revolver.h"
 #include "../../our_scripts/card_system/PlayableCards.hpp"
+#include "../../our_scripts/components/Health.h"
 
 #include <iostream>
 
 TutorialScene::TutorialScene()
 	: Scene(ecs::scene::TUTORIALSCENE),
-	_current_pop_up(0), _current_pop_up_entity(nullptr), _popup_timer(0), _tutorial_state(TutorialState::NONE) {
+	_current_pop_up(0), _current_pop_up_entity(nullptr), 
+	_popup_timer(0), _tutorial_state(TutorialState::NONE), _player_health() {
+
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::enemy_dead, this, &event_system::event_receiver::event_callback0);
-	event_system::event_manager::Instance()->suscribe_to_event(event_system::player_dead, this, &event_system::event_receiver::event_callback1);
 
 	GameScene::create_environment(ecs::scene::TUTORIALSCENE);
-	GameStructs::ButtonProperties mainMenuB = { {{ 0.05, 0.025f }, {0.05f, 0.1f}  }, 0.0f, "revolver_button" };
+	GameStructs::ButtonProperties mainMenuB = { {{ 0.025, 0.02f }, {0.1f, 0.08f}  }, 0.0f, "boton_mainmenu_tutorial" };
 	create_change_scene_button(mainMenuB, Game::MAINMENU);
 
 	_pop_ups.push_back({ "popup_move",
@@ -38,15 +40,12 @@ TutorialScene::TutorialScene()
 			return input.isKeyDown(SDL_SCANCODE_W) || input.isKeyDown(SDL_SCANCODE_A) ||
 				   input.isKeyDown(SDL_SCANCODE_S) || input.isKeyDown(SDL_SCANCODE_D);
 		},
-		1000,{{0.1f, 0.1f}, {0.5f, 0.3f}}
+		3000,{{0.1f, 0.1f}, {0.3f, 0.3f}}
 		});
 
 	_pop_ups.push_back({ "pop_up_player_hud",
-		[]() {
-			auto& input = *InputHandler::Instance();
-			return input.isKeyDown(SDL_SCANCODE_Q);
-		},
-		1000,{{0.1f, 0.1f}, {0.5f, 0.4f}},
+		[this]() { return has_pass_input(); },
+		200,{{0.0f, 0.0f}, {1.0f, 1.0f}},
 		[]() {
 			auto* mngr = Game::Instance()->get_mngr();
 			auto player = mngr->getHandler(ecs::hdlr::TUTORIALPLAYER);
@@ -59,15 +58,14 @@ TutorialScene::TutorialScene()
 			auto& input = *InputHandler::Instance();
 			return input.mouseButtonDownEvent() && input.getMouseButtonState(InputHandler::RIGHT);
 		},
-		2000,{{0.1f, 0.1f}, {0.5f, 0.4f}},
+		2000,{{0.1f, 0.1f}, {0.35f, 0.35f}},
 		});
 
 	_pop_ups.push_back({ "popup_reload",
 		[]() {
-		auto& input = *InputHandler::Instance();
-		return input.isKeyDown(SDL_SCANCODE_SPACE);
-		},
-		1000, {{0.1f, 0.1f}, {0.5f, 0.4f}}
+			auto& input = *InputHandler::Instance();
+			return input.isKeyDown(SDL_SCANCODE_SPACE); },
+		2000, {{0.1f, 0.1f}, {0.35f, 0.35f}}
 	});
 
 
@@ -76,41 +74,35 @@ TutorialScene::TutorialScene()
 			auto& input = *InputHandler::Instance();
 			return input.mouseButtonDownEvent() && input.getMouseButtonState(InputHandler::LEFT);
 		},
-		1000, {{0.1f, 0.1f}, {0.5f, 0.4f}}
+		3000, {{0.1f, 0.1f}, {0.35f, 0.35f}}
 	});
 
 	_pop_ups.push_back({ "popup_enemy",
 		[this]() {
 			return _enemy_killed;
 		},
-		1000, {{0.1f, 0.1f}, {0.5f, 0.4f}},
-		[]() {
-			GameScene::spawn_plim_plim({ 0.0f, 5.0f },ecs::scene::TUTORIALSCENE);
-		}
+		2000, {{0.6f, 0.6f}, {0.35f, 0.35f}},
+		[]() {GameScene::spawn_plim_plim({ 0.0f, 1.0f },ecs::scene::TUTORIALSCENE);}
 	});
 	_pop_ups.push_back({ "popup_oleada",
+		[this]() { return has_pass_input(); },
+		200, {{0.0f, 0.0f}, {1.0f, 1.0f}},
 		[]() {
-			auto& input = *InputHandler::Instance();
-			return input.isKeyDown(SDL_SCANCODE_Q);
-		},
-		1000, {{0.1f, 0.1f}, {0.5f, 0.4f}},
-		[]() {
-			GameScene::create_hud(ecs::scene::TUTORIALSCENE);
+			auto hud = GameScene::create_hud(ecs::scene::TUTORIALSCENE);
+			Game::Instance()->get_mngr()->setHandler(ecs::hdlr::TURORIALHUD, hud);
 		}
 	});
+	_pop_ups.push_back({ "popup_objetos_miticos",
+		[this]() { return has_pass_input(); },
+		200, {{0.05f, 0.05f}, {0.85f, 0.85f}},
+	});
 	_pop_ups.push_back({ "popup_recompensa",
-		[]() {
-			auto& input = *InputHandler::Instance();
-			return input.isKeyDown(SDL_SCANCODE_Q);
-		},
-		500, {{0.1f, 0.1f}, {0.5f, 0.4f}},
+		[this]() { return has_pass_input(); },
+		200, {{0.05f, 0.05f}, {0.85f, 0.85f}},
 	});
 	_pop_ups.push_back({ "popup_ganar",
-		[]() {
-			auto& input = *InputHandler::Instance();
-			return input.isKeyDown(SDL_SCANCODE_Q);
-		},
-		500, {{0.1f, 0.1f}, {0.5f, 0.4f}},
+		[this]() { return has_pass_input(); },
+		50, {{0.0f, 0.0f}, {1.0f, 1.0f}},
 	});
 
 }	
@@ -118,7 +110,6 @@ TutorialScene::TutorialScene()
 TutorialScene::~TutorialScene()
 {
 	event_system::event_manager::Instance()->unsuscribe_to_event(event_system::change_deccel, this, &event_system::event_receiver::event_callback0);
-	event_system::event_manager::Instance()->unsuscribe_to_event(event_system::player_dead, this, &event_system::event_receiver::event_callback1);
 }
 
 void TutorialScene::initScene() {
@@ -134,6 +125,8 @@ void TutorialScene::initScene() {
 	std::list<Card*> cl = { new Fireball(), new Lighting(), new Minigun() };
 	mngr->addComponent<Deck>(player, cl);
 	mngr->addComponent<KeyboardPlayerCtrl>(player);
+
+	_player_health = mngr->getComponent<Health>(player);
 }
 void TutorialScene::enterScene()
 {
@@ -151,6 +144,11 @@ void TutorialScene::enterScene()
 		.semi_reach_time = 2.5f
 		}, *manager.getComponent<camera_component>(camera), *manager.getComponent<Transform>(player));
 
+
+	if(manager.hasComponent<PlayerHUD>(player))	manager.removeComponent<PlayerHUD>(player);
+	auto hud = manager.getHandler(ecs::hdlr::TURORIALHUD);
+	if (hud) manager.setAlive(hud,false);
+
 	manager.refresh();
 }
 
@@ -164,6 +162,7 @@ void TutorialScene::update(uint32_t delta_time) {
 	Scene::update(delta_time);
 
 	auto* mngr = Game::Instance()->get_mngr();
+	if (_player_health->getHealth() < 10) _player_health->resetCurrentHeatlh(); //para que el player no muera
 	switch (_tutorial_state)
 	{
 	case TutorialScene::TutorialState::NEXT_POP_UP:
@@ -192,8 +191,7 @@ void TutorialScene::update(uint32_t delta_time) {
 		}
 		break;
 	case TutorialScene::TutorialState::FINISHED:
-		create_change_scene_button({ { { 0.5, 0.5f }, {0.05f, 0.1f} }, 0.0f, "heart" }, Game::SELECTIONMENU);
-
+		Game::Instance()->change_Scene(Game::SELECTIONMENU);
 		break;
 	default:
 		break;
@@ -224,16 +222,10 @@ void TutorialScene::event_callback0(const event_system::event_receiver::Msg& m)
 	_enemy_killed = true;
 }
 
-void TutorialScene::event_callback1(const event_system::event_receiver::Msg& m)
+bool TutorialScene::has_pass_input()
 {
-	auto&& mngr = *Game::Instance()->get_mngr();
-	auto player = mngr.getHandler(ecs::hdlr::TUTORIALPLAYER);
-
-	auto tr = mngr.getComponent<Transform>(player);
-	tr->setPos({ 0.0f, 0.0f });
-	tr->setDir({ 0.0f, 0.0f });
-
-	mngr.getComponent<Health>(player)->resetCurrentHeatlh();
+	auto& input = *InputHandler::Instance();
+	return input.isKeyDown(SDL_SCANCODE_F);
 }
 
 void TutorialScene::create_change_scene_button(const GameStructs::ButtonProperties& bp, Game::State nextScene)

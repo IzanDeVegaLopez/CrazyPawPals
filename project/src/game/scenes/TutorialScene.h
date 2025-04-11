@@ -5,9 +5,10 @@
 #include <list>
 #include <functional>
 class Deck;
+class Health;
 class TutorialScene : public event_system::event_receiver,public Scene
 {
-	enum class TutorialState {
+	enum class TutorialState { //para para se un pop up a otro
 		NONE,
 		NEXT_POP_UP,
 		WAIT_FOR_ACTION,
@@ -32,11 +33,13 @@ public:
 
 	void create_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid) override;
 	void event_callback0(const event_system::event_receiver::Msg& m) override;
-	void event_callback1(const event_system::event_receiver::Msg& m) override;
 private:
+	bool has_pass_input();
 	std::vector<pop_up> _pop_ups;
 	int _current_pop_up;
 	ecs::entity_t _current_pop_up_entity;
+
+	Health* _player_health;
 
 	uint32_t _popup_timer;
 	TutorialState _tutorial_state;

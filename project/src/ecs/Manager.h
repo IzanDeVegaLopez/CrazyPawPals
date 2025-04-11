@@ -209,6 +209,9 @@ public:
 	//
 	inline entity_t getHandler(hdlrId_t hId) {
 		assert(hId < ecs::maxHandlerId);
+		if (_hdlrs[hId] == nullptr) {
+			return nullptr;
+		}
 		return _hdlrs[hId];
 	}
 

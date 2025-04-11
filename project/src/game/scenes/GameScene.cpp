@@ -182,7 +182,8 @@ void GameScene::initScene() {
 	// spawn_sarno_rata(Vector2D{5.0f, 0.0f});
 	spawn_fog();
 	spawn_wave_manager();
-	create_hud();
+	auto hud = create_hud();
+	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::HUD_ENTITY, hud);
 }
 
 void GameScene::enterScene()
@@ -1030,13 +1031,13 @@ void GameScene::spawn_fog()
 #pragma endregion
 
 #pragma region Hud
-void GameScene::create_hud(ecs::sceneId_t scene)
+ecs::entity_t GameScene::create_hud(ecs::sceneId_t scene)
 {
 	auto ent = create_entity(
 		ecs::grp::DEFAULT,
 		scene,
 		new HUD());
-	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::HUD_ENTITY, ent);
+	return ent;
 }
 #pragma endregion
 
