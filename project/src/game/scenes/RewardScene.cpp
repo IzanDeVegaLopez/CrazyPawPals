@@ -28,6 +28,7 @@ RewardScene::~RewardScene()
 
 void RewardScene::initScene() {
     create_static_background(&sdlutils().images().at("reward"));
+    create_reward_info();
     create_reward_buttons();
     create_my_deck_cards();
 }
@@ -256,7 +257,8 @@ void RewardScene::create_reward_health_button(const GameStructs::ButtonPropertie
         Game::Instance()->get_mngr()->getComponent<camera_component>(
             Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
     );
-    auto data = mngr->addComponent<RewardDataComponent>(e, bp.sprite_key);
+    mngr->addComponent<RewardDataComponent>(e, bp.sprite_key);
+    auto ri = mngr->getComponent<transformless_dyn_image>(mngr->getHandler(ecs::hdlr::REWARDINFO));
 
     buttonComp->connectClick([buttonComp, imgComp, this]() {
         if (_selected) {
@@ -275,16 +277,20 @@ void RewardScene::create_reward_health_button(const GameStructs::ButtonPropertie
             _heal = true;
         }
     });
-    buttonComp->connectHover([buttonComp, imgComp, this]() {
+    buttonComp->connectHover([mngr, buttonComp, imgComp, ri, e,this]() {
         if (_selected) return;
         //std::cout << "hover -> Reward button: " << std::endl;
         //filter
         imgComp->_filter = true;
+        auto& sp = mngr->getComponent<RewardDataComponent>(e)->sprite();
+        ri->set_texture(&sdlutils().images().at(sp + "_info"));
     });
-    buttonComp->connectExit([buttonComp, imgComp]() {
+    buttonComp->connectExit([buttonComp, imgComp, ri]() {
         //std::cout << "exit -> Reward button: " << std::endl;
         //filter
         imgComp->_filter = false;
+        ri->set_texture(&sdlutils().images().at("initial_info"));
+        
     });
 }
 
@@ -307,8 +313,9 @@ void RewardScene::create_reward_card_button(const GameStructs::ButtonProperties&
         Game::Instance()->get_mngr()->getComponent<camera_component>( 
             Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam 
     );  
-    //used for change the sprite once a button is clicked
-    auto data = mngr->addComponent<RewardDataComponent>(e, bp.sprite_key);
+    //used to get the sprite key for show a specific info
+    mngr->addComponent<RewardDataComponent>(e, bp.sprite_key);
+    auto ri = mngr->getComponent<transformless_dyn_image>(mngr->getHandler(ecs::hdlr::REWARDINFO));
 
     buttonComp->connectClick([buttonComp, imgComp, this, e]() {
         if (_selected) {
@@ -328,16 +335,20 @@ void RewardScene::create_reward_card_button(const GameStructs::ButtonProperties&
             _heal = false;
         }
     });
-    buttonComp->connectHover([buttonComp, imgComp, this]() {
+    buttonComp->connectHover([mngr,buttonComp, imgComp, ri, e,this]() {
         if (_selected) return;
         //std::cout << "hover -> Reward button: " << std::endl;
         //filter
         imgComp->_filter = true;
+        auto& sp = mngr->getComponent<RewardDataComponent>(e)->sprite();
+        ri->set_texture(&sdlutils().images().at(sp + "_info"));
+
         });
-    buttonComp->connectExit([buttonComp, imgComp]() {
+    buttonComp->connectExit([buttonComp, imgComp, ri]() {
         //std::cout << "exit -> Reward button: " << std::endl;
         //filter
         imgComp->_filter = false;
+        ri->set_texture(&sdlutils().images().at("initial_info"));
         });
 
 }
@@ -673,6 +684,7 @@ void RewardScene::update(uint32_t delta_time) {
 
    }*/
 }
+
 void RewardScene::create_next_round_button(const GameStructs::ButtonProperties& bp) {
     auto* mngr = Game::Instance()->get_mngr();
     auto e = create_button(bp);
@@ -684,10 +696,11 @@ void RewardScene::create_next_round_button(const GameStructs::ButtonProperties& 
     buttonComp->connectHover([buttonComp, imgComp, this]() { imgComp->_filter = true;});
     buttonComp->connectExit([buttonComp, imgComp, this]() { imgComp->_filter = false;});
 }
+
 void RewardScene::create_reward_info() {
     auto e = create_entity(ecs::grp::UI,
         _scene_ID,
-        new transformless_dyn_image({ { 10.0f,0.0f }, {0.3f,0.125f} },
+        new transformless_dyn_image({ { 0.315f,0.335f }, {0.4f,0.2f} },
             0,
             Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam,
             &sdlutils().images().at("initial_info")));

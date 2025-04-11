@@ -429,6 +429,10 @@
       "file": "resources/images/ui/rewards/reward_health.png"
     },
     {
+      "id": "reward_health_info",
+      "file": "resources/images/ui/infos/reward_health_info.png"
+    },
+    {
       "id": "reward_selected",
       "file": "resources/images/ui/rewards/reward_selected.png"
     },
