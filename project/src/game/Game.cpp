@@ -28,7 +28,12 @@
 #include "scenes/GameOverScene.h"
 #include "scenes/RewardScene.h"
 #include "scenes/TutorialScene.h"
+
+
+
+#ifdef GENERATE_LOG
 #include "../our_scripts/log_writer_to_csv.hpp"
+#endif
 
 
 using namespace std;
@@ -51,9 +56,10 @@ Game::~Game() {
 	// release SLDUtil if the instance was created correctly.
 	if (SDLUtils::HasInstance())
 		SDLUtils::Release();
-
+#ifdef GENERATE_LOG
 	if (log_writer_to_csv::HasInstance())
 		log_writer_to_csv::Release();
+#endif
 
 }
 
@@ -80,11 +86,13 @@ bool Game::init() {
 			<< std::endl;
 		return false;
 	}
+#ifdef GENERATE_LOG
 	if (!log_writer_to_csv::Init()) {
 		std::cerr << "Something went wrong while initializing log_writer_to_csv"
 			<< std::endl;
 		return false;
 	}
+#endif
 	
 	// enable the cursor visibility
 	SDL_ShowCursor(SDL_ENABLE);

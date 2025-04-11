@@ -169,11 +169,12 @@ public:
 		while (SDL_PollEvent(&event))
 			update(event);
 		
-		
+		/*
 		for (uint8_t i = 0; i < _controller_buttons_pressed.size(); ++i) {
 			std::cout << _controller_buttons_pressed[i] << " , ";
 		}
 		std::cout << std::endl;
+		*/
 		
 		
 		//std::cout << "L (" << _lStickPos.getX() << "," << _lStickPos.getY() << ")   -   R (" << _rStickPos.getX() << "," << _rStickPos.getY() << ")" << std::endl;
