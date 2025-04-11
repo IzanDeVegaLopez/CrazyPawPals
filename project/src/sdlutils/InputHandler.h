@@ -9,9 +9,11 @@
 #include "../utils/Vector2D.h"
 #include "../utils/Singleton.h"
 #include <bitset>
+#include <string>
 
 // Instead of a Singleton class, we could make it part of
 // SDLUtils as well.
+constexpr uint8_t button_list_size = 16;
 
 class InputHandler: public Singleton<InputHandler> {
 
@@ -33,7 +35,9 @@ public:
 		Y = 2,
 		X = 3,
 		LT = 4,
-		RT = 5
+		RT = 5,
+		_aux_LT = 6,
+		_aux_RT = 7
 	};
 	enum LAST_DEVICE_ACTIVE : uint8_t {
 		KEYBOARD,
@@ -42,7 +46,7 @@ public:
 
 	// clear the state
 	inline void clearState() {
-		_controller_buttons_pressed = std::bitset<18>(false);
+		_controller_buttons_pressed = std::bitset<button_list_size>(false);
 		_isCloseWindoEvent = false;
 		_isKeyDownEvent = false;
 		_isKeyUpEvent = false;
@@ -58,27 +62,46 @@ public:
 
 		switch (event.type) {
 		case SDL_JOYAXISMOTION:
-			//std::cout << "?:  " << event.jaxis.value << std::endl;
+			//std::cout << "?:  " << std::to_string(event.jaxis.axis) << std::endl;
 			//DEAD_ZONE
 			//if ((event.jaxis.value < -3200) || (event.jaxis.value > 3200))
 			//{
 				//X axis
-				if (event.jaxis.axis == 0) {
-					_lStickPos.setX(event.jaxis.value/32767.0);
-					//std::cout << "X:  " << event.jaxis.value << std::endl;
-				}
-				else if (event.jaxis.axis == 1) {
-					_lStickPos.setY(-event.jaxis.value / 32767.0);
-					//std::cout << "Y:  " << event.jaxis.value << std::endl;
-				}
-				else if (event.jaxis.axis == 2) {
-					_rStickPos.setX(event.jaxis.value / 32767.0);
-				}
-				else if (event.jaxis.axis == 3) {
-					_rStickPos.setY(-event.jaxis.value / 32767.0);
-				}
-				if (abs(event.jaxis.value) > 3000) _last_active_device = CONTROLLER;
-			//}
+			switch (event.jaxis.axis) {
+			case 0: {
+				_lStickPos.setX(event.jaxis.value / 32767.0);
+				break;
+				//std::cout << "X:  " << event.jaxis.value << std::endl;
+			}
+			case 1: {
+				_lStickPos.setY(-event.jaxis.value / 32767.0);
+				break;
+				//std::cout << "Y:  " << event.jaxis.value << std::endl;
+			}
+			case 2: {
+				_rStickPos.setX(event.jaxis.value / 32767.0);
+				break;
+			}
+			case 3: {
+				_rStickPos.setY(-event.jaxis.value / 32767.0);
+				break;
+			}
+				  //LT
+			case 4: {
+				bool aux = event.jaxis.value > 0;
+				_controller_buttons_pressed[LT] = aux && !_controller_buttons_pressed[_aux_LT];
+				_controller_buttons_pressed[_aux_LT] = aux;
+				break;
+			}
+				  //RT
+			case 5: {
+				bool aux = event.jaxis.value > 0;
+				_controller_buttons_pressed[RT] = aux && !_controller_buttons_pressed[_aux_RT];
+				_controller_buttons_pressed[_aux_RT] = aux;
+				break;
+			}
+			}
+			if (abs(event.jaxis.value) > 3000) _last_active_device = CONTROLLER;
 			break;
 		case SDL_JOYBUTTONDOWN: {
 			//uint8_t i = event.jbutton.button;
@@ -115,6 +138,12 @@ public:
 		case SDL_WINDOWEVENT:
 			handleWindowEvent(event);
 			break;
+		case SDL_JOYDEVICEADDED:
+			SDL_JoystickEventState(SDL_ENABLE);
+			assert(SDL_NumJoysticks() < 4);
+			for(int i = 0; i < SDL_NumJoysticks(); ++i)
+				_joystick[i] = SDL_JoystickOpen(i);
+			break;
 		default:
 			break;
 		}
@@ -139,13 +168,18 @@ public:
 		clearState();
 		while (SDL_PollEvent(&event))
 			update(event);
-		/*
+		
+		
 		for (uint8_t i = 0; i < _controller_buttons_pressed.size(); ++i) {
 			std::cout << _controller_buttons_pressed[i] << " , ";
 		}
 		std::cout << std::endl;
-		*/
+		
+		
 		//std::cout << "L (" << _lStickPos.getX() << "," << _lStickPos.getY() << ")   -   R (" << _rStickPos.getX() << "," << _rStickPos.getY() << ")" << std::endl;
+	}
+	inline void consume(CONTROLLER_BUTTONS b) {
+		_controller_buttons_pressed[b] = false;
 	}
 
 	// close window event
@@ -239,8 +273,8 @@ private:
 		assert(_kbState != nullptr);
 
 
-		SDL_JoystickEventState(SDL_ENABLE);
-		_joystick = SDL_JoystickOpen(0);
+		//SDL_JoystickEventState(SDL_ENABLE);
+		//_joystick = SDL_JoystickOpen(0);
 		//assert(_joystick != nullptr);
 
 		return true;
@@ -312,10 +346,12 @@ private:
 	Vector2D _mousePos;
 	std::array<bool, 3> _mbState;
 	const Uint8 *_kbState;
-	std::bitset<18> _controller_buttons_pressed;
+	//12, 13 are for triggers	(its press down)
+	//14, 15 are aux for triggers (its real state)
+	std::bitset<button_list_size> _controller_buttons_pressed;
 
 	//Gamepad
-	SDL_Joystick* _joystick;
+	SDL_Joystick* _joystick[4];
 	Vector2D _lStickPos;
 	Vector2D _rStickPos;
 	LAST_DEVICE_ACTIVE _last_active_device = KEYBOARD;

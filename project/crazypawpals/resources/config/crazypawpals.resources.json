@@ -8,6 +8,10 @@
 
   "images": [
     {
+      "id": "reticle",
+      "file": "resources/images/ui/reticle.png"
+    },
+    {
       "id": "mimi",
       "file": "resources/images/characters/mimi.png"
     },

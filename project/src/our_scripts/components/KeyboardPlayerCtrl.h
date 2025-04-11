@@ -21,6 +21,9 @@ public:
 	void update(Uint32 delta_time) override;
 
 	bool is_moving_input() const;
+	inline Vector2D get_reticle_position() {
+		return _mouse_pos;
+	}
 private:
 	SDL_Scancode _left;
 	SDL_Scancode _right;
