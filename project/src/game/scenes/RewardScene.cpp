@@ -196,7 +196,7 @@ void RewardScene::change_pos(bool enter) {
 void RewardScene::create_reward_buttons() {
     float umbral = 0.2f;
     GameStructs::ButtonProperties buttonPropTemplate = {
-        { {0.45f, 0.05f}, {0.125f, 0.2f} },
+        { {0.45f, 0.115f}, {0.125f, 0.2f} },
         0.0f, "", ecs::grp::REWARDCARDS
     };
 

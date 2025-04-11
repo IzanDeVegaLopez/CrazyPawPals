@@ -26,7 +26,7 @@ public:
         return _reticle_position;
     }
 	__CMPID_DECL__(ecs::cmp::GAMEPAD_PLAYER_CTRL);
-    void initComponent();
+    void initComponent() override;
 
     void update(Uint32 delta_time) override;
 

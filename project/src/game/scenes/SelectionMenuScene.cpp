@@ -80,11 +80,10 @@ void SelectionMenuScene::create_weapon_buttons() {
 }
 
 void SelectionMenuScene::create_deck_buttons() {
-    float size = 0.3f;
-    float umbral = 0.11f;
+    float umbral = 0.0875f;
     //create the first button prop
     GameStructs::ButtonProperties buttonPropTemplate = {
-         { {0.025f, 0.025f},{0.105f, 0.1745f} },
+         { {0.025f, 0.025f},{0.085f, 0.135f} },
          0.0f, "", ecs::grp::DECKBUTTON
     };
     GameStructs::ButtonProperties deck1B = buttonPropTemplate;
@@ -341,7 +340,7 @@ void SelectionMenuScene::create_deck_info(const rect_f32& rect) {
 }
 void SelectionMenuScene::create_deck_infos() {
     float umbral = 0.14f;
-    rect_f32 r = {{ 0.035f, 0.225f }, { 0.3f, 0.1425f }};
+    rect_f32 r = {{ 0.035f, 0.175f }, { 0.3f, 0.1425f }};
     for (int i = 0; i < _num_cards_of_deck; ++i) {
         create_deck_info(r); 
         r.position.y += umbral;
@@ -376,7 +375,7 @@ void SelectionMenuScene::set_concrete_deck_info(const std::list<Card*>& cl) {
 }
 void SelectionMenuScene::create_enter_button() {
     GameStructs::ButtonProperties bp = {
-         { {0.375f, 0.4f},{0.3f, 0.125f} },
+         { {0.425f, 0.4f},{0.2f, 0.095f} },
          0.0f, "new_round", ecs::grp::UI
     };
     auto* mngr = Game::Instance()->get_mngr();
