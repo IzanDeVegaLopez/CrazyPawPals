@@ -27,6 +27,8 @@
 #include "scenes/GameScene.h"
 #include "scenes/GameOverScene.h"
 #include "scenes/RewardScene.h"
+#include "scenes/TutorialScene.h"
+#include "../our_scripts/log_writer_to_csv.hpp"
 
 
 using namespace std;
@@ -49,6 +51,9 @@ Game::~Game() {
 	// release SLDUtil if the instance was created correctly.
 	if (SDLUtils::HasInstance())
 		SDLUtils::Release();
+
+	if (log_writer_to_csv::HasInstance())
+		log_writer_to_csv::Release();
 
 }
 
@@ -75,6 +80,11 @@ bool Game::init() {
 			<< std::endl;
 		return false;
 	}
+	if (!log_writer_to_csv::Init()) {
+		std::cerr << "Something went wrong while initializing log_writer_to_csv"
+			<< std::endl;
+		return false;
+	}
 	
 	// enable the cursor visibility
 	SDL_ShowCursor(SDL_ENABLE);
@@ -83,7 +93,7 @@ bool Game::init() {
 	
 	// fullscreen mode
 	// HACK: uncomment this to fullscreen
-	SDL_SetWindowFullscreen(sdlutils().window(), SDL_WINDOW_FULLSCREEN_DESKTOP);
+	SDL_SetWindowFullscreen(sdlutils().window(), 0);//SDL_WINDOW_FULLSCREEN_DESKTOP);
 	
 	_mngr = new ecs::Manager();
 
@@ -91,8 +101,12 @@ bool Game::init() {
 	_scenes.resize(NUM_SCENE);
 
 	//_scenes[MAINMENU] = new MainMenuScene();
+
 	_scenes[GAMESCENE] = new GameScene();
 	_scenes[GAMESCENE]->initScene();
+
+	_scenes[TUTORIAL] = new TutorialScene();
+	_scenes[TUTORIAL]->initScene();
 
 	_scenes[MAINMENU] = new MainMenuScene();
 	_scenes[MAINMENU]->initScene();
@@ -108,6 +122,7 @@ bool Game::init() {
 	
 	_scenes[REWARDSCENE] = new RewardScene();
 	_scenes[REWARDSCENE]->initScene();
+
 
 	change_Scene(MAINMENU);
 	return true;

@@ -122,32 +122,32 @@ void WaveManager::spawn_next_group_of_enemies()
     tokens_for_this_wave -= enemy_spawn_data[_enemy_types_for_current_wave[index]].enemies_group_spawn_cost;
     //spawn enemies
     enemy_spawn_caller* esc;
-    GameScene* scene = static_cast<GameScene*>(Game::Instance()->get_currentScene());
+    
     switch ((enemyType)_enemy_types_for_current_wave[index])
     {
         case sarno_rata:
-            esc = new enemy_spawn_caller([scene](Vector2D v) {scene->spawn_sarno_rata(v); });
+            esc = new enemy_spawn_caller([](Vector2D v) {GameScene::spawn_sarno_rata(v); });
             break;
         case michi_mafioso:
-            esc = new enemy_spawn_caller([scene](Vector2D v) {scene->spawn_michi_mafioso(v); });
+            esc = new enemy_spawn_caller([](Vector2D v) {GameScene::spawn_michi_mafioso(v); });
             break;
         case plim_plim:
-            esc = new enemy_spawn_caller([scene](Vector2D v) {scene->spawn_plim_plim(v); });
+            esc = new enemy_spawn_caller([](Vector2D v) {GameScene::spawn_plim_plim(v); });
             break;
         case boom:
-            esc = new enemy_spawn_caller([scene](Vector2D v) {scene->spawn_boom(v); });
+            esc = new enemy_spawn_caller([](Vector2D v) {GameScene::spawn_boom(v); });
             break;
         case ratatouille:
-            esc = new enemy_spawn_caller([scene](Vector2D v) {scene->spawn_ratatouille(v); });
+            esc = new enemy_spawn_caller([](Vector2D v) {GameScene::spawn_ratatouille(v); });
             break;
         case catkuza:
-            esc = new enemy_spawn_caller([scene](Vector2D v) {scene->spawn_catkuza(v); });
+            esc = new enemy_spawn_caller([](Vector2D v) {GameScene::spawn_catkuza(v); });
             break;
         case super_michi_mafioso:
-            esc = new enemy_spawn_caller([scene](Vector2D v) {scene->spawn_super_michi_mafioso(v); });
+            esc = new enemy_spawn_caller([](Vector2D v) {GameScene::spawn_super_michi_mafioso(v); });
             break;
         case rata_basurera:
-            esc = new enemy_spawn_caller([scene](Vector2D v) {scene->spawn_rata_basurera(v); });
+            esc = new enemy_spawn_caller([](Vector2D v) {GameScene::spawn_rata_basurera(v); });
             break;
         default: {
             assert(false && "unreachable");
@@ -165,12 +165,6 @@ void WaveManager::spawn_next_group_of_enemies()
 
     _all_enemies_already_spawned = tokens_for_this_wave <= 0;
 }
-
-void WaveManager::add_num_enemy()
-{
-    _numEnemies++;
-}
-
 //---------------------------------------------------------------------------------------------------------------------------------
 void WaveManager::update(uint32_t delta_time) {
     _currentWaveTime = sdlutils().virtualTimer().currRealTime() - _currentWaveInitTime;

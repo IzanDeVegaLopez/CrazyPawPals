@@ -22,7 +22,7 @@ void WeaponSuperMichiMafioso::create_area(Vector2D shootPos, Vector2D shootDir, 
 	bp.sprite_key = key_name;
 	bp.collision_filter = GameStructs::collide_with::player;
 
-	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::ENEMYBULLETS);
+	Game::Instance()->get_currentScene()->create_proyectile(bp, ecs::grp::BULLET);
 }
 
 void WeaponSuperMichiMafioso::attack1(Vector2D shootDir) {
@@ -51,11 +51,10 @@ void WeaponSuperMichiMafioso::attack1(Vector2D shootDir) {
 		_warning = true;
 	}
 
-	static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::ENEMYBULLETS);
+	Game::Instance()->get_currentScene()->create_proyectile(bp, ecs::grp::BULLET);
 }
 void WeaponSuperMichiMafioso::attack2(Vector2D shootPos, Vector2D shootDir) {
 	create_area(shootPos, shootDir, "p_super_michi_mafioso", _damage, _speed, 2.0f);
-	Game::Instance()->get_mngr()->getComponent<WaveManager>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::WAVE))->add_num_enemy();
 }
 
 void WeaponSuperMichiMafioso::attack3(Vector2D shootPos, Vector2D shootDir) {
@@ -80,12 +79,13 @@ void WeaponSuperMichiMafioso::attack3(Vector2D shootPos, Vector2D shootDir) {
 			initialRot.getX() * sin(angleOffset) + initialRot.getY() * cos(angleOffset)
 		);
 		bp.init_pos = shootPos + rotatedDir * 2;
-		static_cast<GameScene*>(Game::Instance()->get_currentScene())->generate_proyectile(bp, ecs::grp::BULLET);
+		Game::Instance()->get_currentScene()->create_proyectile(bp, ecs::grp::BULLET);
 	}
 }
 void WeaponSuperMichiMafioso::generate_michi_mafioso() {
 	Vector2D posRandom = _tr->getPos() + Vector2D{ (float)sdlutils().rand().nextInt(1, 5), (float)sdlutils().rand().nextInt(1, 5) };
-	static_cast<GameScene*>(Game::Instance()->get_currentScene())->spawn_michi_mafioso(posRandom);
+	GameScene::spawn_michi_mafioso(posRandom);
+	Game::Instance()->get_mngr()->getComponent<WaveManager>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::WAVE))->newEnemy();
 }
 
 void

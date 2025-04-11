@@ -8,9 +8,12 @@
 #include <cassert>
 #include "../utils/Vector2D.h"
 #include "../utils/Singleton.h"
+#include <bitset>
+#include <string>
 
 // Instead of a Singleton class, we could make it part of
 // SDLUtils as well.
+constexpr uint8_t button_list_size = 16;
 
 class InputHandler: public Singleton<InputHandler> {
 
@@ -26,9 +29,24 @@ public:
 		MOUSE_LEFT_CLICK_DOWN,
 		MOUSE_LEFT_CLICK_UP
 	};
+	enum CONTROLLER_BUTTONS : uint8_t {
+		A = 0,
+		B = 1,
+		Y = 2,
+		X = 3,
+		LT = 4,
+		RT = 5,
+		_aux_LT = 6,
+		_aux_RT = 7
+	};
+	enum LAST_DEVICE_ACTIVE : uint8_t {
+		KEYBOARD,
+		CONTROLLER
+	};
 
 	// clear the state
 	inline void clearState() {
+		_controller_buttons_pressed = std::bitset<button_list_size>(false);
 		_isCloseWindoEvent = false;
 		_isKeyDownEvent = false;
 		_isKeyUpEvent = false;
@@ -43,23 +61,88 @@ public:
 	inline void update(const SDL_Event &event) {
 
 		switch (event.type) {
+		case SDL_JOYAXISMOTION:
+			//std::cout << "?:  " << std::to_string(event.jaxis.axis) << std::endl;
+			//DEAD_ZONE
+			//if ((event.jaxis.value < -3200) || (event.jaxis.value > 3200))
+			//{
+				//X axis
+			switch (event.jaxis.axis) {
+			case 0: {
+				_lStickPos.setX(event.jaxis.value / 32767.0);
+				break;
+				//std::cout << "X:  " << event.jaxis.value << std::endl;
+			}
+			case 1: {
+				_lStickPos.setY(-event.jaxis.value / 32767.0);
+				break;
+				//std::cout << "Y:  " << event.jaxis.value << std::endl;
+			}
+			case 2: {
+				_rStickPos.setX(event.jaxis.value / 32767.0);
+				break;
+			}
+			case 3: {
+				_rStickPos.setY(-event.jaxis.value / 32767.0);
+				break;
+			}
+				  //LT
+			case 4: {
+				bool aux = event.jaxis.value > 0;
+				_controller_buttons_pressed[LT] = aux && !_controller_buttons_pressed[_aux_LT];
+				_controller_buttons_pressed[_aux_LT] = aux;
+				break;
+			}
+				  //RT
+			case 5: {
+				bool aux = event.jaxis.value > 0;
+				_controller_buttons_pressed[RT] = aux && !_controller_buttons_pressed[_aux_RT];
+				_controller_buttons_pressed[_aux_RT] = aux;
+				break;
+			}
+			}
+			if (abs(event.jaxis.value) > 3000) _last_active_device = CONTROLLER;
+			break;
+		case SDL_JOYBUTTONDOWN: {
+			//uint8_t i = event.jbutton.button;
+			_controller_buttons_pressed[event.jbutton.button] = true;
+			_last_active_device = CONTROLLER;
+			break;
+		}
+		case SDL_JOYBUTTONUP: {
+			//uint8_t i = event.jbutton.button;
+			_controller_buttons_pressed[event.jbutton.button] = false;
+			_last_active_device = CONTROLLER;
+			break;
+		}
 		case SDL_KEYDOWN:
 			onKeyDown(event);
+			_last_active_device = KEYBOARD;
 			break;
 		case SDL_KEYUP:
 			onKeyUp(event);
+			_last_active_device = KEYBOARD;
 			break;
 		case SDL_MOUSEMOTION:
 			onMouseMotion(event);
+			_last_active_device = KEYBOARD;
 			break;
 		case SDL_MOUSEBUTTONDOWN:
 			onMouseButtonDown(event);
+			_last_active_device = KEYBOARD;
 			break;
 		case SDL_MOUSEBUTTONUP:
 			onMouseButtonUp(event);
+			_last_active_device = KEYBOARD;
 			break;
 		case SDL_WINDOWEVENT:
 			handleWindowEvent(event);
+			break;
+		case SDL_JOYDEVICEADDED:
+			SDL_JoystickEventState(SDL_ENABLE);
+			assert(SDL_NumJoysticks() < 4);
+			for(int i = 0; i < SDL_NumJoysticks(); ++i)
+				_joystick[i] = SDL_JoystickOpen(i);
 			break;
 		default:
 			break;
@@ -85,6 +168,18 @@ public:
 		clearState();
 		while (SDL_PollEvent(&event))
 			update(event);
+		
+		
+		for (uint8_t i = 0; i < _controller_buttons_pressed.size(); ++i) {
+			std::cout << _controller_buttons_pressed[i] << " , ";
+		}
+		std::cout << std::endl;
+		
+		
+		//std::cout << "L (" << _lStickPos.getX() << "," << _lStickPos.getY() << ")   -   R (" << _rStickPos.getX() << "," << _rStickPos.getY() << ")" << std::endl;
+	}
+	inline void consume(CONTROLLER_BUTTONS b) {
+		_controller_buttons_pressed[b] = false;
 	}
 
 	// close window event
@@ -115,6 +210,9 @@ public:
 
 	inline bool isKeyUp(SDL_Keycode key) {
 		return isKeyUp(SDL_GetScancodeFromKey(key));
+	}
+	inline bool isControllerButtonDown(CONTROLLER_BUTTONS b) {
+		return _controller_buttons_pressed[b];
 	}
 
 	// mouse
@@ -147,6 +245,16 @@ public:
 		_isCloseWindoEvent = b;
 	}
 
+	inline Vector2D& getLStick() {
+		return _lStickPos;
+	}
+	inline Vector2D& getRStick() {
+		return _rStickPos;
+	}
+	inline LAST_DEVICE_ACTIVE getLastDevice() {
+		return _last_active_device;
+	}
+
 	// TODO add support for Joystick, see Chapter 4 of
 	// the book 'SDL Game Development'
 
@@ -163,6 +271,12 @@ private:
 	inline bool init() {
 		_kbState = SDL_GetKeyboardState(0);
 		assert(_kbState != nullptr);
+
+
+		//SDL_JoystickEventState(SDL_ENABLE);
+		//_joystick = SDL_JoystickOpen(0);
+		//assert(_joystick != nullptr);
+
 		return true;
 	}
 
@@ -232,6 +346,15 @@ private:
 	Vector2D _mousePos;
 	std::array<bool, 3> _mbState;
 	const Uint8 *_kbState;
+	//12, 13 are for triggers	(its press down)
+	//14, 15 are aux for triggers (its real state)
+	std::bitset<button_list_size> _controller_buttons_pressed;
+
+	//Gamepad
+	SDL_Joystick* _joystick[4];
+	Vector2D _lStickPos;
+	Vector2D _rStickPos;
+	LAST_DEVICE_ACTIVE _last_active_device = KEYBOARD;
 }
 ;
 

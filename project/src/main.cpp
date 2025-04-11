@@ -12,6 +12,7 @@ int main(int, char**) {
 	//_CrtSetBreakAlloc(165116); 
 	try {
 		if(Game::Init())Game::Instance()->start();
+		Game::Instance()->Release();
 	}
 	catch (const std::string& e) { // catch exceptions thrown as strings
 		std::cerr << e << std::endl;

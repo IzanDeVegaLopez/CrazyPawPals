@@ -53,14 +53,19 @@ KeyboardPlayerCtrl::initComponent() {
 }
 
 void KeyboardPlayerCtrl::update(Uint32 delta_time) {
+    if (ih().getLastDevice() != InputHandler::LAST_DEVICE_ACTIVE::KEYBOARD) return;
+
     (void)delta_time;
     auto& ihdlr = ih();
     //auto& dir = _tr->getDir();
     //Horizontal axis
+    
+    //TODO CHOOSE IF THIS USES KEYBOARD AND MOUSE OR GAMEPAD
     _mc->set_input(Vector2D(
         (ihdlr.isKeyDown(_left) ? -1 : 0) + (ihdlr.isKeyDown(_right) ? 1 : 0),
         (ihdlr.isKeyDown(_up) ? 1 : 0) + (ihdlr.isKeyDown(_down) ? -1 : 0)
     ));
+    
 
     if (is_moving_input()) _dy->play_animation("andar");
     else _dy->play_animation("idle");
