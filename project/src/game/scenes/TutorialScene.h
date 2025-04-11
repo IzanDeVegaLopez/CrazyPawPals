@@ -8,7 +8,7 @@ class Deck;
 class Health;
 class TutorialScene : public event_system::event_receiver,public Scene
 {
-	enum class TutorialState { //para para se un pop up a otro
+	enum class TutorialState { //para pasar de un pop up a otro
 		NONE,
 		NEXT_POP_UP,
 		WAIT_FOR_ACTION,
