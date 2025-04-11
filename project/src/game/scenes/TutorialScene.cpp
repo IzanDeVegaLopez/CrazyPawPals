@@ -94,11 +94,11 @@ TutorialScene::TutorialScene()
 	});
 	_pop_ups.push_back({ "popup_objetos_miticos",
 		[this]() { return has_pass_input(); },
-		200, {{0.05f, 0.05f}, {0.85f, 0.85f}},
+		250, {{0.05f, 0.05f}, {0.85f, 0.85f}},
 	});
 	_pop_ups.push_back({ "popup_recompensa",
 		[this]() { return has_pass_input(); },
-		200, {{0.05f, 0.05f}, {0.85f, 0.85f}},
+		250, {{0.05f, 0.05f}, {0.85f, 0.85f}},
 	});
 	_pop_ups.push_back({ "popup_ganar",
 		[this]() { return has_pass_input(); },
