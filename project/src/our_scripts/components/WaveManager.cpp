@@ -16,6 +16,7 @@
 #include "cards/Mana.h"
 #include "cards/Deck.hpp"
 #include "KeyboardPlayerCtrl.h"
+#include "movement/MovementController.h"
 #endif
 
 // 1 segundo = 1000 ticks (ms)
@@ -228,12 +229,14 @@ void WaveManager::endwave()
     auto player_mana = Game::Instance()->get_mngr()->getComponent<ManaComponent>(player);
     auto player_deck = Game::Instance()->get_mngr()->getComponent<Deck>(player);
     auto player_keyboard_controller = Game::Instance()->get_mngr()->getComponent<KeyboardPlayerCtrl>(player);
+    auto player_movement_controller = Game::Instance()->get_mngr()->getComponent<MovementController>(player);
     log_writer_to_csv::Instance()->add_new_log("VIDA PLAYER", "CURRENT", player_hp->getHealth(), "MAX", player_hp->getMaxHealth());
     log_writer_to_csv::Instance()->add_new_log("ENEMIGOS SPAWNEADOS", _numEnemies);
     log_writer_to_csv::Instance()->add_new_log("MANA", "MID", player_mana->get_mana_mid(), "MAX", player_mana->get_mana_max());
     log_writer_to_csv::Instance()->add_new_log("TIMES RELOADED", std::to_string(player_deck->times_reloaded));
     log_writer_to_csv::Instance()->add_new_log("TIMES M1 USED", player_keyboard_controller->times_m1_used);
     log_writer_to_csv::Instance()->add_new_log("TIMES M2 USED", player_keyboard_controller->times_m2_used_cards, "TIMES M2 COULDNT USE CARD", player_keyboard_controller->times_m2_failed_to_use_cards);
+    log_writer_to_csv::Instance()->add_new_log("DISTANCIA RECORRIDA", player_movement_controller->total_movement);
     log_writer_to_csv::Instance()->add_new_log("USOS DE CADA CARTA EN ESTA RONDA");
     for (auto c : player_keyboard_controller->cards_used_this_round) {
         log_writer_to_csv::Instance()->add_new_log(c.first,std::to_string(c.second));
@@ -248,6 +251,7 @@ void WaveManager::endwave()
     player_keyboard_controller->times_m2_used_cards = 0;
     player_keyboard_controller->times_m2_failed_to_use_cards = 0;
     player_keyboard_controller->cards_used_this_round = player_keyboard_controller->cards_discarded_this_round = std::unordered_map<std::string, uint8_t>();
+    player_movement_controller->total_movement = 0;
 
 #endif
 

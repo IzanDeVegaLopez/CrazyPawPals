@@ -139,8 +139,8 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
         if (ihdlr.getMouseButtonState(InputHandler::LEFT)) {
             //send message to shootih().getMousePos();
             //_w->shoot(mousePos);
-#ifdef GENERATE_LOG
             if (!_dc->empty_hand() && _w->shoot(_mouse_pos)) {
+#ifdef GENERATE_LOG
                 log_writer_to_csv::Instance()->add_new_log("M1", "CARD DISCARDED:", _dc->hand()->get_name(), "CURRENT MANA:", _m->mana_count(), "MOUSE POS", "X", _mouse_pos.getX(), "Y", _mouse_pos.getY());
                 times_m1_used++;
                 auto aux = cards_discarded_this_round.find(_dc->hand()->get_name());
@@ -151,8 +151,8 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
 #endif
                 //position2_f32 mouse_pos = Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->mouse_world_position; 
                 _dc->discard_card();
-#ifdef GENERATE_LOG
             }
+#ifdef GENERATE_LOG
             else {
                 if (_dc->empty_hand())
                     log_writer_to_csv::Instance()->add_new_log("M1", "FAILED", "NO CARD IN HAND");

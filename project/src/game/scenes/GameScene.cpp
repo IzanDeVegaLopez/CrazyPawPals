@@ -65,6 +65,9 @@
 #include "../../our_scripts/card_system/CardUpgrade.hpp"
 
 #include "../../our_scripts/components/MythicComponent.h"
+#ifdef GENERATE_LOG
+#include "../../our_scripts/log_writer_to_csv.hpp"
+#endif
 
 #include <iostream>
 #include <string>
@@ -184,6 +187,7 @@ void GameScene::initScene() {
 	spawn_wave_manager();
 	auto hud = create_hud();
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::HUD_ENTITY, hud);
+
 }
 
 void GameScene::enterScene()
@@ -215,12 +219,20 @@ void GameScene::enterScene()
 	manager.addComponent<PlayerHUD>(player);
 	manager.getComponent<WaveManager>(manager.getHandler(ecs::hdlr::WAVE))->start_new_wave();
 	manager.getComponent<HUD>(manager.getHandler(ecs::hdlr::HUD_ENTITY))->start_new_wave();
+#ifdef GENERATE_LOG
+	log_writer_to_csv::Instance()->add_new_log();
+	log_writer_to_csv::Instance()->add_new_log("ENTERED GAME SCENE");
+#endif
 }
 
 void GameScene::exitScene()
 {
 	auto&& manager = *Game::Instance()->get_mngr();
 	manager.getComponent<WaveManager>(manager.getHandler(ecs::hdlr::WAVE))->reset_wave_time();
+#ifdef GENERATE_LOG
+	log_writer_to_csv::Instance()->add_new_log("EXIT GAME SCENE");
+	log_writer_to_csv::Instance()->add_new_log();
+#endif
 }
 
 //metodos de create/spawn

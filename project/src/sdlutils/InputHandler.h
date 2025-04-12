@@ -176,7 +176,6 @@ public:
 		std::cout << std::endl;
 		*/
 		
-		
 		//std::cout << "L (" << _lStickPos.getX() << "," << _lStickPos.getY() << ")   -   R (" << _rStickPos.getX() << "," << _rStickPos.getY() << ")" << std::endl;
 	}
 	inline void consume(CONTROLLER_BUTTONS b) {

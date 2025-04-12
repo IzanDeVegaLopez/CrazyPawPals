@@ -20,6 +20,9 @@
 #include "../../our_scripts/components/weapons/player/Revolver.h"
 #include "../../our_scripts/card_system/PlayableCards.hpp"
 #include "../../our_scripts/components/Health.h"
+#ifdef GENERATE_LOG
+#include "../../our_scripts/log_writer_to_csv.hpp"
+#endif
 
 #include <iostream>
 
@@ -157,6 +160,13 @@ void TutorialScene::enterScene()
 	if (hud) manager.setAlive(hud,false);
 
 	manager.refresh();
+
+#ifdef GENERATE_LOG
+	log_writer_to_csv::Instance()->add_new_log();
+	log_writer_to_csv::Instance()->add_new_log("ENTERED TUTORIAL SCENE");
+#endif
+
+
 }
 
 void TutorialScene::exitScene()
@@ -164,6 +174,10 @@ void TutorialScene::exitScene()
 	if (_current_pop_up_entity)  Game::Instance()->get_mngr()->setAlive(_current_pop_up_entity, false);
 	_current_pop_up = 0;
 	_enemy_killed = false;
+#ifdef GENERATE_LOG
+	log_writer_to_csv::Instance()->add_new_log("EXIT TUTORIAL SCENE");
+	log_writer_to_csv::Instance()->add_new_log();
+#endif
 }
 void TutorialScene::update(uint32_t delta_time) {
 	Scene::update(delta_time);

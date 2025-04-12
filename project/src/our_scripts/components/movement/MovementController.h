@@ -36,6 +36,8 @@ public:
 	float& get_max_speed() { return _max_speed; }
 	inline void set_max_speed(float new_speed) { _max_speed = new_speed; }
 	float& get_acceleration() { return _acceleration; }
-
+#ifdef GENERATE_LOG
+	uint32_t total_movement = 0;
+#endif
 
 };
