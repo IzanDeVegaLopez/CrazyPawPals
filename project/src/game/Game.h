@@ -18,6 +18,7 @@ public:
 		GAMESCENE,
 		REWARDSCENE,
 		GAMEOVER,
+		TUTORIAL,
 		NUM_SCENE,
 	};
 	friend Singleton<Game>;

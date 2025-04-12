@@ -9,6 +9,9 @@
 #include "../../sdlutils/InputHandler.h"
 #include "../../ecs/Entity.h"
 #include "../../sdlutils/Texture.h"
+#ifdef GENERATE_LOG
+#include "../../our_scripts/log_writer_to_csv.hpp"
+#endif
 
 MainMenuScene::MainMenuScene() : Scene(ecs::scene::MAINMENUSCENE)
 {
@@ -52,12 +55,19 @@ void
 MainMenuScene::enterScene()
 {
     Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::MAINMENUSCENE);
+#ifdef GENERATE_LOG
+    log_writer_to_csv::Instance()->add_new_log();
+    log_writer_to_csv::Instance()->add_new_log("ENTERED MAIN MENU SCENE");
+#endif
 }
 
 void 
 MainMenuScene::exitScene()
 {
-
+#ifdef GENERATE_LOG
+    log_writer_to_csv::Instance()->add_new_log("EXIT MAIN MENU SCENE");
+    log_writer_to_csv::Instance()->add_new_log();
+#endif
 }
 
 void 
@@ -111,7 +121,7 @@ MainMenuScene::create_controls_button(const GameStructs::ButtonProperties& bp)
         imgComp->_filter = false;
         imgComp->swap_textures();
         imgComp->_filter = false;
-        Game::Instance()->change_Scene(Game::CONTROLSSCENE);
+        Game::Instance()->change_Scene(Game::TUTORIAL);
     });
 
     buttonComp->connectHover([buttonComp, imgComp]() {

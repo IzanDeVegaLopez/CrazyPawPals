@@ -25,9 +25,10 @@ public:
 
     virtual void update(uint32_t delta_time);
 	virtual void render();
-
+	virtual void create_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid) {};
+	
 	template <typename ... Cmps>
-	ecs::entity_t create_entity(ecs::grpId_t gid, ecs::sceneId_t sid,Cmps ... components) {
+	static ecs::entity_t create_entity(ecs::grpId_t gid, ecs::sceneId_t sid,Cmps ... components) {
 		ecs::entity_t ent = Game::Instance()->get_mngr()->addEntity(sid, gid);
 		Game::Instance()->get_mngr()->addExistingComponent(ent, components...);
 		return ent;

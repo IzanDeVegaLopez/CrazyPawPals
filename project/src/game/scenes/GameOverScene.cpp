@@ -17,6 +17,9 @@
 #include "../../our_scripts/components/cards/Deck.hpp"
 #include "../../our_scripts/components/rendering/Image.h"
 #include "../../our_scripts/components/rendering/ImageForButton.h"
+#ifdef GENERATE_LOG
+#include "../../our_scripts/log_writer_to_csv.hpp"
+#endif
 
 #include <iostream>
 #include <typeinfo>
@@ -34,10 +37,18 @@ void GameOverScene::initScene() {
 void GameOverScene::enterScene()
 {
     Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::GAMEOVERSCENE);
+#ifdef GENERATE_LOG
+    log_writer_to_csv::Instance()->add_new_log();
+    log_writer_to_csv::Instance()->add_new_log("ENTERED GAMEOVER SCENE");
+#endif
 }
 
 void GameOverScene::exitScene()
 {
+#ifdef GENERATE_LOG
+    log_writer_to_csv::Instance()->add_new_log("EXIT GAMEOVER SCENE");
+    log_writer_to_csv::Instance()->add_new_log();
+#endif
 }
 void GameOverScene::render() {
     Scene::render();

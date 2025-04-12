@@ -20,9 +20,9 @@ enum enemyType {
     plim_plim = 2,
     boom = 3,
     ratatouille = 4,
-    catkuza = 5,
-    super_michi_mafioso = 6,
-    rata_basurera = 7
+    rata_basurera = 5, //TODAVIA NO TIENE SPRITE POR ESO PETA, CUANDO TENGA --> CAMBIAR RATA BASURERA POR CATKUZA en el enemy randomizer
+    catkuza = 6,
+    super_michi_mafioso = 7,
 };
 
 struct enemy_spawn_definition {
@@ -53,35 +53,20 @@ constexpr int spawn_tokens_gained_per_wave = 4;
 constexpr int spawn_tokens_at_wave_0 = 3;
 
 class WaveManager : public event_system::event_receiver, public ecs::Component {
-public:
-    __CMPID_DECL__(ecs::cmp::WAVEMANAGER)
-    WaveManager();
-    virtual ~WaveManager() override;
-    void update(uint32_t delta_time) override;
-    void initComponent() override;
-    void start_new_wave();
-    void reset_wave_manager();
-
-    inline Uint32 get_wave_time() { return _currentWaveTime; }
-    inline int get_current_wave() { return _currentWave; }
-    inline events get_current_event() { return _current_event; }
-    void event_callback0(const Msg& m) override;
-    void add_num_enemy();
-    void newEnemy() { _numEnemies++; _enemiesSpawned++; };
 private:
     void choose_new_event();
     void endwave();
     void activateFog();
     bool areAllEnemiesDead();
     void enterRewardsMenu();
-    void spawnWave();
     bool can_spawn_next_enemy();
-    void spawn_next_enemy();
     bool is_wave_finished();
+#ifdef GENERATE_LOG
+    inline static uint32_t _ticks_on_wave = 1;
+#endif
 
     void spawn_next_group_of_enemies();
     void initialize_next_wave_params(bool normal_wave);
-    void assign_tokens_for_this_wave();
     Uint32 _currentWaveTime = 0; //tiempo actual (post calculo, inicial en constructor)
     Uint32 _currentWaveInitTime; // cuándo empezó la oleada
     Uint32 _waveTime; // cuánto dura la oleada (CONSTRUCTOR)
@@ -110,4 +95,24 @@ private:
     //transformless_dyn_image* _tdi;
 
     Fog* fog;
+public:
+    __CMPID_DECL__(ecs::cmp::WAVEMANAGER)
+        WaveManager();
+    virtual ~WaveManager() override;
+    void update(uint32_t delta_time) override;
+    void initComponent() override;
+    void start_new_wave();
+    void reset_wave_manager();
+
+    inline Uint32 get_wave_time() { return _currentWaveTime; }
+    inline void reset_wave_time() { _currentWaveTime = 0; }
+    inline int get_current_wave() { return _currentWave; }
+    inline events get_current_event() { return _current_event; }
+    void event_callback0(const Msg& m) override;
+    void newEnemy() { _numEnemies++; _enemiesSpawned++; };
+#ifdef GENERATE_LOG
+    static inline uint32_t get_ticks_on_wave() {
+        return _ticks_on_wave;
+    };
+#endif
 };

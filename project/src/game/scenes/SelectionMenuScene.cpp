@@ -17,6 +17,9 @@
 #include "../../our_scripts/components/cards/Deck.hpp"
 #include "../../our_scripts/components/rendering/Image.h"
 #include "../../our_scripts/components/rendering/ImageForButton.h"
+#ifdef GENERATE_LOG
+#include "../../our_scripts/log_writer_to_csv.hpp"
+#endif
 
 #include <iostream>
 #include <typeinfo>
@@ -130,9 +133,8 @@ void SelectionMenuScene::reset() {
         _last_weapon_button->_filter = false;
     }
     _last_weapon_button = nullptr;
-
     _activate_play_button = false;
-    
+
     auto* mngr = Game::Instance()->get_mngr();
     auto& deckInfo = mngr->getEntities(ecs::grp::DECKINFO);
     for (auto& d : deckInfo) {
@@ -143,6 +145,10 @@ void SelectionMenuScene::reset() {
 void SelectionMenuScene::enterScene()
 {
     Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::SELECTIONMENUSCENE);
+#ifdef GENERATE_LOG
+    log_writer_to_csv::Instance()->add_new_log();
+    log_writer_to_csv::Instance()->add_new_log("ENTERED SELECTION MENU SCENE");
+#endif
     reset();
 }
 
@@ -156,13 +162,16 @@ void SelectionMenuScene::exitScene()
     _last_deck_button = nullptr;
     _activate_play_button = false;
     */
-    reset();
     auto* mngr = Game::Instance()->get_mngr();
-    mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::TOGAMEBUTTON))->swap_textures();
+    if(_activate_play_button)mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::TOGAMEBUTTON))->swap_textures();
 
     auto playB = mngr->getHandler(ecs::hdlr::TOGAMEBUTTON);
     auto playImg = mngr->getComponent<ImageForButton>(playB);
     playImg->_filter = false;
+#ifdef GENERATE_LOG
+    log_writer_to_csv::Instance()->add_new_log("EXIT SELECTION MENU SCENE");
+    log_writer_to_csv::Instance()->add_new_log();
+#endif
 
 }
 

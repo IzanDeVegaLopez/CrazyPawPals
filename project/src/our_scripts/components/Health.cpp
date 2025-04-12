@@ -5,6 +5,9 @@
 #include "rendering/dyn_image.hpp"
 #include "rendering/dyn_image_with_frames.hpp"
 #include <algorithm>
+#ifdef GENERATE_LOG
+#include "../../our_scripts/log_writer_to_csv.hpp"
+#endif
 
 Health::Health(int maxHealth, bool isPlayer) 
 	: _is_player(isPlayer), _currentHealth(maxHealth), _maxHealth(maxHealth), _shield(0), _shieldTime(0), _dy(nullptr) {};
@@ -36,9 +39,14 @@ Health::takeDamage(int damage) {
 			event_system::event_receiver::Msg msg;
 			msg.int_value = _maxHealth * 0.2;//magic number random?
 			
-			if (_is_player)
+			if (_is_player) 
 				Game::Instance()->get_event_mngr()->fire_event(event_system::player_dead, msg);
-			else Game::Instance()->get_event_mngr()->fire_event(event_system::enemy_dead, msg);
+			else {
+				Game::Instance()->get_event_mngr()->fire_event(event_system::enemy_dead, msg);
+#ifdef GENERATE_LOG
+				log_writer_to_csv::Instance()->add_new_log("ENEMY KILLED");
+#endif
+			}
 			if(!_is_player)Game::Instance()->get_mngr()->setAlive(_ent, false);
 		}
 	}
