@@ -28,6 +28,7 @@
 #include "scenes/GameOverScene.h"
 #include "scenes/RewardScene.h"
 #include "scenes/TutorialScene.h"
+#include "scenes/VictoryScene.h"
 
 
 
@@ -108,8 +109,6 @@ bool Game::init() {
 	// Inicializar el vector de escenas
 	_scenes.resize(NUM_SCENE);
 
-	//_scenes[MAINMENU] = new MainMenuScene();
-
 	_scenes[GAMESCENE] = new GameScene();
 	_scenes[GAMESCENE]->initScene();
 
@@ -125,18 +124,18 @@ bool Game::init() {
 	_scenes[SELECTIONMENU] = new SelectionMenuScene();
 	_scenes[SELECTIONMENU]->initScene();
 
-	_scenes[GAMEOVER] = new GameOverScene();
-	_scenes[GAMEOVER]->initScene();
-	
 	_scenes[REWARDSCENE] = new RewardScene();
 	_scenes[REWARDSCENE]->initScene();
 
+	_scenes[GAMEOVER] = new GameOverScene();
+	_scenes[GAMEOVER]->initScene();
+	
+	_scenes[VICTORY] = new GameOverScene(); //? por que no funciona VictoryScene()
+	_scenes[VICTORY]->initScene();
 
 	change_Scene(MAINMENU);
 	return true;
 }
-
-
 
 void Game::start() {
 

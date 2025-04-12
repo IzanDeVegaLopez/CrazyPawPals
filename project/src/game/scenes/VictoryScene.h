@@ -4,11 +4,11 @@
 #include <string>
 #include <list>
 
-class GameOverScene : public Scene
+class VictoryScene : public Scene
 {
 public:
-	GameOverScene();
-	virtual ~GameOverScene();
+	VictoryScene();
+	virtual ~VictoryScene();
 	void initScene() override;
 	void enterScene() override;
 	void exitScene() override;

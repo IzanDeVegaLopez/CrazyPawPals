@@ -1,4 +1,4 @@
-#include "GameOverScene.h"
+#include "VictoryScene.h"
 #include "../../our_scripts/components/ui/Button.h"
 #include "../GameStructs.h"
 #include "../../utils/Vector2D.h"
@@ -24,39 +24,37 @@
 #include <iostream>
 #include <typeinfo>
 #include <algorithm>
-GameOverScene::GameOverScene()
-    : Scene(ecs::scene::GAMEOVERSCENE) {}
+VictoryScene::VictoryScene() : Scene(ecs::scene::VICTORYSCENE) {}
 
-GameOverScene::~GameOverScene()
-{
-}
-void GameOverScene::initScene() {
+VictoryScene::~VictoryScene() {}
+
+void VictoryScene::initScene() {
     create_static_background(&sdlutils().images().at("game_over"));
     create_enter_button();
     create_exit_button();
 }
-void GameOverScene::enterScene()
+void VictoryScene::enterScene()
 {
     Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::GAMEOVERSCENE);
 #ifdef GENERATE_LOG
     log_writer_to_csv::Instance()->add_new_log();
-    log_writer_to_csv::Instance()->add_new_log("ENTERED GAMEOVER SCENE");
+    log_writer_to_csv::Instance()->add_new_log("ENTERED VICTORY SCENE");
 #endif
 }
 
-void GameOverScene::exitScene()
+void VictoryScene::exitScene()
 {
 #ifdef GENERATE_LOG
-    log_writer_to_csv::Instance()->add_new_log("EXIT GAMEOVER SCENE");
+    log_writer_to_csv::Instance()->add_new_log("EXIT VICTORY SCENE");
     log_writer_to_csv::Instance()->add_new_log();
 #endif
 }
-void GameOverScene::render() {
+void VictoryScene::render() {
     Scene::render();
 }
-void GameOverScene::create_enter_button() {
+void VictoryScene::create_enter_button() {
     GameStructs::ButtonProperties bp = {
-         { {0.375f, 0.5f},{0.3f, 0.125f} },
+         { {0.375f, 0.65f},{0.3f, 0.125f} },
          0.0f, "back"
     };
     auto* mngr = Game::Instance()->get_mngr();
@@ -67,12 +65,12 @@ void GameOverScene::create_enter_button() {
     buttonComp->connectClick([buttonComp, imgComp, mngr, this]() {
         imgComp->_filter = false;
         Game::Instance()->change_Scene(Game::MAINMENU);
-    }); 
+        });
     buttonComp->connectHover([buttonComp, imgComp, this]() { imgComp->_filter = true;});
     buttonComp->connectExit([buttonComp, imgComp, this]() { imgComp->_filter = false;});
 }
 
-void GameOverScene::create_exit_button()
+void VictoryScene::create_exit_button()
 {
     GameStructs::ButtonProperties bp = {
        { {0.375f, 0.7f},{0.3f, 0.125f} },
