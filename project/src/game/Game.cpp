@@ -130,7 +130,7 @@ bool Game::init() {
 	_scenes[GAMEOVER] = new GameOverScene();
 	_scenes[GAMEOVER]->initScene();
 	
-	_scenes[VICTORY] = new GameOverScene(); //? por que no funciona VictoryScene()
+	_scenes[VICTORY] = new VictoryScene(); //? por que no funciona VictoryScene()
 	_scenes[VICTORY]->initScene();
 
 	change_Scene(MAINMENU);
