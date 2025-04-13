@@ -44,7 +44,7 @@ TutorialScene::TutorialScene()
 				input.isKeyDown(SDL_SCANCODE_S) || input.isKeyDown(SDL_SCANCODE_D))
 				||input.getRStick().getX() != 0.0f|| input.getRStick().getY() != 0.0f;
 		},
-		3000,{{0.1f, 0.1f}, {0.3f, 0.3f}}
+		3000,{{0.04f, 0.1f}, {0.4f, 0.4f}}
 		});
 
 	_pop_ups.push_back({ "pop_up_player_hud",
@@ -64,7 +64,7 @@ TutorialScene::TutorialScene()
 			if (LT)input.consume(InputHandler::CONTROLLER_BUTTONS::LT);
 			return (input.mouseButtonDownEvent() && input.getMouseButtonState(InputHandler::RIGHT)) || LT;
 		},
-		2000,{{0.1f, 0.1f}, {0.35f, 0.35f}},
+		2000,{{0.04f, 0.1f}, {0.4f, 0.4f}},
 		});
 
 	_pop_ups.push_back({ "popup_reload",
@@ -73,7 +73,7 @@ TutorialScene::TutorialScene()
 			bool B = input.isControllerButtonDown(InputHandler::CONTROLLER_BUTTONS::B);
 			if (B)input.consume(InputHandler::CONTROLLER_BUTTONS::B);
 			return input.isKeyDown(SDL_SCANCODE_SPACE) || B; },
-		2000, {{0.1f, 0.1f}, {0.35f, 0.35f}}
+		2000, {{0.04f, 0.1f}, {0.4f, 0.4f}}
 	});
 
 
@@ -84,7 +84,7 @@ TutorialScene::TutorialScene()
 			if (RT)input.consume(InputHandler::CONTROLLER_BUTTONS::RT);
 			return (input.mouseButtonDownEvent() && input.getMouseButtonState(InputHandler::LEFT)) || RT;
 		},
-		3000, {{0.1f, 0.1f}, {0.35f, 0.35f}}
+		3000, {{0.04f, 0.1f}, {0.4f, 0.4f}}
 	});
 
 	_pop_ups.push_back({ "popup_enemy",
@@ -111,7 +111,7 @@ TutorialScene::TutorialScene()
 		250, {{0.05f, 0.05f}, {0.85f, 0.85f}},
 	});
 	_pop_ups.push_back({ "popup_ganar",
-		[this]() { return has_pass_input(); },
+		[]() { return false; },
 		50, {{0.0f, 0.0f}, {1.0f, 1.0f}},
 	});
 
@@ -158,7 +158,8 @@ void TutorialScene::enterScene()
 	if(manager.hasComponent<PlayerHUD>(player))	manager.removeComponent<PlayerHUD>(player);
 	auto hud = manager.getHandler(ecs::hdlr::TURORIALHUD);
 	if (hud) manager.setAlive(hud,false);
-
+	auto play_button = manager.getHandler(ecs::hdlr::TUTORIALBUTTON);
+	if (play_button) manager.setAlive(play_button, false);
 	manager.refresh();
 
 #ifdef GENERATE_LOG
@@ -167,13 +168,13 @@ void TutorialScene::enterScene()
 #endif
 
 
+	_enemy_killed = false;
 }
 
 void TutorialScene::exitScene()
 {
 	if (_current_pop_up_entity)  Game::Instance()->get_mngr()->setAlive(_current_pop_up_entity, false);
 	_current_pop_up = 0;
-	_enemy_killed = false;
 #ifdef GENERATE_LOG
 	log_writer_to_csv::Instance()->add_new_log("EXIT TUTORIAL SCENE");
 	log_writer_to_csv::Instance()->add_new_log();
@@ -187,15 +188,9 @@ void TutorialScene::update(uint32_t delta_time) {
 	switch (_tutorial_state)
 	{
 	case TutorialState::NEXT_POP_UP:
-		if (_current_pop_up >= _pop_ups.size()) {
-			_tutorial_state = TutorialState::FINISHED;
-		}
-		else
-		{
-			create_pop_up();
-			_popup_timer = 0;
-			_tutorial_state = TutorialState::WAIT_FOR_ACTION;
-		}
+	    create_pop_up();
+		_popup_timer = 0;
+		_tutorial_state = _current_pop_up == _pop_ups.size() - 1 ? TutorialState::FINISHED : TutorialState::WAIT_FOR_ACTION;
 		break;
 	case TutorialState::WAIT_FOR_ACTION:
 		if (_pop_ups[_current_pop_up].condition()) {
@@ -212,8 +207,11 @@ void TutorialScene::update(uint32_t delta_time) {
 		}
 		break;
 	case TutorialState::FINISHED:
-		Game::Instance()->change_Scene(Game::SELECTIONMENU);
+	{
+		auto button = create_change_scene_button({ {{ 0.4, 0.6f }, {0.25f, 0.25f}  }, 0.0f, "enter_game" }, Game::SELECTIONMENU);
+		Game::Instance()->get_mngr()->setHandler(ecs::hdlr::TUTORIALBUTTON, button);
 		break;
+	}
 	default:
 		break;
 	}
@@ -251,7 +249,7 @@ bool TutorialScene::has_pass_input()
 	return input.isKeyDown(SDL_SCANCODE_F) || A;
 }
 
-void TutorialScene::create_change_scene_button(const GameStructs::ButtonProperties& bp, Game::State nextScene)
+ecs::entity_t TutorialScene::create_change_scene_button(const GameStructs::ButtonProperties& bp, Game::State nextScene)
 {
 	auto* mngr = Game::Instance()->get_mngr();
 	auto e = create_button(bp);
@@ -271,4 +269,6 @@ void TutorialScene::create_change_scene_button(const GameStructs::ButtonProperti
 
 	buttonComp->connectHover([buttonComp, imgComp, this]() { imgComp->_filter = true; });
 	buttonComp->connectExit([buttonComp, imgComp, this]() { imgComp->_filter = false; });
+
+	return e;
 }

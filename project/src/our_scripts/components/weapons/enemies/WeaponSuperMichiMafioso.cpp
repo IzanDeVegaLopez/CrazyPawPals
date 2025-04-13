@@ -20,6 +20,7 @@ void WeaponSuperMichiMafioso::create_area(Vector2D shootPos, Vector2D shootDir, 
 	bp.width = _attack_width * scale;
 	bp.height = _attack_height * scale;
 	bp.sprite_key = key_name;
+	bp.pierce_number = 10;
 	bp.collision_filter = GameStructs::collide_with::player;
 
 	Game::Instance()->get_currentScene()->create_proyectile(bp, ecs::grp::BULLET);
@@ -38,6 +39,7 @@ void WeaponSuperMichiMafioso::attack1(Vector2D shootDir) {
 		bp.damage = 1.0f;
 		bp.life_time = 1.0f;
 		bp.sprite_key = "p_super_michi_mafioso";
+		bp.pierce_number = 10;
 		bp.collision_filter = GameStructs::collide_with::player;
 		_warning = false;
 	}
@@ -71,6 +73,7 @@ void WeaponSuperMichiMafioso::attack3(Vector2D shootPos, Vector2D shootDir) {
 	bp.height = radius;
 	bp.sprite_key = "p_super_michi_mafioso";
 	bp.collision_filter = GameStructs::collide_with::player;
+	bp.pierce_number = 10;
 
 	for (int i = 0; i < numAreas; ++i) {
 		float angleOffset = (angle * (i / (std::max(((float)numAreas - 1.0f), 1.0f))) - angle / 2.0f) * (M_PI / 180.0f);

@@ -47,5 +47,5 @@ private:
 	bool _enemy_killed = false;
 
 	void create_pop_up();
-	void create_change_scene_button(const GameStructs::ButtonProperties& bp, Game::State nextScene);
+	ecs::entity_t create_change_scene_button(const GameStructs::ButtonProperties& bp, Game::State nextScene);
 };
