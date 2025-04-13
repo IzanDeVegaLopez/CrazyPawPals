@@ -7,6 +7,7 @@
 #include "Health.h"
 #include "collision_registration_by_id.h"
 #include "id_component.h"
+#include "cards/Mana.h"
 
 void bullet_collision_component::on_contact(const collision_manifold& tm)
 {
@@ -16,14 +17,14 @@ void bullet_collision_component::on_contact(const collision_manifold& tm)
     if (check_if_valid_collision(entity_collided_with)) {
         auto &&manager = *Game::Instance()->get_mngr();
         if (manager.hasComponent<Health>(entity_collided_with)) {
-            //std::cout << my_damage << std::endl;
             auto health = manager.getComponent<Health>(entity_collided_with);
             health->takeDamage(my_damage);
+            apply_weapon_effect(type, entity_collided_with);
+
             Game::Instance()->get_mngr()->setAlive(_ent, pierce_number-- > 0);
         }
     }
 }
-
 bool bullet_collision_component::check_if_valid_collision(ecs::entity_t ent_col)
 {
     switch (collision_filter)
@@ -57,7 +58,20 @@ bool bullet_collision_component::check_if_valid_collision(ecs::entity_t ent_col)
     }
 }
 
+void bullet_collision_component::apply_weapon_effect(GameStructs::WeaponType type, ecs::entity_t target)
+{
+    auto& manager = *Game::Instance()->get_mngr();
 
+    switch (type) {
+    case GameStructs::WeaponType::RAMP_CANON: {
+        auto player = manager.getHandler(ecs::hdlr::PLAYER);
+        manager.getComponent<ManaComponent>(player)->change_mana(1);
+        break;
+    }
+    default:
+        break;
+    }
+}
 
 void ratatouille_collision_component::on_contact(const collision_manifold& tm) {
     ecs::entity_t entity_collided_with = (_ent == tm.body0) ? tm.body1 : tm.body0;

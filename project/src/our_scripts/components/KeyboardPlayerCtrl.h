@@ -1,6 +1,7 @@
 #pragma once
 #include "../../ecs/Component.h" 
 #include <SDL.h>
+#include <unordered_map>
 
 class Transform;
 class Health;
@@ -24,6 +25,13 @@ public:
 	inline Vector2D get_reticle_position() {
 		return _mouse_pos;
 	}
+#ifdef GENERATE_LOG
+	int times_m2_used_cards = 0;
+	int times_m2_failed_to_use_cards = 0;
+	int times_m1_used = 0;
+	std::unordered_map<std::string, uint8_t> cards_used_this_round;
+	std::unordered_map<std::string, uint8_t> cards_discarded_this_round;
+#endif
 private:
 	SDL_Scancode _left;
 	SDL_Scancode _right;

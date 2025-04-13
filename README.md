@@ -21,11 +21,14 @@
 1. [Resumen](#1-resumen)  
    1.1. [Descripción](#11-descripción)  
    1.2. [Género](#12-género)  
-   1.3. [Setting](#13-setting)  
-   1.4. [Características principales](#14-características-principales)  
+   1.3. [Público objetivo](#13-público-objetivo)  
+   1.4. [Setting](#14-setting)  
+   1.5. [Características principales](#15-características-principales)  
+
 2. [Gameplay](#2-gameplay)  
    2.1. [Objetivo del juego](#21-objetivo-del-juego)  
    2.2. [Core loops](#22-core-loops)  
+
 3. [Mecánicas](#3-mecánicas)  
    3.1. [Movimiento](#31-movimiento)  
    3.2. [Maná](#32-maná)  
@@ -34,17 +37,25 @@
    3.5. [Armas](#35-armas)  
    3.6. [Oleadas](#36-oleadas)  
    3.7. [Recompensas](#37-recompensas)  
+   3.8. [Objetos Míticos](#38-objetos-míticos)  
+   3.9. [Vida](#39-vida)  
+
 4. [Interfaz](#4-interfaz)  
    4.1. [Controles](#41-controles)  
    4.2. [Cámara](#42-cámara)  
    4.3. [HUD](#43-hud)  
    4.4. [Menús](#44-menús)  
+
 5. [Mundo del juego](#5-mundo-del-juego)  
    5.1. [Personajes](#51-personajes)  
    5.2. [Niveles](#52-niveles)  
+
 6. [Experiencia de juego](#6-experiencia-de-juego)  
+
 7. [Estética y contenido](#7-estética-y-contenido)  
+
 8. [Referencias](#8-referencias)  
+
 
 
 ## 1. Resumen  
@@ -148,15 +159,9 @@ Si el arma tiene objetivo este será la retícula del jugador.
 - Número de disparos.  
 - Duración del ataque.  
 - Dispersión (en grados).  
-- Efectos adicionales (explosión, veneno, etc.).
-- 
-### 3.6. Artefactos
-Cada vez que el jugador recargue manualmente usará su artefacto. Los artefactos tienen cooldown y solo harán su efecto si al recargar no están en cooldown.
-El jugador empieza sin artefactos y podrá conseguirlos a lo largo de la partida. Solo puede llevar un único artefacto en todo momento.
-Los artefactos podrán tener efectos diversos desde lanzar proyectiles, hasta curación pasando por recargar inmediatamente al usarlos.
-Si un artefacto tiene objetivo este será la retícula del jugador.
+  
 
-### 3.7. Oleadas  
+### 3.6. Oleadas  
 El juego dispondrá en total de 10 oleadas. La duración aproximada de cada una es de 1 minuto, y se terminan al eliminar a todos los enemigos aparecidos con esta. 
 
 **Desarrollo de las oleadas**
@@ -176,7 +181,7 @@ Durante esta fase el cooldown del disparo del jugador se vuelve 0 y la recarga d
 En algunas ocasiones las oleadas mostrarán antes de comenzar un sprite con un texto y una imagen que evoquen a un evento de oleadas. Esto hace que las recompensas de esta oleada sean de mayor rareza o calidad, y esta oleada además dispondrá de un modificador en el campo de batalla, el jugador y/o los enemigos.
 
 
-### 3.8. Recompensas  
+### 3.7. Recompensas  
 
 Al completar una oleada, aparecerá un menú de recompensas. Este menú mostrará varias opciones, cada una con una descripción que se revelará al pasar sobre ella. El jugador podrá elegir solo una de las recompensas disponibles. Al elegir cualquiera de las recompensas el resto desaparecerán. 
 Si al comenzar una nueva oleada no se ha escogido recompensa, empezarán a parpadear y 5 segundos después desaparecerán.
@@ -208,7 +213,7 @@ Aparecerán 3 recompensas de Boss adicionales con otro color. En este caso podem
 - *Objetos Míticos:* Otorga estadísticas o pasivas que modifican en gran medida como funcionará la build del jugador. Se consiguen como recompensas al eliminar a un Boss.
 
 
-### 3.9. Objetos Míticos
+### 3.8. Objetos Míticos
 Los objetos míticos pueden modificar el playstyle del jugador en gran medida
 Los objetos míticos se consiguen como recompensa al eliminar a un Boss en la 5ª oleada [y antes de la decima oleada].
 Siempre tienen un efecto positivo y uno perjudicial similar a los objetos lunares del RoR 2.
@@ -217,7 +222,7 @@ Algunos ejemplos de objetos míticos podrían ser:
 - Reduce el cd de tu artefacto a la mitad. Cada vez que salga de enfriamiento se recargará manualmente de inmediato usandolo en el proceso
 - Reduce tu vida a la mitad. Cada vez que elimines a un enemigo ganas el 20% de su vida como escudo.
 
-### 3.10. Vida
+### 3.9. Vida
 El jugador tiene una cantidad finita y determinada de vida. Hay vida máxima y la vida no puede exceder este valor, pero la vida máxima puede cambiar al coger objetos míticos.
 Hay 2 parametros distintos que componen la vida del jugador: El escudo y la salud.
 - *Escudo:* El jugador no tiene escudo de base, pero lo puede obtener con objetos, cartas o armas. El escudo se reduce en 1, 2 veces por segundo. Al recibir daño primero se sustrae el daño de este, y el daño excesivo pasa a hacer daño a la vida.
@@ -265,14 +270,19 @@ Tiene fijado al personaje en el centro, pero cuando este se acerque a las esquin
 ### 5.1. Personajes  
 - **Personajes:** Gatos.
   
-  <img src="https://github.com/UCM-FDI-DISIA/CrazyPawPals/blob/main/docs/img/bocetoPersonaje1.png" alt="Boceto personaje" width="100" />
+  <img src="https://github.com/UCM-FDI-DISIA/CrazyPawPals/blob/main/docs/img/bocetoPersonaje1.png" alt="Boceto personaje1" width="100" />
+  <img src="https://github.com/UCM-FDI-DISIA/CrazyPawPals/blob/main/docs/img/bocetoPersonaje2.png" alt="Boceto personaje2" width="100" />
 
 - **Enemigos:**  
-  - Tipo 1: SarnoRata (ataque en área).  
-  - Tipo 2: MichiMafioso (disparo de proyectiles).
-  - Tipo 3: PlimPlim (disparo de proyectiles).
-  - Tipo 4: Boom  (ataque en área).
-  - Miniboss 1: Jefe de la CatKuza (patrones de ataque complejos).  
+    - _Tipo 1:_ SarnoRata (ataque en área): Se acerca al jugador y ataca en área circular.
+    - _Tipo 2:_ MichiMafioso (disparo de proyectiles): Se aleja y dispara un proyectil.
+    - _Tipo 3:_ PlimPlim (disparo de proyectiles): Dispara tres proyectiles en arco.
+    - _Tipo 4:_ Boom (ataque en área): Se acerca y explota.
+    - _Tipo 5:_ Ratatouille: Da vueltas alrededor del jugador, causando daño al chocarse.
+    - _Tipo 6:_ Basurero: Genera enemigos, y al explotar, invoca al Rey del Basurero, que lanza bolsas de basura que ralentizan al jugador.
+    
+    - _Miniboss 1:_ Jefe de la CatKuza: Patrones de ataque complejos.
+    - _Miniboss 2:_ SuperMichiMafioso: Patrones de ataque en área y genera Michis Mafiosos.
 
 ### 5.2. Niveles  
 Un único nivel con un mapa de tamaño 1.5-2 veces lo visible en pantalla. Cuyo único elemento son los bordes del escenario que no permiten al jugador avanzar más allá de estos.

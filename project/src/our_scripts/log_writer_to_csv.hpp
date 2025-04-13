@@ -1,3 +1,6 @@
+#ifdef GENERATE_LOG
+#pragma once
+
 #include "utils/Singleton.h"
 #include <chrono>
 #include <ctime>
@@ -62,10 +65,10 @@ private:
 		log_file = std::ofstream(name);
 		//log_file.open(name);
 		add_new_log("Game Started");
-		add_new_log("were all gonna dia", "i swear to god", "pls kill me");
 		return true;
 	}
 	inline ~log_writer_to_csv() {
 		log_file.close();
 	}
 };
+#endif

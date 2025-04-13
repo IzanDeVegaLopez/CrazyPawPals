@@ -15,6 +15,9 @@
 #include "../../our_scripts/components/rendering/ImageForButton.h"
 #include "../../our_scripts/components/cards/RewardDataComponent.h"
 #include "../../our_scripts/components/Health.h" 
+#ifdef GENERATE_LOG
+#include "../../our_scripts/log_writer_to_csv.hpp"
+#endif
 
 #include <iostream>
 
@@ -44,6 +47,10 @@ void RewardScene::enterScene()
     refresh_rewards();
     check_number();
     Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::REWARDSCENE);
+#ifdef GENERATE_LOG
+    log_writer_to_csv::Instance()->add_new_log();
+    log_writer_to_csv::Instance()->add_new_log("ENTERED REWARDS SCENE");
+#endif
 }
 
 void RewardScene::exitScene()
@@ -90,6 +97,10 @@ void RewardScene::exitScene()
     _activate_confirm_button = false;
     _activate_exchange_button = false;
     _activate_heal = false;
+#ifdef GENERATE_LOG
+    log_writer_to_csv::Instance()->add_new_log("EXIT REWARDS SCENE");
+    log_writer_to_csv::Instance()->add_new_log();
+#endif
 }
 
 //method to get a unique card (used to prevent repeated rewards)

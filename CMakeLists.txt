@@ -81,6 +81,7 @@ project(CrazyPawPals)
         PRIVATE
         -D RIGIDBODY_COMPONENT_DEGEN_RESTITUTION_OFF
         -DDBG_COLLISIONS=false
+        #-DGENERATE_LOG
     )
     
     target_include_directories(

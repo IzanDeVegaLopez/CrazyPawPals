@@ -29,9 +29,13 @@
 #include "scenes/GameOverScene.h"
 #include "scenes/RewardScene.h"
 #include "scenes/TutorialScene.h"
-#include "../our_scripts/log_writer_to_csv.hpp"
+#include "scenes/VictoryScene.h"
 #include "scenes/MythicScene.h"
-#include "scenes/UpgradeScene.h"
+
+
+#ifdef GENERATE_LOG
+#include "../our_scripts/log_writer_to_csv.hpp"
+#endif
 
 
 using namespace std;
@@ -54,9 +58,10 @@ Game::~Game() {
 	// release SLDUtil if the instance was created correctly.
 	if (SDLUtils::HasInstance())
 		SDLUtils::Release();
-
+#ifdef GENERATE_LOG
 	if (log_writer_to_csv::HasInstance())
 		log_writer_to_csv::Release();
+#endif
 
 }
 
@@ -83,11 +88,13 @@ bool Game::init() {
 			<< std::endl;
 		return false;
 	}
+#ifdef GENERATE_LOG
 	if (!log_writer_to_csv::Init()) {
 		std::cerr << "Something went wrong while initializing log_writer_to_csv"
 			<< std::endl;
 		return false;
 	}
+#endif
 	
 	// enable the cursor visibility
 	SDL_ShowCursor(SDL_ENABLE);
@@ -118,9 +125,6 @@ bool Game::init() {
 	_scenes[SELECTIONMENU] = new SelectionMenuScene();
 	_scenes[SELECTIONMENU]->initScene();
 
-	_scenes[GAMEOVER] = new GameOverScene();
-	_scenes[GAMEOVER]->initScene();
-	
 	_scenes[REWARDSCENE] = new RewardScene();
 	_scenes[REWARDSCENE]->initScene();
 
@@ -129,12 +133,15 @@ bool Game::init() {
 
 	//_scenes[UPGRADESCENE] = new UpgradeScene();
 	//_scenes[UPGRADESCENE]->initScene();
+	_scenes[GAMEOVER] = new GameOverScene();
+	_scenes[GAMEOVER]->initScene();
+	
+	_scenes[VICTORY] = new VictoryScene(); //? por que no funciona VictoryScene()
+	_scenes[VICTORY]->initScene();
 
 	change_Scene(MAINMENU);
 	return true;
 }
-
-
 
 void Game::start() {
 

@@ -8,7 +8,7 @@ class Deck;
 class Health;
 class TutorialScene : public event_system::event_receiver,public Scene
 {
-	enum class TutorialState { //para para se un pop up a otro
+	enum class TutorialState { //para pasar de un pop up a otro
 		NONE,
 		NEXT_POP_UP,
 		WAIT_FOR_ACTION,
@@ -47,5 +47,5 @@ private:
 	bool _enemy_killed = false;
 
 	void create_pop_up();
-	void create_change_scene_button(const GameStructs::ButtonProperties& bp, Game::State nextScene);
+	ecs::entity_t create_change_scene_button(const GameStructs::ButtonProperties& bp, Game::State nextScene);
 };

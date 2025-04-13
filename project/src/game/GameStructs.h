@@ -6,6 +6,7 @@
 class Card;
 namespace GameStructs {
 	enum WeaponType {
+		DEFAULT,
 		REVOLVER,
 		RAMPAGE,
 		PUMP_SHOTGUN,
@@ -38,7 +39,7 @@ namespace GameStructs {
 		float width = 40;
 		float height = 40;
 		std::string sprite_key;
-		WeaponType weapon_type;
+		WeaponType weapon_type = DEFAULT;
 		collide_with collision_filter;
 	};
 	struct ButtonProperties {

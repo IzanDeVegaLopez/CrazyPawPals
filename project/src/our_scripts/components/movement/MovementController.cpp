@@ -69,6 +69,10 @@ void MovementController::update(uint32_t delta_time)
 		float accelRate = (expected_speed.magnitude() - _tr->getDir().magnitude() < 0 || abs(expected_speed.angle(_tr->getDir())) > 15) ? _decceleration : _acceleration;
 		accelRate *= delta_time / 1000.0f;
 		_tr->add_directional_speed(speed_dif * accelRate);
+#ifdef GENERATE_LOG
+		total_movement += _tr->getSpeed(); 
+#endif
+
 	}
 
 	/*

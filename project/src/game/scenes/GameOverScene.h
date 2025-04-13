@@ -16,4 +16,5 @@ public:
 
 private:
 	void create_enter_button();
+	void create_exit_button();
 };

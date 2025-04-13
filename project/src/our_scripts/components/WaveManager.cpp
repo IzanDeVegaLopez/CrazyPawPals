@@ -9,6 +9,15 @@
 #include "../wave_events/no_event.hpp"
 #include "../wave_events/ice_skating_event.hpp"
 #include "../wave_events/star_shower_event.hpp"
+#include "../log_writer_to_csv.hpp"
+
+#ifdef GENERATE_LOG
+#include "Health.h"
+#include "cards/Mana.h"
+#include "cards/Deck.hpp"
+#include "KeyboardPlayerCtrl.h"
+#include "movement/MovementController.h"
+#endif
 
 // 1 segundo = 1000 ticks (ms)
 WaveManager::WaveManager() :
@@ -30,46 +39,9 @@ WaveManager::~WaveManager() {
 
 void
 WaveManager::initComponent() {
-    //_tdi = Game::Instance()->get_mngr()->getComponent<transformless_dyn_image>(_ent);
-    //assert(_tdi != nullptr);
-    //TODO: cambiar esto por _ent posiblemente
 	fog = Game::Instance()->get_mngr()->getComponent<Fog>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::FOGGROUP));
     assert(fog != nullptr);
-
-    
-    //_currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
-    //choose_new_event();
 }
-/*
-void 
-WaveManager::update(uint32_t delta_time) {
-    _currentWaveTime = sdlutils().virtualTimer().currRealTime() - _currentWaveInitTime;
-    
-
-    //if(_current_wave_event != nullptr)
-    _current_wave_event->update(delta_time);
-
-    if (areAllEnemiesDead()) {
-        enterRewardsMenu();
-    }
-
-    if (_waveActive) {
-        // Verificar si ha pasado un minuto de oleada
-        // Esto solo pasa una vez por oleada, pero en todas pasa
-        if (_currentWaveTime > _waveTime) {
-            std::cout << "Se acabo el tiempo"<< std::endl;
-            if (!areAllEnemiesDead()) {
-                activateFog(); // Activar la niebla si no se han eliminado todos los enemigos
-            }
-            _waveActive = false; // Finalizar la oleada, (post oleada, matar enemigos restantes, aparece niebla)
-        }
-    }
-    else if (!_waveActive && fog->getFogActive() == false){
-        // Iniciar una nueva oleada
-        spawnWave();
-    }
-}
-*/
 
 bool WaveManager::can_spawn_next_enemy()
 {
@@ -88,14 +60,13 @@ void WaveManager::initialize_next_wave_params(bool normal_wave)
 {
     tokens_for_this_wave = _currentWave * spawn_tokens_gained_per_wave + spawn_tokens_at_wave_0;
 
-
     uint8_t cheaper_enemy;
     for (uint8_t i = 0; i < 3; ++i) {
         uint8_t j = 0;
         do {
             j = 0;
             //Chooses new random enemy
-            _enemy_types_for_current_wave[i] = sdlutils().rand().nextInt(0, (int)super_michi_mafioso);
+            _enemy_types_for_current_wave[i] = sdlutils().rand().nextInt(0, (int)rata_basurera);
         } while (
             j < i && //This is false for (i==0)
             _enemy_types_for_current_wave[j] != _enemy_types_for_current_wave[i] && //This is false if enemy chosen for index 1 || 2 is alredy taken in index 0
@@ -122,32 +93,40 @@ void WaveManager::spawn_next_group_of_enemies()
     tokens_for_this_wave -= enemy_spawn_data[_enemy_types_for_current_wave[index]].enemies_group_spawn_cost;
     //spawn enemies
     enemy_spawn_caller* esc;
-    
+    std::string tipoEnemigo;
     switch ((enemyType)_enemy_types_for_current_wave[index])
     {
         case sarno_rata:
             esc = new enemy_spawn_caller([](Vector2D v) {GameScene::spawn_sarno_rata(v); });
+            tipoEnemigo = "sarno rata";
             break;
         case michi_mafioso:
             esc = new enemy_spawn_caller([](Vector2D v) {GameScene::spawn_michi_mafioso(v); });
+            tipoEnemigo = "michi mafioso";
             break;
         case plim_plim:
             esc = new enemy_spawn_caller([](Vector2D v) {GameScene::spawn_plim_plim(v); });
+            tipoEnemigo = "plim plim";
             break;
         case boom:
             esc = new enemy_spawn_caller([](Vector2D v) {GameScene::spawn_boom(v); });
+            tipoEnemigo = "boom";
             break;
         case ratatouille:
             esc = new enemy_spawn_caller([](Vector2D v) {GameScene::spawn_ratatouille(v); });
+            tipoEnemigo = "ratatouille";
             break;
         case catkuza:
             esc = new enemy_spawn_caller([](Vector2D v) {GameScene::spawn_catkuza(v); });
+            tipoEnemigo = "catkuza";
             break;
         case super_michi_mafioso:
             esc = new enemy_spawn_caller([](Vector2D v) {GameScene::spawn_super_michi_mafioso(v); });
+            tipoEnemigo = "super michi mafioso";
             break;
         case rata_basurera:
             esc = new enemy_spawn_caller([](Vector2D v) {GameScene::spawn_rata_basurera(v); });
+            tipoEnemigo = "rata basurera";
             break;
         default: {
             assert(false && "unreachable");
@@ -158,6 +137,10 @@ void WaveManager::spawn_next_group_of_enemies()
     for (uint8_t i = 0; i < enemy_spawn_data[_enemy_types_for_current_wave[index]].number_of_enemies_simultaneous_spawn; ++i) {
         esc->spawn_callback();
     }
+#ifdef GENERATE_LOG
+    log_writer_to_csv::Instance()->add_new_log("SPAWN ENEMIES", "TIPO", tipoEnemigo, "Numero", std::to_string(enemy_spawn_data[_enemy_types_for_current_wave[index]].number_of_enemies_simultaneous_spawn));
+#endif
+
     delete esc;
     _numEnemies += enemy_spawn_data[_enemy_types_for_current_wave[index]].number_of_enemies_simultaneous_spawn;
     //sets next spawn time
@@ -180,9 +163,9 @@ void WaveManager::update(uint32_t delta_time) {
     if (_currentWaveTime > 50 * 1000 && !is_wave_finished()) {
         activateFog();
     }
-
-    //spawns fog after 50 secs
-    //when all enemies are killed wave finishes
+#ifdef GENERATE_LOG
+    WaveManager::_ticks_on_wave++;
+#endif
 }
 //---------------------------------------------------------------------------------------------------------------------------------
 
@@ -216,6 +199,9 @@ void WaveManager::start_new_wave()
     _enemiesSpawned = 0;
     _enemiesKilled = 0;
     _numEnemies = 0;
+#ifdef GENERATE_LOG
+    WaveManager::_ticks_on_wave = 1;
+#endif
     fog->setFog(false);
 
     auto& mngr = *Game::Instance()->get_mngr();
@@ -235,7 +221,40 @@ void WaveManager::reset_wave_manager()
 
 void WaveManager::endwave()
 {
-    //std::cout << "oleada superada con éxito meow" << std::endl;
+#ifdef GENERATE_LOG
+    log_writer_to_csv::Instance()->add_new_log();
+    log_writer_to_csv::Instance()->add_new_log("WAVE", _currentWave, "FINISHED");
+    auto player = Game::Instance()->get_mngr()->getEntities(ecs::grp::PLAYER)[0];
+    auto player_hp = Game::Instance()->get_mngr()->getComponent<Health>(player);
+    auto player_mana = Game::Instance()->get_mngr()->getComponent<ManaComponent>(player);
+    auto player_deck = Game::Instance()->get_mngr()->getComponent<Deck>(player);
+    auto player_keyboard_controller = Game::Instance()->get_mngr()->getComponent<KeyboardPlayerCtrl>(player);
+    auto player_movement_controller = Game::Instance()->get_mngr()->getComponent<MovementController>(player);
+    log_writer_to_csv::Instance()->add_new_log("VIDA PLAYER", "CURRENT", player_hp->getHealth(), "MAX", player_hp->getMaxHealth());
+    log_writer_to_csv::Instance()->add_new_log("ENEMIGOS SPAWNEADOS", _numEnemies);
+    log_writer_to_csv::Instance()->add_new_log("MANA", "MID", player_mana->get_mana_mid(), "MAX", player_mana->get_mana_max());
+    log_writer_to_csv::Instance()->add_new_log("TIMES RELOADED", std::to_string(player_deck->times_reloaded));
+    log_writer_to_csv::Instance()->add_new_log("TIMES M1 USED", player_keyboard_controller->times_m1_used);
+    log_writer_to_csv::Instance()->add_new_log("TIMES M2 USED", player_keyboard_controller->times_m2_used_cards, "TIMES M2 COULDNT USE CARD", player_keyboard_controller->times_m2_failed_to_use_cards);
+    log_writer_to_csv::Instance()->add_new_log("DISTANCIA RECORRIDA", player_movement_controller->total_movement);
+    log_writer_to_csv::Instance()->add_new_log("USOS DE CADA CARTA EN ESTA RONDA");
+    for (auto c : player_keyboard_controller->cards_used_this_round) {
+        log_writer_to_csv::Instance()->add_new_log(c.first,std::to_string(c.second));
+    }
+    log_writer_to_csv::Instance()->add_new_log("DESCARTES DE CADA CARTA ESTA RONDA");
+    for (auto c : player_keyboard_controller->cards_discarded_this_round) {
+        log_writer_to_csv::Instance()->add_new_log(c.first, std::to_string(c.second));
+    }
+    player_mana->reset_mana_mid();
+    player_deck->times_reloaded = 0;
+    player_keyboard_controller->times_m1_used = 0;
+    player_keyboard_controller->times_m2_used_cards = 0;
+    player_keyboard_controller->times_m2_failed_to_use_cards = 0;
+    player_keyboard_controller->cards_used_this_round = player_keyboard_controller->cards_discarded_this_round = std::unordered_map<std::string, uint8_t>();
+    player_movement_controller->total_movement = 0;
+
+#endif
+
     _current_wave_event->end_wave_callback();
     _currentWave++;
     _all_enemies_already_spawned = false;

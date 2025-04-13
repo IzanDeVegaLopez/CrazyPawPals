@@ -7,6 +7,9 @@
 #include "../../../rendering/card_rendering.hpp"
 
 #include "../../card_system/PlayableCards.hpp"
+#ifdef GENERATE_LOG
+#include "../../log_writer_to_csv.hpp"
+#endif
 #include <algorithm>
 
 
@@ -128,6 +131,14 @@ std::pair<bool, Card*> Deck::mill() noexcept
 void Deck::reload() noexcept
 {
 	if (!_is_reloading) {
+#ifdef GENERATE_LOG
+		if (empty_hand())
+			log_writer_to_csv::Instance()->add_new_log("RELOAD STARTED", "AUTOMATIC RELOAD");
+		else {
+			log_writer_to_csv::Instance()->add_new_log("RELOAD STARTED", "MANUAL RELOAD", "CARDS LEFT", _draw_pile.card_list().size()+1, "CARD ON HAND", _hand->get_name());
+		}
+		times_reloaded++;
+#endif
 		//TODO -> block player action
 		_is_reloading = true;
 		_time_till_reload_finishes = _reload_time;

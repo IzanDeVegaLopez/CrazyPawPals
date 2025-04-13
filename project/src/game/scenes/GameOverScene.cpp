@@ -17,6 +17,9 @@
 #include "../../our_scripts/components/cards/Deck.hpp"
 #include "../../our_scripts/components/rendering/Image.h"
 #include "../../our_scripts/components/rendering/ImageForButton.h"
+#ifdef GENERATE_LOG
+#include "../../our_scripts/log_writer_to_csv.hpp"
+#endif
 
 #include <iostream>
 #include <typeinfo>
@@ -30,21 +33,30 @@ GameOverScene::~GameOverScene()
 void GameOverScene::initScene() {
     create_static_background(&sdlutils().images().at("game_over"));
     create_enter_button();
+    create_exit_button();
 }
 void GameOverScene::enterScene()
 {
     Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::GAMEOVERSCENE);
+#ifdef GENERATE_LOG
+    log_writer_to_csv::Instance()->add_new_log();
+    log_writer_to_csv::Instance()->add_new_log("ENTERED GAMEOVER SCENE");
+#endif
 }
 
 void GameOverScene::exitScene()
 {
+#ifdef GENERATE_LOG
+    log_writer_to_csv::Instance()->add_new_log("EXIT GAMEOVER SCENE");
+    log_writer_to_csv::Instance()->add_new_log();
+#endif
 }
 void GameOverScene::render() {
     Scene::render();
 }
 void GameOverScene::create_enter_button() {
     GameStructs::ButtonProperties bp = {
-         { {0.375f, 0.65f},{0.3f, 0.125f} },
+         { {0.375f, 0.5f},{0.3f, 0.125f} },
          0.0f, "back"
     };
     auto* mngr = Game::Instance()->get_mngr();
@@ -58,4 +70,30 @@ void GameOverScene::create_enter_button() {
     }); 
     buttonComp->connectHover([buttonComp, imgComp, this]() { imgComp->_filter = true;});
     buttonComp->connectExit([buttonComp, imgComp, this]() { imgComp->_filter = false;});
+}
+
+void GameOverScene::create_exit_button()
+{
+    GameStructs::ButtonProperties bp = {
+       { {0.375f, 0.7f},{0.3f, 0.125f} },
+       0.0f, "exit_game"
+    };
+    auto* mngr = Game::Instance()->get_mngr();
+    auto e = create_button(bp);
+    auto buttonComp = mngr->getComponent<Button>(e);
+
+    auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
+
+    buttonComp->connectClick([buttonComp, imgComp, mngr]() {
+        imgComp->_filter = false;
+        Game::Instance()->set_exit(true);
+        });
+
+    buttonComp->connectHover([buttonComp, imgComp]() {
+        imgComp->_filter = true;
+        });
+
+    buttonComp->connectExit([buttonComp, imgComp]() {
+        imgComp->_filter = false;
+        });
 }

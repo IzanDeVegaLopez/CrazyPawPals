@@ -17,6 +17,9 @@
 #include "../../our_scripts/components/cards/Deck.hpp"
 #include "../../our_scripts/components/rendering/Image.h"
 #include "../../our_scripts/components/rendering/ImageForButton.h"
+#ifdef GENERATE_LOG
+#include "../../our_scripts/log_writer_to_csv.hpp"
+#endif
 
 #include <iostream>
 #include <typeinfo>
@@ -141,6 +144,10 @@ void SelectionMenuScene::reset() {
 void SelectionMenuScene::enterScene()
 {
     Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::SELECTIONMENUSCENE);
+#ifdef GENERATE_LOG
+    log_writer_to_csv::Instance()->add_new_log();
+    log_writer_to_csv::Instance()->add_new_log("ENTERED SELECTION MENU SCENE");
+#endif
     reset();
 }
 
@@ -160,6 +167,10 @@ void SelectionMenuScene::exitScene()
     auto playB = mngr->getHandler(ecs::hdlr::TOGAMEBUTTON);
     auto playImg = mngr->getComponent<ImageForButton>(playB);
     playImg->_filter = false;
+#ifdef GENERATE_LOG
+    log_writer_to_csv::Instance()->add_new_log("EXIT SELECTION MENU SCENE");
+    log_writer_to_csv::Instance()->add_new_log();
+#endif
 
 }
 
