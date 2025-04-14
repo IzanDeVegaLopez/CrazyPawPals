@@ -191,7 +191,7 @@ void MythicScene::create_reward_mythic_button(const GameStructs::ButtonPropertie
         else {
             //std::cout << "left click -> reward card button" << std::endl;
             if (_lm == nullptr) {
-                _lm->resize(1.1f);
+                imgComp->resize(1.1f);
             }
             else if (_lm != nullptr && _lm != imgComp) {
                 imgComp->resize(1.1f);
@@ -303,11 +303,11 @@ void MythicScene::create_mythic_selected_button(const GameStructs::ButtonPropert
             _selected = true;
             add_new_reward_mythic();
 
-            imgComp->destination_rect.position.x += 100.0f;
+            imgComp->destination_rect.position.x = 100.0f;
 
             auto imgGameScene = mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::NEXTROUNDMYTHIC));
-            imgGameScene->destination_rect.position = { 0.438f, 0.55f };
-            imgGameScene->swap_textures();
+            imgGameScene->destination_rect.position = { 0.4f, 0.35f };
+            imgGameScene->destination_rect.size = { 0.2f, 0.125f };
         }
         });
     buttonComp->connectHover([buttonComp, imgComp, this]() {
@@ -460,7 +460,10 @@ void MythicScene::create_next_round_button(const GameStructs::ButtonProperties& 
     auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
     auto buttonComp = mngr->getComponent<Button>(e);
 
-    buttonComp->connectClick([buttonComp, mngr, this]() { if (_selected) Game::Instance()->change_Scene(Game::GAMESCENE); });
+    buttonComp->connectClick([buttonComp, mngr, imgComp, this]() { if (_selected) {
+        Game::Instance()->change_Scene(Game::GAMESCENE);
+        imgComp->destination_rect.position.x = 2.0f;
+    }});
     buttonComp->connectHover([buttonComp, imgComp, this]() { imgComp->_filter = true;});
     buttonComp->connectExit([buttonComp, imgComp, this]() { imgComp->_filter = false;});
 }
