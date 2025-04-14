@@ -96,10 +96,10 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
         _my->add_mythic(new BloodClaw());
     }
     if (ihdlr.keyDownEvent() && ihdlr.isKeyDown(SDL_SCANCODE_Z)) {
-        _my->add_mythic(new CurtainReaper());
+        _my->add_mythic(new Incense());
     }
     if (ihdlr.keyDownEvent() && ihdlr.isKeyDown(SDL_SCANCODE_X)) {
-        _my->add_mythic(new ProfaneHotline());
+        _my->add_mythic(new ArcaneSurge());
     }
 
     if (ihdlr.keyDownEvent() && ihdlr.isKeyDown(SDL_SCANCODE_V)) {
