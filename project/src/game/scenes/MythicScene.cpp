@@ -40,7 +40,7 @@ void MythicScene::enterScene()
     ecs::entity_t player = mngr->getHandler(ecs::hdlr::PLAYER);
     mngr->addComponent<MythicComponent>(player); //QUITAR. QUE SE ANADA CUANDO SE CREE PLAYER
     MythicComponent* _m_mythics = mngr->getComponent<MythicComponent>(player);
-    std::vector<MythicItem*> pMythics = _m_mythics->get_mythics();
+    const std::vector<MythicItem*>& pMythics = _m_mythics->get_mythics();
     //refresh_my_mythic(pMythics);
     //refresh_mythics();
     Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::MYTHICSCENE);
@@ -101,12 +101,12 @@ ecs::entity_t MythicScene::create_mythic_button(const GameStructs::ButtonPropert
         if (_selected) return;
         std::cout << "hover -> Reward button: " << std::endl;
         //filter
-        imgComp->apply_filter(128, 128, 128);
+        imgComp->_filter = false;
         });
     buttonComp->connectExit([buttonComp, imgComp]() {
         std::cout << "exit -> Reward button: " << std::endl;
         //filter
-        imgComp->apply_filter(255, 255, 255);
+        imgComp->_filter = false;
         });
 
     return e;
@@ -162,12 +162,12 @@ void MythicScene::create_a_mythic(const GameStructs::ButtonProperties& bp)
     buttonComp->connectHover([buttonComp, imgComp]() {
         std::cout << "hover -> Mythic button: " << std::endl;
         //filter
-        imgComp->apply_filter(128, 128, 128);
+        imgComp->_filter = true;
         });
     buttonComp->connectExit([buttonComp, imgComp]() {
         std::cout << "exit -> Mythic button: " << std::endl;
         //filter
-        imgComp->apply_filter(255, 255, 255);
+        imgComp->_filter = false;
         });
 }
 
@@ -321,7 +321,7 @@ void MythicScene::create_reward_selected_button(const GameStructs::ButtonPropert
     buttonComp->connectClick([buttonComp, this, imgComp] {
         //we only select a reward if previously we have chosen something
         if (_lr != nullptr && !_selected) {
-            _lr->apply_filter(255, 255, 255);
+            _lr->_filter = false;
             _lr->swap_textures();
             _selected = true;
             //add_new_reward_card();
@@ -331,12 +331,12 @@ void MythicScene::create_reward_selected_button(const GameStructs::ButtonPropert
         if (_selected) return;
         std::cout << "hover -> Reward selected button: " << std::endl;
         //filter
-        imgComp->apply_filter(128, 128, 128);
+        imgComp->_filter = true;
         });
     buttonComp->connectExit([buttonComp, imgComp, this]() {
         std::cout << "exit -> Reward selected button: " << std::endl;
         //filter
-        imgComp->apply_filter(255, 255, 255);
+        imgComp->_filter = false;
         });
 }
 

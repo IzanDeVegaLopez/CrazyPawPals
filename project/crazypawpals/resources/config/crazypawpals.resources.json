@@ -457,20 +457,20 @@
             "file": "resources/images/ui/mythics/mythic.png"
         },
         {
-            "id": "m_blood_claw",
+            "id": "mythic_blood_claw",
             "file": "resources/images/ui/mythics/m_blood_claw.png"
         },
         {
-            "id": "m_curtain_reaper",
+            "id": "mythic_curtain_reaper",
             "file": "resources/images/ui/mythics/m_curtain_reaper.png"
         },
         {
-            "id": "m_blood_pact",
-            "file": "resources/images/ui/mythics/m_blood_pact.png"
+          "id": "mythic_blood_pact",
+          "file": "resources/images/ui/mythics/m_blood_pact.png"
         },
         {
-            "id": "m_incense",
-            "file": "resources/images/ui/mythics/m_incense.png"
+          "id": "mythic_incense",
+          "file": "resources/images/ui/mythics/m_incense.png"
         },
         {
             "id": "meteroid",

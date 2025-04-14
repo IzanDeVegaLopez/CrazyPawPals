@@ -17,6 +17,7 @@ public:
 	void enterScene() override;
 	void exitScene() override;
 	void update(uint32_t delta_time) override;
+	static void will_have_mythic(bool state) { _mythic = state; };
 private:
     ecs::entity_t create_card_button(const GameStructs::CardButtonProperties& bp);
 	//methods to show your actual deck info
@@ -39,7 +40,7 @@ private:
 	ecs::entity_t _chosen_card;
 	bool _exchange;
 
-
+	static bool _mythic;
 	//method to select a card randomly
 	std::string select_card(GameStructs::CardType ct);
 	std::pair<std::string, GameStructs::CardType> get_unique_card(std::unordered_set<std::string>& appeared_cards);

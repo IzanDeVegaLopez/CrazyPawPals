@@ -1,3 +1,4 @@
+#pragma region includes
 #include "GameScene.h"
 
 #include "../Game.h"
@@ -65,6 +66,7 @@
 #include "../../our_scripts/card_system/CardUpgrade.hpp"
 
 #include "../../our_scripts/components/MythicComponent.h"
+#include "RewardScene.h"
 #ifdef GENERATE_LOG
 #include "../../our_scripts/log_writer_to_csv.hpp"
 #endif
@@ -72,6 +74,7 @@
 #include <iostream>
 #include <string>
 
+#pragma endregion
 
 GameScene::GameScene() : Scene(ecs::scene::GAMESCENE){
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::change_deccel, this, &event_system::event_receiver::event_callback0);
@@ -167,7 +170,6 @@ ecs::entity_t GameScene::create_environment(ecs::sceneId_t scene) {
 	return environment;
 }
 
-
 void GameScene::initScene() {
 	id_component::reset();
 	const rendering::camera_creation_descriptor_flags flags =
@@ -217,7 +219,11 @@ void GameScene::enterScene()
 	manager.addComponent<KeyboardPlayerCtrl>(player);
 	manager.addComponent<GamePadPlayerCtrl>(player);
 	manager.addComponent<PlayerHUD>(player);
-	manager.getComponent<WaveManager>(manager.getHandler(ecs::hdlr::WAVE))->start_new_wave();
+	auto wm = manager.getComponent<WaveManager>(manager.getHandler(ecs::hdlr::WAVE));
+	wm->start_new_wave();
+	//get the current event
+	auto e = wm->get_current_event();
+	RewardScene::will_have_mythic(e != NONE);
 	manager.getComponent<HUD>(manager.getHandler(ecs::hdlr::HUD_ENTITY))->start_new_wave();
 #ifdef GENERATE_LOG
 	log_writer_to_csv::Instance()->add_new_log();

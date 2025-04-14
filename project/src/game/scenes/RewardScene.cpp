@@ -20,6 +20,7 @@
 #endif
 
 #include <iostream>
+bool RewardScene::_mythic = false;
 
 RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr),
 _heal(false), _lr(nullptr),
@@ -522,7 +523,8 @@ void RewardScene::create_reward_selected_button(const GameStructs::ButtonPropert
             _selected = true;
             add_new_reward_card();
         }
-        Game::Instance()->change_Scene(Game::GAMESCENE);
+        if (!_mythic) Game::Instance()->change_Scene(Game::GAMESCENE);
+        else Game::Instance()->change_Scene(Game::MYTHICSCENE);
     });
     buttonComp->connectHover([buttonComp, imgComp, this]() {
         if (_selected) return;

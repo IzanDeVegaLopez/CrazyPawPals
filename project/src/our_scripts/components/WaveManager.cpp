@@ -315,12 +315,13 @@ void WaveManager::choose_new_event()
     default: {
         assert(false && "unrachable"); // event_choser_went_wrong
         std::exit(EXIT_FAILURE);
-    }
+        }
     }
 
     
 
     _current_wave_event->start_wave_callback();
+
     //TODO elegir evento y llamar a la función de iniciar
 }
 
