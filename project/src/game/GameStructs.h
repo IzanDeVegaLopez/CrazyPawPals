@@ -4,6 +4,7 @@
 #include "../rendering/rect.hpp"
 #include <list>
 class Card;
+class MythicItem;
 namespace GameStructs {
 	enum WeaponType {
 		DEFAULT,
@@ -67,6 +68,12 @@ namespace GameStructs {
 		//FULGUR,
 		QUICK_FEET,
 		LAST_CARD,
+	};
+	struct MythicButtonProperties : public ButtonProperties {
+		MythicItem* iterator;
+		// constructor
+		MythicButtonProperties(const rect_f32& rect, float rot, const std::string& sprite_key, ecs::grpId_t ID, MythicItem* it)
+			: ButtonProperties{ rect, rot, sprite_key, ID }, iterator(it) {}
 	};
 	enum MythicType {
 		BLOODCLAW,

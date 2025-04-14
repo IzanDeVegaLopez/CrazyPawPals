@@ -381,6 +381,9 @@ void RewardScene::create_a_deck_card(const GameStructs::CardButtonProperties& bp
     auto e = create_card_button(bp);
     auto buttonComp = mngr->getComponent<CardButton>(e);
     auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
+    auto ri = mngr->getComponent<transformless_dyn_image>(mngr->getHandler(ecs::hdlr::REWARDINFO));
+    mngr->addComponent<RewardDataComponent>(e, bp.sprite_key);
+
     buttonComp->connectClick([buttonComp, imgComp, this, bp] {
         if (_selected || _heal) return;
         imgComp->destination_rect.size = { imgComp->_original_w,  imgComp->_original_h };
@@ -396,19 +399,22 @@ void RewardScene::create_a_deck_card(const GameStructs::CardButtonProperties& bp
         }
         });
 
-    buttonComp->connectHover([buttonComp, imgComp, this]() {
+    buttonComp->connectHover([buttonComp, imgComp, mngr, ri, e,this]() {
         //std::cout << "hover -> Reward button: " << std::endl;
         //filter
         if (_selected) return;
         imgComp->_filter = true;
+        auto& sp = buttonComp->Name();
+        if (sp != "") ri->set_texture(&sdlutils().images().at(sp + "_info"));
         /*imgComp->destination_rect.position.y -= 0.125f;*/
        /* imgComp->destination_rect.size = { imgComp->destination_rect.size.x * 1.25f,  imgComp->destination_rect.size.y * 1.25f };*/
         });
-    buttonComp->connectExit([buttonComp, imgComp]() {
+    buttonComp->connectExit([buttonComp, imgComp, mngr, ri]() {
         //std::cout << "exit -> Reward button: " << std::endl;
         /*imgComp->destination_rect.position.y += 0.125f;*/
         //filter
         imgComp->_filter = false;
+        ri->set_texture(&sdlutils().images().at("initial_info"));
         //imgComp->destination_rect.size = { imgComp->destination_rect.size.x / 1.25f,  imgComp->destination_rect.size.y / 1.25f };
         });
 }
@@ -458,7 +464,7 @@ void RewardScene::create_my_deck_cards() {
 
 void RewardScene::refresh_my_deck_cards(const std::list<Card*>& cl) {
     auto* mngr = Game::Instance()->get_mngr();
-    auto infos = mngr->getEntities(ecs::grp::REWARDDECK);
+    auto& infos = mngr->getEntities(ecs::grp::REWARDDECK);
 
     auto itRewardInfo = infos.begin();
 
@@ -475,6 +481,7 @@ void RewardScene::refresh_my_deck_cards(const std::list<Card*>& cl) {
         auto buttonComp = mngr->getComponent<Button>(*itRewardInfo);
         if (buttonComp) {
             static_cast<CardButton*>(buttonComp)->set_it(c);
+            static_cast<CardButton*>(buttonComp)->set_name(typeName);
         }
         ++itRewardInfo;
     }

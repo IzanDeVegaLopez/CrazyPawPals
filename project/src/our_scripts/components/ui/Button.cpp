@@ -97,6 +97,10 @@ void Button::emitExit() const {
     }
 }
 
-CardButton::CardButton() : Button(), it(nullptr) {
+CardButton::CardButton() : Button(), it(nullptr), name() {
+
+}
+
+MythicButton::MythicButton() : Button(), it(nullptr), name() {
 
 }

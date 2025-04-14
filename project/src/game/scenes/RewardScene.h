@@ -17,7 +17,8 @@ public:
 	void enterScene() override;
 	void exitScene() override;
 	void update(uint32_t delta_time) override;
-	static void will_have_mythic(bool state) { _mythic = state; };
+	static void will_have_mythic(bool state) { 
+		_mythic = state; };
 private:
     ecs::entity_t create_card_button(const GameStructs::CardButtonProperties& bp);
 	//methods to show your actual deck info

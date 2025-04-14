@@ -2,66 +2,170 @@
 
 #include "../../our_scripts/components/ui/Button.h"
 #include "../GameStructs.h"
-#include "../../utils/Vector2D.h"
 #include "../../sdlutils/SDLUtils.h"
 #include "../../sdlutils/InputHandler.h"
 #include "../../ecs/Entity.h"
 
-#include "../../our_scripts/components/rendering/ImageForButton.h"
-#include "../../our_scripts/mythic/MythicItems.h"
-#include "../../our_scripts/mythic/MythicItem.h"
-#include "../../our_scripts/mythic/MythicDataComponent.h"
+#include "../../our_scripts/card_system/Card.hpp"
+#include "../../our_scripts/card_system/CardList.h" 
+#include "../../our_scripts/card_system/PlayableCards.hpp"
+#include "../../our_scripts/components/cards/Deck.hpp"
 #include "../../our_scripts/components/MythicComponent.h"
+#include "../../our_scripts/mythic/MythicItem.h"
+#include "../../our_scripts/mythic/MythicItems.h"
+#include "../../our_scripts/components/rendering/transformless_dyn_image.h" 
+#include "../../our_scripts/components/rendering/ImageForButton.h"
+#include "../../our_Scripts/mythic/MythicDataComponent.h"
+
+#ifdef GENERATE_LOG
+#include "../../our_scripts/log_writer_to_csv.hpp"
+#endif
 
 #include <iostream>
+MythicScene::MythicScene() : Scene(ecs::scene::MYTHICSCENE), _selected_mythic(nullptr), _last_my_mythic_img(nullptr),
+_lm(nullptr), _selected(false), _activate_confirm_button(false), _chosen_mythic(nullptr) {}
 
-MythicScene::MythicScene() : Scene(ecs::scene::MYTHICSCENE), _lr(nullptr), 
-_selected(false), _activate_confirm_button(false), _chosen_mythic(nullptr)
-{
-}
-
-MythicScene::~MythicScene()
-{
-}
-
-void MythicScene::initScene()
-{
-    //Background
+void MythicScene::initScene() {
     create_static_background(&sdlutils().images().at("reward"));
-    //Reward Buttons
-    create_reward_buttons();
-    //Mythics
-    create_my_mythic();
+    create_mythic_info();
+    create_reward_mythic_buttons();
+    create_my_mythics();
 }
 
 void MythicScene::enterScene()
 {
-    ecs::Manager* mngr = Game::Instance()->get_mngr();
-    ecs::entity_t player = mngr->getHandler(ecs::hdlr::PLAYER);
-    mngr->addComponent<MythicComponent>(player); //QUITAR. QUE SE ANADA CUANDO SE CREE PLAYER
-    MythicComponent* _m_mythics = mngr->getComponent<MythicComponent>(player);
-    const std::vector<MythicItem*>& pMythics = _m_mythics->get_mythics();
-    //refresh_my_mythic(pMythics);
-    //refresh_mythics();
-    Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::MYTHICSCENE);
+    auto* mngr = Game::Instance()->get_mngr();
+    auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
+    auto _m_mythics = mngr->getComponent<MythicComponent>(player);
+    auto& m = _m_mythics->get_mythics();
+    refresh_mythics();
+    refresh_my_mythics(m);
+    _activate_confirm_button = true;
+    Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::REWARDSCENE);
+#ifdef GENERATE_LOG
+    log_writer_to_csv::Instance()->add_new_log();
+    log_writer_to_csv::Instance()->add_new_log("ENTERED MYTHIC SCENE");
+#endif
 }
 
 void MythicScene::exitScene()
 {
+    auto* mngr = Game::Instance()->get_mngr();
+    auto cm = mngr->getHandler(ecs::hdlr::CONFIRMMYTHIC);
+
+    auto cImg = mngr->getComponent<ImageForButton>(cm);
+
+    cImg->destination_rect.position = { 0.438f, 0.55f };
+    cImg->_filter = false;
+    cImg->swap_textures();
+    cImg->_filter = false;
+
+    _lm->resize(1.0f/1.1f);
+
+    _lm = nullptr;
+    _selected = false;
+
+    _last_my_mythic_img = nullptr;
+    _selected_mythic = nullptr;
+
+    _chosen_mythic = nullptr;
+
+    _activate_confirm_button = false;
+#ifdef GENERATE_LOG
+    log_writer_to_csv::Instance()->add_new_log("EXIT MYTHIC SCENE");
+    log_writer_to_csv::Instance()->add_new_log();
+#endif
 }
 
-void MythicScene::update(uint32_t delta_time)
-{
-    Scene::update(delta_time);
-    if (!_activate_confirm_button && _lr != nullptr) {
-        auto mngr = Game::Instance()->get_mngr();
-        auto imgCompConfirm = mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::CONFIRMREWARD));
-        imgCompConfirm->swap_textures();
-        _activate_confirm_button = true;
+void MythicScene::create_mythic_info() {
+    auto e = create_entity(ecs::grp::UI,
+        _scene_ID,
+        new transformless_dyn_image({ { 0.315f,0.335f }, {0.4f,0.2f} },
+            0,
+            Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam,
+            &sdlutils().images().at("initial_info")));
+    Game::Instance()->get_mngr()->setHandler(ecs::hdlr::MYTHICINFO, e);
+}
+
+std::string MythicScene::select_mythic(GameStructs::MythicType wt) {
+    std::string s = "";
+    switch (wt)
+    {
+    case GameStructs::BLOODCLAW: s = "mythic_blood_claw";
+        break;
+    case GameStructs::PROFANEHOTLINE: s = "mythic_profane_hotline";
+        break;
+    case GameStructs::CURTAINREAPER: s = "mythic_curtain_reaper";
+        break;
+    case GameStructs::INCENSE: s = "mythic_incense";
+        break;
+    case GameStructs::ARCANESURGE: s = "mythic_arcane_surge";
+        break;
+    case GameStructs::BLOODPACT: s = "mythic_blood_pact";
+        break;
+    case GameStructs::PRETERNATURALFORCE: s = "mythic_preternatural_force";
+        break;
+    case GameStructs::CLAWFILE: s = "mythic_claw_file";
+        break;
+    case GameStructs::MEOWORNEVER: s = "mythic_meow_or_never";
+        break;
+    case GameStructs::ZOOMIESINDUCER: s = "mythic_zoomies_inducer";
+        break;
+    default:
+        break;
     }
+    return s;
 }
 
-ecs::entity_t MythicScene::create_mythic_button(const GameStructs::ButtonProperties& bp)
+std::pair<std::string, GameStructs::MythicType> 
+MythicScene::get_unique_mythic(std::unordered_set<std::string>& appeared_mythics) {
+    std::string sprite;
+    GameStructs::MythicType wt;
+    do {
+        wt = (GameStructs::MythicType)sdlutils().rand().nextInt(0, GameStructs::LAST_MYTHIC);
+        sprite = select_mythic(wt);
+    } while (appeared_mythics.find(sprite) != appeared_mythics.end()); // Repite si la carta ya apareciï¿½
+
+    appeared_mythics.insert(sprite);
+    return { sprite, wt };
+}
+
+void MythicScene::create_reward_mythic_buttons() {
+    float umbral = 0.2f;
+    GameStructs::ButtonProperties buttonPropTemplate = {
+        { {0.45f, 0.115f}, {0.125f, 0.2f} },
+        0.0f, "", ecs::grp::MYTHICOBJS
+    };
+
+    // Auxiliar set to check if we repeat some card
+    std::unordered_set<std::string> appeared_mythics;
+
+    //three card reward buttons
+    buttonPropTemplate.sprite_key = get_unique_mythic(appeared_mythics).first;
+    create_reward_mythic_button(buttonPropTemplate);
+
+    buttonPropTemplate.sprite_key = get_unique_mythic(appeared_mythics).first;
+    buttonPropTemplate.rect.position.x -= umbral;
+    create_reward_mythic_button(buttonPropTemplate);
+
+    buttonPropTemplate.sprite_key = get_unique_mythic(appeared_mythics).first;
+    buttonPropTemplate.rect.position.x += umbral * 2;
+    create_reward_mythic_button(buttonPropTemplate);
+
+    buttonPropTemplate.ID = ecs::grp::UI;
+    buttonPropTemplate.sprite_key = "confirm_reward";
+    buttonPropTemplate.rect.position = { 0.438f, 0.55f };
+    buttonPropTemplate.rect.size = { 0.15f, 0.075f };
+    create_mythic_selected_button(buttonPropTemplate);
+
+    //next round button
+    buttonPropTemplate.ID = ecs::grp::UI;
+    buttonPropTemplate.sprite_key = "enter_game"; 
+    buttonPropTemplate.rect.position = { 2.0f, 0.55f };
+    create_next_round_button(buttonPropTemplate); 
+}
+
+void MythicScene::create_reward_mythic_button(const GameStructs::ButtonProperties& bp)
 {
     auto* mngr = Game::Instance()->get_mngr();
     auto e = create_button(bp);
@@ -76,234 +180,108 @@ ecs::entity_t MythicScene::create_mythic_button(const GameStructs::ButtonPropert
         Game::Instance()->get_mngr()->getComponent<camera_component>(
             Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
     );
-
-    //used for change the sprite once a button is clicked
-    auto data = mngr->addComponent<MythicDataComponent>(e, bp.sprite_key);
+    //used to get the sprite key for show a specific info
+    mngr->addComponent<MythicDataComponent>(e, bp.sprite_key);
+    auto ri = mngr->getComponent<transformless_dyn_image>(mngr->getHandler(ecs::hdlr::MYTHICINFO));
 
     buttonComp->connectClick([buttonComp, imgComp, this, e]() {
         if (_selected) {
-            std::cout << "already selected" << std::endl;
+            //std::cout << "already selected" << std::endl;
         }
         else {
-            std::cout << "left click -> reward card button" << std::endl;
-            if (_lr == nullptr) {
-                resize(imgComp, 1.1f);
+            //std::cout << "left click -> reward card button" << std::endl;
+            if (_lm == nullptr) {
+                _lm->resize(1.1f);
             }
-            else if (_lr != nullptr && _lr != imgComp) {
-                resize(imgComp, 1.1f);
-                resize(_lr, 1.0f / 1.1f);
+            else if (_lm != nullptr && _lm != imgComp) {
+                imgComp->resize(1.1f);
+                _lm->resize(1.0f/1.1f);
             }
-            _lr = imgComp;
+            _lm = imgComp;
             _chosen_mythic = e;
         }
         });
-    buttonComp->connectHover([buttonComp, imgComp, this]() {
+    buttonComp->connectHover([mngr, buttonComp, imgComp, ri, e, this]() {
         if (_selected) return;
-        std::cout << "hover -> Reward button: " << std::endl;
-        //filter
-        imgComp->_filter = false;
-        });
-    buttonComp->connectExit([buttonComp, imgComp]() {
-        std::cout << "exit -> Reward button: " << std::endl;
-        //filter
-        imgComp->_filter = false;
-        });
-
-    return e;
-}
-
-void MythicScene::create_my_mythic()
-{
-    auto* mngr = Game::Instance()->get_mngr();
-
-    //Get Player´s mythics
-    auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
-    if (player && !mngr->hasComponent<MythicComponent>(player)) {
-        //when we add this
-        mngr->addComponent<MythicComponent>(player);
-    }
-
-    MythicComponent* _m_mythics = mngr->getComponent<MythicComponent>(player);
-    std::vector<MythicItem*> pMythics = _m_mythics->get_mythics();
-
-    float umbral = 0.1f;
-    GameStructs::ButtonProperties propTemplate = {
-        { {0.05f, 0.65f}, {0.1f, 0.175f} },
-        0.0f, "", ecs::grp::MYTHICOBJS
-    };
-
-    //Creates buttons related to player mythics
-    for (MythicItem* mi : pMythics) {
-        std::string typeName = typeid(*mi).name();
-        std::string prefix = "class ";
-        if (typeName.find(prefix) == 0) {  
-            typeName = typeName.substr(prefix.size()); 
-            for (int i = 0; i < typeName.size(); i++)
-            {
-                typeName = tolower(typeName[i]);
-            }
-        }
-        propTemplate.sprite_key = "mythic_" + typeName;
-        create_a_mythic(propTemplate);
-        propTemplate.rect.position.x += umbral;
-    }
-}
-
-void MythicScene::create_a_mythic(const GameStructs::ButtonProperties& bp)
-{
-    ecs::Manager* mngr = Game::Instance()->get_mngr();
-
-    //Button
-    auto e = create_button(bp);
-    auto buttonComp = mngr->getComponent<Button>(e);
-    auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
-    
-    //No need for connectClick (it does nothing)
-    buttonComp->connectHover([buttonComp, imgComp]() {
-        std::cout << "hover -> Mythic button: " << std::endl;
+        //std::cout << "hover -> Reward button: " << std::endl;
         //filter
         imgComp->_filter = true;
+        /*auto& sp = mngr->getComponent<MythicDataComponent>(e)->sprite();
+        ri->set_texture(&sdlutils().images().at(sp + "_info"));*/
+
         });
-    buttonComp->connectExit([buttonComp, imgComp]() {
-        std::cout << "exit -> Mythic button: " << std::endl;
+    buttonComp->connectExit([buttonComp, imgComp, ri]() {
+        //std::cout << "exit -> Reward button: " << std::endl;
         //filter
         imgComp->_filter = false;
+        /*ri->set_texture(&sdlutils().images().at("initial_info"));*/
         });
+
 }
 
-void MythicScene::refresh_my_mythic(const std::vector<MythicItem*> ml)
-{
+void MythicScene::refresh_mythics() {
     auto* mngr = Game::Instance()->get_mngr();
-    auto infos = mngr->getEntities(ecs::grp::MYTHICOBJS);
-
-    auto itMythicInfo = infos.begin();
-
-    //refresh my deck info and represent it
-    for (MythicItem* m : ml) {
-        //obtain each ones component
-        auto img = mngr->getComponent<transformless_dyn_image>(*itMythicInfo);
-
-        //Get texture name
-        std::string typeName = typeid(*m).name();
-        std::string prefix = "class ";
-        if (typeName.find(prefix) == 0) {
-            typeName = typeName.substr(prefix.size());
-            for (int i = 0; i < typeName.size(); i++)
-            {
-                typeName = tolower(typeName[i]);
-            }
-        }
-
-        //change to the newest texture
-        img->set_texture(&sdlutils().images().at("mythic_" + typeName));
-        ++itMythicInfo;
+    auto& mo = mngr->getEntities(ecs::grp::MYTHICOBJS);
+    auto player = mngr->getHandler(ecs::hdlr::PLAYER);
+    auto& pMythics = mngr->getComponent<MythicComponent>(player)->get_mythics();
+    std::unordered_set<std::string> appeared_mythics; 
+    //convert my mythic vector into an unordered set of string
+    for (auto m : pMythics) {
+        appeared_mythics.insert("mythic_"+m->get_name());
     }
-
-    //refresh rest of the deck infos (blank infos)
-    for (; itMythicInfo != infos.end(); ++itMythicInfo) {
-        auto img = mngr->getComponent<transformless_dyn_image>(*itMythicInfo);
-        img->set_texture(&sdlutils().images().at("initial_info")); //Change to emptyMythic
-
-        auto buttonComp = mngr->getComponent<Button>(*itMythicInfo);
-
-    }
-}
-
-std::string MythicScene::select_mythic(GameStructs::MythicType mt)
-{
-    std::string s = "";
-    switch (mt)
-    {
-    case GameStructs::BLOODCLAW: s = "mythic_bloodclaw";
-        break;
-    case GameStructs::PROFANEHOTLINE: s = "mythic_profanehotline";
-        break;
-    case GameStructs::CURTAINREAPER: s = "mythic_curtainreaper";
-        break;
-    case GameStructs::INCENSE: s = "mythic_incense";
-        break;
-    case GameStructs::ARCANESURGE: s = "mythic_arcanesurge";
-        break;
-    case GameStructs::BLOODPACT: s = "mythic_bloodpact";
-        break;
-    case GameStructs::PRETERNATURALFORCE: s = "mythic_preternaturalforce";
-        break;
-    case GameStructs::CLAWFILE: s = "mythic_clawfile";
-        break;
-    case GameStructs::MEOWORNEVER: s = "mythic_meowornever";
-        break;
-    case GameStructs::ZOOMIESINDUCER: s = "mythic_zoomiesinducer";
-        break;
-    default:
-        break;
-    }
-    std::cout << "mythic: " + s << std::endl;
-    return s;
-}
-
-std::pair<std::string, GameStructs::MythicType> MythicScene::get_unique_mythic(std::unordered_set<std::string>& appeared_mythic)
-{
-    std::string sprite;
-    GameStructs::MythicType mt;
-    //Selects a unique object 
-    do {
-        mt = (GameStructs::MythicType)sdlutils().rand().nextInt(0, GameStructs::LAST_MYTHIC);
-        sprite = select_mythic(mt);
-    } while (appeared_mythic.find(sprite) != appeared_mythic.end());
-
-    appeared_mythic.insert(sprite);
-    return { sprite, mt };
-}
-
-void MythicScene::create_reward_buttons()
-{
-    float umbral = 0.2f;
-    GameStructs::ButtonProperties buttonPropTemplate = {
-        { {0.45f, 0.1f}, {0.125f, 0.2f} },
-        0.0f, "", ecs::grp::MYTHICOBJS
-    };
-
-    // Auxiliar set to check if we repeat some card
-    std::unordered_set<std::string> appeared_myhtic;
-
-    //three card reward buttons
-    buttonPropTemplate.sprite_key = get_unique_mythic(appeared_myhtic).first;
-    create_mythic_button(buttonPropTemplate);
-
-    buttonPropTemplate.sprite_key = get_unique_mythic(appeared_myhtic).first;
-    buttonPropTemplate.rect.position.x -= umbral;
-    create_mythic_button(buttonPropTemplate);
-
-    buttonPropTemplate.sprite_key = get_unique_mythic(appeared_myhtic).first;
-    buttonPropTemplate.rect.position.x += umbral * 2;
-    create_mythic_button(buttonPropTemplate);
-
-    //selected button
-    buttonPropTemplate.ID = ecs::grp::UI;
-    buttonPropTemplate.sprite_key = "confirm_reward";
-    buttonPropTemplate.rect.position = { 0.35f, 0.35f };
-    buttonPropTemplate.rect.size = { 0.3f, 0.15f };
-    create_reward_selected_button(buttonPropTemplate);
-
-}
-
-void MythicScene::refresh_mythics()
-{
-    ecs::Manager* mngr = Game::Instance()->get_mngr();
-    std::vector<ecs::entity_t> mythic_cards = mngr->getEntities(ecs::grp::MYTHICOBJS);
-    std::unordered_set<std::string> appeared_mythic;
     //refresh the three reward card button
-    for (ecs::entity_t e : mythic_cards) {
-        auto s = get_unique_mythic(appeared_mythic);
-        transformless_dyn_image* img = mngr->getComponent<transformless_dyn_image>(e);
+    for (auto& e : mo) {
+        auto s = get_unique_mythic(appeared_mythics);
+        auto img = mngr->getComponent<transformless_dyn_image>(e);
         img->set_texture(&sdlutils().images().at(s.first));
-        MythicDataComponent* data = mngr->getComponent<MythicDataComponent>(e);
+        auto data = mngr->getComponent<MythicDataComponent>(e);
         data->set_data(s.first, s.second);
     }
 }
 
-void MythicScene::create_reward_selected_button(const GameStructs::ButtonProperties& bp)
-{
+void MythicScene::add_new_reward_mythic() {
+    assert(_chosen_mythic != nullptr);
+
+    //Once reward is picked, checks number of cards in deck
+    auto* mngr = Game::Instance()->get_mngr();
+    auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
+    auto _m_mythics = mngr->getComponent<MythicComponent>(player);
+    //We add the cards to the deck
+    MythicItem* m = nullptr;
+    GameStructs::MythicType wt = mngr->getComponent<MythicDataComponent>(_chosen_mythic)->MT();
+    switch (wt)
+    {
+    case GameStructs::BLOODCLAW: m = new BloodClaw();
+        break;
+    case GameStructs::PROFANEHOTLINE: m = new ProfaneHotline();
+        break;
+    case GameStructs::CURTAINREAPER: m = new CurtainReaper();
+        break;
+    case GameStructs::INCENSE: m = new Incense();
+        break;
+    case GameStructs::ARCANESURGE: m = new ArcaneSurge();
+        break;
+    case GameStructs::BLOODPACT: m = new BloodPact();
+        break;
+    case GameStructs::PRETERNATURALFORCE: m = new PreternaturalForce();
+        break;
+    case GameStructs::CLAWFILE: m = new ClawFile();
+        break;
+    case GameStructs::MEOWORNEVER: m = new MeowOrNever();
+        break;
+    case GameStructs::ZOOMIESINDUCER: m = new ZoomiesInducer();
+        break;
+    default:
+        break;
+    }
+    if (m != nullptr) {
+        _m_mythics->add_mythic(m);
+        //Refresh my actual mythic representation
+        refresh_my_mythics(_m_mythics->get_mythics());
+    }
+}
+
+void MythicScene::create_mythic_selected_button(const GameStructs::ButtonProperties& bp) {
     auto* mngr = Game::Instance()->get_mngr();
 
     auto e = create_button(bp);
@@ -317,35 +295,172 @@ void MythicScene::create_reward_selected_button(const GameStructs::ButtonPropert
             Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam
     );
     imgComp->swap_textures();
-    mngr->setHandler(ecs::hdlr::CONFIRMREWARD, e);
-    buttonComp->connectClick([buttonComp, this, imgComp] {
-        //we only select a reward if previously we have chosen something
-        if (_lr != nullptr && !_selected) {
-            _lr->_filter = false;
-            _lr->swap_textures();
+    mngr->setHandler(ecs::hdlr::CONFIRMMYTHIC, e);
+    buttonComp->connectClick([buttonComp, this, imgComp, mngr] {
+        if (_lm != nullptr && !_selected) {
+            imgComp->_filter = false;
+            _lm->swap_textures();
             _selected = true;
-            //add_new_reward_card();
+            add_new_reward_mythic();
+
+            imgComp->destination_rect.position.x += 100.0f;
+
+            auto imgGameScene = mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::NEXTROUNDMYTHIC));
+            imgGameScene->destination_rect.position = { 0.438f, 0.55f };
+            imgGameScene->swap_textures();
         }
         });
     buttonComp->connectHover([buttonComp, imgComp, this]() {
         if (_selected) return;
-        std::cout << "hover -> Reward selected button: " << std::endl;
+        //std::cout << "hover -> Reward selected button: " << std::endl;
         //filter
         imgComp->_filter = true;
         });
     buttonComp->connectExit([buttonComp, imgComp, this]() {
-        std::cout << "exit -> Reward selected button: " << std::endl;
+        //std::cout << "exit -> Reward selected button: " << std::endl;
         //filter
         imgComp->_filter = false;
         });
 }
 
-void MythicScene::create_next_round_button()
-{
+ecs::entity_t MythicScene::create_mythic_button(const GameStructs::MythicButtonProperties& bp) {
+    auto* mngr = Game::Instance()->get_mngr();
+    auto e = create_button(bp);
+    auto b = mngr->addComponent<MythicButton>(e);
+    b->initComponent();
+    b->set_it(bp.iterator);
+    return e;
 }
 
-void MythicScene::resize(ImageForButton* im, float factor)
-{
-    im->destination_rect.size = { im->destination_rect.size.x * factor, im->destination_rect.size.y * factor };
+void MythicScene::create_a_mythic(const GameStructs::MythicButtonProperties& bp) {
+    auto* mngr = Game::Instance()->get_mngr();
+
+    auto e = create_mythic_button(bp);
+    auto buttonComp = mngr->getComponent<MythicButton>(e); 
+    auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
+    auto ri = mngr->getComponent<transformless_dyn_image>(mngr->getHandler(ecs::hdlr::MYTHICINFO));
+
+    buttonComp->connectClick([buttonComp, imgComp, this, bp] {
+        if (_selected) return;
+        imgComp->destination_rect.size = { imgComp->_original_w,  imgComp->_original_h };
+        auto it = buttonComp->It();
+        //only assign a valid iterator
+        if (it != _selected_mythic) {
+
+            _selected_mythic = it;
+            _last_my_mythic_img = static_cast<ImageForButton*>(imgComp);
+            //std::cout << "card selected: "<< std::endl;
+        }
+        });
+
+    buttonComp->connectHover([buttonComp, imgComp, mngr, ri, e, this]() {
+        //std::cout << "hover -> Reward button: " << std::endl;
+        //filter
+        if (_selected) return;
+        imgComp->_filter = true;
+        auto& sp = buttonComp->Name();
+        if (sp != "") ri->set_texture(&sdlutils().images().at(sp + "_info"));
+        /*imgComp->destination_rect.position.y -= 0.125f;*/
+       /* imgComp->destination_rect.size = { imgComp->destination_rect.size.x * 1.25f,  imgComp->destination_rect.size.y * 1.25f };*/
+        });
+    buttonComp->connectExit([buttonComp, imgComp, mngr, ri]() {
+        //std::cout << "exit -> Reward button: " << std::endl;
+        /*imgComp->destination_rect.position.y += 0.125f;*/
+        //filter
+        imgComp->_filter = false;
+        ri->set_texture(&sdlutils().images().at("initial_info"));
+        //imgComp->destination_rect.size = { imgComp->destination_rect.size.x / 1.25f,  imgComp->destination_rect.size.y / 1.25f };
+        });
 }
 
+void MythicScene::create_my_mythics() {
+    auto* mngr = Game::Instance()->get_mngr();
+
+    //GET PLAYERS MYTHIC VECTOR REFERENCE
+    auto* player = mngr->getHandler(ecs::hdlr::PLAYER);
+    if (player && !mngr->hasComponent<MythicComponent>(player)) {
+        //when we add these entities, our olayer doesnt have any deck as component
+        mngr->addComponent<MythicComponent>(player);
+    }
+    auto _m_mythic = mngr->getComponent<MythicComponent>(player);
+    auto& vMyth = _m_mythic->get_mythics();
+
+    float umbral = 0.095f;
+    auto iterator = vMyth.begin();
+    GameStructs::MythicButtonProperties propTemplate = {
+        { {0.01f, 0.8f}, {0.1f, 0.175f} },
+        0.0f, "", ecs::grp::MYMYTHICOBJS, *iterator
+    };
+
+    for (const auto& it : vMyth) {
+        std::string typeName = it->get_name();
+        propTemplate.sprite_key = "mythic_"+typeName;
+        create_a_mythic(propTemplate);
+        propTemplate.rect.position.x += umbral;
+        iterator++;
+    }
+    propTemplate.iterator = nullptr;
+    for (int i = 0; i < 4; ++i) {
+        propTemplate.sprite_key = "initial_info";
+        create_a_mythic(propTemplate);
+        propTemplate.rect.position.x += umbral;
+    }
+}
+
+void MythicScene::refresh_my_mythics(const std::vector<MythicItem*>& cl) {
+    auto* mngr = Game::Instance()->get_mngr();
+    auto& infos = mngr->getEntities(ecs::grp::MYMYTHICOBJS);
+
+    auto itMythicInfo = infos.begin();
+
+    //refresh my mythic info and represent it
+    for (auto& c : cl) {
+        //obtain each ones component
+        auto img = mngr->getComponent<transformless_dyn_image>(*itMythicInfo);
+
+        std::string typeName = c->get_name();
+
+        //change to the newest texture
+        img->set_texture(&sdlutils().images().at("mythic_"+typeName));
+        //Refresh the pointer saved in the component
+        auto buttonComp = mngr->getComponent<Button>(*itMythicInfo);
+        if (buttonComp) {
+            static_cast<MythicButton*>(buttonComp)->set_it(c);
+        }
+        ++itMythicInfo;
+    }
+
+    //refresh rest of the mythic infos (blank infos)
+    for (; itMythicInfo != infos.end(); ++itMythicInfo) {
+        auto img = mngr->getComponent<transformless_dyn_image>(*itMythicInfo);
+        img->set_texture(&sdlutils().images().at("initial_info"));
+
+        auto buttonComp = mngr->getComponent<Button>(*itMythicInfo);
+        if (buttonComp) {
+            static_cast<MythicButton*>(buttonComp)->set_it(nullptr); // Poner puntero a nullptr si no hay carta
+        }
+    }
+}
+
+void MythicScene::update(uint32_t delta_time) {
+    Scene::update(delta_time);
+
+    if (_activate_confirm_button && _lm != nullptr) {
+        auto mngr = Game::Instance()->get_mngr();
+        auto imgCompConfirm = mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::CONFIRMMYTHIC));
+        imgCompConfirm->swap_textures();
+        _activate_confirm_button = false;
+    }
+}
+
+void MythicScene::create_next_round_button(const GameStructs::ButtonProperties& bp) {
+    auto* mngr = Game::Instance()->get_mngr();
+    auto e = create_button(bp);
+    mngr->setHandler(ecs::hdlr::NEXTROUNDMYTHIC, e);
+    auto imgComp = mngr->getComponent<transformless_dyn_image>(e);
+    auto buttonComp = mngr->getComponent<Button>(e);
+
+    buttonComp->connectClick([buttonComp, mngr, this]() { if (_selected) Game::Instance()->change_Scene(Game::GAMESCENE); });
+    buttonComp->connectHover([buttonComp, imgComp, this]() { imgComp->_filter = true;});
+    buttonComp->connectExit([buttonComp, imgComp, this]() { imgComp->_filter = false;});
+}
