@@ -99,7 +99,7 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
         _my->add_mythic(new Incense());
     }
     if (ihdlr.keyDownEvent() && ihdlr.isKeyDown(SDL_SCANCODE_X)) {
-        _my->add_mythic(new UraniumSocks());
+        _my->add_mythic(new ZoomiesInducer());
     }
 
     if (ihdlr.keyDownEvent() && ihdlr.isKeyDown(SDL_SCANCODE_V)) {

@@ -202,7 +202,7 @@ UraniumSocks::apply_effects() {
 #pragma endregion
 
 #pragma region ZoomiesInducer
-ZoomiesInducer::ZoomiesInducer() :MythicItem("ZoomiesInducer"),\
+ZoomiesInducer::ZoomiesInducer() :MythicItem("ZoomiesInducer", "m_zoomies_inducer"), 
 	_timer(10000), _last_time(0), _distance(3.0f), _duration(1000) 
 {
 	auto manager = Game::Instance()->get_mngr();
