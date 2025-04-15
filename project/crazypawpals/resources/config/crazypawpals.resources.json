@@ -481,6 +481,10 @@
       "file": "resources/images/ui/mythics/m_arcane_surge.png"
     },
     {
+      "id": "m_profane_hotline",
+      "file": "resources/images/ui/mythics/m_profane_hotline.png"
+    },
+    {
       "id": "meteroid",
       "file": "resources/images/projectiles/meteroid.png"
     },

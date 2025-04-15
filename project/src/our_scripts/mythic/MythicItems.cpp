@@ -20,7 +20,7 @@ void BloodClaw::apply_effects() {
 
 
 #pragma region ProfaneHotline
-ProfaneHotline::ProfaneHotline() :MythicItem("ProfaneHotline")
+ProfaneHotline::ProfaneHotline() :MythicItem("ProfaneHotline","m_profane_hotline")
 {
 	_mana = Game::Instance()->get_mngr()->getComponent<ManaComponent>(_player);
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::mill, this, &event_system::event_receiver::event_callback0);
