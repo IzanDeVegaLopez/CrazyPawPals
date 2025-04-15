@@ -477,12 +477,20 @@
       "file": "resources/images/ui/mythics/m_incense.png"
     },
     {
-      "id": "m_arcane_surge",
-      "file": "resources/images/ui/mythics/m_arcane_surge.png"
+      "id": "m_quick_draw_deck",
+      "file": "resources/images/ui/mythics/m_quick_draw_deck.png"
     },
     {
-      "id": "m_profane_hotline",
-      "file": "resources/images/ui/mythics/m_profane_hotline.png"
+      "id": "m_dream_recicler",
+      "file": "resources/images/ui/mythics/m_dream_recicler.png"
+    },
+    {
+      "id": "m_uranium_socks",
+      "file": "resources/images/ui/mythics/m_uranium_socks.png"
+    },
+    {
+      "id": "m_demonic_scratcher",
+      "file": "resources/images/ui/mythics/m_demonic_scratcher.png"
     },
     {
       "id": "meteroid",
