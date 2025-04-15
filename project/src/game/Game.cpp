@@ -28,6 +28,7 @@
 #include "scenes/GameOverScene.h"
 #include "scenes/RewardScene.h"
 #include "scenes/TutorialScene.h"
+#include "scenes/MultiplayerMenu.h"
 #include "scenes/VictoryScene.h"
 
 
@@ -129,9 +130,12 @@ bool Game::init() {
 
 	_scenes[GAMEOVER] = new GameOverScene();
 	_scenes[GAMEOVER]->initScene();
+
+	/*_scenes[MULTIPLAYERMENU] = new MultiplayerMenu();
+	_scenes[MULTIPLAYERMENU]->initScene();*/
 	
-	_scenes[VICTORY] = new VictoryScene(); //? por que no funciona VictoryScene()
-	_scenes[VICTORY]->initScene();
+	//_scenes[VICTORY] = new VictoryScene(); 
+	//_scenes[VICTORY]->initScene();
 
 	change_Scene(MAINMENU);
 	return true;

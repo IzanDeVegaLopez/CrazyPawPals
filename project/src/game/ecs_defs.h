@@ -80,6 +80,7 @@
 	GAMEOVERSCENE,\
 	VICTORYSCENE,\
 	REWARDSCENE,\
+	MULTIPLAYERMENUSCENE,\
 	TUTORIALSCENE
 
 // Handlers list - must have at least one element
