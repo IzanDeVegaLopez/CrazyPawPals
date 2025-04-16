@@ -8,6 +8,8 @@
 #include "collision_registration_by_id.h"
 #include "id_component.h"
 #include "cards/Mana.h"
+#include "cards/Deck.hpp"
+#include "../card_system/PlayableCards.hpp"
 
 void bullet_collision_component::on_contact(const collision_manifold& tm)
 {
@@ -66,6 +68,11 @@ void bullet_collision_component::apply_weapon_effect(GameStructs::WeaponType typ
     case GameStructs::WeaponType::RAMP_CANON: {
         auto player = manager.getHandler(ecs::hdlr::PLAYER);
         manager.getComponent<ManaComponent>(player)->change_mana(1);
+        break;
+    }
+    case GameStructs::WeaponType::CATKUZA_WEAPON: {
+        auto player = manager.getHandler(ecs::hdlr::PLAYER);
+        manager.getComponent<Deck>(player)->add_card_to_deck(new CatKuzaCard());
         break;
     }
     default:
