@@ -66,6 +66,7 @@
 #include "../../our_scripts/card_system/CardUpgrade.hpp"
 
 #include "../../our_scripts/components/MythicComponent.h"
+#include "../../our_scripts/components/GhostStateComponent.h"
 #include "RewardScene.h"
 #ifdef GENERATE_LOG
 #include "../../our_scripts/log_writer_to_csv.hpp"
@@ -216,7 +217,7 @@ void GameScene::enterScene()
 	d->reload();
 
 	manager.getComponent<fog_collision_component>(manager.getHandler(ecs::hdlr::FOGGROUP))->reset();
-
+	manager.addComponent<GhostStateComponent>(player);
 	manager.addComponent<KeyboardPlayerCtrl>(player);
 	manager.addComponent<GamePadPlayerCtrl>(player);
 	manager.addComponent<PlayerHUD>(player);
@@ -296,6 +297,7 @@ void GameScene::reset_player()
 	mngr.removeComponent<PlayerHUD>(player);
 
 	mngr.getComponent<MythicComponent>(player)->reset();
+	mngr.getComponent<GhostStateComponent>(player)->setGhostState(false);
 	mngr.getComponent<dyn_image_with_frames>(player)->isDamaged = false;
 	auto tr = mngr.getComponent<Transform>(player);
 		tr->setPos({ 0.0f, 0.0f });	
