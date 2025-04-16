@@ -84,6 +84,10 @@
       "file": "resources/images/projectiles/p_super_michi_mafioso.png"
     },
     {
+      "id": "p_wind_catkuza",
+      "file": "resources/images/projectiles/catkuza_wind.png"
+    },
+    {
       "id": "attack_warning",
       "file": "resources/images/projectiles/attack_warning.png"
     },
@@ -161,7 +165,7 @@
     },
     {
       "id": "catkuza",
-      "file": "resources/images/enemies/catkuza_shadow.png"
+      "file": "resources/images/enemies/catkuza.png"
     },
     {
       "id": "sarno_rata",
