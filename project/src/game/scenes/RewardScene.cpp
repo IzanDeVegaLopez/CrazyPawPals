@@ -142,6 +142,8 @@ std::string RewardScene::select_card(GameStructs::CardType ct) {
         break;
     case GameStructs::QUICK_FEET: s = "card_quickFeet";
         break;
+    case GameStructs::FULGUR: s = "card_fulgur";
+        break;
     default:
         break;
     }
@@ -245,7 +247,7 @@ void RewardScene::create_reward_buttons() {
     //exchange button
     buttonPropTemplate.ID = ecs::grp::UI;
     buttonPropTemplate.sprite_key = "exchange_reward";
-    buttonPropTemplate.rect.position.x = 1.1f;
+    buttonPropTemplate.rect.position.x = 10.0f;
     create_reward_exchange_button(buttonPropTemplate);
 
     //next round button
@@ -592,9 +594,9 @@ void RewardScene::add_new_reward_card() {
     case GameStructs::EVOKE:
         c = new Evoke();
         break;
-    /*case GameStructs::FULGUR:
+    case GameStructs::FULGUR:
         c = new Fulgur();
-        break;*/
+        break;
     case GameStructs::QUICK_FEET:
         c = new QuickFeet();
         break;
@@ -696,13 +698,6 @@ void RewardScene::update(uint32_t delta_time) {
        imgCompConfirm->destination_rect.position = { imgCompConfirm->destination_rect.position.x + 0.185f, imgCompConfirm->destination_rect.position.y };
        _activate_exchange_button = false;
    }
-
-  /* if (_selected) {
-       auto mngr = Game::Instance()->get_mngr();
-       auto imgCompNext = mngr->getComponent<transformless_dyn_image>(mngr->getHandler(ecs::hdlr::NEXTROUNDBUTTON));
-       imgCompNext->destination_rect.position = {0.4f,0.5f};
-
-   }*/
 }
 void RewardScene::create_next_round_button(const GameStructs::ButtonProperties& bp) {
     auto* mngr = Game::Instance()->get_mngr();
@@ -712,8 +707,10 @@ void RewardScene::create_next_round_button(const GameStructs::ButtonProperties& 
     auto buttonComp = mngr->getComponent<Button>(e);
 
     buttonComp->connectClick([buttonComp, mngr, imgComp, this]() { if (_selected) {
+        _lr->swap_textures();
         if (!_mythic) Game::Instance()->change_Scene(Game::GAMESCENE);
         else Game::Instance()->change_Scene(Game::MYTHICSCENE);
+        imgComp->_filter = false;
         imgComp->destination_rect.position.x = 2.0f;
     }});
     buttonComp->connectHover([buttonComp, imgComp, this]() { imgComp->_filter = true;});

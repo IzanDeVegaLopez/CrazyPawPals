@@ -387,26 +387,16 @@ void MythicScene::create_my_mythics() {
     auto& vMyth = _m_mythic->get_mythics();
 
     float umbral = 0.095f;
-    if (!vMyth.empty()) {
-        auto iterator = vMyth.begin();
-        GameStructs::MythicButtonProperties propTemplate = {
+    //when your starts a game, you wont have any mythic item 
+    //thats why we create 10 empty mythic visual elements and then we refresh them
+    GameStructs::MythicButtonProperties propTemplate = {
             { {0.01f, 0.8f}, {0.1f, 0.175f} },
-            0.0f, "", ecs::grp::MYMYTHICOBJS, *iterator
-        };
-
-        for (const auto& it : vMyth) {
-            std::string typeName = it->get_name();
-            propTemplate.sprite_key = "mythic_" + typeName;
-            create_a_mythic(propTemplate);
-            propTemplate.rect.position.x += umbral;
-            iterator++;
-        }
-        propTemplate.iterator = nullptr;
-        for (int i = 0; i < 4; ++i) {
-            propTemplate.sprite_key = "initial_info";
-            create_a_mythic(propTemplate);
-            propTemplate.rect.position.x += umbral;
-        }
+            0.0f, "", ecs::grp::MYMYTHICOBJS, nullptr
+    };
+    for (int i = 0; i < 10; ++i) {
+        propTemplate.sprite_key = "initial_info";
+        create_a_mythic(propTemplate);
+        propTemplate.rect.position.x += umbral;
     }
 
 }
@@ -466,7 +456,9 @@ void MythicScene::create_next_round_button(const GameStructs::ButtonProperties& 
     auto buttonComp = mngr->getComponent<Button>(e);
 
     buttonComp->connectClick([buttonComp, mngr, imgComp, this]() { if (_selected) {
+        _lm->swap_textures();
         Game::Instance()->change_Scene(Game::GAMESCENE);
+        imgComp->_filter = false;
         imgComp->destination_rect.position.x = 2.0f;
     }});
     buttonComp->connectHover([buttonComp, imgComp, this]() { imgComp->_filter = true;});
