@@ -100,6 +100,10 @@
       "file": "resources/images/cards/card_kunai.png"
     },
     {
+      "id": "card_catkuza",
+      "file": "resources/images/cards/card_catkuza.png"
+    },
+    {
       "id": "card",
       "file": "resources/images/cards/card.png"
     },
@@ -374,6 +378,10 @@
     {
       "id": "card_cardSpray_info",
       "file": "resources/images/ui/infos/card_spray_info.png"
+    },
+    {
+      "id": "card_catkuza_info",
+      "file": "resources/images/ui/infos/card_catkuza_info.png"
     },
     {
       "id": "card_lighting_info",

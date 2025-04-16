@@ -15,6 +15,7 @@ namespace GameStructs {
 		LIGHTBRINGER,
 		WEAPON6,
 		WEAPON7,
+		CATKUZA_WEAPON,
 		LAST_WEAPON,
 	};
 	enum DeckType {

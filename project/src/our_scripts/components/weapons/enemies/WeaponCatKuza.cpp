@@ -50,6 +50,7 @@ void WeaponCatKuza::wind_attack(Vector2D shootPos) {
 
 	bp.sprite_key = "p_wind_catkuza";
 	bp.collision_filter = GameStructs::collide_with::player;
+	bp.weapon_type = GameStructs::CATKUZA_WEAPON;
 
 	float totalAngle = 60.0f;
 
@@ -69,7 +70,7 @@ void WeaponCatKuza::dash_attack(Vector2D shootPos, Vector2D shoot_end_pos) {
 	bp.height = _attack_height * 0.5f;
 	bp.sprite_key = "p_plimplim";
 	bp.collision_filter = GameStructs::collide_with::player;
-
+	
 	Vector2D espacio = (shoot_end_pos - shootPos) / (_dash_p - 1);
 
 	for (int i = 0; i < _dash_p; ++i) {
