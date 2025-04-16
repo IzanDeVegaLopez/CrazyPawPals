@@ -306,8 +306,8 @@ void MythicScene::create_mythic_selected_button(const GameStructs::ButtonPropert
             imgComp->destination_rect.position.x = 100.0f;
 
             auto imgGameScene = mngr->getComponent<ImageForButton>(mngr->getHandler(ecs::hdlr::NEXTROUNDMYTHIC));
-            imgGameScene->destination_rect.position = { 0.4f, 0.35f };
-            imgGameScene->destination_rect.size = { 0.2f, 0.125f };
+            imgGameScene->destination_rect.position = { 0.3f, 0.28f };
+            imgGameScene->destination_rect.size = { 0.4f, 0.25f };
         }
         });
     buttonComp->connectHover([buttonComp, imgComp, this]() {
