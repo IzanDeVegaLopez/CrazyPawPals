@@ -94,6 +94,7 @@ MainMenuScene::create_start_button(const GameStructs::ButtonProperties& bp) {
     buttonComp->connectHover([buttonComp, imgComp]() {
         imgComp->_filter = true;
         imgComp->swap_textures();
+        sdlutils().soundEffects().at("button_hover").play();
     });
 
     buttonComp->connectExit([buttonComp, imgComp]() {
@@ -126,6 +127,7 @@ MainMenuScene::create_controls_button(const GameStructs::ButtonProperties& bp)
 
     buttonComp->connectHover([buttonComp, imgComp]() {
         imgComp->_filter = true;
+        sdlutils().soundEffects().at("button_hover").play();
         imgComp->swap_textures();
 
     });
@@ -160,6 +162,8 @@ MainMenuScene::create_exit_button(const GameStructs::ButtonProperties& bp)
 
     buttonComp->connectHover([buttonComp, imgComp]() {
         imgComp->_filter = true;
+        auto sfx = &sdlutils().soundEffects().at("button_hover");
+        sfx->play();
         imgComp->swap_textures();
     });
     

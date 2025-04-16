@@ -389,7 +389,7 @@
     },
     {
       "id": "card_fulgur_info",
-      "file": "resources/images/ui/infos/card_commune_info.png"
+      "file": "resources/images/ui/infos/card_fulgur_info.png"
     },
     {
       "id": "card_quickFeet_info",
@@ -569,10 +569,16 @@
     { "id": "life", "text": "Health: ", "font": "ARIAL24", "color": "000000ff"},
     { "id": "choose_weapon", "text": "Choose your weapon", "font": "PROTEST_GUERRILLA100", "color": "0xfcacacff"}
   ],
-  
-  "sounds" : [
-    { "id" : "paddle_hit", "file" : "resources/sound/paddle_hit.wav" },
-    { "id" : "wall_hit", "file" : "resources/sound/wall_hit.wav" }
+
+  "sounds": [
+    {
+      "id": "button_hover",
+      "file": "resources/sound/pointer_over.wav"
+    },
+    {
+      "id": "main_menu_button_pressed",
+      "file": "resources/sound/button_pressed.wav"
+    }
   ]
 
 }
