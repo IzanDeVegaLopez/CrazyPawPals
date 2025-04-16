@@ -433,6 +433,10 @@
       "file": "resources/images/ui/rewards/reward_health.png"
     },
     {
+      "id": "reward_health_info",
+      "file": "resources/images/ui/infos/reward_health_info.png"
+    },
+    {
       "id": "reward_selected",
       "file": "resources/images/ui/rewards/reward_selected.png"
     },
@@ -465,11 +469,15 @@
       "file": "resources/images/ui/mythics/mythic.png"
     },
     {
-      "id": "m_blood_claw",
+      "id": "mythic_ambient",
+      "file": "resources/images/enviroment/mythic.png"
+    },
+    {
+      "id": "mythic_blood_claw",
       "file": "resources/images/ui/mythics/m_blood_claw.png"
     },
     {
-      "id": "m_claw_file",
+      "id": "mythic_claw_file",
       "file": "resources/images/ui/mythics/m_claw_file.png"
     },
     {

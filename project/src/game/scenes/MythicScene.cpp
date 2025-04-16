@@ -93,21 +93,21 @@ std::string MythicScene::select_mythic(GameStructs::MythicType wt) {
     {
     case GameStructs::BLOODCLAW: s = "mythic_blood_claw";
         break;
-    case GameStructs::PROFANEHOTLINE: s = "mythic_profane_hotline";
+    case GameStructs::DREAMRECICLER: s = "mythic_dream_recicler";
         break;
     case GameStructs::CURTAINREAPER: s = "mythic_curtain_reaper";
         break;
     case GameStructs::INCENSE: s = "mythic_incense";
         break;
-    case GameStructs::ARCANESURGE: s = "mythic_arcane_surge";
+    case GameStructs::QUICKDRAWDECK: s = "mythic_quick_draw_deck";
         break;
     case GameStructs::BLOODPACT: s = "mythic_blood_pact";
         break;
-    case GameStructs::PRETERNATURALFORCE: s = "mythic_preternatural_force";
+    case GameStructs::DEMONICSCRATCHER: s = "mythic_demonic_scratcher";
         break;
     case GameStructs::CLAWFILE: s = "mythic_claw_file";
         break;
-    case GameStructs::MEOWORNEVER: s = "mythic_meow_or_never";
+    case GameStructs::URANIUMSOCKS: s = "mythic_uranium_socks";
         break;
     case GameStructs::ZOOMIESINDUCER: s = "mythic_zoomies_inducer";
         break;
@@ -253,23 +253,23 @@ void MythicScene::add_new_reward_mythic() {
     {
     case GameStructs::BLOODCLAW: m = new BloodClaw();
         break;
-    case GameStructs::PROFANEHOTLINE: m = new ProfaneHotline();
+    case GameStructs::DREAMRECICLER: m = new DreamRecicler();
         break;
     case GameStructs::CURTAINREAPER: m = new CurtainReaper();
         break;
     case GameStructs::INCENSE: m = new Incense();
         break;
-    case GameStructs::ARCANESURGE: m = new ArcaneSurge();
+    case GameStructs::QUICKDRAWDECK: m = new QuickDrawDeck();
         break;
     case GameStructs::BLOODPACT: m = new BloodPact();
         break;
-    case GameStructs::PRETERNATURALFORCE: m = new PreternaturalForce();
+    case GameStructs::DEMONICSCRATCHER:m = new DemonicScratcher();
         break;
-    case GameStructs::CLAWFILE: m = new ClawFile();
+    case GameStructs::CLAWFILE:m = new ClawFile();
         break;
-    case GameStructs::MEOWORNEVER: m = new MeowOrNever();
+    case GameStructs::URANIUMSOCKS:m = new UraniumSocks();
         break;
-    case GameStructs::ZOOMIESINDUCER: m = new ZoomiesInducer();
+    case GameStructs::ZOOMIESINDUCER:m = new ZoomiesInducer();
         break;
     default:
         break;
