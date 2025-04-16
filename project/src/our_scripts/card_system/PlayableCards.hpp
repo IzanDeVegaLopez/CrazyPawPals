@@ -40,8 +40,8 @@ private:
 	bool _playing;
 	int _time_since_played;
 	int _number_of_bullets_shot = 0;
-	int _number_of_shots = 3;
-	int _shooting_duration = 500;
+	int _number_of_shots = 10;
+	int _shooting_duration = 1500;
 };
 
 // Archetypes: Mill

@@ -2,7 +2,7 @@
 #include "../../../../game/Game.h"
 #include "../../../../game/scenes/GameScene.h"
 
-WeaponSarnoRata::WeaponSarnoRata() : Weapon(4, 2000, 20.0f, 0.0f, "p_sarno_rata", 3.0f, 3.0f) { }
+WeaponSarnoRata::WeaponSarnoRata() : Weapon(6, 2500, 20.0f, 0.0f, "p_sarno_rata", 3.0f, 3.0f) { }
 
 WeaponSarnoRata::~WeaponSarnoRata() {}
 

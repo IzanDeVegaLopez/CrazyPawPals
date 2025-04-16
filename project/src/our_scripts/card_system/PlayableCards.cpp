@@ -17,12 +17,12 @@ void Fireball::on_play(Deck& d, const Vector2D* player_position, const Vector2D*
 	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
 	bp.dir = ((*target_position) - (*player_position)).normalize();
 	bp.init_pos = *player_position;
-	bp.speed = 0.1f;
+	bp.speed = 0.08f;
 	bp.height = 2.3;
 	bp.width = 2.3;
 	bp.life_time = 2;
 	bp.sprite_key = "p_fireball";
-	bp.damage = 5;
+	bp.damage = 7;
 	bp.collision_filter = GameStructs::collide_with::enemy;
 	
 	Game::Instance()->get_currentScene()->create_proyectile(bp, ecs::grp::BULLET);
@@ -95,7 +95,7 @@ void Lighting::on_play(Deck& d, const Vector2D* player_position, const Vector2D*
 	bp.life_time = 0.1;
 	bp.sprite_key = "p_lighting";
 	bp.collision_filter = GameStructs::collide_with::enemy;
-	bp.damage = 8;
+	bp.damage = 12;
 	Game::Instance()->get_currentScene()->create_proyectile(bp, ecs::grp::BULLET);
 }
 #pragma endregion
@@ -114,12 +114,13 @@ void Kunai::on_play(Deck& d, const Vector2D* player_position, const Vector2D* ta
 	GameStructs::BulletProperties bp = GameStructs::BulletProperties();
 	bp.dir = ((*target_position) - (*player_position)).normalize();
 	bp.init_pos = *player_position;
-	bp.speed = 0.5f;
+	bp.speed = 0.6f;
 	bp.height = 2.3;
 	bp.width = 2.3;
 	bp.life_time = 2;
 	bp.sprite_key = "p_kunai";
-	bp.damage = 3;
+	bp.damage = 2;
+	bp.pierce_number = INT_MAX;
 	bp.collision_filter = GameStructs::collide_with::enemy;
 	
 	Game::Instance()->get_currentScene()->create_proyectile(bp, ecs::grp::BULLET);
@@ -151,7 +152,8 @@ void CardSpray::on_play(Deck& d, const Vector2D* player_position, const Vector2D
 	bp.height = 0.7;
 	bp.width = 0.7;
 	bp.life_time = 3;
-	bp.damage = 2;
+	bp.damage = 4;
+	bp.pierce_number = INT_MAX;
 	bp.sprite_key = "p_card_spray";
 	bp.collision_filter = GameStructs::collide_with::enemy;
 
@@ -176,7 +178,7 @@ void EldritchBlast::on_play(Deck& d, const Vector2D* player_position, const Vect
 	bp.width = 2.3;
 	bp.life_time = 0.13;
 	bp.sprite_key = "p_eldritch_blast";
-	bp.damage = 3;
+	bp.damage = 2;
 	bp.collision_filter = GameStructs::collide_with::enemy;
 
 	patrons::ShotgunPatron(bp, ecs::grp::BULLET, _amplitude * (_shot_count - 1), _shot_count);
@@ -184,7 +186,7 @@ void EldritchBlast::on_play(Deck& d, const Vector2D* player_position, const Vect
 
 Card* EldritchBlast::on_mill(Deck& d, const Vector2D* player_position)
 {
-	_shot_count++;
+	_shot_count += 2;
 	return Card::on_mill(d, player_position);
 }
 #pragma endregion
@@ -270,7 +272,7 @@ void Commune::on_play(Deck& d, const Vector2D* player_position, const Vector2D* 
 	bp.life_time = 0.2;
 	bp.sprite_key = "card_commune";
 	bp.collision_filter = GameStructs::collide_with::enemy;
-	bp.damage = amp * 3;
+	bp.damage = amp * 6+6;
 	Game::Instance()->get_currentScene()->create_proyectile(bp, ecs::grp::BULLET);
 }
 #pragma endregion

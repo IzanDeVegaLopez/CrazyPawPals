@@ -2,7 +2,7 @@
 #include "../../../../game/Game.h"
 #include "../../../../game/scenes/GameScene.h"
 
-WeaponMichiMafioso::WeaponMichiMafioso() : Weapon(4, 1000, 20.0f, 0.1f, "p_michi_mafioso", 1.0f, 1.0f) { }
+WeaponMichiMafioso::WeaponMichiMafioso() : Weapon(5, 3000, 20.0f, 0.2f, "p_michi_mafioso", 1.0f, 1.0f) { }
 
 WeaponMichiMafioso::~WeaponMichiMafioso() {}
 

@@ -24,7 +24,7 @@ WeaponPlimPlim::callback(Vector2D shootPos, Vector2D shootDir) {
 
 	float initialRot = atan2(bp.dir.getY(), bp.dir.getX()) * 180.0f / M_PI;
 
-	float totalAngle = 60.0f;
+	float totalAngle = 120.0f;
 
 	patrons::ShotgunPatron(bp, ecs::grp::BULLET, totalAngle, 3);
 
