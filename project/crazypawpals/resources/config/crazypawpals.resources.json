@@ -582,6 +582,38 @@
     {
       "id": "main_menu_button_pressed",
       "file": "resources/sound/button_pressed.wav"
+    },
+    {
+      "id": "card_play",
+      "file": "resources/sound/card_play.wav"
+    },
+    {
+      "id": "card_mill",
+      "file": "resources/sound/card_mill.wav"
+    },
+    {
+      "id": "shuffle",
+      "file": "resources/sound/shuffle.wav"
+    },
+    {
+      "id": "round_start",
+      "file": "resources/sound/round_start.wav"
+    },
+    {
+      "id": "round_start_event",
+      "file": "resources/sound/round_start_event.wav"
+    },
+    {
+      "id": "player_shot",
+      "file": "resources/sound/player_shot.wav"
+    },
+    {
+      "id": "enemy_shot",
+      "file": "resources/sound/enemy_shot.wav"
+    },
+    {
+      "id": "squeak",
+      "file": "resources/sound/squeak.wav"
     }
   ]
 

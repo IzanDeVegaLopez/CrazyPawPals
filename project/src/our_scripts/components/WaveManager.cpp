@@ -349,7 +349,9 @@ void WaveManager::choose_new_event()
         }
     }
 
-    
+    if (_current_event == NONE) sdlutils().soundEffects().at("round_start").play();
+    else sdlutils().soundEffects().at("round_start_event").play();
+
 
     _current_wave_event->start_wave_callback();
 
