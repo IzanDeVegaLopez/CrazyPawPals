@@ -387,31 +387,35 @@ void MythicScene::create_my_mythics() {
     auto& vMyth = _m_mythic->get_mythics();
 
     float umbral = 0.095f;
-    auto iterator = vMyth.begin();
-    GameStructs::MythicButtonProperties propTemplate = {
-        { {0.01f, 0.8f}, {0.1f, 0.175f} },
-        0.0f, "", ecs::grp::MYMYTHICOBJS, *iterator
-    };
+    if (!vMyth.empty()) {
+        auto iterator = vMyth.begin();
+        GameStructs::MythicButtonProperties propTemplate = {
+            { {0.01f, 0.8f}, {0.1f, 0.175f} },
+            0.0f, "", ecs::grp::MYMYTHICOBJS, *iterator
+        };
 
-    for (const auto& it : vMyth) {
-        std::string typeName = it->get_name();
-        propTemplate.sprite_key = "mythic_"+typeName;
-        create_a_mythic(propTemplate);
-        propTemplate.rect.position.x += umbral;
-        iterator++;
+        for (const auto& it : vMyth) {
+            std::string typeName = it->get_name();
+            propTemplate.sprite_key = "mythic_" + typeName;
+            create_a_mythic(propTemplate);
+            propTemplate.rect.position.x += umbral;
+            iterator++;
+        }
+        propTemplate.iterator = nullptr;
+        for (int i = 0; i < 4; ++i) {
+            propTemplate.sprite_key = "initial_info";
+            create_a_mythic(propTemplate);
+            propTemplate.rect.position.x += umbral;
+        }
     }
-    propTemplate.iterator = nullptr;
-    for (int i = 0; i < 4; ++i) {
-        propTemplate.sprite_key = "initial_info";
-        create_a_mythic(propTemplate);
-        propTemplate.rect.position.x += umbral;
-    }
+
 }
 
 void MythicScene::refresh_my_mythics(const std::vector<MythicItem*>& cl) {
     auto* mngr = Game::Instance()->get_mngr();
     auto& infos = mngr->getEntities(ecs::grp::MYMYTHICOBJS);
 
+    if (infos.size() == 0) return;
     auto itMythicInfo = infos.begin();
 
     //refresh my mythic info and represent it

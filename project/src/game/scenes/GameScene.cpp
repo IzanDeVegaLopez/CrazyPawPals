@@ -180,6 +180,8 @@ void GameScene::initScene() {
 	auto&& manager = *Game::Instance()->get_mngr();
 	manager.setHandler(ecs::hdlr::PLAYER, player);
 
+	manager.addComponent<MythicComponent>(player);
+
 	manager.refresh();
 	create_environment();
 	// spawn_catkuza(Vector2D{5.0f, 0.0f});
@@ -209,7 +211,6 @@ void GameScene::enterScene()
 	manager.refresh();
 
 	manager.addComponent<id_component>(player);
-	manager.addComponent<MythicComponent>(player);
 
 	auto d = manager.getComponent<Deck>(player);
 	d->reload();
@@ -268,7 +269,6 @@ ecs::entity_t GameScene::create_player(ecs::sceneId_t scene)
 		new render_ordering{ 1 },
 		new Health(100, true),
 		new ManaComponent(),
-		// new StopOnBorder(camera, 1.5f, 2.0f),
 		&player_rigidbody,
 		&player_collisionable,
 		new MovementController(0.1f, 5.0f, 20.0f * deccel_spawned_creatures_multi),
@@ -290,13 +290,12 @@ void GameScene::reset_player()
 	auto player = mngr.getHandler(ecs::hdlr::PLAYER);
 
 	mngr.removeComponent<Weapon>(player);
-	mngr.removeComponent<MythicComponent>(player);
 	mngr.removeComponent<Deck>(player);
 	mngr.removeComponent<KeyboardPlayerCtrl>(player);
 	mngr.removeComponent<GamePadPlayerCtrl>(player);
 	mngr.removeComponent<PlayerHUD>(player);
 
-
+	mngr.getComponent<MythicComponent>(player)->reset();
 	mngr.getComponent<dyn_image_with_frames>(player)->isDamaged = false;
 	auto tr = mngr.getComponent<Transform>(player);
 		tr->setPos({ 0.0f, 0.0f });	
@@ -304,6 +303,8 @@ void GameScene::reset_player()
 
 	mngr.getComponent<AnimationComponent>(player)->play_animation("idle");
 	mngr.getComponent<Health>(player)->resetCurrentHeatlh();
+	mngr.addComponent<ManaComponent>(player);
+	mngr.addComponent<MovementController>(player, 0.1f, 5.0f, 20.0f * deccel_spawned_creatures_multi);
 }
 
 #pragma endregion
@@ -1102,6 +1103,11 @@ void GameScene::event_callback0(const event_system::event_receiver::Msg& m) {
 }
 void GameScene::event_callback1(const event_system::event_receiver::Msg& m) {
 	auto&& mngr = *Game::Instance()->get_mngr();
+	auto balas = mngr.getEntities(ecs::grp::BULLET);
+	for (auto b : balas) {
+		mngr.setAlive(b, false);
+	}
+
 	reset_player();
 	deccel_spawned_creatures_multi = 1;
 	mngr.getComponent<WaveManager>(mngr.getHandler(ecs::hdlr::WAVE))->reset_wave_manager();

@@ -3,10 +3,6 @@
 #include "../../ecs/Component.h"
 
 class MythicItem;
-class ManaComponent;
-class MovementController;
-class Health;
-class Weapon;
 
 class MythicComponent: public ecs::Component {
 private:
@@ -17,6 +13,7 @@ public:
     ~MythicComponent();
     void initComponent() override;
     void add_mythic(MythicItem* mythic);
+    void reset();
     void update(uint32_t dt) override;
     inline const std::vector<MythicItem*>& get_mythics() const { return _obtained_mythics; }
 };

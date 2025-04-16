@@ -13,6 +13,7 @@
 #include "../../our_scripts/components/rendering/transformless_dyn_image.h"
 #include "../../our_scripts/components/WaveManager.h"
 #include "../../our_scripts/components/KeyboardPlayerCtrl.h"
+#include "../../our_scripts/components/GamePadPlayerCtrl.hpp"
 #include "../../our_scripts/components/cards/Deck.hpp"
 #include "../../our_scripts/components/ui/PlayerHUD.h"
 #include "../../our_scripts/components/rendering/ImageForButton.h"
@@ -135,12 +136,12 @@ void TutorialScene::initScene() {
 	std::list<Card*> cl = { new Fireball(), new Lighting(), new Minigun() };
 	mngr->addComponent<Deck>(player, cl);
 	mngr->addComponent<KeyboardPlayerCtrl>(player);
+	mngr->addComponent<GamePadPlayerCtrl>(player);
 
 	_player_health = mngr->getComponent<Health>(player);
 }
 void TutorialScene::enterScene()
 {
-	Game::Instance()->get_mngr()->getComponent<WaveManager>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::WAVE));
 	auto camera = Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA);
 	Game::Instance()->get_mngr()->change_ent_scene(camera, ecs::scene::TUTORIALSCENE);
 	_tutorial_state = TutorialState::NEXT_POP_UP;
