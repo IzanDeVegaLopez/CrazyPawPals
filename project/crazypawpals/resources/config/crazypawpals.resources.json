@@ -452,8 +452,16 @@
       "file": "resources/images/ui/buttons/start.png"
     },
     {
+      "id": "next",
+      "file": "resources/images/ui/buttons/start.png"
+    },
+    {
       "id": "mythic",
       "file": "resources/images/ui/mythics/mythic.png"
+    },
+    {
+      "id": "mythic_ambient",
+      "file": "resources/images/enviroment/mythic.png"
     },
     {
       "id": "mythic_blood_claw",

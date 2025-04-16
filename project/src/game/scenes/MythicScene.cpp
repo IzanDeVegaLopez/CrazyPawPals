@@ -26,7 +26,7 @@ MythicScene::MythicScene() : Scene(ecs::scene::MYTHICSCENE), _selected_mythic(nu
 _lm(nullptr), _selected(false), _activate_confirm_button(false), _chosen_mythic(nullptr) {}
 
 void MythicScene::initScene() {
-    create_static_background(&sdlutils().images().at("reward"));
+    create_static_background(&sdlutils().images().at("mythic_ambient"));
     create_mythic_info();
     create_reward_mythic_buttons();
     create_my_mythics();
@@ -41,7 +41,7 @@ void MythicScene::enterScene()
     refresh_mythics();
     refresh_my_mythics(m);
     _activate_confirm_button = true;
-    Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::REWARDSCENE);
+    Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::MYTHICSCENE);
 #ifdef GENERATE_LOG
     log_writer_to_csv::Instance()->add_new_log();
     log_writer_to_csv::Instance()->add_new_log("ENTERED MYTHIC SCENE");
@@ -363,10 +363,11 @@ void MythicScene::create_a_mythic(const GameStructs::MythicButtonProperties& bp)
         /*imgComp->destination_rect.position.y -= 0.125f;*/
        /* imgComp->destination_rect.size = { imgComp->destination_rect.size.x * 1.25f,  imgComp->destination_rect.size.y * 1.25f };*/
         });
-    buttonComp->connectExit([buttonComp, imgComp, mngr, ri]() {
+    buttonComp->connectExit([buttonComp, imgComp, mngr, ri, this]() {
         //std::cout << "exit -> Reward button: " << std::endl;
         /*imgComp->destination_rect.position.y += 0.125f;*/
         //filter
+        if (_selected) return;
         imgComp->_filter = false;
         ri->set_texture(&sdlutils().images().at("initial_info"));
         //imgComp->destination_rect.size = { imgComp->destination_rect.size.x / 1.25f,  imgComp->destination_rect.size.y / 1.25f };

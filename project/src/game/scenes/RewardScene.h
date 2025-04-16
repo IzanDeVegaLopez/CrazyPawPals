@@ -55,7 +55,6 @@ private:
 
 	//method to change the position between health button and a card button
 	void change_pos(bool enter);
-	void resize(ImageForButton* im, float factor);
 
 	//method to create button to select card
 	void create_reward_selected_button(const GameStructs::ButtonProperties& bp);
