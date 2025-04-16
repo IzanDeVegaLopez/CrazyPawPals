@@ -6,6 +6,7 @@ class Weapon;
 class Transform;
 class StateMachine;
 struct EnemySpawnConfig;
+
 class GameScene : public event_system::event_receiver, public Scene
 {
 	[[maybe_unused]]

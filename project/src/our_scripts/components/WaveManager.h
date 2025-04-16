@@ -31,11 +31,11 @@ struct enemy_spawn_definition {
 };
 //index equals enemyType
 constexpr enemy_spawn_definition enemy_spawn_data[8] = {
-    {3,1}, //0
-    {2,1}, //1
+    {2,2}, //0
+    {1,1}, //1
     {1,1}, //2
-    {3,2}, //3
-    {5,2}, //4
+    {1,2}, //3
+    {3,1}, //4
     {1,3}, //5
     {1,3}, //6
     {1,3}  //7

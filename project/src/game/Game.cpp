@@ -140,6 +140,7 @@ bool Game::init() {
 	_scenes[VICTORY]->initScene();
 
 	change_Scene(MAINMENU);
+	set_volumes();
 	return true;
 }
 
@@ -221,4 +222,7 @@ void Game::change_Scene(State nextScene){
 
 	_current_scene_index = nextScene;
 	_scenes[_current_scene_index]->enterScene();
+}
+void Game::set_volumes() {
+	sdlutils().soundEffects().at("button_hover").setVolume(20);
 }

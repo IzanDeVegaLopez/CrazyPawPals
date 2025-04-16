@@ -48,7 +48,7 @@ void WeaponCatKuza::wind_attack(Vector2D shootPos) {
 	bp.width = _attack_width * 0.5f;
 	bp.height = _attack_height * 0.5f;
 
-	bp.sprite_key = "p_plimplim";
+	bp.sprite_key = "p_wind_catkuza";
 	bp.collision_filter = GameStructs::collide_with::player;
 
 	float totalAngle = 60.0f;

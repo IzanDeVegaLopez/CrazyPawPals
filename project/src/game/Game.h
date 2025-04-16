@@ -48,4 +48,5 @@ private:
 	std::pair<int, int> _screen_size = std::make_pair(960,540);
 	Game();
 	ecs::Manager* _mngr;
+	void set_volumes();
 };
