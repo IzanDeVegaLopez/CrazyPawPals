@@ -45,7 +45,7 @@ TutorialScene::TutorialScene()
 				input.isKeyDown(SDL_SCANCODE_S) || input.isKeyDown(SDL_SCANCODE_D))
 				||input.getRStick().getX() != 0.0f|| input.getRStick().getY() != 0.0f;
 		},
-		3000,{{0.04f, 0.1f}, {0.4f, 0.4f}}
+		3500,{{0.04f, 0.1f}, {0.4f, 0.4f}}
 		});
 
 	_pop_ups.push_back({ "pop_up_player_hud",
@@ -65,7 +65,7 @@ TutorialScene::TutorialScene()
 			if (LT)input.consume(InputHandler::CONTROLLER_BUTTONS::LT);
 			return (input.mouseButtonDownEvent() && input.getMouseButtonState(InputHandler::RIGHT)) || LT;
 		},
-		2000,{{0.04f, 0.1f}, {0.4f, 0.4f}},
+		2500,{{0.04f, 0.1f}, {0.4f, 0.4f}},
 		});
 
 	_pop_ups.push_back({ "popup_reload",
@@ -74,7 +74,7 @@ TutorialScene::TutorialScene()
 			bool B = input.isControllerButtonDown(InputHandler::CONTROLLER_BUTTONS::B);
 			if (B)input.consume(InputHandler::CONTROLLER_BUTTONS::B);
 			return input.isKeyDown(SDL_SCANCODE_SPACE) || B; },
-		2000, {{0.04f, 0.1f}, {0.4f, 0.4f}}
+		2500, {{0.04f, 0.1f}, {0.4f, 0.4f}}
 	});
 
 
