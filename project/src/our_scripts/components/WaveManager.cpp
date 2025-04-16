@@ -31,10 +31,12 @@ WaveManager::WaveManager() :
     _current_wave_event(new no_event(this))
 {
     event_system::event_manager::Instance()->suscribe_to_event(event_system::enemy_dead, this, &event_system::event_receiver::event_callback0);
+    event_system::event_manager::Instance()->suscribe_to_event(event_system::player_dead, this, &event_system::event_receiver::event_callback1);
 }
 
 WaveManager::~WaveManager() {
     event_system::event_manager::Instance()->unsuscribe_to_event(event_system::enemy_dead, this, &event_system::event_receiver::event_callback0);
+    event_system::event_manager::Instance()->unsuscribe_to_event(event_system::player_dead, this, &event_system::event_receiver::event_callback1);
 }
 
 void
@@ -53,6 +55,24 @@ bool WaveManager::is_wave_finished()
     //TODO: Necesitamos no notificar los enemigos que son creados por otros
     //std::cout << "enemies_killed: " << _enemiesKilled << "   numEnemies: " << _numEnemies << "    enemies_spawned: " << _enemiesSpawned << std::endl;
     return _enemiesKilled >= _numEnemies && _all_enemies_already_spawned;
+}
+
+void WaveManager::erase_all_enemies()
+{
+    auto manager = Game::Instance()->get_mngr();
+    for (auto e : manager->getEntities(ecs::grp::ENEMY))
+        manager->setAlive(e, false);
+}
+
+void WaveManager::erase_all_bullets()
+{
+    auto manager = Game::Instance()->get_mngr();
+    for (auto e : manager->getEntities(ecs::grp::BULLET))
+        manager->setAlive(e, false);
+    for (auto e : manager->getEntities(ecs::grp::PLAYERBULLETS))
+        manager->setAlive(e, false);
+    for (auto e : manager->getEntities(ecs::grp::ENEMYBULLETS))
+        manager->setAlive(e, false);
 }
 
 //Chooses enemies in _enemy_types_for_current_wave
@@ -259,6 +279,8 @@ void WaveManager::endwave()
     _currentWave++;
     _all_enemies_already_spawned = false;
     fog->setFog(false);
+    erase_all_bullets();
+    erase_all_enemies();
     enterRewardsMenu();
 
 }
@@ -267,6 +289,15 @@ void WaveManager::event_callback0(const Msg& m)
 {
     (void)m;
     _enemiesKilled++;
+}
+
+void WaveManager::event_callback1(const Msg& m)
+{
+    _current_wave_event->end_wave_callback();
+    erase_all_enemies();
+    erase_all_bullets();
+    _current_wave_event = std::make_unique<no_event>(this);
+    fog->setFog(false);
 }
 
 void WaveManager::choose_new_event()

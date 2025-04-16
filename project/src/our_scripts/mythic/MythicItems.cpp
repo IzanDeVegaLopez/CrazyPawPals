@@ -72,7 +72,7 @@ CurtainReaper::apply_effects() {
 #pragma endregion
 
 #pragma region Incense
-Incense::Incense() :MythicItem("Incense", "mythic_incense")
+Incense::Incense() :MythicItem("incense", "mythic_incense")
 {
 	auto manager = Game::Instance()->get_mngr();
 	_mana = manager->getComponent<ManaComponent>(_player);

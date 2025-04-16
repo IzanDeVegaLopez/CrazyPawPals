@@ -61,6 +61,8 @@ private:
     void enterRewardsMenu();
     bool can_spawn_next_enemy();
     bool is_wave_finished();
+    void erase_all_enemies();
+    void erase_all_bullets();
 #ifdef GENERATE_LOG
     inline static uint32_t _ticks_on_wave = 1;
 #endif
@@ -109,6 +111,7 @@ public:
     inline int get_current_wave() { return _currentWave; }
     inline events get_current_event() { return _current_event; }
     void event_callback0(const Msg& m) override;
+    void event_callback1(const Msg& m) override;
     void newEnemy() { _numEnemies++; _enemiesSpawned++; };
 #ifdef GENERATE_LOG
     static inline uint32_t get_ticks_on_wave() {
