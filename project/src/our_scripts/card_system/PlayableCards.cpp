@@ -45,7 +45,7 @@ Minigun::Minigun()
 	_bullets_properties.height = 0.5;
 	_bullets_properties.width = 0.5;
 	_bullets_properties.life_time = 0.5f;
-	_bullets_properties.sprite_key = "card_minigun";
+	_bullets_properties.sprite_key = "p_minigun";
 	_bullets_properties.collision_filter = GameStructs::collide_with::enemy;
 	_bullets_properties.damage = 1;
 }

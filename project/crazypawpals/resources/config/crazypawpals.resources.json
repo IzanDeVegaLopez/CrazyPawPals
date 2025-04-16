@@ -364,6 +364,10 @@
       "file": "resources/images/ui/infos/card_minigun_info.png"
     },
     {
+      "id": "p_minigun",
+      "file": "resources/images/projectiles/p_minigun.png"
+    },
+    {
       "id": "card_cardSpray_info",
       "file": "resources/images/ui/infos/card_spray_info.png"
     },
@@ -411,6 +415,7 @@
       "id": "controls_button",
       "file": "resources/images/ui/buttons/controls.png"
     },
+
     {
       "id": "controls_button_selected",
       "file": "resources/images/ui/buttons/controls_selected.png"
@@ -460,88 +465,44 @@
       "file": "resources/images/ui/mythics/mythic.png"
     },
     {
-      "id": "mythic_ambient",
-      "file": "resources/images/enviroment/mythic.png"
-    },
-    {
-      "id": "mythic_blood_claw",
+      "id": "m_blood_claw",
       "file": "resources/images/ui/mythics/m_blood_claw.png"
     },
     {
-      "id": "mythic_blood_claw_info",
-      "file": "resources/images/ui/infos/initial_info.png"
-    },
-    {
-      "id": "mythic_profane_hotline",
-      "file": "resources/images/ui/mythics/mythic.png"
-    },
-    {
-      "id": "mythic_profane_hotline_info",
-      "file": "resources/images/ui/infos/initial_info.png"
+      "id": "m_claw_file",
+      "file": "resources/images/ui/mythics/m_claw_file.png"
     },
     {
       "id": "mythic_curtain_reaper",
       "file": "resources/images/ui/mythics/m_curtain_reaper.png"
     },
     {
-      "id": "mythic_curtain_reaper_info",
-      "file": "resources/images/ui/infos/initial_info.png"
+      "id": "mythic_blood_pact",
+      "file": "resources/images/ui/mythics/m_blood_pact.png"
     },
     {
       "id": "mythic_incense",
       "file": "resources/images/ui/mythics/m_incense.png"
     },
     {
-      "id": "mythic_incense_info",
-      "file": "resources/images/ui/infos/initial_info.png"
+      "id": "mythic_quick_draw_deck",
+      "file": "resources/images/ui/mythics/m_quick_draw_deck.png"
     },
     {
-      "id": "mythic_arcane_surge",
-      "file": "resources/images/ui/mythics/mythic.png"
+      "id": "mythic_dream_recicler",
+      "file": "resources/images/ui/mythics/m_dream_recicler.png"
     },
     {
-      "id": "mythic_arcane_surge_info",
-      "file": "resources/images/ui/infos/initial_info.png"
-    },
-    {
-      "id": "mythic_blood_pact",
-      "file": "resources/images/ui/mythics/m_blood_pact.png"
-    },
-    {
-      "id": "mythic_blood_pact_info",
-      "file": "resources/images/ui/infos/initial_info.png"
-    },
-    {
-      "id": "mythic_preternatural_force",
-      "file": "resources/images/ui/mythics/mythic.png"
-    },
-    {
-      "id": "mythic_preternatural_force_info",
-      "file": "resources/images/ui/infos/initial_info.png"
-    },
-    {
-      "id": "mythic_claw_file",
-      "file": "resources/images/ui/mythics/m_claw_file.png"
-    },
-    {
-      "id": "mythic_claw_file_info",
-      "file": "resources/images/ui/infos/initial_info.png"
-    },
-    {
-      "id": "mythic_meow_or_never",
-      "file": "resources/images/ui/mythics/mythic.png"
-    },
-    {
-      "id": "mythic_meow_or_never_info",
-      "file": "resources/images/ui/infos/initial_info.png"
+      "id": "mythic_uranium_socks",
+      "file": "resources/images/ui/mythics/m_uranium_socks.png"
     },
     {
       "id": "mythic_zoomies_inducer",
-      "file": "resources/images/ui/mythics/mythic.png"
+      "file": "resources/images/ui/mythics/m_zoomies_inducer.png"
     },
     {
-      "id": "mythic_zoomies_inducer_info",
-      "file": "resources/images/ui/infos/initial_info.png"
+      "id": "mythic_demonic_scratcher",
+      "file": "resources/images/ui/mythics/m_demonic_scratcher.png"
     },
     {
       "id": "meteroid",
