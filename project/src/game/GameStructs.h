@@ -16,6 +16,7 @@ namespace GameStructs {
 		WEAPON6,
 		WEAPON7,
 		CATKUZA_WEAPON,
+		SUPER_MICHI,
 		LAST_WEAPON,
 	};
 	enum DeckType {

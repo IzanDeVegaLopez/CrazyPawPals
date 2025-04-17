@@ -393,6 +393,24 @@ CatKuzaCard::on_play(Deck& d, const Vector2D* player_position, const Vector2D* t
 
 	} 
 }
+#pragma endregion
+
+#pragma region SuperMichiCard
+SuperMichiCard::SuperMichiCard() : Card("card_super_michi", Resources(1)),_times_since_played(0){}
+
+void
+SuperMichiCard::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
+{
+	(void)d;
+	(void)player_position;
+	(void)target_position;
+	_times_since_played += 1;
+	if (_times_since_played >= 10) {
+		_play_destination = DESTROY;
+	}
+}
+#pragma endregion
+
 #pragma region TestCards
 #pragma region prime
 Prime::Prime() : Card("card_placeholder", Resources(0))

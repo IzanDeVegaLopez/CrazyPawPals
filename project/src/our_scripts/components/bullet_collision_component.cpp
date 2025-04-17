@@ -5,6 +5,7 @@
 #include "../../ecs/Manager.h"
 #include "../../game/GameStructs.h"
 #include "Health.h"
+#include "movement/MovementController.h"
 #include "collision_registration_by_id.h"
 #include "id_component.h"
 #include "cards/Mana.h"
@@ -19,9 +20,9 @@ void bullet_collision_component::on_contact(const collision_manifold& tm)
     if (check_if_valid_collision(entity_collided_with)) {
         auto &&manager = *Game::Instance()->get_mngr();
         if (manager.hasComponent<Health>(entity_collided_with)) {
+            apply_weapon_effect(type, entity_collided_with);
             auto health = manager.getComponent<Health>(entity_collided_with);
             health->takeDamage(my_damage);
-            apply_weapon_effect(type, entity_collided_with);
 
             Game::Instance()->get_mngr()->setAlive(_ent, pierce_number-- > 0);
         }
@@ -73,6 +74,13 @@ void bullet_collision_component::apply_weapon_effect(GameStructs::WeaponType typ
     case GameStructs::WeaponType::CATKUZA_WEAPON: {
         auto player = manager.getHandler(ecs::hdlr::PLAYER);
         manager.getComponent<Deck>(player)->add_card_to_deck(new CatKuzaCard());
+        break;
+    }
+    case GameStructs::WeaponType::SUPER_MICHI: {
+        auto player = manager.getHandler(ecs::hdlr::PLAYER);
+        manager.getComponent<Deck>(player)->add_card_to_deck(new SuperMichiCard());
+        manager.getComponent<MovementController>(player)->frozen(1000);
+
         break;
     }
     default:
