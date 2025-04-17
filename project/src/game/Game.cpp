@@ -225,4 +225,5 @@ void Game::change_Scene(State nextScene){
 }
 void Game::set_volumes() {
 	sdlutils().soundEffects().at("button_hover").setVolume(20);
+	sdlutils().musics().at("main_menu_bgm").setMusicVolume(30);
 }

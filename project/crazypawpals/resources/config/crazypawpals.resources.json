@@ -623,6 +623,10 @@
       "id": "squeak",
       "file": "resources/sound/squeak.wav"
     }
-  ]
+  ],
 
+  "musics": [
+    { "id": "game_bgm", "file": "resources/sound/cpp.wav"},
+    { "id": "main_menu_bgm", "file": "resources/sound/menu.wav"}
+  ]
 }
