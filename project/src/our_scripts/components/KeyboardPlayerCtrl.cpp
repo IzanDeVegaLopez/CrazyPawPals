@@ -143,6 +143,7 @@ void KeyboardPlayerCtrl::update(Uint32 delta_time) {
             //send message to shootih().getMousePos();
             //_w->shoot(mousePos);
             if (!_dc->empty_hand() && _w->shoot(_mouse_pos)) {
+                sdlutils().soundEffects().at("player_shot").play();
 #ifdef GENERATE_LOG
                 log_writer_to_csv::Instance()->add_new_log("M1", "CARD DISCARDED:", _dc->hand()->get_name(), "CURRENT MANA:", _m->mana_count(), "MOUSE POS", "X", _mouse_pos.getX(), "Y", _mouse_pos.getY());
                 times_m1_used++;

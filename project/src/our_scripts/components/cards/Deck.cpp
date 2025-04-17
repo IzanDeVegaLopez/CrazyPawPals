@@ -78,6 +78,9 @@ bool Deck::use_card(const Vector2D* target_pos) noexcept
 			break;
 		}
 		_put_new_card_on_hand();
+
+		sdlutils().soundEffects().at("card_play").play();
+
 		return true;
 	}
 	else {
@@ -124,6 +127,9 @@ std::pair<bool, Card*> Deck::mill() noexcept
 		}
 		_av._last_milled_card_time = sdlutils().virtualTimer().currTime();
 		Game::Instance()->get_event_mngr()->fire_event(event_system::mill, mill_msg);
+
+		sdlutils().soundEffects().at("card_mill").play();
+
 	}
 	return std::make_pair(milled, _last_milled_card);
 }
@@ -156,6 +162,9 @@ void Deck::reload() noexcept
 				_discard_pile.add_card(c);
 			}
 		}
+
+		sdlutils().soundEffects().at("shuffle").play();
+
 		_primed = false;
 	}
 }

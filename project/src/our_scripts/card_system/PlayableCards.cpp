@@ -349,6 +349,9 @@ QuickFeet::QuickFeet(): Card("card_quickFeet", Resources(2)), _playing(false), _
 }
 void QuickFeet::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
 {
+	(void)player_position;
+	(void)target_position;
+	
 	_playing = true;
 	_time_since_played = 0;
 
@@ -368,6 +371,42 @@ void QuickFeet::update(uint32_t dt)
 			_ctrl->get_max_speed() -= 0.05f;
 			_playing = false;
 		}
+	}
+}
+#pragma endregion
+#pragma region CatKuzaCard
+CatKuzaCard::CatKuzaCard() : Card("card_catkuza", Resources(2)), _times_since_played(0)
+{
+}
+
+void 
+CatKuzaCard::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
+{
+	(void)d;
+	(void)player_position;
+	(void)target_position;
+	_times_since_played += 1;
+	std::cout << "CatKuzaCard played " << _times_since_played << " times" << std::endl;
+	if(_times_since_played >= 3){
+		_play_destination = DESTROY;
+		std::cout << "AL descartes" << std::endl;
+
+	} 
+}
+#pragma endregion
+
+#pragma region SuperMichiCard
+SuperMichiCard::SuperMichiCard() : Card("card_super_michi", Resources(1)),_times_since_played(0){}
+
+void
+SuperMichiCard::on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position)
+{
+	(void)d;
+	(void)player_position;
+	(void)target_position;
+	_times_since_played += 1;
+	if (_times_since_played >= 10) {
+		_play_destination = DESTROY;
 	}
 }
 #pragma endregion

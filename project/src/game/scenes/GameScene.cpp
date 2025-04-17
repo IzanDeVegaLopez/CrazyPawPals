@@ -186,7 +186,6 @@ void GameScene::initScene() {
 	manager.refresh();
 	create_environment();
 	// spawn_catkuza(Vector2D{5.0f, 0.0f});
-	// spawn_super_michi_mafioso(Vector2D{5.0f, 0.0f});
 	// spawn_sarno_rata(Vector2D{5.0f, 0.0f});
 	spawn_fog();
 	spawn_wave_manager();
@@ -1105,11 +1104,6 @@ void GameScene::event_callback0(const event_system::event_receiver::Msg& m) {
 }
 void GameScene::event_callback1(const event_system::event_receiver::Msg& m) {
 	auto&& mngr = *Game::Instance()->get_mngr();
-	auto balas = mngr.getEntities(ecs::grp::BULLET);
-	for (auto b : balas) {
-		mngr.setAlive(b, false);
-	}
-
 	reset_player();
 	deccel_spawned_creatures_multi = 1;
 	mngr.getComponent<WaveManager>(mngr.getHandler(ecs::hdlr::WAVE))->reset_wave_manager();
