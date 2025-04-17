@@ -15,7 +15,7 @@ public:
 
 protected:
 	Transform* _tr;
-	Transform* _playerTr;
+	Transform* _player_tr;
 	WeaponSuperMichiMafioso* _weapon;
 	OnChangeAttack _onChangeAttack;
 };

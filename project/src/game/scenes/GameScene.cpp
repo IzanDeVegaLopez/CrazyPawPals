@@ -226,6 +226,8 @@ void GameScene::enterScene()
 	auto e = wm->get_current_event();
 	RewardScene::will_have_mythic(e != NONE);
 	manager.getComponent<HUD>(manager.getHandler(ecs::hdlr::HUD_ENTITY))->start_new_wave();
+
+	spawn_catkuza(Vector2D{ 5.0f, 0.0f });
 #ifdef GENERATE_LOG
 	log_writer_to_csv::Instance()->add_new_log();
 	log_writer_to_csv::Instance()->add_new_log("ENTERED GAME SCENE");
@@ -373,7 +375,7 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 	state_cm->set_cooldown("spawn_michi", 8000);
 
 	// Crear estados
-	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
+	auto walkingState = std::make_shared<WalkingState>(&tr, &mc);
 
 	auto areaAttackState = std::make_shared<SuperMichiMafiosoAttack>(
 		&tr, _p_tr, &weapon,[&weapon]() {weapon.setAttackPattern(WeaponSuperMichiMafioso::ATTACK1);}
@@ -493,7 +495,7 @@ GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene) {
 	state_cm->add_pattern("PATTERN_2", 1);
 
 	// Crear estados
-	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
+	auto walkingState = std::make_shared<WalkingState>(&tr, &mc);
 	
 	auto dashState = std::make_shared<DashingState>(&tr, _p_tr, &mc);
 	auto chargingState = std::make_shared<WaitingState>();
@@ -676,7 +678,7 @@ GameScene::spawn_sarno_rata(Vector2D posVec, ecs::sceneId_t scene)
 	auto state_cm = state->getConditionManager();
 
 	// Crear estados
-	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc); 
+	auto walkingState = std::make_shared<WalkingState>(&tr, &mc); 
 	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon);
 
 
@@ -720,8 +722,8 @@ void GameScene::spawn_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 	auto state_cm = state->getConditionManager();
 
 	// Crear estados
-	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc); 
-	auto backingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc, true); 
+	auto walkingState = std::make_shared<WalkingState>(&tr, &mc); 
+	auto backingState = std::make_shared<WalkingState>(&tr, &mc, true); 
 	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon); 
 	//poner los estado a la state
 	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
@@ -786,7 +788,7 @@ void GameScene::spawn_plim_plim(Vector2D posVec, ecs::sceneId_t scene)
 	auto state_cm = state->getConditionManager();
 
 	// Crear estados
-	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc); 
+	auto walkingState = std::make_shared<WalkingState>(&tr, &mc); 
 	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon);
 	//poner los estado a la state
 	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
@@ -829,7 +831,7 @@ void GameScene::spawn_boom(Vector2D posVec, ecs::sceneId_t scene)
 	auto state_cm = state->getConditionManager();
 
 	// Crear estados
-	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc); 
+	auto walkingState = std::make_shared<WalkingState>(&tr, &mc); 
 	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon, false, [health]() {health->takeDamage(health->getMaxHealth()); }, 1);
 
 	//poner los estado a la state
@@ -890,7 +892,7 @@ void GameScene::spawn_ratatouille(Vector2D posVec, ecs::sceneId_t scene)
 	auto state_cm = state->getConditionManager();
 
 	// Crear estados
-	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
+	auto walkingState = std::make_shared<WalkingState>(&tr, &mc);
 	auto rotatingState = std::make_shared<RotatingState>(&tr, _p_tr, &mc);
 
 	//poner los estado a la state
@@ -939,7 +941,7 @@ void GameScene::spawn_rata_basurera(Vector2D posVec, ecs::sceneId_t scene) {
 	auto state = manager.addComponent<StateMachine>(e);
 
 	// Crear estados
-	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
+	auto walkingState = std::make_shared<WalkingState>(&tr, &mc);
 	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon);
 
 	//poner los estado a la state
@@ -983,7 +985,7 @@ void GameScene::spawn_rey_basurero(Vector2D posVec, ecs::sceneId_t scene) {
 	auto state = manager.addComponent<StateMachine>(e);
 
 	// Crear estados
-	auto walkingState = std::make_shared<WalkingState>(&tr, _p_tr, &mc);
+	auto walkingState = std::make_shared<WalkingState>(&tr, &mc);
 	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon);
 
 	//poner los estado a la state

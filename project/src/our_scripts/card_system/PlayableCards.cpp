@@ -388,8 +388,9 @@ CatKuzaCard::on_play(Deck& d, const Vector2D* player_position, const Vector2D* t
 	_times_since_played += 1;
 	std::cout << "CatKuzaCard played " << _times_since_played << " times" << std::endl;
 	if(_times_since_played >= 3){
+		std::cout << "Eliminarse" << std::endl;
+
 		_play_destination = DESTROY;
-		std::cout << "AL descartes" << std::endl;
 
 	} 
 }

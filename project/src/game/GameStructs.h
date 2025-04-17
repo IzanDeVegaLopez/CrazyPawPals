@@ -25,6 +25,12 @@ namespace GameStructs {
 		FOUR,
 		LAST_DECK,
 	};
+	enum EnemyFollow {
+		CLOSEST,
+		FURTHEST,
+		LOWREST_LIFE,
+		HIGHEST_LIFE,
+	};
 	enum collide_with {
 		player = 0,
 		enemy = 1,

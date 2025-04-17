@@ -6,7 +6,7 @@ class MovementController;
 class DashingState : public State {
 protected:
 	Transform* _tr;
-	Transform* _playerTr;
+	Transform* _player_tr;
 	MovementController* _movementController;
 	
 	bool _to_destination;
