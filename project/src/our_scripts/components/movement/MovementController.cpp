@@ -6,7 +6,7 @@
 #include "../rigidbody_component.hpp"
 MovementController::MovementController(float max_speed, float acceleration, float decceleration) 
 	: _tr(nullptr), _max_speed(max_speed), _acceleration(acceleration), _decceleration(decceleration), 
-	_dashing(false), _time_remaining(0),  _dash_duration(0), _start_pos(0,0) {
+	_dashing(false), _time_remaining(0),  _dash_duration(0), _start_pos(0,0), _frozen(false),_frozen_duration(0) {
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::change_deccel, this, &event_system::event_receiver::event_callback0);
 }
 
@@ -34,6 +34,12 @@ void MovementController::set_input(Vector2D vec) {
 
 void MovementController::update(uint32_t delta_time)
 {
+	if (_frozen) {
+		_frozen_duration = (_frozen_duration > delta_time) ? _frozen_duration - delta_time : 0;
+		if (_frozen_duration == 0) _frozen = false;
+		return;
+	}
+
 	if (_dashing) {
 		float t = 1.0f - (static_cast<float>(_time_remaining) / static_cast<float>(_dash_duration));
         
@@ -104,6 +110,14 @@ void MovementController::dash(Vector2D next_pos, uint32_t time) {
         _start_pos = _tr->getPos();
 		_coll->options = collisionable_option_trigger;
 	}
+}
+
+void MovementController::frozen(uint32_t time)
+{
+	_frozen = true;
+	_frozen_duration = time;
+	_input = { 0,0 };
+	_tr->setDir({ 0,0 });
 }
 
 void MovementController::event_callback0(const event_system::event_receiver::Msg& m) {

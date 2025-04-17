@@ -111,6 +111,14 @@ private:
 	int _times_since_played;
 };
 
+class SuperMichiCard : public Card {
+public:
+	SuperMichiCard();
+	void on_play(Deck& d, const Vector2D* player_position, const Vector2D* target_position) override;
+private:
+	int _times_since_played;
+};
+
 class QuickFeet : public Card {
 public:
 	QuickFeet();

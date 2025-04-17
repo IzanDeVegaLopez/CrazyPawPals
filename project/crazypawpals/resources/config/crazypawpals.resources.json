@@ -104,6 +104,10 @@
       "file": "resources/images/cards/card_catkuza.png"
     },
     {
+      "id": "card_super_michi",
+      "file": "resources/images/cards/card_super_michi.png"
+    },
+    {
       "id": "card",
       "file": "resources/images/cards/card.png"
     },
