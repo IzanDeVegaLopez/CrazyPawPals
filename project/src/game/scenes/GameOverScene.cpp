@@ -37,6 +37,9 @@ void GameOverScene::initScene() {
 }
 void GameOverScene::enterScene()
 {
+    sdlutils().musics().at("game_bgm").haltMusic();
+    sdlutils().soundEffects().at("round_start_event").haltChannel();
+    sdlutils().soundEffects().at("round_start").haltChannel();
     Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::GAMEOVERSCENE);
 #ifdef GENERATE_LOG
     log_writer_to_csv::Instance()->add_new_log();
