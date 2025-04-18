@@ -1,72 +1,29 @@
 #pragma once
-#include "Transform.h"
-#include "../Health.h"
-#include "../../../ecs/Manager.h"
-#include "../../../game/Game.h"
+#include "../../../ecs/Component.h"
+#include "../../../ecs/Component.h"
 
-struct Follow 
+class Transform;
+class Follow : public ecs::Component
 {
-	static Transform* search_closest_player(Transform* _tr){
-		Transform* player = nullptr;
-		float min_distance = 1000.0f;
-		auto&& manager = *Game::Instance()->get_mngr();
-		auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
-		for(auto playerEntity : playerEntities) {
-			auto tr = manager.getComponent<Transform>(playerEntity);
-			float distance = (tr->getPos() - _tr->getPos()).magnitude();
-			if (distance < min_distance) {
-				min_distance = distance;
-				player = tr;
-			}
-		}
-		return player;
-	}
 
-	static Transform* search_furthest_player(Transform* _tr){
-		Transform* player = nullptr;
-		float max_distance = 0.0f;
-		auto&& manager = *Game::Instance()->get_mngr();
-		auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
-		for(auto playerEntity : playerEntities) {
-			auto tr = manager.getComponent<Transform>(playerEntity);
-			float distance = (tr->getPos() - _tr->getPos()).magnitude();
-			if (distance > max_distance) {
-				max_distance = distance;
-				player = tr;
-			}
-		}
-		return player;
-	}
+public:
+	__CMPID_DECL__(ecs::cmp::FOLLOW);
 
-	static Transform* search_lowest_life_player(){
-		Transform* player = nullptr;
-		float min_life = 1000.0f;
-		auto&& manager = *Game::Instance()->get_mngr();
-		auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
-		for(auto playerEntity : playerEntities) {
-			auto tr = manager.getComponent<Transform>(playerEntity);
-			auto health = manager.getComponent<Health>(playerEntity);
-			if (health->getHealth() < min_life) {
-				min_life = health->getHealth();
-				player = tr;
-			}
-		}
-		return player;
-	}
+	Follow(GameStructs::EnemyFollow type = GameStructs::EnemyFollow::CLOSEST);
+	~Follow() {};
 
-	static Transform* search_highest_life_player(){
-		Transform* player = nullptr;
-		float max_life = 0.0f;
-		auto&& manager = *Game::Instance()->get_mngr();
-		auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
-		for(auto playerEntity : playerEntities) {
-			auto tr = manager.getComponent<Transform>(playerEntity);
-			auto health = manager.getComponent<Health>(playerEntity);
-			if (health->getHealth() > max_life) {
-				max_life = health->getHealth();
-				player = tr;
-			}
-		}
-		return player;
-	}	
+	void initComponent() override;
+	void act_follow();
+	inline Transform* get_act_follow() const{
+		return _act_follow;
+	};
+private:
+	void search_closest_player();
+	void search_furthest_player();
+	void search_lowest_life_player();
+	void search_highest_life_player();
+
+	Transform *_my_tr;
+	Transform *_act_follow;
+	GameStructs::EnemyFollow _my_follow_type;
 };
