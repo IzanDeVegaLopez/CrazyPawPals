@@ -9,6 +9,7 @@
 
 #include "../../our_scripts/components/rendering/Image.h"
 #include "../../our_scripts/components/movement/Transform.h"
+#include "../../our_scripts/components/movement/Follow.h"
 #include "../../our_scripts/components/movement/MovementController.h"
 #include "../../our_scripts/components/LifetimeTimer.h"
 #include "../../our_scripts/states/Conditions.h"
@@ -318,34 +319,41 @@ struct EnemySpawnConfig {
 	float health;
 	float width;
 	float height;
+	MovementController* mc;
 };
 
-ecs::entity_t GameScene::create_enemy(EnemySpawnConfig&& ec, ecs::sceneId_t scene){
+ecs::entity_t GameScene::create_enemy(GameStructs::EnemyProperties&& ec, ecs::sceneId_t scene, Weapon* weapon){
 	auto&& manager = *Game::Instance()->get_mngr();
 
 	float randSize = float(sdlutils().rand().nextInt(6, 10)) / 10.0f;
 	auto&& rect = *new rect_component{ 0, 0, ec.width * randSize, ec.height * randSize };
 	auto &&rigidbody = *new rigidbody_component{rect_f32{{0.0f, -0.15f}, {0.5f, 0.6f}}, mass_f32{3.0f}, 0.05f};
-	auto &&col = *new collisionable{*ec.tr, rigidbody, rect, collisionable_option_none};
+	auto&& tr = *new Transform(ec.start_pos, { 0.0f,0.0f }, 0.0f, 2.0f);
+	auto &&col = *new collisionable{tr, rigidbody, rect, collisionable_option_none};
+	auto&& mc = *new MovementController(0.05f, 5.0f, 20.0 * deccel_spawned_creatures_multi);
+	auto&& state = *new StateMachine();
+
 	auto e = create_entity(
 		ecs::grp::ENEMY,
 		scene,
-		ec.tr,
+		tr,
 		&rect,
 		new dyn_image(
 			rect_f32{ {0,0},{1,1} },
 			rect,
 			manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam,
-			sdlutils().images().at(ec.spriteKey),
-			*ec.tr
+			sdlutils().images().at(ec.sprite_key),
+			tr
 		),
 		new Health(ec.health),
 		new FlipXController(),
 		new enemy_collision_triggerer(),
 		new id_component(),
-		ec.weapon,
+		weapon,
 		&rigidbody,
-		&col
+		&col,
+		mc, 
+		state
 	);
 
 	return e;
@@ -356,16 +364,29 @@ ecs::entity_t GameScene::create_enemy(EnemySpawnConfig&& ec, ecs::sceneId_t scen
 void GameScene::spawn_super_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 {
 	auto&& manager = *Game::Instance()->get_mngr();
-	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
-	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
+	auto&& weapon = *new WeaponSuperMichiMafioso();
 	
-	auto&& weapon = *new WeaponSuperMichiMafioso(_p_tr);
-	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
+	auto e = create_enemy(
+        GameStructs::EnemyProperties{
+            "super_michi_mafioso",       // sprite_key
+            posVec,                      // start_pos
+            GameStructs::DEFAULT,        // enemy_type
+            20,                          // health
+            1.75f,                       // width 
+            2.25f,                       // height
+            GameStructs::CLOSEST,        // target_strategy
+            {0.0f, 0.0f},               // velocity
+            0.0f,                       // rotation
+            2.0f                        // scale
+        },
+        scene,
+        static_cast<Weapon*>(&weapon)
+    );
 
-	auto e = create_enemy(EnemySpawnConfig{ &tr, "super_michi_mafioso", static_cast<Weapon*>(&weapon), 20, 1.75f, 2.25f }, scene);
-	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.01, 3.0f, 15.0f*deccel_spawned_creatures_multi));
+	Transform* tr = manager.getComponent<Transform>(e);
+    MovementController* mc = manager.getComponent<MovementController>(e);
+    StateMachine* state = manager.getComponent<StateMachine>(e);
 
-	auto state = manager.addComponent<StateMachine>(e);
 	auto state_cm = state->getConditionManager();
 
 	state_cm->set_cooldown("area_attack_duration", 400);
@@ -377,21 +398,23 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 	auto walkingState = std::make_shared<WalkingState>(&tr, &mc);
 
 	auto areaAttackState = std::make_shared<SuperMichiMafiosoAttack>(
-		&tr, _p_tr, &weapon,[&weapon]() {weapon.setAttackPattern(WeaponSuperMichiMafioso::ATTACK1);}
+		&tr, &weapon,[&weapon]() {weapon.setAttackPattern(WeaponSuperMichiMafioso::ATTACK1);}
 	);
 
 	auto shotAttackState = std::make_shared<SuperMichiMafiosoAttack>(
-		&tr, _p_tr, &weapon,[&weapon]() {weapon.setAttackPattern(WeaponSuperMichiMafioso::ATTACK2);}
+		&tr, &weapon,[&weapon]() {weapon.setAttackPattern(WeaponSuperMichiMafioso::ATTACK2);}
 	);
 
 	auto largeAreaAttackState = std::make_shared<SuperMichiMafiosoAttack>(
-		&tr, _p_tr, &weapon,[&weapon]() {weapon.setAttackPattern(WeaponSuperMichiMafioso::ATTACK3);}
+		&tr, &weapon,[&weapon]() {weapon.setAttackPattern(WeaponSuperMichiMafioso::ATTACK3);}
 	);
 	auto spawnMichiState = std::make_shared<SuperMichiMafiosoAttack>(
-		&tr, _p_tr, &weapon,[&weapon]() {weapon.setAttackPattern(WeaponSuperMichiMafioso::SPAWN_MICHI_MAFIOSO);}
+		&tr, &weapon,[&weapon]() {weapon.setAttackPattern(WeaponSuperMichiMafioso::SPAWN_MICHI_MAFIOSO);}
 	);
 
 	auto waitingState = std::make_shared<WaitingState>();
+
+	auto _p_tr = Follow::search_closest_player(tr);
 
 	//poner los estado a la state
 	state->add_state("Walking", walkingState);
@@ -406,8 +429,8 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 
 	// Condiciones de cada estado
 	// Patron1: cuando se acerca al player empieza el p1
-	state->add_transition("Walking", "AreaAttack", [state_cm, _p_tr, &tr, dist_to_attack]() {
-		return state_cm->can_use("area_attack_duration", sdlutils().virtualTimer().currTime()) && state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
+	state->add_transition("Walking", "AreaAttack", [state_cm, _p_tr, tr, dist_to_attack]() {
+		return state_cm->can_use("area_attack_duration", sdlutils().virtualTimer().currTime()) && state_cm->is_player_near(_p_tr, tr, dist_to_attack);
 	});
 
 	state->add_transition("AreaAttack", "Waiting", [state_cm, _p_tr, &tr, dist_to_attack]() {
@@ -416,20 +439,21 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 		if (trans) { state_cm->reset_cooldown("area_attack_duration", currentTime); };
 		return trans;  
 	});
+
 	state->add_transition("Waiting", "AreaAttack", [state_cm, _p_tr, &tr, dist_to_attack]() {
-		return state_cm->can_use("area_attack_duration", sdlutils().virtualTimer().currTime())&& state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
+		return state_cm->can_use("area_attack_duration", sdlutils().virtualTimer().currTime())&& state_cm->is_player_near(_p_tr, tr, dist_to_attack);
 	});
 
 	//patron2: cuando ataque 3 veces p1, pasa a 2 si el player no se aleja mucho
 	state->add_transition("Waiting", "ShotAttack", [state_cm, _p_tr, &tr, dist_to_attack]() {
 		uint32_t currentTime = sdlutils().virtualTimer().currTime();
 
-		bool trans = state_cm->can_use("shot_attack", currentTime)&& state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
+		bool trans = state_cm->can_use("shot_attack", currentTime)&& state_cm->is_player_near(_p_tr, tr, dist_to_attack);
 		if (trans) { state_cm->reset_cooldown("shot_attack", currentTime); };
 		return trans;
 	});
 
-	state->add_transition("ShotAttack", "Waiting", [state_cm, _p_tr, &tr, dist_to_attack]() {return true; });
+	state->add_transition("ShotAttack", "Waiting", [state_cm, _p_tr, tr, dist_to_attack]() {return true; });
 
 	//spawn
 	state->add_transition("Waiting", "SpawnMichi", [state_cm]() {
@@ -443,9 +467,9 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 	state->add_transition("SpawnMichi", "Waiting", [state_cm]() {return true; });
 
 	//patron 3
-	state->add_transition("Waiting", "LargeAreaAttack", [state_cm, _p_tr, &tr]() {
+	state->add_transition("Waiting", "LargeAreaAttack", [state_cm, _p_tr, tr]() {
 		uint32_t currentTime = sdlutils().virtualTimer().currTime();
-		bool trans = state_cm->can_use("large_area_attack_duration", currentTime)&& state_cm->is_player_near(_p_tr, &tr, 2.0f);;
+		bool trans = state_cm->can_use("large_area_attack_duration", currentTime)&& state_cm->is_player_near(_p_tr, tr, 2.0f);;
 		if (trans) {
 			state_cm->reset_cooldown("large_area_attack_duration", currentTime);
 		}
@@ -456,8 +480,8 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 
 
 	// A walking si el player se aleja
-	state->add_transition("Waiting", "Walking", [state_cm, _p_tr, &tr, dist_to_attack]() {
-		return !state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
+	state->add_transition("Waiting", "Walking", [state_cm, _p_tr, tr, dist_to_attack]() {
+		return !state_cm->is_player_near(_p_tr, tr, dist_to_attack);
 	});
 
 	// Estado inicial
@@ -470,18 +494,18 @@ void
 GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene) {
 	auto&& manager = *Game::Instance()->get_mngr();
 	auto&& weapon = *new WeaponCatKuza();
-	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
 
-	auto e = create_enemy(EnemySpawnConfig{ &tr, "catkuza", static_cast<Weapon*>(&weapon), 5, 2.0f, 2.25f }, scene);
-
-	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.05f, 5.0f, 20.0 * deccel_spawned_creatures_multi));
+	auto e = create_enemy(GameStructs::EnemyProperties{"catkuza", posVec, GameStructs::DEFAULT, 5,  2.0f, 2.25f, GameStructs::CLOSEST, { 0.0f, 0.0f}, 0.0f, 2.0f}, scene, static_cast<Weapon*>(&weapon));
 
 	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
 
-	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
+	//Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
+	
+	Transform* tr = manager.getComponent<Transform>(e); 
+	MovementController* mc = manager.getComponent<MovementController>(e); 
+	StateMachine* state = manager.getComponent<StateMachine>(e); 
 
-	auto&& state = *manager.addComponent<StateMachine>(e);
-	auto state_cm = state.getConditionManager();
+	auto state_cm = state->getConditionManager();
 
 	state_cm->set_cooldown("wind_attack_duration", 1000);
 	state_cm->set_cooldown("charging_duration", 500);
@@ -495,30 +519,30 @@ GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene) {
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(&tr, &mc);
-	
-	auto dashState = std::make_shared<DashingState>(&tr, _p_tr, &mc);
+	auto dashState = std::make_shared<DashingState>(&tr, &mc);
 	auto chargingState = std::make_shared<WaitingState>();
 
 	auto windAttackState = std::make_shared<AttackingState>(
-		&tr, _p_tr, &weapon, false,
-		[&weapon, &tr, _p_tr]() { 
-			Vector2D shootPos = tr.getPos(); // Posición del enemigo
+		tr, &weapon, false,
+		[&weapon, &tr]() { 
+			Vector2D shootPos = tr->getPos(); // Posición del enemigo
 			weapon.wind_attack(shootPos); 
 		}
 	);
 
 	auto areaAttackState = std::make_shared<AttackingState>(
-		&tr, _p_tr, &weapon,false,
-		[&weapon, &tr]() {
-			Vector2D shootPos = tr.getPos(); // Posición del enemigo
+		tr, &weapon,false,
+		[&weapon, tr]() {
+			Vector2D shootPos = tr->getPos(); // Posición del enemigo
 			weapon.area_attack(shootPos);
 		}
 	);
 
+	auto _p_tr = Follow::search_closest_player(tr);
 	auto dashAttackState = std::make_shared<AttackingState>(
-		&tr, _p_tr, &weapon,false,
-		[&weapon, &tr, _p_tr, &mc]() {
-			Vector2D shootPos = tr.getPos();
+		&tr, &weapon,false,
+		[&weapon, tr, _p_tr, &mc]() {
+			Vector2D shootPos = tr->getPos();
 			Vector2D shootDir = (_p_tr->getPos() - shootPos).normalize();
 
 			Vector2D dash_target = _p_tr->getPos() + shootDir * 1.8f;
@@ -530,21 +554,21 @@ GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene) {
 
 
 	//poner los estado a la state
-	state.add_state("Walking", walkingState);
-	state.add_state("Charging", chargingState);
-	state.add_state("Dash", dashState);
-	state.add_state("Dash2", dashState);
-	state.add_state("Dash3", dashState);
-	state.add_state("WindAttack", windAttackState);
-	state.add_state("WindAttack2", windAttackState);
-	state.add_state("DashAttack", dashAttackState);
-	state.add_state("AreaAttack", areaAttackState);
-	state.add_state("Waiting", waitingState);
+	state->add_state("Walking", walkingState);
+	state->add_state("Charging", chargingState);
+	state->add_state("Dash", dashState);
+	state->add_state("Dash2", dashState);
+	state->add_state("Dash3", dashState);
+	state->add_state("WindAttack", windAttackState);
+	state->add_state("WindAttack2", windAttackState);
+	state->add_state("DashAttack", dashAttackState);
+	state->add_state("AreaAttack", areaAttackState);
+	state->add_state("Waiting", waitingState);
 
 	//Transiciones Patrón 1
-	state.add_transition("Walking", "Charging",
+	state->add_transition("Walking", "Charging",
 		[state_cm, _p_tr, &tr, &weapon]() {
-			bool trans = state_cm->is_player_near(_p_tr, &tr, 5.0f) && state_cm->get_current_pattern() == "PATTERN_1";
+			bool trans = state_cm->is_player_near(_p_tr, tr, 5.0f) && state_cm->get_current_pattern() == "PATTERN_1";
 			if (trans) {
 				state_cm->reset_cooldown("charging_duration", sdlutils().currRealTime());
 				weapon.set_player_pos(_p_tr->getPos());
@@ -553,7 +577,7 @@ GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene) {
 		}
 	);
 
-	state.add_transition("Charging", "WindAttack",
+	state->add_transition("Charging", "WindAttack",
 		[state_cm, &weapon, _p_tr]() {
 			bool trans = state_cm->can_use("charging_duration", sdlutils().currRealTime());
 			if (trans) {
@@ -564,7 +588,7 @@ GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene) {
 		}
 	);
 
-	state.add_transition("WindAttack", "Dash",
+	state->add_transition("WindAttack", "Dash",
 		[state_cm, &weapon, _p_tr]() {
 			bool trans = state_cm->can_use("wind_attack_duration", sdlutils().currRealTime());
 			if (trans ) {
@@ -577,7 +601,7 @@ GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene) {
 		}
 	);
 
-	state.add_transition("Dash", "WindAttack2",
+	state->add_transition("Dash", "WindAttack2",
 		[state_cm]() {
 			bool trans = state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
 			if (trans) {
@@ -587,7 +611,7 @@ GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene) {
 		}
 	);
 
-	state.add_transition("WindAttack2", "Walking",
+	state->add_transition("WindAttack2", "Walking",
 		[state_cm]() {
 			bool trans = state_cm->can_use("wind_attack_duration", sdlutils().currRealTime());
 			if (trans) {
@@ -600,7 +624,7 @@ GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene) {
 
 
 	// Transiciones Patrón 2
-	state.add_transition("Walking", "Dash2",
+	state->add_transition("Walking", "Dash2",
 		[state_cm, _p_tr, &tr, &weapon]() {
 			bool trans =state_cm->get_current_pattern() == "PATTERN_2" && state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
 			if (trans) {
@@ -611,7 +635,7 @@ GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene) {
 		}
 	);
 
-	state.add_transition("Dash2", "AreaAttack",
+	state->add_transition("Dash2", "AreaAttack",
 		[state_cm, _p_tr, &tr, &weapon]() {
 			
 			bool trans = state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
@@ -622,7 +646,7 @@ GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene) {
 		}
 	);
 	
-	state.add_transition("AreaAttack", "Dash3",
+	state->add_transition("AreaAttack", "Dash3",
 		[state_cm, _p_tr, &tr, &weapon]() {
 			
 			bool trans = state_cm->can_use("explosion_attack_duration", sdlutils().currRealTime());
@@ -634,14 +658,14 @@ GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene) {
 		}
 	);
 
-	state.add_transition("Dash3", "DashAttack",
+	state->add_transition("Dash3", "DashAttack",
 		[state_cm, _p_tr, &tr, &weapon]() {
 			state_cm->reset_cooldown("dash_attack_duration", sdlutils().currRealTime());
 			return true;
 		}
 	);
 
-	state.add_transition("DashAttack", "Walking",
+	state->add_transition("DashAttack", "Walking",
 		[state_cm, _p_tr, &tr, &weapon]() {
 			bool trans = state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
 			if (trans) {
@@ -654,50 +678,54 @@ GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene) {
 	);
 
 	// Estado inicial
-	state.set_initial_state("Walking");
+	state->set_initial_state("Walking");
 }
 #pragma endregion
 
 #pragma region Sarno Rata
-void 
-GameScene::spawn_sarno_rata(Vector2D posVec, ecs::sceneId_t scene)
+void GameScene::spawn_sarno_rata(Vector2D posVec, ecs::sceneId_t scene)
 {
-	auto&& manager = *Game::Instance()->get_mngr();
-	auto &&weapon = *new WeaponSarnoRata();
-	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 1.0f);
+    auto&& manager = *Game::Instance()->get_mngr();
+    auto&& weapon = *new WeaponSarnoRata();
+    
+    auto e = create_enemy(
+        GameStructs::EnemyProperties{
+            "sarno_rata",               // sprite_key
+            posVec,                     // start_pos
+            GameStructs::DEFAULT,        // enemy_type
+            7,                          // health
+            1.125f,                     // width
+            1.5f,                       // height
+            GameStructs::CLOSEST,       // target_strategy
+            {0.0f, 0.0f},              // velocity
+            0.0f,                       // rotation
+            1.0f                        // scale
+        },
+        scene,
+        static_cast<Weapon*>(&weapon)
+    );
 
-	auto e = create_enemy(EnemySpawnConfig{ &tr, "sarno_rata", static_cast<Weapon*>(&weapon), 7, 1.125f, 1.5f }, scene);
-	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.05, 5.0f, 20.0 * deccel_spawned_creatures_multi));
+    Transform* tr = manager.getComponent<Transform>(e);
+    MovementController* mc = manager.getComponent<MovementController>(e);
+    StateMachine* state = manager.getComponent<StateMachine>(e);
+    auto state_cm = state->getConditionManager();
 
-	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
+    auto _p_tr = Follow::search_closest_player(tr);
 
-	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
-	
-	auto state = manager.addComponent<StateMachine>(e);
-	auto state_cm = state->getConditionManager();
+    auto walkingState = std::make_shared<WalkingState>(tr, mc);
+    auto attackingState = std::make_shared<AttackingState>(tr, &weapon);
 
-	// Crear estados
-	auto walkingState = std::make_shared<WalkingState>(&tr, &mc); 
-	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon);
+    state->add_state("Walking", walkingState);
+    state->add_state("Attacking", attackingState);
 
-
-	//poner los estado a la state
-	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
-	state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));
-
-    // Condiciones de cada estado
-	// De: Walking a: Attacking, Condición: Jugador cerca
-    state->add_transition("Walking", "Attacking", [state_cm, _p_tr, &tr]() {
-        return state_cm->is_player_near(_p_tr, &tr, 1.5f);
+    state->add_transition("Walking", "Attacking", [state_cm, _p_tr, tr]() {
+        return state_cm->is_player_near(_p_tr, tr, 1.5f);
     });
 
-	// De: Attacking a: Walking, Condición: Jugador lejos
-    state->add_transition("Attacking", "Walking", [state_cm, _p_tr, &tr]() {
-        return !state_cm->is_player_near(_p_tr, &tr, 1.3f);
+    state->add_transition("Attacking", "Walking", [state_cm, _p_tr, tr]() {
+        return !state_cm->is_player_near(_p_tr, tr, 1.3f);
     });
 
-	
-    // Estado inicial
     state->set_initial_state("Walking");
 }
 #pragma endregion
@@ -705,65 +733,69 @@ GameScene::spawn_sarno_rata(Vector2D posVec, ecs::sceneId_t scene)
 #pragma region Michi Mafioso
 void GameScene::spawn_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 {
-	auto&& manager = *Game::Instance()->get_mngr();
-	auto &&weapon = *new WeaponMichiMafioso();
-	auto &&tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
+    auto&& manager = *Game::Instance()->get_mngr();
+    auto&& weapon = *new WeaponMichiMafioso();
+    
+    auto e = create_enemy(
+        GameStructs::EnemyProperties{
+            "michi_mafioso",            // sprite_key
+            posVec,                     // start_pos
+            GameStructs::DEFAULT,       // enemy_type
+            5,                          // health
+            1.0f,                       // width
+            1.125f,                    // height
+            GameStructs::CLOSEST,      // target_strategy
+            {0.0f, 0.0f},              // velocity
+            0.0f,                       // rotation
+            2.0f                        // scale
+        },
+        scene,
+        static_cast<Weapon*>(&weapon)
+    );
 
-	auto e = create_enemy(EnemySpawnConfig{ &tr, "michi_mafioso", static_cast<Weapon*>(&weapon), 5, 1.0f, 1.125f }, scene);
-	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.03, 1.0f, 10.0 * deccel_spawned_creatures_multi));
+    Transform* tr = manager.getComponent<Transform>(e);
+    MovementController* mc = manager.getComponent<MovementController>(e);
+    StateMachine* state = manager.getComponent<StateMachine>(e);
+    auto state_cm = state->getConditionManager();
 
-	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
+    auto _p_tr = Follow::search_closest_player(tr);
 
-	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
-	
-//	StateMachine(ConditionManager& conditionManager, Transform* playerTransform, Transform* enemyTransform, float dist);
-	auto state = manager.addComponent<StateMachine>(e);
-	auto state_cm = state->getConditionManager();
+    auto walkingState = std::make_shared<WalkingState>(tr, mc);
+    auto backingState = std::make_shared<WalkingState>(tr, mc, true);
+    auto attackingState = std::make_shared<AttackingState>(tr, &weapon);
 
-	// Crear estados
-	auto walkingState = std::make_shared<WalkingState>(&tr, &mc); 
-	auto backingState = std::make_shared<WalkingState>(&tr, &mc, true); 
-	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon); 
-	//poner los estado a la state
-	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
-    state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));
-    state->add_state("Backing", std::static_pointer_cast<State>(backingState));
+    state->add_state("Walking", walkingState);
+    state->add_state("Attacking", attackingState);
+    state->add_state("Backing", backingState);
 
-	float dist_to_attack=3.0f;
-	float dist_to_fallback=2.5f;
+    float dist_to_attack = 3.0f;
+    float dist_to_fallback = 2.5f;
 
-    // Condiciones de cada estado
-	// De: Walking a: Attacking, Condición: Jugador cerca
-    state->add_transition("Walking", "Attacking", [state_cm, _p_tr, &tr, dist_to_attack]() {
-        return state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
+    state->add_transition("Walking", "Attacking", [state_cm, _p_tr, tr, dist_to_attack]() {
+        return state_cm->is_player_near(_p_tr, tr, dist_to_attack);
     });
 
-	// De: Attacking a: Walking, Condición: Jugador lejos
-    state->add_transition("Attacking", "Walking", [state_cm, _p_tr, &tr, dist_to_attack]() {
-        return !state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
+    state->add_transition("Attacking", "Walking", [state_cm, _p_tr, tr, dist_to_attack]() {
+        return !state_cm->is_player_near(_p_tr, tr, dist_to_attack);
     });
 
-	// De: Walking a: Backing, Condición: Jugador cerca
-	state->add_transition("Walking", "Backing", [state_cm, _p_tr, &tr, dist_to_fallback]() {
-		return state_cm->is_player_near(_p_tr, &tr, dist_to_fallback);
-	});
-	
-	// De: Backing a: Walking, Condición: Jugador lejos y Jugador lejos de ataque
-	state->add_transition("Backing", "Walking", [state_cm, _p_tr, &tr, dist_to_fallback, dist_to_attack]() {
-		return !state_cm->is_player_near(_p_tr, &tr, dist_to_fallback) && !state_cm->is_player_near(_p_tr, &tr, dist_to_attack);
-	});
+    state->add_transition("Walking", "Backing", [state_cm, _p_tr, tr, dist_to_fallback]() {
+        return state_cm->is_player_near(_p_tr, tr, dist_to_fallback);
+    });
 
-	// De: Attacking a: Backing, Condición: Jugador cerca
-	state->add_transition("Attacking", "Backing", [state_cm, _p_tr, &tr, dist_to_fallback]() {
-		return state_cm->is_player_near(_p_tr, &tr, dist_to_fallback);
-	});
+    state->add_transition("Backing", "Walking", [state_cm, _p_tr, tr, dist_to_fallback, dist_to_attack]() {
+        return !state_cm->is_player_near(_p_tr, tr, dist_to_fallback) && 
+               !state_cm->is_player_near(_p_tr, tr, dist_to_attack);
+    });
 
-	// De: Backing a: Attacking, Condición: Jugador lejos
-	state->add_transition("Backing", "Attacking", [state_cm, _p_tr, &tr, dist_to_fallback]() {
-		return !state_cm->is_player_near(_p_tr, &tr, dist_to_fallback);
-	});
+    state->add_transition("Attacking", "Backing", [state_cm, _p_tr, tr, dist_to_fallback]() {
+        return state_cm->is_player_near(_p_tr, tr, dist_to_fallback);
+    });
 
-    // Estado inicial
+    state->add_transition("Backing", "Attacking", [state_cm, _p_tr, tr, dist_to_fallback]() {
+        return !state_cm->is_player_near(_p_tr, tr, dist_to_fallback);
+    });
+
     state->set_initial_state("Walking");
 }
 #pragma endregion
@@ -771,40 +803,47 @@ void GameScene::spawn_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 #pragma region Plim Plim
 void GameScene::spawn_plim_plim(Vector2D posVec, ecs::sceneId_t scene)
 {
-	auto&& manager = *Game::Instance()->get_mngr();
-	auto &&weapon = *new WeaponPlimPlim();
-	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
+    auto&& manager = *Game::Instance()->get_mngr();
+    auto&& weapon = *new WeaponPlimPlim();
+    
+    auto e = create_enemy(
+        GameStructs::EnemyProperties{
+            "plim_plim",                // sprite_key
+            posVec,                     // start_pos
+            GameStructs::DEFAULT,       // enemy_type
+            4,                          // health
+            1.0f,                       // width
+            1.0f,                       // height
+            GameStructs::CLOSEST,      // target_strategy
+            {0.0f, 0.0f},              // velocity
+            0.0f,                       // rotation
+            2.0f                        // scale
+        },
+        scene,
+        static_cast<Weapon*>(&weapon)
+    );
 
-	auto e = create_enemy(EnemySpawnConfig{ &tr, "plim_plim", static_cast<Weapon*>(&weapon), 4, 1.0f, 1.0f }, scene);
-	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.02, 5.0f, 20.0 * deccel_spawned_creatures_multi));
+    Transform* tr = manager.getComponent<Transform>(e);
+    MovementController* mc = manager.getComponent<MovementController>(e);
+    StateMachine* state = manager.getComponent<StateMachine>(e);
+    auto state_cm = state->getConditionManager();
 
-	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
+    auto _p_tr = Follow::search_closest_player(tr);
 
-	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
+    auto walkingState = std::make_shared<WalkingState>(tr, mc);
+    auto attackingState = std::make_shared<AttackingState>(tr, &weapon);
 
-//	StateMachine(ConditionManager& conditionManager, Transform* playerTransform, Transform* enemyTransform, float dist);
-	auto state = manager.addComponent<StateMachine>(e);
-	auto state_cm = state->getConditionManager();
+    state->add_state("Walking", walkingState);
+    state->add_state("Attacking", attackingState);
 
-	// Crear estados
-	auto walkingState = std::make_shared<WalkingState>(&tr, &mc); 
-	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon);
-	//poner los estado a la state
-	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
-    state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));
-
-    // Condiciones de cada estado
-	// De: Walking a: Attacking, Condición: Jugador cerca
-    state->add_transition("Walking", "Attacking", [state_cm, _p_tr, &tr]() {
-        return state_cm->is_player_near(_p_tr, &tr, 4.0f);
+    state->add_transition("Walking", "Attacking", [state_cm, _p_tr, tr]() {
+        return state_cm->is_player_near(_p_tr, tr, 4.0f);
     });
 
-	// De: Attacking a: Walking, Condición: Jugador lejos
-    state->add_transition("Attacking", "Walking", [state_cm, _p_tr, &tr]() {
-        return !state_cm->is_player_near(_p_tr, &tr, 6.0f);
+    state->add_transition("Attacking", "Walking", [state_cm, _p_tr, tr]() {
+        return !state_cm->is_player_near(_p_tr, tr, 6.0f);
     });
 
-    // Estado inicial
     state->set_initial_state("Walking");
 }
 #pragma endregion
@@ -812,38 +851,46 @@ void GameScene::spawn_plim_plim(Vector2D posVec, ecs::sceneId_t scene)
 #pragma region Boom
 void GameScene::spawn_boom(Vector2D posVec, ecs::sceneId_t scene)
 {
-	auto&& manager = *Game::Instance()->get_mngr();
-	auto &&weapon =* new WeaponBoom();
-	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
+    auto&& manager = *Game::Instance()->get_mngr();
+    auto&& weapon = *new WeaponBoom();
+    
+    auto e = create_enemy(
+        GameStructs::EnemyProperties{
+            "boom",                     // sprite_key
+            posVec,                     // start_pos
+            GameStructs::DEFAULT,       // enemy_type
+            14,                         // health
+            1.8f,                       // width
+            1.8f,                       // height
+            GameStructs::CLOSEST,      // target_strategy
+            {0.0f, 0.0f},              // velocity
+            0.0f,                       // rotation
+            2.0f                        // scale
+        },
+        scene,
+        static_cast<Weapon*>(&weapon)
+    );
 
-	auto e = create_enemy(EnemySpawnConfig{ &tr, "boom", static_cast<Weapon*>(&weapon), 14, 1.8f, 1.8f }, scene);
-	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.02,5.0f, 20.0 * deccel_spawned_creatures_multi));
+    Transform* tr = manager.getComponent<Transform>(e);
+    MovementController* mc = manager.getComponent<MovementController>(e);
+    StateMachine* state = manager.getComponent<StateMachine>(e);
+    auto state_cm = state->getConditionManager();
+    Health* health = manager.getComponent<Health>(e);
 
-	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
+    auto _p_tr = Follow::search_closest_player(tr);
 
-	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
+    auto walkingState = std::make_shared<WalkingState>(tr, mc);
+    auto attackingState = std::make_shared<AttackingState>(tr, &weapon, false,
+        [health]() { health->takeDamage(health->getMaxHealth()); }
+    );
 
-	Health* health = manager.getComponent<Health>(e); // el primero por ahr
-	
-//	StateMachine(ConditionManager& conditionManager, Transform* playerTransform, Transform* enemyTransform, float dist);
-	auto state = manager.addComponent<StateMachine>(e);
-	auto state_cm = state->getConditionManager();
+    state->add_state("Walking", walkingState);
+    state->add_state("Attacking", attackingState);
 
-	// Crear estados
-	auto walkingState = std::make_shared<WalkingState>(&tr, &mc); 
-	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon, false, [health]() {health->takeDamage(health->getMaxHealth()); }, 1);
-
-	//poner los estado a la state
-	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
-    state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));
-
-    // Condiciones de cada estado
-	// De: Walking a: Attacking, Condición: Jugador cerca
-    state->add_transition("Walking", "Attacking", [state_cm, _p_tr, &tr]() {
-        return state_cm->is_player_near(_p_tr, &tr, 1.0f);
+    state->add_transition("Walking", "Attacking", [state_cm, _p_tr, tr]() {
+        return state_cm->is_player_near(_p_tr, tr, 1.0f);
     });
 
-    // Estado inicial
     state->set_initial_state("Walking");
 }
 #pragma endregion
@@ -851,159 +898,173 @@ void GameScene::spawn_boom(Vector2D posVec, ecs::sceneId_t scene)
 #pragma region Ratatouille
 void GameScene::spawn_ratatouille(Vector2D posVec, ecs::sceneId_t scene)
 {
-	//no llama al create enemy porque no tiene weapon, y va ser diferente las colisiones
-	float randSpeed = float(sdlutils().rand().nextInt(10, 20) / 10.0f);
-	int damage = 4;
-	auto&& manager = *Game::Instance()->get_mngr();
+    float randSpeed = float(sdlutils().rand().nextInt(10, 20) / 10.0f);
+    int damage = 4;
+    auto&& manager = *Game::Instance()->get_mngr();
 
-	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
-	auto&& rect = *new rect_component{ 0, 0,0.8f, 0.8f };
-	auto&& rigidbody = *new rigidbody_component(rect_f32{{0.0f, -0.15f}, {0.5f, 0.6f}}, mass_f32{3.0f}, 0.05f );
-	auto&& col = *new collisionable(tr, rigidbody, rect, collisionable_option_trigger );
+    auto e = create_enemy(
+        GameStructs::EnemyProperties{
+            "ratatouille",              // sprite_key
+            posVec,                     // start_pos
+            GameStructs::DEFAULT,       // enemy_type (especial, no usa weapon)
+            2,                          // health
+            0.8f,                       // width
+            0.8f,                       // height
+            GameStructs::CLOSEST,      // target_strategy
+            {0.0f, 0.0f},              // velocity
+            0.0f,                       // rotation
+            2.0f                        // scale
+        },
+        scene,
+        nullptr  // Sin arma
+    );
 
-	auto e = create_entity(
-		ecs::grp::ENEMY,
-		ecs::scene::GAMESCENE,
-	    &tr,
-		&rect,
-		new dyn_image(
-			rect_f32{ {0,0},{1,1} },
-			rect,
-			manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam,
-			sdlutils().images().at("ratatouille"),
-			tr
-		),
-		new Health(2),
-		new FlipXController(),
-		new enemy_collision_triggerer(),
-		new id_component(),
-		new ratatouille_collision_component(damage,2),
-		&rigidbody,
-		&col
-	);
+    // Componentes adicionales específicos para Ratatouille
+    manager.addComponent<ratatouille_collision_component>(e, damage, 2);
 
-	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.08* randSpeed, 5.0f* randSpeed, 20.0 * deccel_spawned_creatures_multi));
+    Transform* tr = manager.getComponent<Transform>(e);
+    MovementController* mc = manager.getComponent<MovementController>(e);
+    StateMachine* state = manager.getComponent<StateMachine>(e);
+    auto state_cm = state->getConditionManager();
 
-	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
-	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
+    auto _p_tr = Follow::search_closest_player(tr);
 
-	auto state = manager.addComponent<StateMachine>(e);
-	auto state_cm = state->getConditionManager();
+    auto walkingState = std::make_shared<WalkingState>(tr, mc);
+    auto rotatingState = std::make_shared<RotatingState>(tr, _p_tr, mc);
 
-	// Crear estados
-	auto walkingState = std::make_shared<WalkingState>(&tr, &mc);
-	auto rotatingState = std::make_shared<RotatingState>(&tr, _p_tr, &mc);
+    state->add_state("Walking", walkingState);
+    state->add_state("Rotating", rotatingState);
 
-	//poner los estado a la state
-	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
-	state->add_state("Rotating", std::static_pointer_cast<State>(rotatingState));
-
-	float dist_to_rotate = 3.5f;
+    float dist_to_rotate = 3.5f;
 
 	// Condiciones de cada estado
 	// De: Walking a: Rotating, Condición: Jugador cerca
-	state->add_transition("Walking", "Rotating", [state_cm, _p_tr, &tr, dist_to_rotate]() {
-		return state_cm->is_player_near(_p_tr, &tr, dist_to_rotate);
-		});
+    state->add_transition("Walking", "Rotating", [state_cm, _p_tr, tr, dist_to_rotate]() {
+        return state_cm->is_player_near(_p_tr, tr, dist_to_rotate);
+    });
 
 	// De: Rotating a: Walking, Condición: Jugador lejos
-	state->add_transition("Rotating", "Walking", [state_cm, _p_tr, &tr, dist_to_rotate]() {
-		return !state_cm->is_player_near(_p_tr, &tr, dist_to_rotate * 1.8f);
-		});
+    state->add_transition("Rotating", "Walking", [state_cm, _p_tr, tr, dist_to_rotate]() {
+        return !state_cm->is_player_near(_p_tr, tr, dist_to_rotate * 1.8f);
+    });
 
-
-	// Estado inicial
-	state->set_initial_state("Walking");
+    state->set_initial_state("Walking");
 }
 #pragma endregion
 
-#pragma region Rata_Basurera
-void GameScene::spawn_rata_basurera(Vector2D posVec, ecs::sceneId_t scene) {
+#pragma region Rata Basurera
+void GameScene::spawn_rata_basurera(Vector2D posVec, ecs::sceneId_t scene)
+{
+    auto&& manager = *Game::Instance()->get_mngr();
+    auto&& weapon = *new WeaponRataBasurera();
+    
+    auto e = create_enemy(
+        GameStructs::EnemyProperties{
+            "rata_basurera",            // sprite_key
+            posVec,                     // start_pos
+            GameStructs::DEFAULT,       // enemy_type
+            2,                          // health
+            1.8f,                       // width
+            1.8f,                       // height
+            GameStructs::CLOSEST,      // target_strategy
+            {0.0f, 0.0f},              // velocity
+            0.0f,                       // rotation
+            2.0f                        // scale
+        },
+        scene,
+        static_cast<Weapon*>(&weapon)
+    );
 
-	auto&& manager = *Game::Instance()->get_mngr();
-	auto&& weapon = *new WeaponRataBasurera();
-	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 2.0f);
+    Transform* tr = manager.getComponent<Transform>(e);
+    MovementController* mc = manager.getComponent<MovementController>(e);
+    StateMachine* state = manager.getComponent<StateMachine>(e);
+    auto state_cm = state->getConditionManager();
+    
+    // Configuración especial para Rata Basurera
+    weapon.sendHealthComponent(manager.getComponent<Health>(e));
 
-	auto e = create_enemy(EnemySpawnConfig{ &tr, "rata_basurera", static_cast<Weapon*>(&weapon), 2, 1.8f, 1.8f }, scene);
-	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.01, 0.1f, 20.0 * deccel_spawned_creatures_multi));
+    auto _p_tr = Follow::search_closest_player(tr);
 
-	//Le pasamos el componente "Health" al componente "WeaponRataBasurera"
-	//para que al morir pueda generar al Rey del Basurero
-	weapon.sendHealthComponent(Game::Instance()->get_mngr()->getComponent<Health>(e));
+    auto walkingState = std::make_shared<WalkingState>(tr, mc);
+    auto attackingState = std::make_shared<AttackingState>(tr, &weapon);
 
-	ConditionManager conditionManager;
-
-	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
-
-	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
-
-	auto state = manager.addComponent<StateMachine>(e);
-
-	// Crear estados
-	auto walkingState = std::make_shared<WalkingState>(&tr, &mc);
-	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon);
-
-	//poner los estado a la state
-	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
-	state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));
+    state->add_state("Walking", walkingState);
+    state->add_state("Attacking", attackingState);
 
 	// Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador a distancia correcta
-	state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr]() {
-		return conditionManager.is_player_near(_p_tr, &tr, 50.0f);
-		});
+    state->add_transition("Walking", "Attacking", [state_cm, _p_tr, tr]() {
+        return state_cm->is_player_near(_p_tr, tr, 50.0f);
+    });
 
 	// De: Attacking a: Walking, Condición: Jugador se aleja demasiado
-	state->add_transition("Attacking", "Walking", [&conditionManager, _p_tr, &tr]() {
-		return !conditionManager.is_player_near(_p_tr, &tr, 55.0f);
-		});
+    state->add_transition("Attacking", "Walking", [state_cm, _p_tr, tr]() {
+        return !state_cm->is_player_near(_p_tr, tr, 55.0f);
+    });
 
-	// Estado inicial
-	state->set_initial_state("Walking");
-
+    state->set_initial_state("Walking");
 }
 #pragma endregion
 
-#pragma region Rey_Basurero
-void GameScene::spawn_rey_basurero(Vector2D posVec, ecs::sceneId_t scene) {
+#pragma region Rey Basurero
+void GameScene::spawn_rey_basurero(Vector2D posVec, ecs::sceneId_t scene)
+{
+    auto&& manager = *Game::Instance()->get_mngr();
+    auto&& weapon = *new WeaponReyBasurero();
+    
+    auto e = create_enemy(
+        GameStructs::EnemyProperties{
+            "rey_basurero",             // sprite_key
+            posVec,                     // start_pos
+            GameStructs::DEFAULT,       // enemy_type
+            2,                          // health
+            1.8f,                       // width
+            1.8f,                       // height
+            GameStructs::CLOSEST,      // target_strategy
+            {0.0f, 0.0f},              // velocity
+            0.0f,                       // rotation
+            1.0f                        // scale
+        },
+        scene,
+        static_cast<Weapon*>(&weapon)
+    );
 
-	auto&& manager = *Game::Instance()->get_mngr();
-	auto&& weapon = *new WeaponReyBasurero();
-	auto&& tr = *new Transform(posVec, { 0.0f,0.0f }, 0.0f, 1.0f);
+    Transform* tr = manager.getComponent<Transform>(e);
+    MovementController* mc = manager.getComponent<MovementController>(e);
+    StateMachine* state = manager.getComponent<StateMachine>(e);
+    auto state_cm = state->getConditionManager();
 
-	auto e = create_enemy(EnemySpawnConfig{ &tr, "rey_basurero", static_cast<Weapon*>(&weapon), 2, 1.8f, 1.8f }, scene);
-	auto&& mc = *manager.addExistingComponent<MovementController>(e, new MovementController(0.05, 2.5f, 20.0 * deccel_spawned_creatures_multi));
+    auto _p_tr = Follow::search_closest_player(tr);
 
+    auto walkingState = std::make_shared<WalkingState>(tr, mc);
+    auto attackingState = std::make_shared<AttackingState>(tr, &weapon);
 
-	ConditionManager conditionManager;
-
-	auto playerEntities = manager.getEntities(ecs::grp::PLAYER);
-
-	Transform* _p_tr = manager.getComponent<Transform>(playerEntities[0]); // el primero por ahr
-
-	auto state = manager.addComponent<StateMachine>(e);
-
-	// Crear estados
-	auto walkingState = std::make_shared<WalkingState>(&tr, &mc);
-	auto attackingState = std::make_shared<AttackingState>(&tr, _p_tr, &weapon);
-
-	//poner los estado a la state
-	state->add_state("Walking", std::static_pointer_cast<State>(walkingState));
-	state->add_state("Attacking", std::static_pointer_cast<State>(attackingState));
+    state->add_state("Walking", walkingState);
+    state->add_state("Attacking", attackingState);
 
 	// Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador a distancia correcta
-	state->add_transition("Walking", "Attacking", [&conditionManager, _p_tr, &tr]() {
-		return conditionManager.is_player_near(_p_tr, &tr, 7.0f);
-		});
+    state->add_transition("Walking", "Attacking", [state_cm, _p_tr, tr]() {
+        return state_cm->is_player_near(_p_tr, tr, 7.0f);
+    });
 
 	// De: Attacking a: Walking, Condición: Jugador lejose aleja demasiado
-	state->add_transition("Attacking", "Walking", [&conditionManager, _p_tr, &tr]() {
-		return !conditionManager.is_player_near(_p_tr, &tr, 10.0f);
-		});
+    state->add_transition("Attacking", "Walking", [state_cm, _p_tr, tr]() {
+        return !state_cm->is_player_near(_p_tr, tr, 10.0f);
+    });
 
-	// Estado inicial
-	state->set_initial_state("Walking");
+    state->set_initial_state("Walking");
+}
+#pragma endregion
+
+#pragma region Hud
+ecs::entity_t GameScene::create_hud(ecs::sceneId_t scene)
+{
+	auto ent = create_entity(
+		ecs::grp::DEFAULT,
+		scene,
+		new HUD());
+	return ent;
 }
 #pragma endregion
 
@@ -1047,17 +1108,6 @@ void GameScene::spawn_fog()
 
 	);
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::FOGGROUP, ent);
-}
-#pragma endregion
-
-#pragma region Hud
-ecs::entity_t GameScene::create_hud(ecs::sceneId_t scene)
-{
-	auto ent = create_entity(
-		ecs::grp::DEFAULT,
-		scene,
-		new HUD());
-	return ent;
 }
 #pragma endregion
 

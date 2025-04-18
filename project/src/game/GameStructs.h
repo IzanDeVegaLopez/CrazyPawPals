@@ -5,8 +5,11 @@
 #include <list>
 class Card;
 class MythicItem;
-namespace GameStructs {
-	enum WeaponType {
+class Transform;
+namespace GameStructs
+{
+	enum WeaponType
+	{
 		DEFAULT,
 		REVOLVER,
 		RAMPAGE,
@@ -19,26 +22,23 @@ namespace GameStructs {
 		SUPER_MICHI,
 		LAST_WEAPON,
 	};
-	enum DeckType {
+	enum DeckType
+	{
 		ONE,
 		TWO,
 		THREE,
 		FOUR,
 		LAST_DECK,
 	};
-	enum EnemyFollow {
-		CLOSEST,
-		FURTHEST,
-		LOWREST_LIFE,
-		HIGHEST_LIFE,
-	};
-	enum collide_with {
+	enum collide_with
+	{
 		player = 0,
 		enemy = 1,
 		all = 2,
 		none = 4
 	};
-	struct BulletProperties {
+	struct BulletProperties
+	{
 		Vector2D init_pos;
 		Vector2D dir;
 		float speed = 0.0f;
@@ -51,19 +51,56 @@ namespace GameStructs {
 		WeaponType weapon_type = DEFAULT;
 		collide_with collision_filter;
 	};
-	struct ButtonProperties {
+	enum EnemyFollow
+	{
+		CLOSEST,
+		FURTHEST,
+		LOWREST_LIFE,
+		HIGHEST_LIFE,
+	};
+	struct EnemyProperties
+	{
+		// Sprite
+		std::string sprite_key;
+		Vector2D start_pos;
+		
+		// Weapon
+		WeaponType weapon_type = DEFAULT;
+
+		int health;
+
+		// rect_component
+		float width;
+		float height;
+
+		EnemyFollow follow = CLOSEST;
+
+		// Transform properties
+		Vector2D dir = {0.0f, 0.0f};
+		float r = 0.0f;
+		float s = 2.0f;
+
+		// MovementController
+		float max_speed = 0.1f;
+		float acceleration = 5.0f;
+		float decceleration = 20.0f;
+	};
+	struct ButtonProperties
+	{
 		rect_f32 rect;
 		float rot = 0.0f;
 		std::string sprite_key;
 		ecs::grpId_t ID;
 	};
-	struct CardButtonProperties : public ButtonProperties {
-		Card* iterator;
+	struct CardButtonProperties : public ButtonProperties
+	{
+		Card *iterator;
 		// constructor
-		CardButtonProperties(const rect_f32& rect, float rot, const std::string& sprite_key, ecs::grpId_t ID, Card* it)
-			: ButtonProperties{ rect, rot, sprite_key, ID }, iterator(it) {}
+		CardButtonProperties(const rect_f32 &rect, float rot, const std::string &sprite_key, ecs::grpId_t ID, Card *it)
+			: ButtonProperties{rect, rot, sprite_key, ID}, iterator(it) {}
 	};
-	enum CardType {
+	enum CardType
+	{
 		FIREBALL,
 		LIGHTING,
 		KUNAI,
@@ -77,13 +114,15 @@ namespace GameStructs {
 		QUICK_FEET,
 		LAST_CARD,
 	};
-	struct MythicButtonProperties : public ButtonProperties {
-		MythicItem* iterator;
+	struct MythicButtonProperties : public ButtonProperties
+	{
+		MythicItem *iterator;
 		// constructor
-		MythicButtonProperties(const rect_f32& rect, float rot, const std::string& sprite_key, ecs::grpId_t ID, MythicItem* it)
-			: ButtonProperties{ rect, rot, sprite_key, ID }, iterator(it) {}
+		MythicButtonProperties(const rect_f32 &rect, float rot, const std::string &sprite_key, ecs::grpId_t ID, MythicItem *it)
+			: ButtonProperties{rect, rot, sprite_key, ID}, iterator(it) {}
 	};
-	enum MythicType {
+	enum MythicType
+	{
 		BLOODCLAW,
 		DREAMRECICLER,
 		CURTAINREAPER,

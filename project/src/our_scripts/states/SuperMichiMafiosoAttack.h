@@ -8,7 +8,7 @@ class SuperMichiMafiosoAttack : public State
 public:
 	using OnChangeAttack = std::function<void()>;
 
-	SuperMichiMafiosoAttack(Transform* tr, Transform* playerTr, WeaponSuperMichiMafioso* weapon, OnChangeAttack onChangeAttack = nullptr);
+	SuperMichiMafiosoAttack(Transform* tr, WeaponSuperMichiMafioso* weapon, OnChangeAttack onChangeAttack = nullptr);
 	void enter() override;
 	void update(uint32_t delta_time) override;
 	void exit() override;

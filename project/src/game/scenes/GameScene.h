@@ -5,13 +5,13 @@
 class Weapon;
 class Transform;
 class StateMachine;
-struct EnemySpawnConfig;
+struct EnemyProperties;
 
 class GameScene : public event_system::event_receiver, public Scene
 {
 	[[maybe_unused]]
 
-	static ecs::entity_t create_enemy(EnemySpawnConfig&& ec, ecs::sceneId_t scene);
+	static ecs::entity_t create_enemy(GameStructs::EnemyProperties&& ec, ecs::sceneId_t scene, Weapon* weapon = nullptr);
 
 public:
 	GameScene();

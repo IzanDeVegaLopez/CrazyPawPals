@@ -6,7 +6,7 @@
 
 struct Follow 
 {
-	Transform* search_closest_player(Transform* _tr){
+	static Transform* search_closest_player(Transform* _tr){
 		Transform* player = nullptr;
 		float min_distance = 1000.0f;
 		auto&& manager = *Game::Instance()->get_mngr();
@@ -22,7 +22,7 @@ struct Follow
 		return player;
 	}
 
-	Transform* search_furthest_player(Transform* _tr){
+	static Transform* search_furthest_player(Transform* _tr){
 		Transform* player = nullptr;
 		float max_distance = 0.0f;
 		auto&& manager = *Game::Instance()->get_mngr();
@@ -38,7 +38,7 @@ struct Follow
 		return player;
 	}
 
-	Transform* search_lowest_life_player(){
+	static Transform* search_lowest_life_player(){
 		Transform* player = nullptr;
 		float min_life = 1000.0f;
 		auto&& manager = *Game::Instance()->get_mngr();
@@ -54,7 +54,7 @@ struct Follow
 		return player;
 	}
 
-	Transform* search_highest_life_player(){
+	static Transform* search_highest_life_player(){
 		Transform* player = nullptr;
 		float max_life = 0.0f;
 		auto&& manager = *Game::Instance()->get_mngr();

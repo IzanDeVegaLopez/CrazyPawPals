@@ -36,6 +36,5 @@ void WalkingState::update(uint32_t delta_time)
 
 void WalkingState::exit()
 {
-
     _movementController->set_input({0, 0});
 }

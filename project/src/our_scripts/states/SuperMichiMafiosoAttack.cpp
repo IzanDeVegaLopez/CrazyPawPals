@@ -6,8 +6,8 @@
 #include "../components/weapons/enemies/WeaponSuperMichiMafioso.h"
 
 
-SuperMichiMafiosoAttack::SuperMichiMafiosoAttack(Transform* tr, Transform* playerTr, WeaponSuperMichiMafioso* weapon, OnChangeAttack onChangeAttack) :
-	_tr(tr), _player_tr(playerTr), _weapon(weapon), _onChangeAttack(onChangeAttack) {
+SuperMichiMafiosoAttack::SuperMichiMafiosoAttack(Transform* tr, WeaponSuperMichiMafioso* weapon, OnChangeAttack onChangeAttack) :
+	_tr(tr), _weapon(weapon), _onChangeAttack(onChangeAttack) {
 }
 
 void SuperMichiMafiosoAttack::enter() {
