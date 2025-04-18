@@ -57,7 +57,7 @@ void GhostStateComponent::setGhostState(bool ghost)
 void GhostStateComponent::change_state()
 {
     _isGhost = !_isGhost;
-    _dy->_current_filter = _isGhost ? filter{ 120, 200, 255, 180 } : filter{ 255, 255, 255, 255 };
+    _dy->_current_filter = _isGhost ? filter{ 100, 180, 255, 160 } : filter{ 255, 255, 255, 255 };
     setState(_isGhost ? _ghost_state : _normal_state);
 }
 

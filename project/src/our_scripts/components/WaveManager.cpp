@@ -210,6 +210,8 @@ WaveManager::enterRewardsMenu() {
 
 void WaveManager::start_new_wave()
 {
+    erase_all_bullets();
+    erase_all_enemies();
     _currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
     //Si es oleada de boss es true
     initialize_next_wave_params(_currentWave%5==0);
@@ -237,7 +239,6 @@ void WaveManager::reset_wave_manager()
 {
     _currentWave = 0;
 }
-
 
 void WaveManager::endwave()
 {
@@ -279,8 +280,6 @@ void WaveManager::endwave()
     _currentWave++;
     _all_enemies_already_spawned = false;
     fog->setFog(false);
-    erase_all_bullets();
-    erase_all_enemies();
     enterRewardsMenu();
 
 }
@@ -294,8 +293,6 @@ void WaveManager::event_callback0(const Msg& m)
 void WaveManager::event_callback1(const Msg& m)
 {
     _current_wave_event->end_wave_callback();
-    erase_all_enemies();
-    erase_all_bullets();
     _current_wave_event = std::make_unique<no_event>(this);
     fog->setFog(false);
 }

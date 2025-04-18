@@ -173,14 +173,8 @@ ecs::entity_t GameScene::create_environment(ecs::sceneId_t scene) {
 
 void GameScene::initScene() {
 	id_component::reset();
-	const rendering::camera_creation_descriptor_flags flags =
-		rendering::camera_creation_descriptor_options::camera_creation_descriptor_options_set_handler
-		| rendering::camera_creation_descriptor_options::camera_creation_descriptor_options_clamp;
-	ecs::entity_t camera = rendering::create_camera(ecs::scene::GAMESCENE, flags, nullptr);
-	ecs::entity_t player = create_player();
 	auto&& manager = *Game::Instance()->get_mngr();
-	manager.setHandler(ecs::hdlr::PLAYER, player);
-
+	auto player = manager.getHandler(ecs::hdlr::PLAYER);
 	manager.addComponent<MythicComponent>(player);
 
 	manager.refresh();

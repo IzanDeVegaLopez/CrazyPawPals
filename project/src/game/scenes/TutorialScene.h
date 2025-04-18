@@ -30,6 +30,7 @@ public:
 	void enterScene() override;
 	void exitScene() override;
 	void update(uint32_t delta_time) override;
+	void render() override;
 
 	void create_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid) override;
 	void event_callback0(const event_system::event_receiver::Msg& m) override;
@@ -45,6 +46,9 @@ private:
 	TutorialState _tutorial_state;
 
 	bool _enemy_killed = false;
+
+	int _tutorial_time_seconds;
+	bool _show_tutorial_hud = false;
 
 	void create_pop_up();
 	ecs::entity_t create_change_scene_button(const GameStructs::ButtonProperties& bp, Game::State nextScene);

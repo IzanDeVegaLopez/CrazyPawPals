@@ -25,8 +25,7 @@ bool RewardScene::_mythic = false;
 RewardScene::RewardScene() : Scene(ecs::scene::REWARDSCENE),_selected_card(nullptr),
 _heal(false), _lr(nullptr),
 _selected(false), _activate_confirm_button(false), _chosen_card(nullptr), _activate_exchange_button(false), _last_deck_card_img(nullptr), _activate_heal(false), _exchange(false)
-{
-}
+{}
 RewardScene::~RewardScene()
 {
 }
@@ -464,8 +463,9 @@ void RewardScene::refresh_my_deck_cards(const std::list<Card*>& cl) {
     auto* mngr = Game::Instance()->get_mngr();
     auto& infos = mngr->getEntities(ecs::grp::REWARDDECK);
 
-    auto itRewardInfo = infos.begin();
+    if (infos.empty()) return;
 
+    auto itRewardInfo = infos.begin();
     //refresh my deck info and represent it
     for (auto& c : cl) {
         //obtain each ones component
