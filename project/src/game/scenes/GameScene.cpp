@@ -497,7 +497,7 @@ void GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene)
 	StateMachine *state = manager.getComponent<StateMachine>(e);
 
 	Follow *fll = manager.getComponent<Follow>(e);
-
+	fll->act_follow();
 	auto state_cm = state->getConditionManager();
 
 	state_cm->set_cooldown("wind_attack_duration", 1000);
@@ -704,8 +704,8 @@ void GameScene::spawn_sarno_rata(Vector2D posVec, ecs::sceneId_t scene)
 	StateMachine *state = manager.getComponent<StateMachine>(e);
 
 	Follow *fll = manager.getComponent<Follow>(e);
-	auto _p_tr = fll->get_act_follow();
-
+	fll->act_follow();
+	
 	auto state_cm = state->getConditionManager();
 
 	auto walkingState = std::make_shared<WalkingState>(tr, mc, fll);
@@ -714,11 +714,11 @@ void GameScene::spawn_sarno_rata(Vector2D posVec, ecs::sceneId_t scene)
 	state->add_state("Walking", walkingState);
 	state->add_state("Attacking", attackingState);
 
-	state->add_transition("Walking", "Attacking", [state_cm, _p_tr, tr]()
-						  { return state_cm->is_player_near(_p_tr, tr, 1.5f); });
+	state->add_transition("Walking", "Attacking", [state_cm, fll, tr]()
+						  { return state_cm->is_player_near(fll->get_act_follow(), tr, 1.5f); });
 
-	state->add_transition("Attacking", "Walking", [state_cm, _p_tr, tr]()
-						  { return !state_cm->is_player_near(_p_tr, tr, 1.3f); });
+	state->add_transition("Attacking", "Walking", [state_cm, fll, tr]()
+						  { return !state_cm->is_player_near(fll->get_act_follow(), tr, 1.3f); });
 
 	state->set_initial_state("Walking");
 }
@@ -752,7 +752,7 @@ void GameScene::spawn_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 	auto state_cm = state->getConditionManager();
 
 	Follow *fll = manager.getComponent<Follow>(e);
-	auto _p_tr = fll->get_act_follow();
+	fll->act_follow();
 
 	auto walkingState = std::make_shared<WalkingState>(tr, mc, fll);
 	auto backingState = std::make_shared<WalkingState>(tr, mc, fll, true);
@@ -765,24 +765,24 @@ void GameScene::spawn_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 	float dist_to_attack = 3.0f;
 	float dist_to_fallback = 2.5f;
 
-	state->add_transition("Walking", "Attacking", [state_cm, _p_tr, tr, dist_to_attack]()
-						  { return state_cm->is_player_near(_p_tr, tr, dist_to_attack); });
+	state->add_transition("Walking", "Attacking", [state_cm, fll, tr, dist_to_attack]()
+						  { return state_cm->is_player_near(fll->get_act_follow(), tr, dist_to_attack); });
 
-	state->add_transition("Attacking", "Walking", [state_cm, _p_tr, tr, dist_to_attack]()
-						  { return !state_cm->is_player_near(_p_tr, tr, dist_to_attack); });
+	state->add_transition("Attacking", "Walking", [state_cm, fll, tr, dist_to_attack]()
+						  { return !state_cm->is_player_near(fll->get_act_follow(), tr, dist_to_attack); });
 
-	state->add_transition("Walking", "Backing", [state_cm, _p_tr, tr, dist_to_fallback]()
-						  { return state_cm->is_player_near(_p_tr, tr, dist_to_fallback); });
+	state->add_transition("Walking", "Backing", [state_cm, fll, tr, dist_to_fallback]()
+						  { return state_cm->is_player_near(fll->get_act_follow(), tr, dist_to_fallback); });
 
-	state->add_transition("Backing", "Walking", [state_cm, _p_tr, tr, dist_to_fallback, dist_to_attack]()
-						  { return !state_cm->is_player_near(_p_tr, tr, dist_to_fallback) &&
-								   !state_cm->is_player_near(_p_tr, tr, dist_to_attack); });
+	state->add_transition("Backing", "Walking", [state_cm, fll, tr, dist_to_fallback, dist_to_attack]()
+						  { return !state_cm->is_player_near(fll->get_act_follow(), tr, dist_to_fallback) &&
+								   !state_cm->is_player_near(fll->get_act_follow(), tr, dist_to_attack); });
 
-	state->add_transition("Attacking", "Backing", [state_cm, _p_tr, tr, dist_to_fallback]()
-						  { return state_cm->is_player_near(_p_tr, tr, dist_to_fallback); });
+	state->add_transition("Attacking", "Backing", [state_cm, fll, tr, dist_to_fallback]()
+						  { return state_cm->is_player_near(fll->get_act_follow(), tr, dist_to_fallback); });
 
-	state->add_transition("Backing", "Attacking", [state_cm, _p_tr, tr, dist_to_fallback]()
-						  { return !state_cm->is_player_near(_p_tr, tr, dist_to_fallback); });
+	state->add_transition("Backing", "Attacking", [state_cm, fll, tr, dist_to_fallback]()
+						  { return !state_cm->is_player_near(fll->get_act_follow(), tr, dist_to_fallback); });
 
 	state->set_initial_state("Walking");
 }
@@ -816,19 +816,19 @@ void GameScene::spawn_plim_plim(Vector2D posVec, ecs::sceneId_t scene)
 	auto state_cm = state->getConditionManager();
 
 	Follow *fll = manager.getComponent<Follow>(e);
-	auto _p_tr = fll->get_act_follow();
-
+	fll->act_follow();
+	
 	auto walkingState = std::make_shared<WalkingState>(tr, mc, fll);
 	auto attackingState = std::make_shared<AttackingState>(tr, fll, &weapon);
 
 	state->add_state("Walking", walkingState);
 	state->add_state("Attacking", attackingState);
 
-	state->add_transition("Walking", "Attacking", [state_cm, _p_tr, tr]()
-						  { return state_cm->is_player_near(_p_tr, tr, 4.0f); });
+	state->add_transition("Walking", "Attacking", [state_cm, fll, tr]()
+						  { return state_cm->is_player_near(fll->get_act_follow(), tr, 4.0f); });
 
-	state->add_transition("Attacking", "Walking", [state_cm, _p_tr, tr]()
-						  { return !state_cm->is_player_near(_p_tr, tr, 6.0f); });
+	state->add_transition("Attacking", "Walking", [state_cm, fll, tr]()
+						  { return !state_cm->is_player_near(fll->get_act_follow(), tr, 6.0f); });
 
 	state->set_initial_state("Walking");
 }
@@ -863,8 +863,8 @@ void GameScene::spawn_boom(Vector2D posVec, ecs::sceneId_t scene)
 	Health *health = manager.getComponent<Health>(e);
 
 	Follow *fll = manager.getComponent<Follow>(e);
-	auto _p_tr = fll->get_act_follow();
-
+	fll->act_follow();
+	
 	auto walkingState = std::make_shared<WalkingState>(tr, mc, fll);
 	auto attackingState = std::make_shared<AttackingState>(tr, fll, &weapon, false,
 														   [health]()
@@ -873,8 +873,8 @@ void GameScene::spawn_boom(Vector2D posVec, ecs::sceneId_t scene)
 	state->add_state("Walking", walkingState);
 	state->add_state("Attacking", attackingState);
 
-	state->add_transition("Walking", "Attacking", [state_cm, _p_tr, tr]()
-						  { return state_cm->is_player_near(_p_tr, tr, 1.0f); });
+	state->add_transition("Walking", "Attacking", [state_cm, fll, tr]()
+						  { return state_cm->is_player_near(fll->get_act_follow(), tr, 1.0f); });
 
 	state->set_initial_state("Walking");
 }
@@ -913,10 +913,10 @@ void GameScene::spawn_ratatouille(Vector2D posVec, ecs::sceneId_t scene)
 	auto state_cm = state->getConditionManager();
 
 	Follow *fll = manager.getComponent<Follow>(e);
-	auto _p_tr = fll->get_act_follow();
-
+	fll->act_follow();
+	
 	auto walkingState = std::make_shared<WalkingState>(tr, mc, fll);
-	auto rotatingState = std::make_shared<RotatingState>(tr, _p_tr, mc);
+	auto rotatingState = std::make_shared<RotatingState>(tr, fll->get_act_follow(), mc);
 
 	state->add_state("Walking", walkingState);
 	state->add_state("Rotating", rotatingState);
@@ -925,12 +925,12 @@ void GameScene::spawn_ratatouille(Vector2D posVec, ecs::sceneId_t scene)
 
 	// Condiciones de cada estado
 	// De: Walking a: Rotating, Condición: Jugador cerca
-	state->add_transition("Walking", "Rotating", [state_cm, _p_tr, tr, dist_to_rotate]()
-						  { return state_cm->is_player_near(_p_tr, tr, dist_to_rotate); });
+	state->add_transition("Walking", "Rotating", [state_cm, fll, tr, dist_to_rotate]()
+						  { return state_cm->is_player_near(fll->get_act_follow(), tr, dist_to_rotate); });
 
 	// De: Rotating a: Walking, Condición: Jugador lejos
-	state->add_transition("Rotating", "Walking", [state_cm, _p_tr, tr, dist_to_rotate]()
-						  { return !state_cm->is_player_near(_p_tr, tr, dist_to_rotate * 1.8f); });
+	state->add_transition("Rotating", "Walking", [state_cm, fll, tr, dist_to_rotate]()
+						  { return !state_cm->is_player_near(fll->get_act_follow(), tr, dist_to_rotate * 1.8f); });
 
 	state->set_initial_state("Walking");
 }
@@ -967,7 +967,7 @@ void GameScene::spawn_rata_basurera(Vector2D posVec, ecs::sceneId_t scene)
 	weapon.sendHealthComponent(manager.getComponent<Health>(e));
 
 	Follow *fll = manager.getComponent<Follow>(e);
-	auto _p_tr = fll->get_act_follow();
+	fll->act_follow();
 
 	auto walkingState = std::make_shared<WalkingState>(tr, mc, fll);
 	auto attackingState = std::make_shared<AttackingState>(tr, fll, &weapon);
@@ -977,12 +977,12 @@ void GameScene::spawn_rata_basurera(Vector2D posVec, ecs::sceneId_t scene)
 
 	// Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador a distancia correcta
-	state->add_transition("Walking", "Attacking", [state_cm, _p_tr, tr]()
-						  { return state_cm->is_player_near(_p_tr, tr, 50.0f); });
+	state->add_transition("Walking", "Attacking", [state_cm, fll, tr]()
+						  { return state_cm->is_player_near(fll->get_act_follow(), tr, 50.0f); });
 
 	// De: Attacking a: Walking, Condición: Jugador se aleja demasiado
-	state->add_transition("Attacking", "Walking", [state_cm, _p_tr, tr]()
-						  { return !state_cm->is_player_near(_p_tr, tr, 55.0f); });
+	state->add_transition("Attacking", "Walking", [state_cm, fll, tr]()
+						  { return !state_cm->is_player_near(fll->get_act_follow(), tr, 55.0f); });
 
 	state->set_initial_state("Walking");
 }
@@ -1016,8 +1016,8 @@ void GameScene::spawn_rey_basurero(Vector2D posVec, ecs::sceneId_t scene)
 	auto state_cm = state->getConditionManager();
 
 	Follow *fll = manager.getComponent<Follow>(e);
-	auto _p_tr = fll->get_act_follow();
-
+	fll->act_follow();
+	
 	auto walkingState = std::make_shared<WalkingState>(tr, mc, fll);
 	auto attackingState = std::make_shared<AttackingState>(tr, fll, &weapon);
 
@@ -1026,12 +1026,12 @@ void GameScene::spawn_rey_basurero(Vector2D posVec, ecs::sceneId_t scene)
 
 	// Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador a distancia correcta
-	state->add_transition("Walking", "Attacking", [state_cm, _p_tr, tr]()
-						  { return state_cm->is_player_near(_p_tr, tr, 7.0f); });
+	state->add_transition("Walking", "Attacking", [state_cm, fll, tr]()
+						  { return state_cm->is_player_near(fll->get_act_follow(), tr, 7.0f); });
 
 	// De: Attacking a: Walking, Condición: Jugador lejose aleja demasiado
-	state->add_transition("Attacking", "Walking", [state_cm, _p_tr, tr]()
-						  { return !state_cm->is_player_near(_p_tr, tr, 10.0f); });
+	state->add_transition("Attacking", "Walking", [state_cm, fll, tr]()
+						  { return !state_cm->is_player_near(fll->get_act_follow(), tr, 10.0f); });
 
 	state->set_initial_state("Walking");
 }

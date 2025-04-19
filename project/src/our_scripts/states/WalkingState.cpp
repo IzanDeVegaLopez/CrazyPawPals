@@ -6,17 +6,17 @@
 #include "../components/movement/MovementController.h"
 
 WalkingState::WalkingState(Transform *tr, MovementController *movementController,Follow* follow, bool toDestination)
-    : _tr(tr), _movement_controller(movementController), _fll(nullptr), _to_destination(toDestination)
+    : _tr(tr), _movement_controller(movementController), _fll(follow), _to_destination(toDestination)
 {
 
 }
 
 void WalkingState::enter()
 {
-    // assert(_tr != nullptr);
-    // assert(_movementController != nullptr);
-
-    // assert(_player_tr != nullptr);
+     assert(_tr != nullptr);
+     assert(_movement_controller != nullptr);
+     assert(_fll != nullptr);
+     _fll->act_follow();
 }
 
 void WalkingState::update(uint32_t delta_time)

@@ -7,7 +7,8 @@
 
 
 AttackingState::AttackingState(Transform* tr, Follow* follow, Weapon* weapon, bool can_attack, OnAttackCallback onAttackCallback, int attact_times) :
-	_tr(tr), _fll(follow), _weapon(weapon), _on_attack_callback(onAttackCallback), _attack_times(attact_times), _contador(0), _can_attack(can_attack) {
+	_tr(tr), _fll(follow), _weapon(weapon), _on_attack_callback(onAttackCallback), _attack_times(attact_times), _contador(0), _can_attack(can_attack) 
+{
 }
 
 void AttackingState::enter() {
