@@ -28,7 +28,6 @@ WaveManager::WaveManager() :
     _enemiesSpawned(0),
     _enemiesKilled(0),
     _numEnemies(0),
-    enemy_index(0),
     _wave_completed_tex(&sdlutils().msgs().at("wave_completed")),
     _current_wave_event(new no_event(this))
 {
@@ -231,7 +230,6 @@ void WaveManager::start_new_wave()
     _enemiesSpawned = 0;
     _enemiesKilled = 0;
     _numEnemies = 0;
-    enemy_index = 0;
     _wave_active = true;
 #ifdef GENERATE_LOG
     WaveManager::_ticks_on_wave = 1;
