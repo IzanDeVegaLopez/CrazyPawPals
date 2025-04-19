@@ -557,6 +557,10 @@
       "file": "resources/images/ui/tutorial/usar_carta.png"
     },
     {
+      "id": "popup_card",
+      "file": "resources/images/ui/tutorial/efecto_unico.png"
+    },
+    {
       "id": "popup_reload",
       "file": "resources/images/ui/tutorial/reload.png"
     },
