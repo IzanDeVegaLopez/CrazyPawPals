@@ -66,6 +66,9 @@ private:
     bool is_wave_finished();
     void erase_all_enemies();
     void erase_all_bullets();
+    bool wave_completed = false;
+    uint32_t change_to_rewards_time;
+    Texture* _wave_completed_tex;
 #ifdef GENERATE_LOG
     inline static uint32_t _ticks_on_wave = 1;
 #endif
@@ -83,7 +86,7 @@ private:
     int tokens_for_this_wave;
     std::unique_ptr<wave_event> _current_wave_event;
 
-    bool _waveActive = false;
+    bool _wave_active = false;
 
     int _numEnemies; // enemigos total en la oleada (post calculo)
     int _enemiesSpawned; // número de enemigos spawneados (post calculo)

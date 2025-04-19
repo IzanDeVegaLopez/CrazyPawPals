@@ -583,7 +583,18 @@
     { "id" : "continue", "text" : "Press space to continue", "font" : "ARIAL24", "color" : "0x112233ff", "bg" : "0xffffffff" },
     { "id": "gameover", "text": "Game Over", "font": "ARIAL24","color": "0x0000ffff"},
     { "id": "life", "text": "Health: ", "font": "ARIAL24", "color": "000000ff"},
-    { "id": "choose_weapon", "text": "Choose your weapon", "font": "PROTEST_GUERRILLA100", "color": "0xfcacacff"}
+    {
+      "id": "choose_weapon",
+      "text": "Choose your weapon",
+      "font": "PROTEST_GUERRILLA100",
+      "color": "0xfcacacff"
+    },
+    {
+      "id": "wave_completed",
+      "text": "WAVE COMPLETED NYA",
+      "font": "PROTEST_GUERRILLA100",
+      "color": "0xfcacacff"
+    }
   ],
 
   "sounds": [
