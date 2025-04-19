@@ -6,7 +6,8 @@
 
 
 AttackingState::AttackingState(Transform* tr, Transform* playerTr, Weapon* weapon, bool can_attack, OnAttackCallback onAttackCallback, int attact_times) :
-	_tr(tr), _playerTr(playerTr), _weapon(weapon), _onAttackCallback(onAttackCallback), _attack_times(attact_times), _contador(0), _can_attack(can_attack) {
+	_tr(tr), _playerTr(playerTr), _weapon(weapon), _onAttackCallback(onAttackCallback), _attack_times(attact_times), _contador(0), _can_attack(can_attack)
+{
 }
 
 void AttackingState::enter() {

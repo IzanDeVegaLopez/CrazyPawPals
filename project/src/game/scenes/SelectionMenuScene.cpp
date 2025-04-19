@@ -167,6 +167,8 @@ void SelectionMenuScene::exitScene()
     auto playB = mngr->getHandler(ecs::hdlr::TOGAMEBUTTON);
     auto playImg = mngr->getComponent<ImageForButton>(playB);
     playImg->_filter = false;
+    sdlutils().musics().at("main_menu_bgm").haltMusic();
+    sdlutils().musics().at("game_bgm").play();
 #ifdef GENERATE_LOG
     log_writer_to_csv::Instance()->add_new_log("EXIT SELECTION MENU SCENE");
     log_writer_to_csv::Instance()->add_new_log();
