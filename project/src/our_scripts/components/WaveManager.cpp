@@ -19,6 +19,7 @@
 #include "movement/MovementController.h"
 #endif
 
+
 // 1 segundo = 1000 ticks (ms)
 WaveManager::WaveManager() :
     _currentWaveTime(0),
@@ -28,10 +29,17 @@ WaveManager::WaveManager() :
     _enemiesSpawned(0),
     _enemiesKilled(0),
     _numEnemies(0),
+    enemy_index(0),
     _current_wave_event(new no_event(this))
 {
     event_system::event_manager::Instance()->suscribe_to_event(event_system::enemy_dead, this, &event_system::event_receiver::event_callback0);
     event_system::event_manager::Instance()->suscribe_to_event(event_system::player_dead, this, &event_system::event_receiver::event_callback1);
+
+    enemies_premade_waves = std::vector<std::vector<enemyType>>{
+    std::vector<enemyType>{sarno_rata, michi_mafioso},
+    std::vector<enemyType>{plim_plim, ratatouille, plim_plim, sarno_rata, plim_plim, plim_plim},
+    std::vector<enemyType>{boom, michi_mafioso, boom, michi_mafioso, boom, boom, michi_mafioso, michi_mafioso}
+    };
 }
 
 WaveManager::~WaveManager() {
@@ -48,14 +56,14 @@ WaveManager::initComponent() {
 bool WaveManager::can_spawn_next_enemy()
 {
     std::cout << _next_spawn_time << " - " << sdlutils().virtualTimer().currTime() << std::endl;
-    return _next_spawn_time < sdlutils().virtualTimer().currTime() && tokens_for_this_wave > 0;
+    return _next_spawn_time < sdlutils().virtualTimer().currTime() && enemy_index < enemies_premade_waves[_currentWave].size();//tokens_for_this_wave > 0;
 }
 
 bool WaveManager::is_wave_finished()
 {
     //TODO: Necesitamos no notificar los enemigos que son creados por otros
     //std::cout << "enemies_killed: " << _enemiesKilled << "   numEnemies: " << _numEnemies << "    enemies_spawned: " << _enemiesSpawned << std::endl;
-    return _enemiesKilled >= _numEnemies && _all_enemies_already_spawned;
+    return _enemiesKilled >= _numEnemies && enemy_index == enemies_premade_waves[_currentWave].size();//_all_enemies_already_spawned;
 }
 
 void WaveManager::erase_all_enemies()
@@ -79,7 +87,7 @@ void WaveManager::erase_all_bullets()
 //Chooses enemies in _enemy_types_for_current_wave
 void WaveManager::initialize_next_wave_params(bool normal_wave)
 {
-    tokens_for_this_wave = _currentWave * spawn_tokens_gained_per_wave + spawn_tokens_at_wave_0;
+    tokens_for_this_wave = 99;//_currentWave * spawn_tokens_gained_per_wave + spawn_tokens_at_wave_0;
 
     uint8_t cheaper_enemy;
     for (uint8_t i = 0; i < 3; ++i) {
@@ -115,7 +123,7 @@ void WaveManager::spawn_next_group_of_enemies()
     //spawn enemies
     enemy_spawn_caller* esc;
     std::string tipoEnemigo;
-    switch ((enemyType)_enemy_types_for_current_wave[index])
+    switch ((enemyType)enemies_premade_waves[_currentWave][enemy_index])
     {
         case sarno_rata:
             esc = new enemy_spawn_caller([](Vector2D v) {GameScene::spawn_sarno_rata(v); });
@@ -155,7 +163,7 @@ void WaveManager::spawn_next_group_of_enemies()
             break;
         }
     }
-    for (uint8_t i = 0; i < enemy_spawn_data[_enemy_types_for_current_wave[index]].number_of_enemies_simultaneous_spawn; ++i) {
+    for (uint8_t i = 0; i < enemy_spawn_data[enemies_premade_waves[_currentWave][enemy_index]].number_of_enemies_simultaneous_spawn; ++i) {
         esc->spawn_callback();
     }
 #ifdef GENERATE_LOG
@@ -163,13 +171,14 @@ void WaveManager::spawn_next_group_of_enemies()
 #endif
 
     delete esc;
-    _numEnemies += enemy_spawn_data[_enemy_types_for_current_wave[index]].number_of_enemies_simultaneous_spawn;
+    _numEnemies += enemy_spawn_data[enemies_premade_waves[_currentWave][enemy_index]].number_of_enemies_simultaneous_spawn;
     //sets next spawn time
     float multiplier = ((sdlutils().rand().nextInt(0, 100)*0.001) * 0.3 + 0.7);
     auto add_to_crono = (uint32_t)(time_max_between_enemy_spawns_on_this_wave * multiplier);
     _next_spawn_time = sdlutils().virtualTimer().currTime() + add_to_crono;
 
     _all_enemies_already_spawned = tokens_for_this_wave <= 0;
+    ++enemy_index;
 }
 //---------------------------------------------------------------------------------------------------------------------------------
 void WaveManager::update(uint32_t delta_time) {
@@ -195,6 +204,7 @@ void WaveManager::update(uint32_t delta_time) {
 //Verifica si todos los enemigos estan muertos
 bool 
 WaveManager::areAllEnemiesDead() {
+    std::cout << _enemiesKilled << " vs " << _numEnemies;
     return _enemiesKilled >= _numEnemies;
 }
 
@@ -222,6 +232,7 @@ void WaveManager::start_new_wave()
     _enemiesSpawned = 0;
     _enemiesKilled = 0;
     _numEnemies = 0;
+    enemy_index = 0;
 #ifdef GENERATE_LOG
     WaveManager::_ticks_on_wave = 1;
 #endif
@@ -278,13 +289,18 @@ void WaveManager::endwave()
 
 #endif
 
-    _current_wave_event->end_wave_callback();
-    _currentWave++;
-    _all_enemies_already_spawned = false;
-    fog->setFog(false);
-    erase_all_bullets();
-    erase_all_enemies();
-    enterRewardsMenu();
+    if (_currentWave == 2) {
+        Game::Instance()->change_Scene(Game::State::VICTORY);
+    }
+    else {
+        _current_wave_event->end_wave_callback();
+        _currentWave++;
+        _all_enemies_already_spawned = false;
+        fog->setFog(false);
+        erase_all_bullets();
+        erase_all_enemies();
+        enterRewardsMenu();
+    }
 
 }
 
@@ -309,6 +325,8 @@ void WaveManager::choose_new_event()
     std::mt19937 gen(rd());
     std::uniform_int_distribution<int> rnd_gen(NONE,EVENTS_MAX - 1);
     _current_event = events(rnd_gen(gen));
+
+    _current_event = _currentWave == 1 ? STAR_SHOWER : NONE;
     
     switch(_current_event) {
     case NONE:

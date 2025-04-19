@@ -14,7 +14,7 @@ enum events {
     EVENTS_MAX
 };
 
-enum enemyType {
+enum enemyType : uint8_t {
     sarno_rata = 0,
     michi_mafioso = 1,
     plim_plim = 2,
@@ -23,6 +23,7 @@ enum enemyType {
     rata_basurera = 5, //TODAVIA NO TIENE SPRITE POR ESO PETA, CUANDO TENGA --> CAMBIAR RATA BASURERA POR CATKUZA en el enemy randomizer
     catkuza = 6,
     super_michi_mafioso = 7,
+    none = 8
 };
 
 struct enemy_spawn_definition {
@@ -54,6 +55,8 @@ constexpr int spawn_tokens_at_wave_0 = 3;
 
 class WaveManager : public event_system::event_receiver, public ecs::Component {
 private:
+    uint8_t enemy_index;
+    std::vector<std::vector<enemyType>> enemies_premade_waves;
     void choose_new_event();
     void endwave();
     void activateFog();
