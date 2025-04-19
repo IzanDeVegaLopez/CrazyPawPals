@@ -30,6 +30,7 @@ public:
 	void enterScene() override;
 	void exitScene() override;
 	void update(uint32_t delta_time) override;
+	void render() override;
 
 	void create_proyectile(const GameStructs::BulletProperties& bp, ecs::grpId_t gid) override;
 	void event_callback0(const event_system::event_receiver::Msg& m) override;
@@ -43,7 +44,8 @@ private:
 
 	uint32_t _popup_timer;
 	TutorialState _tutorial_state;
-
+	float _tutorial_time_seconds;
+	bool _show_tutorial_hud;
 	bool _enemy_killed = false;
 
 	void create_pop_up();
