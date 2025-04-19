@@ -225,6 +225,7 @@ void GameScene::enterScene()
 	auto e = wm->get_current_event();
 	RewardScene::will_have_mythic(e != NONE);
 	manager.getComponent<HUD>(manager.getHandler(ecs::hdlr::HUD_ENTITY))->start_new_wave();
+	Game::Instance()->played(true);
 #ifdef GENERATE_LOG
 	log_writer_to_csv::Instance()->add_new_log();
 	log_writer_to_csv::Instance()->add_new_log("ENTERED GAME SCENE");

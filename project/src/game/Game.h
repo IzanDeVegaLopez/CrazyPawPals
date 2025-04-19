@@ -41,7 +41,8 @@ public:
 	inline void set_exit(bool b) { exit = b; }
 	bool get_exit() { return exit; }
 
-
+	inline bool has_played() { return has_played_before; };
+	inline void played(bool p) { has_played_before = p; };
 private:
 	int _current_scene_index = -1;
 	std::vector<Scene*> _scenes;
@@ -49,4 +50,5 @@ private:
 	Game();
 	ecs::Manager* _mngr;
 	void set_volumes();
+	bool has_played_before = false;
 };
