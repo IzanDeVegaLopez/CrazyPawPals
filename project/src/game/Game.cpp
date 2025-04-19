@@ -155,7 +155,7 @@ void Game::start() {
 
 	uint64_t last_frame_start_tick = SDL_GetTicks64();
 	SDL_Delay(target_delta_time_milliseconds);
-
+	sdlutils().virtualTimer().resetTime();
 	while (!exit) {
 		const uint64_t frame_start_tick = SDL_GetTicks64();
 		const uint32_t delta_time_milliseconds = frame_start_tick - last_frame_start_tick;

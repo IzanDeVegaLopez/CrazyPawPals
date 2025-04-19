@@ -47,7 +47,8 @@ WaveManager::initComponent() {
 
 bool WaveManager::can_spawn_next_enemy()
 {
-    return _next_spawn_time > sdlutils().currTime() && tokens_for_this_wave > 0;
+    std::cout << _next_spawn_time << " - " << sdlutils().virtualTimer().currTime() << std::endl;
+    return _next_spawn_time < sdlutils().virtualTimer().currTime() && tokens_for_this_wave > 0;
 }
 
 bool WaveManager::is_wave_finished()
@@ -96,7 +97,7 @@ void WaveManager::initialize_next_wave_params(bool normal_wave)
         cheaper_enemy = std::min(cheaper_enemy,enemy_spawn_data[_enemy_types_for_current_wave[i]].enemies_group_spawn_cost);
     }
     time_max_between_enemy_spawns_on_this_wave = max_spawn_wave_time / (tokens_for_this_wave / cheaper_enemy);
-    _next_spawn_time = sdlutils().currTime() + time_max_between_enemy_spawns_on_this_wave;
+    _next_spawn_time = sdlutils().virtualTimer().currTime();// +time_max_between_enemy_spawns_on_this_wave;
     //Si no es normal wave spawnea tb un bos
 }
 
@@ -164,7 +165,9 @@ void WaveManager::spawn_next_group_of_enemies()
     delete esc;
     _numEnemies += enemy_spawn_data[_enemy_types_for_current_wave[index]].number_of_enemies_simultaneous_spawn;
     //sets next spawn time
-    _next_spawn_time = sdlutils().currTime() + (uint32_t)(time_max_between_enemy_spawns_on_this_wave * (sdlutils().rand().nextInt(0,100) * 0.3+0.7));
+    float multiplier = ((sdlutils().rand().nextInt(0, 100)*0.001) * 0.3 + 0.7);
+    auto add_to_crono = (uint32_t)(time_max_between_enemy_spawns_on_this_wave * multiplier);
+    _next_spawn_time = sdlutils().virtualTimer().currTime() + add_to_crono;
 
     _all_enemies_already_spawned = tokens_for_this_wave <= 0;
 }
