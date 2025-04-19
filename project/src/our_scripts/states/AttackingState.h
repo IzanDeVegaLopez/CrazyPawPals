@@ -2,20 +2,21 @@
 
 #include <functional>
 class Transform;
+class Follow;
 class Weapon;
 class AttackingState : public State
 {
 public:
 	using OnAttackCallback = std::function<void()>;
 
-	AttackingState(Transform* tr, Weapon* weapon, bool can_attack = true, OnAttackCallback onAttackCallback = nullptr, int attact_times = 1);
+	AttackingState(Transform* tr, Follow* follow, Weapon* weapon, bool can_attack = true, OnAttackCallback onAttackCallback = nullptr, int attact_times = 1);
 	void enter() override;
 	void update(uint32_t delta_time) override;
 	void exit() override;
 
 protected:
 	Transform* _tr;
-	Transform* _player_tr;
+	Follow* _fll;
 
 	Weapon* _weapon;
 

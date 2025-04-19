@@ -3,13 +3,12 @@
 
 class Transform;
 class MovementController;
+class Follow;
 
 class WalkingState : public State {
-
 public:
-	using SearchNextFollow = std::function<void()>;
 
-	WalkingState(Transform* tr, MovementController* movementController, bool toDestination = false);
+	WalkingState(Transform* tr, MovementController* movement_controller, Follow* follow, bool toDestination = false);
 	~WalkingState() {};
 	void enter() override;
 	void update(uint32_t delta_time) override;
@@ -17,10 +16,7 @@ public:
 
 protected:
 	Transform* _tr;
-	Transform* _player_tr;
-	MovementController* _movementController;
-	
+	MovementController* _movement_controller;
+	Follow* _fll;
 	bool _to_destination;
-
-	SearchNextFollow _on_search_next_follow;
 };

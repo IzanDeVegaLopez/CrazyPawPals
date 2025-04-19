@@ -390,21 +390,21 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 	state_cm->set_cooldown("spawn_michi", 8000);
 
 	// Crear estados
-	auto walkingState = std::make_shared<WalkingState>(&tr, &mc);
+	auto walkingState = std::make_shared<WalkingState>(tr, mc, fll);
 
 	auto areaAttackState = std::make_shared<SuperMichiMafiosoAttack>(
-		&tr, &weapon, [&weapon]()
+		tr, &weapon, fll, [&weapon]()
 		{ weapon.setAttackPattern(WeaponSuperMichiMafioso::ATTACK1); });
 
 	auto shotAttackState = std::make_shared<SuperMichiMafiosoAttack>(
-		&tr, &weapon, [&weapon]()
+		tr, &weapon, fll, [&weapon]()
 		{ weapon.setAttackPattern(WeaponSuperMichiMafioso::ATTACK2); });
 
 	auto largeAreaAttackState = std::make_shared<SuperMichiMafiosoAttack>(
-		&tr, &weapon, [&weapon]()
+		tr, &weapon, fll, [&weapon]()
 		{ weapon.setAttackPattern(WeaponSuperMichiMafioso::ATTACK3); });
 	auto spawnMichiState = std::make_shared<SuperMichiMafiosoAttack>(
-		&tr, &weapon, [&weapon]()
+		tr, &weapon, fll, [&weapon]()
 		{ weapon.setAttackPattern(WeaponSuperMichiMafioso::SPAWN_MICHI_MAFIOSO); });
 
 	auto waitingState = std::make_shared<WaitingState>();
@@ -424,22 +424,22 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 	state->add_transition("Walking", "AreaAttack", [state_cm, _p_tr, tr, dist_to_attack]()
 						  { return state_cm->can_use("area_attack_duration", sdlutils().virtualTimer().currTime()) && state_cm->is_player_near(_p_tr, tr, dist_to_attack); });
 
-	state->add_transition("AreaAttack", "Waiting", [state_cm, _p_tr, &tr, dist_to_attack]()
+	state->add_transition("AreaAttack", "Waiting", [state_cm, _p_tr, tr, dist_to_attack]()
 						  {
 		uint32_t currentTime = sdlutils().virtualTimer().currTime();
 		bool trans = state_cm->can_use("area_attack_duration", currentTime);
 		if (trans) { state_cm->reset_cooldown("area_attack_duration", currentTime); };
 		return trans; });
 
-	state->add_transition("Waiting", "AreaAttack", [state_cm, _p_tr, &tr, dist_to_attack]()
+	state->add_transition("Waiting", "AreaAttack", [state_cm, _p_tr, tr, dist_to_attack]()
 						  { return state_cm->can_use("area_attack_duration", sdlutils().virtualTimer().currTime()) && state_cm->is_player_near(_p_tr, tr, dist_to_attack); });
 
 	// patron2: cuando ataque 3 veces p1, pasa a 2 si el player no se aleja mucho
-	state->add_transition("Waiting", "ShotAttack", [state_cm, _p_tr, &tr, dist_to_attack]()
+	state->add_transition("Waiting", "ShotAttack", [state_cm, _p_tr, tr, dist_to_attack]()
 						  {
 		uint32_t currentTime = sdlutils().virtualTimer().currTime();
 
-		bool trans = state_cm->can_use("shot_attack", currentTime)&& state_cm->is_player_near(_p_tr, tr, dist_to_attack);
+		bool trans = state_cm->can_use("shot_attack", currentTime) && state_cm->is_player_near(_p_tr, tr, dist_to_attack);
 		if (trans) { state_cm->reset_cooldown("shot_attack", currentTime); };
 		return trans; });
 
@@ -462,7 +462,7 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 	state->add_transition("Waiting", "LargeAreaAttack", [state_cm, _p_tr, tr]()
 						  {
 		uint32_t currentTime = sdlutils().virtualTimer().currTime();
-		bool trans = state_cm->can_use("large_area_attack_duration", currentTime)&& state_cm->is_player_near(_p_tr, tr, 2.0f);;
+		bool trans = state_cm->can_use("large_area_attack_duration", currentTime) && state_cm->is_player_near(_p_tr, tr, 2.0f);;
 		if (trans) {
 			state_cm->reset_cooldown("large_area_attack_duration", currentTime);
 		}
@@ -497,7 +497,6 @@ void GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene)
 	StateMachine *state = manager.getComponent<StateMachine>(e);
 
 	Follow *fll = manager.getComponent<Follow>(e);
-	auto _p_tr = fll->get_act_follow();
 
 	auto state_cm = state->getConditionManager();
 
@@ -511,20 +510,20 @@ void GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene)
 	state_cm->add_pattern("PATTERN_2", 1);
 
 	// Crear estados
-	auto walkingState = std::make_shared<WalkingState>(&tr, &mc);
-	auto dashState = std::make_shared<DashingState>(&tr, &mc);
+	auto walkingState = std::make_shared<WalkingState>(tr, mc, fll);
+	auto dashState = std::make_shared<DashingState>(tr, mc, fll);
 	auto chargingState = std::make_shared<WaitingState>();
 
 	auto windAttackState = std::make_shared<AttackingState>(
-		tr, &weapon, false,
-		[&weapon, &tr]()
+		tr, fll, &weapon, false,
+		[&weapon, tr]()
 		{
 			Vector2D shootPos = tr->getPos(); // Posición del enemigo
 			weapon.wind_attack(shootPos);
 		});
 
 	auto areaAttackState = std::make_shared<AttackingState>(
-		tr, &weapon, false,
+		tr, fll, &weapon, false,
 		[&weapon, tr]()
 		{
 			Vector2D shootPos = tr->getPos(); // Posición del enemigo
@@ -532,13 +531,13 @@ void GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene)
 		});
 
 	auto dashAttackState = std::make_shared<AttackingState>(
-		&tr, &weapon, false,
-		[&weapon, tr, _p_tr, &mc]()
+		tr, fll, &weapon, false,
+		[&weapon, tr, fll, mc]()
 		{
 			Vector2D shootPos = tr->getPos();
-			Vector2D shootDir = (_p_tr->getPos() - shootPos).normalize();
+			Vector2D shootDir = (fll->get_act_follow()->getPos() - shootPos).normalize();
 
-			Vector2D dash_target = _p_tr->getPos() + shootDir * 1.8f;
+			Vector2D dash_target = fll->get_act_follow()->getPos() + shootDir * 1.8f;
 			weapon.dash_attack(shootPos, dash_target);
 		});
 
@@ -558,31 +557,31 @@ void GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene)
 
 	// Transiciones Patrón 1
 	state->add_transition("Walking", "Charging",
-						  [state_cm, _p_tr, &tr, &weapon]()
+						  [state_cm, fll, tr, &weapon]()
 						  {
-							  bool trans = state_cm->is_player_near(_p_tr, tr, 5.0f) && state_cm->get_current_pattern() == "PATTERN_1";
+							  bool trans = state_cm->is_player_near(fll->get_act_follow(), tr, 5.0f) && state_cm->get_current_pattern() == "PATTERN_1";
 							  if (trans)
 							  {
 								  state_cm->reset_cooldown("charging_duration", sdlutils().currRealTime());
-								  weapon.set_player_pos(_p_tr->getPos());
+								  weapon.set_player_pos(fll->get_act_follow()->getPos());
 							  }
 							  return trans;
 						  });
 
 	state->add_transition("Charging", "WindAttack",
-						  [state_cm, &weapon, _p_tr]()
+						  [state_cm, &weapon, fll]()
 						  {
 							  bool trans = state_cm->can_use("charging_duration", sdlutils().currRealTime());
 							  if (trans)
 							  {
 								  state_cm->reset_cooldown("wind_attack_duration", sdlutils().currRealTime());
-								  weapon.set_player_pos(_p_tr->getPos());
+								  weapon.set_player_pos(fll->get_act_follow()->getPos());
 							  }
 							  return trans;
 						  });
 
 	state->add_transition("WindAttack", "Dash",
-						  [state_cm, &weapon, _p_tr]()
+						  [state_cm, &weapon, fll]()
 						  {
 							  bool trans = state_cm->can_use("wind_attack_duration", sdlutils().currRealTime());
 							  if (trans)
@@ -590,7 +589,7 @@ void GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene)
 
 								  state_cm->reset_cooldown("dash_attack_duration", sdlutils().currRealTime());
 
-								  weapon.set_player_pos(_p_tr->getPos());
+								  weapon.set_player_pos(fll->get_act_follow()->getPos());
 							  }
 							  return trans;
 						  });
@@ -620,19 +619,19 @@ void GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene)
 
 	// Transiciones Patrón 2
 	state->add_transition("Walking", "Dash2",
-						  [state_cm, _p_tr, &tr, &weapon]()
+						  [state_cm, fll, &weapon]()
 						  {
 							  bool trans = state_cm->get_current_pattern() == "PATTERN_2" && state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
 							  if (trans)
 							  {
 								  state_cm->reset_cooldown("dash_attack_duration", sdlutils().currRealTime());
-								  weapon.set_player_pos(_p_tr->getPos());
+								  weapon.set_player_pos(fll->get_act_follow()->getPos());
 							  }
 							  return trans;
 						  });
 
 	state->add_transition("Dash2", "AreaAttack",
-						  [state_cm, _p_tr, &tr, &weapon]()
+						  [state_cm]()
 						  {
 							  bool trans = state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
 							  if (trans)
@@ -643,32 +642,31 @@ void GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene)
 						  });
 
 	state->add_transition("AreaAttack", "Dash3",
-						  [state_cm, _p_tr, &tr, &weapon]()
+						  [state_cm, fll, &weapon]()
 						  {
 							  bool trans = state_cm->can_use("explosion_attack_duration", sdlutils().currRealTime());
 							  if (trans)
 							  {
 								  state_cm->reset_cooldown("dash_attack_duration", sdlutils().currRealTime());
-								  weapon.set_player_pos(_p_tr->getPos());
+								  weapon.set_player_pos(fll->get_act_follow()->getPos());
 							  }
 							  return trans;
 						  });
 
 	state->add_transition("Dash3", "DashAttack",
-						  [state_cm, _p_tr, &tr, &weapon]()
+						  [state_cm]()
 						  {
 							  state_cm->reset_cooldown("dash_attack_duration", sdlutils().currRealTime());
 							  return true;
 						  });
 
 	state->add_transition("DashAttack", "Walking",
-						  [state_cm, _p_tr, &tr, &weapon]()
+						  [state_cm]()
 						  {
 							  bool trans = state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
 							  if (trans)
 							  {
 								  state_cm->reset_cooldown("dash_attack_duration", sdlutils().currRealTime());
-
 								  state_cm->switch_pattern();
 							  }
 							  return trans;
@@ -710,8 +708,8 @@ void GameScene::spawn_sarno_rata(Vector2D posVec, ecs::sceneId_t scene)
 
 	auto state_cm = state->getConditionManager();
 
-	auto walkingState = std::make_shared<WalkingState>(tr, mc);
-	auto attackingState = std::make_shared<AttackingState>(tr, &weapon);
+	auto walkingState = std::make_shared<WalkingState>(tr, mc, fll);
+	auto attackingState = std::make_shared<AttackingState>(tr, fll, &weapon);
 
 	state->add_state("Walking", walkingState);
 	state->add_state("Attacking", attackingState);
@@ -756,9 +754,9 @@ void GameScene::spawn_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 	Follow *fll = manager.getComponent<Follow>(e);
 	auto _p_tr = fll->get_act_follow();
 
-	auto walkingState = std::make_shared<WalkingState>(tr, mc);
-	auto backingState = std::make_shared<WalkingState>(tr, mc, true);
-	auto attackingState = std::make_shared<AttackingState>(tr, &weapon);
+	auto walkingState = std::make_shared<WalkingState>(tr, mc, fll);
+	auto backingState = std::make_shared<WalkingState>(tr, mc, fll, true);
+	auto attackingState = std::make_shared<AttackingState>(tr, fll, &weapon);
 
 	state->add_state("Walking", walkingState);
 	state->add_state("Attacking", attackingState);
@@ -820,8 +818,8 @@ void GameScene::spawn_plim_plim(Vector2D posVec, ecs::sceneId_t scene)
 	Follow *fll = manager.getComponent<Follow>(e);
 	auto _p_tr = fll->get_act_follow();
 
-	auto walkingState = std::make_shared<WalkingState>(tr, mc);
-	auto attackingState = std::make_shared<AttackingState>(tr, &weapon);
+	auto walkingState = std::make_shared<WalkingState>(tr, mc, fll);
+	auto attackingState = std::make_shared<AttackingState>(tr, fll, &weapon);
 
 	state->add_state("Walking", walkingState);
 	state->add_state("Attacking", attackingState);
@@ -867,8 +865,8 @@ void GameScene::spawn_boom(Vector2D posVec, ecs::sceneId_t scene)
 	Follow *fll = manager.getComponent<Follow>(e);
 	auto _p_tr = fll->get_act_follow();
 
-	auto walkingState = std::make_shared<WalkingState>(tr, mc);
-	auto attackingState = std::make_shared<AttackingState>(tr, &weapon, false,
+	auto walkingState = std::make_shared<WalkingState>(tr, mc, fll);
+	auto attackingState = std::make_shared<AttackingState>(tr, fll, &weapon, false,
 														   [health]()
 														   { health->takeDamage(health->getMaxHealth()); });
 
@@ -917,7 +915,7 @@ void GameScene::spawn_ratatouille(Vector2D posVec, ecs::sceneId_t scene)
 	Follow *fll = manager.getComponent<Follow>(e);
 	auto _p_tr = fll->get_act_follow();
 
-	auto walkingState = std::make_shared<WalkingState>(tr, mc);
+	auto walkingState = std::make_shared<WalkingState>(tr, mc, fll);
 	auto rotatingState = std::make_shared<RotatingState>(tr, _p_tr, mc);
 
 	state->add_state("Walking", walkingState);
@@ -971,8 +969,8 @@ void GameScene::spawn_rata_basurera(Vector2D posVec, ecs::sceneId_t scene)
 	Follow *fll = manager.getComponent<Follow>(e);
 	auto _p_tr = fll->get_act_follow();
 
-	auto walkingState = std::make_shared<WalkingState>(tr, mc);
-	auto attackingState = std::make_shared<AttackingState>(tr, &weapon);
+	auto walkingState = std::make_shared<WalkingState>(tr, mc, fll);
+	auto attackingState = std::make_shared<AttackingState>(tr, fll, &weapon);
 
 	state->add_state("Walking", walkingState);
 	state->add_state("Attacking", attackingState);
@@ -1020,8 +1018,8 @@ void GameScene::spawn_rey_basurero(Vector2D posVec, ecs::sceneId_t scene)
 	Follow *fll = manager.getComponent<Follow>(e);
 	auto _p_tr = fll->get_act_follow();
 
-	auto walkingState = std::make_shared<WalkingState>(tr, mc);
-	auto attackingState = std::make_shared<AttackingState>(tr, &weapon);
+	auto walkingState = std::make_shared<WalkingState>(tr, mc, fll);
+	auto attackingState = std::make_shared<AttackingState>(tr, fll, &weapon);
 
 	state->add_state("Walking", walkingState);
 	state->add_state("Attacking", attackingState);
