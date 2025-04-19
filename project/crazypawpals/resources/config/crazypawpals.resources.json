@@ -625,6 +625,12 @@
       "text": "Choose your weapon",
       "font": "PROTEST_GUERRILLA100",
       "color": "0xfcacacff"
+    },
+    {
+      "id": "wave_completed",
+      "text": "WAVE COMPLETED NYA",
+      "font": "PROTEST_GUERRILLA100",
+      "color": "0xfcacacff"
     }
   ],
   "musics": [
