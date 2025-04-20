@@ -20,7 +20,6 @@
 #include "../../our_scripts/states/DashingState.h"
 #include "../../our_scripts/states/AnimationState.h"
 
-#include "../../our_scripts/states/SuperMichiMafiosoAttack.h"
 #include "../../our_scripts/components/weapons/enemies/WeaponSuperMichiMafioso.h"
 
 #include "../../our_scripts/components/KeyboardPlayerCtrl.h"
@@ -220,7 +219,7 @@ void GameScene::enterScene()
 	RewardScene::will_have_mythic(e != NONE);
 	manager.getComponent<HUD>(manager.getHandler(ecs::hdlr::HUD_ENTITY))->start_new_wave();
 
-	spawn_catkuza(Vector2D{5.0f, 0.0f});
+	//spawn_super_michi_mafioso(Vector2D{5.0f, 0.0f});
 #ifdef GENERATE_LOG
 	log_writer_to_csv::Instance()->add_new_log();
 	log_writer_to_csv::Instance()->add_new_log("ENTERED GAME SCENE");
@@ -391,23 +390,35 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 
 	// Crear estados
 	auto walkingState = std::make_shared<WalkingState>(tr, mc, fll);
-
-	auto areaAttackState = std::make_shared<SuperMichiMafiosoAttack>(
-		tr, &weapon, fll, [&weapon]()
-		{ weapon.setAttackPattern(WeaponSuperMichiMafioso::ATTACK1); });
-
-	auto shotAttackState = std::make_shared<SuperMichiMafiosoAttack>(
-		tr, &weapon, fll, [&weapon]()
-		{ weapon.setAttackPattern(WeaponSuperMichiMafioso::ATTACK2); });
-
-	auto largeAreaAttackState = std::make_shared<SuperMichiMafiosoAttack>(
-		tr, &weapon, fll, [&weapon]()
-		{ weapon.setAttackPattern(WeaponSuperMichiMafioso::ATTACK3); });
-	auto spawnMichiState = std::make_shared<SuperMichiMafiosoAttack>(
-		tr, &weapon, fll, [&weapon]()
-		{ weapon.setAttackPattern(WeaponSuperMichiMafioso::SPAWN_MICHI_MAFIOSO); });
-
 	auto waitingState = std::make_shared<WaitingState>();
+
+	auto areaAttackState = std::make_shared<AttackingState>(
+		tr, fll, &weapon, false,
+		[&weapon, fll]()
+		{
+			weapon.set_player_pos(fll->get_act_follow()->getPos());
+			weapon.attack1();
+		});
+
+	auto shotAttackState = std::make_shared<AttackingState>(
+		tr, fll, &weapon, false,
+		[&weapon, tr]()
+		{
+			Vector2D shootPos = tr->getPos(); // Posición del enemigo
+			weapon.attack2(shootPos);
+		});
+
+	auto largeAreaAttackState = std::make_shared<AttackingState>(
+		tr, fll, &weapon, false,
+		[&weapon, tr]()
+		{
+			Vector2D shootPos = tr->getPos(); // Posición del enemigo
+			weapon.attack2(shootPos);
+		});
+
+	auto spawnMichiState = std::make_shared<AttackingState>(
+		tr, fll, &weapon, false,
+		[&weapon]() { weapon.generate_michi_mafioso(); });
 
 	// poner los estado a la state
 	state->add_state("Walking", walkingState);
@@ -424,7 +435,7 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 	state->add_transition("Walking", "AreaAttack", [state_cm, _p_tr, tr, dist_to_attack]()
 						  { return state_cm->can_use("area_attack_duration", sdlutils().virtualTimer().currTime()) && state_cm->is_player_near(_p_tr, tr, dist_to_attack); });
 
-	state->add_transition("AreaAttack", "Waiting", [state_cm, _p_tr, tr, dist_to_attack]()
+	state->add_transition("AreaAttack", "Waiting", [state_cm, dist_to_attack]()
 						  {
 		uint32_t currentTime = sdlutils().virtualTimer().currTime();
 		bool trans = state_cm->can_use("area_attack_duration", currentTime);
@@ -443,8 +454,7 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 		if (trans) { state_cm->reset_cooldown("shot_attack", currentTime); };
 		return trans; });
 
-	state->add_transition("ShotAttack", "Waiting", [state_cm, _p_tr, tr, dist_to_attack]()
-						  { return true; });
+	state->add_transition("ShotAttack", "Waiting", []()  { return true; });
 
 	// spawn
 	state->add_transition("Waiting", "SpawnMichi", [state_cm]()
@@ -455,8 +465,7 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 			state_cm->reset_cooldown("spawn_michi", currentTime);
 		}
 		return trans; });
-	state->add_transition("SpawnMichi", "Waiting", [state_cm]()
-						  { return true; });
+	state->add_transition("SpawnMichi", "Waiting", []() { return true; });
 
 	// patron 3
 	state->add_transition("Waiting", "LargeAreaAttack", [state_cm, _p_tr, tr]()
@@ -468,12 +477,23 @@ void GameScene::spawn_super_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 		}
 		return trans; });
 
-	state->add_transition("LargeAreaAttack", "Waiting", []()
-						  { return true; });
+	state->add_transition("LargeAreaAttack", "Waiting", []() { return true; });
 
 	// A walking si el player se aleja
 	state->add_transition("Waiting", "Walking", [state_cm, _p_tr, tr, dist_to_attack]()
-						  { return !state_cm->is_player_near(_p_tr, tr, dist_to_attack); });
+		{ return !state_cm->is_player_near(_p_tr, tr, dist_to_attack*1.2); });
+
+	state->add_transition("SpawnMichi", "Walking", [state_cm, _p_tr, tr, dist_to_attack]()
+		{ return !state_cm->is_player_near(_p_tr, tr, dist_to_attack * 1.2); });
+
+	state->add_transition("LargeAreaAttack", "Walking", [state_cm, _p_tr, tr, dist_to_attack]()
+		{ return !state_cm->is_player_near(_p_tr, tr, dist_to_attack * 1.2); });
+
+	state->add_transition("ShotAttack", "Walking", [state_cm, _p_tr, tr, dist_to_attack]()
+		{ return !state_cm->is_player_near(_p_tr, tr, dist_to_attack * 1.2); });
+
+	state->add_transition("AreaAttack", "Walking", [state_cm, _p_tr, tr, dist_to_attack]()
+		{ return !state_cm->is_player_near(_p_tr, tr, dist_to_attack * 1.2); });
 
 	// Estado inicial
 	state->set_initial_state("Walking");
