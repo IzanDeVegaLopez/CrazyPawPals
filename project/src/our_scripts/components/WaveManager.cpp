@@ -28,7 +28,6 @@ WaveManager::WaveManager() :
     _enemiesSpawned(0),
     _enemiesKilled(0),
     _numEnemies(0),
-    _wave_completed_tex(&sdlutils().msgs().at("wave_completed")),
     _current_wave_event(new no_event(this))
 {
     event_system::event_manager::Instance()->suscribe_to_event(event_system::enemy_dead, this, &event_system::event_receiver::event_callback0);
@@ -48,7 +47,7 @@ WaveManager::initComponent() {
 
 bool WaveManager::can_spawn_next_enemy()
 {
-    std::cout << _next_spawn_time << " - " << sdlutils().virtualTimer().currTime() << std::endl;
+    //std::cout << _next_spawn_time << " - " << sdlutils().virtualTimer().currTime() << std::endl;
     return _next_spawn_time < sdlutils().virtualTimer().currTime() && tokens_for_this_wave > 0;
 }
 
@@ -174,9 +173,9 @@ void WaveManager::spawn_next_group_of_enemies()
 }
 //---------------------------------------------------------------------------------------------------------------------------------
 void WaveManager::update(uint32_t delta_time) {
-    _currentWaveTime = sdlutils().virtualTimer().currRealTime() - _currentWaveInitTime;
 
     if (_wave_active) {
+        _currentWaveTime = sdlutils().virtualTimer().currRealTime() - _currentWaveInitTime;
         _current_wave_event->update(delta_time);
         //tries spawning enemies
         if (can_spawn_next_enemy())
