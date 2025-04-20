@@ -13,7 +13,7 @@ public:
 		SPAWN_MICHI_MAFIOSO
 	};
 	__CMPID_DECL__(ecs::cmp::WEAPON);
-	WeaponSuperMichiMafioso(Transform* playerTr);
+	WeaponSuperMichiMafioso();
 	virtual ~WeaponSuperMichiMafioso();
 	void setAttackPattern(Pattern p);
 private:

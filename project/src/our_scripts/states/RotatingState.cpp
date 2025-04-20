@@ -3,10 +3,10 @@
 #include "../components/movement/MovementController.h"
 
 RotatingState::RotatingState(Transform* tr, Transform* playerTr, MovementController* mc)
-    : _tr(tr), _movementController(mc), _playerTr(playerTr), _angle(0.0f), _center(), _radius(0.0f) {}
+    : _tr(tr), _movementController(mc), _player_tr(playerTr), _angle(0.0f), _center(), _radius(0.0f) {}
 void
 RotatingState::enter() {
-    _center = { _playerTr->getPos().getX() + (_playerTr->getWidth() / 2),_playerTr->getPos().getY() + (_playerTr->getHeight() / 2) };
+    _center = { _player_tr->getPos().getX() + (_player_tr->getWidth() / 2),_player_tr->getPos().getY() + (_player_tr->getHeight() / 2) };
     _radius = (_tr->getPos() - _center).magnitude();
     _angle = std::atan2(_tr->getPos().getY() - _center.getY(), _tr->getPos().getX() - _center.getX());
 }
