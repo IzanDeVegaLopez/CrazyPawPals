@@ -497,6 +497,10 @@
       "file": "resources/images/ui/buttons/start.png"
     },
     {
+      "id": "start_initial",
+      "file": "resources/images/ui/buttons/start_initial.png"
+    },
+    {
       "id": "mythic",
       "file": "resources/images/ui/mythics/mythic.png"
     },

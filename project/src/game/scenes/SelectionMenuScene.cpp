@@ -39,7 +39,7 @@ void SelectionMenuScene::create_weapon_buttons() {
     float startY = 0.025f; // Starting position of the first button on Y
 
     GameStructs::ButtonProperties buttonPropTemplate = {
-        { { startX, startY }, {0.05f, 0.1f} },
+        { { startX, startY }, {0.12f, 0.18f} },
         0.0f, "", ecs::grp::WEAPONBUTTON
     };
 
@@ -47,25 +47,25 @@ void SelectionMenuScene::create_weapon_buttons() {
     revolverB.sprite_key = "revolver_button";
     create_weapon_button(GameStructs::REVOLVER, revolverB);
 
-    buttonPropTemplate.rect.position.x += offsetX;  // Move to the right
-    GameStructs::ButtonProperties rampageB = buttonPropTemplate;
-    rampageB.sprite_key = "rampage_button";
-    create_weapon_button(GameStructs::RAMPAGE, rampageB);
+    //buttonPropTemplate.rect.position.x += offsetX;  // Move to the right
+    //GameStructs::ButtonProperties rampageB = buttonPropTemplate;
+    //rampageB.sprite_key = "rampage_button";
+    //create_weapon_button(GameStructs::RAMPAGE, rampageB);
 
-    buttonPropTemplate.rect.position.x += offsetX;  // Move to the right
-    GameStructs::ButtonProperties pump_shotgun_B = buttonPropTemplate;
-    pump_shotgun_B.sprite_key = "pump_shotgun_button";
-    create_weapon_button(GameStructs::PUMP_SHOTGUN, pump_shotgun_B);
+    //buttonPropTemplate.rect.position.x += offsetX;  // Move to the right
+    //GameStructs::ButtonProperties pump_shotgun_B = buttonPropTemplate;
+    //pump_shotgun_B.sprite_key = "pump_shotgun_button";
+    //create_weapon_button(GameStructs::PUMP_SHOTGUN, pump_shotgun_B);
 
-    buttonPropTemplate.rect.position.x += offsetX;  // Move to the right
-    GameStructs::ButtonProperties rampCanonB = buttonPropTemplate;
-    rampCanonB.sprite_key = "ramp_canon_button";
-    create_weapon_button(GameStructs::RAMP_CANON, rampCanonB);
+    //buttonPropTemplate.rect.position.x += offsetX;  // Move to the right
+    //GameStructs::ButtonProperties rampCanonB = buttonPropTemplate;
+    //rampCanonB.sprite_key = "ramp_canon_button";
+    //create_weapon_button(GameStructs::RAMP_CANON, rampCanonB);
 
-    buttonPropTemplate.rect.position.x += offsetX;  // Move to the right
-    GameStructs::ButtonProperties lightbringerB = buttonPropTemplate;
-    lightbringerB.sprite_key = "lightbringer_button";
-    create_weapon_button(GameStructs::LIGHTBRINGER, lightbringerB);
+    //buttonPropTemplate.rect.position.x += offsetX;  // Move to the right
+    //GameStructs::ButtonProperties lightbringerB = buttonPropTemplate;
+    //lightbringerB.sprite_key = "lightbringer_button";
+    //create_weapon_button(GameStructs::LIGHTBRINGER, lightbringerB);
 
     //we ll add these two when we have other weapon implemented
     //buttonPropTemplate.rect.position.x += offsetX;  // Move to the right
@@ -83,30 +83,30 @@ void SelectionMenuScene::create_weapon_buttons() {
 }
 
 void SelectionMenuScene::create_deck_buttons() {
-    float umbral = 0.0875f;
+    //float umbral = 0.0875f;
     //create the first button prop
     GameStructs::ButtonProperties buttonPropTemplate = {
-         { {0.025f, 0.025f},{0.085f, 0.135f} },
+         { {0.1f, 0.025f},{0.12f, 0.18f} },
          0.0f, "", ecs::grp::DECKBUTTON
     };
     GameStructs::ButtonProperties deck1B = buttonPropTemplate;
     deck1B.sprite_key = "deck1_button";
     create_deck_button(GameStructs::ONE, deck1B);
 
-    buttonPropTemplate.rect.position.x += umbral;
+    buttonPropTemplate.rect.position.x += 0.13;
     GameStructs::ButtonProperties deck2B = buttonPropTemplate;
     deck2B.sprite_key = "deck2_button";
     create_deck_button(GameStructs::TWO, deck2B);
 
-    buttonPropTemplate.rect.position.x += umbral;
-    GameStructs::ButtonProperties deck3B = buttonPropTemplate;
-    deck3B.sprite_key = "deck3_button";
-    create_deck_button(GameStructs::THREE, deck3B);
+    //buttonPropTemplate.rect.position.x += umbral;
+    //GameStructs::ButtonProperties deck3B = buttonPropTemplate;
+    //deck3B.sprite_key = "deck3_button";
+    //create_deck_button(GameStructs::THREE, deck3B);
 
-    buttonPropTemplate.rect.position.x += umbral;
-    GameStructs::ButtonProperties deck4B = buttonPropTemplate;
-    deck4B.sprite_key = "deck4_button";
-    create_deck_button(GameStructs::FOUR, deck4B);
+    //buttonPropTemplate.rect.position.x += umbral;
+    //GameStructs::ButtonProperties deck4B = buttonPropTemplate;
+    //deck4B.sprite_key = "deck4_button";
+    //create_deck_button(GameStructs::FOUR, deck4B);
 }
 void SelectionMenuScene::initScene() {
     create_static_background(&sdlutils().images().at("selection"));
@@ -298,17 +298,17 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
         switch (dt)
         {
         case GameStructs::ONE:
-            cl = { new Evoke(), new Recover(), new Kunai(), new Commune()};
+            cl = { new QuickFeet(),new Fireball(), new Kunai(), new Commune()};
             break;
         case GameStructs::TWO: 
-            cl = { new Fireball(), new CardSpray(), new Lighting(), new Minigun()};
+            cl = {  new EldritchBlast(), new CardSpray(), new Lighting(), new Minigun()};
             break;
-        case GameStructs::THREE:
+       /* case GameStructs::THREE:
             cl = { new CardSpray(), new Lighting(), new Minigun(), new Kunai()};
             break;
         case GameStructs::FOUR:
             cl = { new Kunai(), new EldritchBlast(), new QuickFeet (), new Kunai()};
-            break;
+            break;*/
         default:
             break;
         }
@@ -332,12 +332,13 @@ void SelectionMenuScene::create_deck_button(GameStructs::DeckType dt, const Game
         _last_deck_button = imgComp;
     });
 
-    buttonComp->connectHover([buttonComp, imgComp]() {
+    buttonComp->connectHover([buttonComp, imgComp, dt, this]() {
         imgComp->_filter = true;
         });
-    buttonComp->connectExit([buttonComp, imgComp]() {
+    buttonComp->connectExit([buttonComp, imgComp, mngr]() {
         imgComp->_filter = false;
         });
+
 }
 void SelectionMenuScene::create_deck_info(const rect_f32& rect) {
     auto& cam = Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA))->cam;
@@ -353,7 +354,7 @@ void SelectionMenuScene::create_deck_info(const rect_f32& rect) {
 }
 void SelectionMenuScene::create_deck_infos() {
     float umbral = 0.14f;
-    rect_f32 r = {{ 0.035f, 0.175f }, { 0.3f, 0.1425f }};
+    rect_f32 r = {{ 0.035f, 0.22f }, { 0.3f, 0.1425f }};
     for (int i = 0; i < _num_cards_of_deck; ++i) {
         create_deck_info(r); 
         r.position.y += umbral;
@@ -361,7 +362,7 @@ void SelectionMenuScene::create_deck_infos() {
 }
 void SelectionMenuScene::create_weapon_info() {
    // rect_f32 rect = {{1.3f, 0.25f} ,{0.75f, 0.5f}};
-    rect_f32 rect = { {0.7f, 0.15f} ,{0.3f, 0.225f} };
+    rect_f32 rect = { {0.65f, 0.25f} ,{0.35f, 0.27f} };
     ecs::entity_t e = create_entity(
         ecs::grp::UI,
         ecs::scene::SELECTIONMENUSCENE,
@@ -395,7 +396,7 @@ void SelectionMenuScene::create_enter_button() {
     auto e = create_button(bp);
     mngr->setHandler(ecs::hdlr::TOGAMEBUTTON, e);
     auto imgComp = mngr->addComponent<ImageForButton>(e,
-        &sdlutils().images().at("initial_info"),
+        &sdlutils().images().at("start_initial"),
         &sdlutils().images().at(bp.sprite_key),
         bp.rect,
         0,
