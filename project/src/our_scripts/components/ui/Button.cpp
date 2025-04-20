@@ -8,7 +8,7 @@
 
 using namespace ecs;
 
-Button::Button(): _current_state(EMPTY) {
+Button::Button(): _current_state(EMPTY),_previous_state() {
 }
 
 Button::~Button() {}

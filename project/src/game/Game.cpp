@@ -143,7 +143,7 @@ void Game::start() {
 
 	uint64_t last_frame_start_tick = SDL_GetTicks64();
 	SDL_Delay(target_delta_time_milliseconds);
-
+	sdlutils().virtualTimer().resetTime();
 	while (!exit) {
 		const uint64_t frame_start_tick = SDL_GetTicks64();
 		const uint32_t delta_time_milliseconds = frame_start_tick - last_frame_start_tick;
@@ -216,9 +216,5 @@ void Game::change_Scene(State nextScene){
 }
 void Game::set_volumes() {
 	sdlutils().soundEffects().at("button_hover").setVolume(20);
-}
-
-void Game::create_camera()
-{
-	
+	sdlutils().musics().at("main_menu_bgm").setMusicVolume(30);
 }

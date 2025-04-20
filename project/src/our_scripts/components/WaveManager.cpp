@@ -24,7 +24,7 @@ WaveManager::WaveManager() :
     _currentWaveTime(0),
     _waveTime(5000), //60000 !!
     _currentWave(0),
-    _waveActive(false),
+    _wave_active(false),
     _enemiesSpawned(0),
     _enemiesKilled(0),
     _numEnemies(0),
@@ -47,7 +47,8 @@ WaveManager::initComponent() {
 
 bool WaveManager::can_spawn_next_enemy()
 {
-    return _next_spawn_time > sdlutils().currTime() && tokens_for_this_wave > 0;
+    //std::cout << _next_spawn_time << " - " << sdlutils().virtualTimer().currTime() << std::endl;
+    return _next_spawn_time < sdlutils().virtualTimer().currTime() && tokens_for_this_wave > 0;
 }
 
 bool WaveManager::is_wave_finished()
@@ -96,7 +97,7 @@ void WaveManager::initialize_next_wave_params(bool normal_wave)
         cheaper_enemy = std::min(cheaper_enemy,enemy_spawn_data[_enemy_types_for_current_wave[i]].enemies_group_spawn_cost);
     }
     time_max_between_enemy_spawns_on_this_wave = max_spawn_wave_time / (tokens_for_this_wave / cheaper_enemy);
-    _next_spawn_time = sdlutils().currTime() + time_max_between_enemy_spawns_on_this_wave;
+    _next_spawn_time = sdlutils().virtualTimer().currTime();// +time_max_between_enemy_spawns_on_this_wave;
     //Si no es normal wave spawnea tb un bos
 }
 
@@ -164,24 +165,33 @@ void WaveManager::spawn_next_group_of_enemies()
     delete esc;
     _numEnemies += enemy_spawn_data[_enemy_types_for_current_wave[index]].number_of_enemies_simultaneous_spawn;
     //sets next spawn time
-    _next_spawn_time = sdlutils().currTime() + (uint32_t)(time_max_between_enemy_spawns_on_this_wave * (sdlutils().rand().nextInt(0,100) * 0.3+0.7));
+    float multiplier = ((sdlutils().rand().nextInt(0, 100)*0.001) * 0.3 + 0.7);
+    auto add_to_crono = (uint32_t)(time_max_between_enemy_spawns_on_this_wave * multiplier);
+    _next_spawn_time = sdlutils().virtualTimer().currTime() + add_to_crono;
 
     _all_enemies_already_spawned = tokens_for_this_wave <= 0;
 }
 //---------------------------------------------------------------------------------------------------------------------------------
 void WaveManager::update(uint32_t delta_time) {
-    _currentWaveTime = sdlutils().virtualTimer().currRealTime() - _currentWaveInitTime;
 
-    _current_wave_event->update(delta_time);
-    //tries spawning enemies
-    if (can_spawn_next_enemy())
-        spawn_next_group_of_enemies();
+    if (_wave_active) {
+        _currentWaveTime = sdlutils().virtualTimer().currRealTime() - _currentWaveInitTime;
+        _current_wave_event->update(delta_time);
+        //tries spawning enemies
+        if (can_spawn_next_enemy())
+            spawn_next_group_of_enemies();
 
-    if (is_wave_finished())
-        endwave();
+        if (is_wave_finished())
+            endwave();
 
-    if (_currentWaveTime > 50 * 1000 && !is_wave_finished()) {
-        activateFog();
+        if (_currentWaveTime > 50 * 1000 && !is_wave_finished()) {
+            activateFog();
+        }
+    }else{
+        //RENDER WIN WAVE BUTTON
+        if (change_to_rewards_time < sdlutils().virtualTimer().currRealTime()) {
+            enterRewardsMenu();
+        }
     }
 #ifdef GENERATE_LOG
     WaveManager::_ticks_on_wave++;
@@ -210,8 +220,6 @@ WaveManager::enterRewardsMenu() {
 
 void WaveManager::start_new_wave()
 {
-    erase_all_bullets();
-    erase_all_enemies();
     _currentWaveInitTime = sdlutils().virtualTimer().currRealTime();
     //Si es oleada de boss es true
     initialize_next_wave_params(_currentWave%5==0);
@@ -221,6 +229,7 @@ void WaveManager::start_new_wave()
     _enemiesSpawned = 0;
     _enemiesKilled = 0;
     _numEnemies = 0;
+    _wave_active = true;
 #ifdef GENERATE_LOG
     WaveManager::_ticks_on_wave = 1;
 #endif
@@ -275,12 +284,20 @@ void WaveManager::endwave()
     player_movement_controller->total_movement = 0;
 
 #endif
-
-    _current_wave_event->end_wave_callback();
-    _currentWave++;
-    _all_enemies_already_spawned = false;
-    fog->setFog(false);
-    enterRewardsMenu();
+    if (_currentWave == 2) {
+        Game::Instance()->change_Scene(Game::State::VICTORY);
+    }
+    else {
+        _wave_active = false;
+        change_to_rewards_time = sdlutils().virtualTimer().currTime() + 3000;
+        _current_wave_event->end_wave_callback();
+        _currentWave++;
+        _all_enemies_already_spawned = false;
+        fog->setFog(false);
+        erase_all_bullets();
+        erase_all_enemies();
+        //enterRewardsMenu();
+    }
 
 }
 

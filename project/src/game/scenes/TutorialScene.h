@@ -44,7 +44,8 @@ private:
 
 	uint32_t _popup_timer;
 	TutorialState _tutorial_state;
-
+	float _tutorial_time_seconds;
+	bool _show_tutorial_hud;
 	bool _enemy_killed = false;
 
 	int _tutorial_time_seconds;
