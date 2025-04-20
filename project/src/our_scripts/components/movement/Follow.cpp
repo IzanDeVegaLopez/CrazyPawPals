@@ -5,7 +5,7 @@
 #include "../../../ecs/Manager.h"
 #include "../../../game/Game.h"
 
-Follow::Follow(GameStructs::EnemyFollow type) : _my_follow_type(type), _my_tr(nullptr), _act_follow(nullptr)
+Follow::Follow(GameStructs::EnemyFollow type) : _my_follow_type(type), _my_tr(nullptr), _act_follow(nullptr), last_time_act(0)
 {
 }
 
@@ -14,6 +14,17 @@ void Follow::initComponent()
 	_my_tr = Game::Instance()->get_mngr()->getComponent<Transform>(_ent);
 	assert(_my_tr != nullptr);
 	act_follow();
+}
+
+void Follow::update(uint32_t delta_time)
+{
+	last_time_act += delta_time;
+	if (last_time_act > 2000)
+	{
+		std::cout << "Follow::update" << std::endl;
+		act_follow();
+		last_time_act = 0;
+	}
 }
 
 void Follow::act_follow()

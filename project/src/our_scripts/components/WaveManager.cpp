@@ -48,7 +48,7 @@ WaveManager::initComponent() {
 
 bool WaveManager::can_spawn_next_enemy()
 {
-    std::cout << _next_spawn_time << " - " << sdlutils().virtualTimer().currTime() << std::endl;
+    //std::cout << _next_spawn_time << " - " << sdlutils().virtualTimer().currTime() << std::endl;
     return _next_spawn_time < sdlutils().virtualTimer().currTime() && tokens_for_this_wave > 0;
 }
 
@@ -110,7 +110,7 @@ void WaveManager::spawn_next_group_of_enemies()
     //tokens can only be -1 at worst at end of the round (cause I know that there will always be at least a 2 cost enemy on the group)
     while ((tokens_for_this_wave - enemy_spawn_data[_enemy_types_for_current_wave[index]].enemies_group_spawn_cost) < -1) {
         index = ++index % 3;
-        std::cout << (tokens_for_this_wave - enemy_spawn_data[_enemy_types_for_current_wave[index]].enemies_group_spawn_cost) << std::endl;
+        //std::cout << (tokens_for_this_wave - enemy_spawn_data[_enemy_types_for_current_wave[index]].enemies_group_spawn_cost) << std::endl;
     }
     tokens_for_this_wave -= enemy_spawn_data[_enemy_types_for_current_wave[index]].enemies_group_spawn_cost;
     //spawn enemies
