@@ -5,8 +5,8 @@
 #include <our_scripts/components/WaveManager.h>
 
 
-WeaponSuperMichiMafioso::WeaponSuperMichiMafioso(Transform* playerTr) 
-	: Weapon(4, 200, 20.0f, 0.1f, "p_super_michi_mafioso", 1.0f, 1.0f), _currentPattern(ATTACK1), _player_tr(playerTr),_warning(false){ }
+WeaponSuperMichiMafioso::WeaponSuperMichiMafioso() 
+	: Weapon(4, 200, 20.0f, 0.1f, "p_super_michi_mafioso", 1.0f, 1.0f), _currentPattern(ATTACK1),_warning(false){ }
 
 WeaponSuperMichiMafioso::~WeaponSuperMichiMafioso() {}
 

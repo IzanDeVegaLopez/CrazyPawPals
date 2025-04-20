@@ -14,7 +14,7 @@ public:
 protected:
 	Transform* _tr;
 	MovementController* _movementController;
-	Transform* _playerTr;
+	Transform* _player_tr;
 	float _angle;
 	Vector2D _center;
 	float _radius;
