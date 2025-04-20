@@ -61,14 +61,15 @@ void Follow::search_closest_player()
 	{
 		auto tr = manager.getComponent<Transform>(playerEntity);
 		float distance = (_my_tr->getPos() - tr->getPos()).magnitude();
-		if (distance < min_distance)
+		if (distance < min_distance && tr != _act_follow)
 		{
+			std::cout << "Encontre a un player mas cerca" << std::endl;
 			min_distance = distance;
 			player = tr;
 		}
 	}
 
-	_act_follow = player;
+	if(player)_act_follow = player;
 }
 
 void Follow::search_furthest_player()

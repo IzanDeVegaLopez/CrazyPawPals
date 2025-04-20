@@ -182,7 +182,6 @@ void GameScene::initScene()
 
 	manager.refresh();
 	create_environment();
-	 spawn_catkuza(Vector2D{5.0f, 0.0f});
 	// spawn_sarno_rata(Vector2D{5.0f, 0.0f});
 	spawn_fog();
 	spawn_wave_manager();
@@ -218,7 +217,7 @@ void GameScene::enterScene()
 	auto e = wm->get_current_event();
 	RewardScene::will_have_mythic(e != NONE);
 	manager.getComponent<HUD>(manager.getHandler(ecs::hdlr::HUD_ENTITY))->start_new_wave();
-
+	spawn_catkuza(Vector2D{5.0f, 0.0f});
 	//spawn_super_michi_mafioso(Vector2D{5.0f, 0.0f});
 #ifdef GENERATE_LOG
 	log_writer_to_csv::Instance()->add_new_log();
@@ -302,17 +301,6 @@ void GameScene::reset_player()
 #pragma endregion
 
 #pragma region Enemy
-struct EnemySpawnConfig
-{
-	Transform *tr;
-	std::string spriteKey;
-	Weapon *weapon;
-	float health;
-	float width;
-	float height;
-	MovementController *mc;
-};
-
 ecs::entity_t GameScene::create_enemy(GameStructs::EnemyProperties &&ec, ecs::sceneId_t scene, Weapon *weapon)
 {
 	auto &&manager = *Game::Instance()->get_mngr();
@@ -538,16 +526,14 @@ void GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene)
 		tr, fll, &weapon, false,
 		[&weapon, tr]()
 		{
-			Vector2D shootPos = tr->getPos(); // Posición del enemigo
-			weapon.wind_attack(shootPos);
+			weapon.wind_attack(tr->getPos());
 		});
 
 	auto areaAttackState = std::make_shared<AttackingState>(
 		tr, fll, &weapon, false,
 		[&weapon, tr]()
 		{
-			Vector2D shootPos = tr->getPos(); // Posición del enemigo
-			weapon.area_attack(shootPos);
+			weapon.area_attack(tr->getPos());
 		});
 
 	auto dashAttackState = std::make_shared<AttackingState>(
@@ -556,7 +542,6 @@ void GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene)
 		{
 			Vector2D shootPos = tr->getPos();
 			Vector2D shootDir = (fll->get_act_follow()->getPos() - shootPos).normalize();
-
 			Vector2D dash_target = fll->get_act_follow()->getPos() + shootDir * 1.8f;
 			weapon.dash_attack(shootPos, dash_target);
 		});
@@ -577,7 +562,7 @@ void GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene)
 
 	// Transiciones Patrón 1
 	state->add_transition("Walking", "Charging",
-						  [&state_cm, &fll, &tr, &weapon]()
+						  [state_cm, fll, tr, &weapon]()
 						  {
 							  bool trans = state_cm->is_player_near(fll->get_act_follow(), tr, 5.0f) && state_cm->get_current_pattern() == "PATTERN_1";
 							  if (trans)
@@ -589,7 +574,7 @@ void GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene)
 						  });
 
 	state->add_transition("Charging", "WindAttack",
-						  [&state_cm, &weapon, &fll]()
+						  [state_cm, &weapon, fll]()
 						  {
 							  bool trans = state_cm->can_use("charging_duration", sdlutils().currRealTime());
 							  if (trans)
@@ -601,7 +586,7 @@ void GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene)
 						  });
 
 	state->add_transition("WindAttack", "Dash",
-						  [&state_cm, &weapon, &fll]()
+						  [state_cm, &weapon, fll]()
 						  {
 							  bool trans = state_cm->can_use("wind_attack_duration", sdlutils().currRealTime());
 							  if (trans)
@@ -614,7 +599,7 @@ void GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene)
 						  });
 
 	state->add_transition("Dash", "WindAttack2",
-						  [&state_cm]()
+						  [state_cm]()
 						  {
 							  bool trans = state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
 							  if (trans)
@@ -625,7 +610,7 @@ void GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene)
 						  });
 
 	state->add_transition("WindAttack2", "Walking",
-						  [&state_cm]()
+						  [state_cm]()
 						  {
 							  bool trans = state_cm->can_use("wind_attack_duration", sdlutils().currRealTime());
 							  if (trans)
@@ -638,7 +623,7 @@ void GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene)
 
 	// Transiciones Patrón 2
 	state->add_transition("Walking", "Dash2",
-						  [&state_cm, &fll, &weapon]()
+						  [state_cm, fll, &weapon]()
 						  {
 							  bool trans = state_cm->get_current_pattern() == "PATTERN_2" && state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
 							  if (trans)
@@ -650,7 +635,7 @@ void GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene)
 						  });
 
 	state->add_transition("Dash2", "AreaAttack",
-						  [&state_cm]()
+						  [state_cm]()
 						  {
 							  bool trans = state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
 							  if (trans)
@@ -661,7 +646,7 @@ void GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene)
 						  });
 
 	state->add_transition("AreaAttack", "Dash3",
-						  [&state_cm, &fll, &weapon]()
+						  [state_cm, fll, &weapon]()
 						  {
 							  bool trans = state_cm->can_use("explosion_attack_duration", sdlutils().currRealTime());
 							  if (trans)
@@ -673,14 +658,14 @@ void GameScene::spawn_catkuza(Vector2D posVec, ecs::sceneId_t scene)
 						  });
 
 	state->add_transition("Dash3", "DashAttack",
-						  [&state_cm]()
+						  [state_cm]()
 						  {
 							  state_cm->reset_cooldown("dash_attack_duration", sdlutils().currRealTime());
 							  return true;
 						  });
 
 	state->add_transition("DashAttack", "Walking",
-						  [&state_cm]()
+						  [state_cm]()
 						  {
 							  bool trans = state_cm->can_use("dash_attack_duration", sdlutils().currRealTime());
 							  if (trans)
@@ -733,10 +718,10 @@ void GameScene::spawn_sarno_rata(Vector2D posVec, ecs::sceneId_t scene)
 	state->add_state("Walking", walkingState);
 	state->add_state("Attacking", attackingState);
 
-	state->add_transition("Walking", "Attacking", [&state_cm, &fll, &tr]()
+	state->add_transition("Walking", "Attacking", [state_cm, fll, tr]()
 						  { return state_cm->is_player_near(fll->get_act_follow(), tr, 1.5f); });
 
-	state->add_transition("Attacking", "Walking", [&state_cm, &fll, &tr]()
+	state->add_transition("Attacking", "Walking", [state_cm, fll, tr]()
 						  { return !state_cm->is_player_near(fll->get_act_follow(), tr, 1.3f); });
 
 	state->set_initial_state("Walking");
@@ -784,23 +769,23 @@ void GameScene::spawn_michi_mafioso(Vector2D posVec, ecs::sceneId_t scene)
 	float dist_to_attack = 3.0f;
 	float dist_to_fallback = 2.5f;
 
-	state->add_transition("Walking", "Attacking", [&state_cm, &fll, &tr, dist_to_attack]()
+	state->add_transition("Walking", "Attacking", [state_cm, fll, tr, dist_to_attack]()
 						  { return state_cm->is_player_near(fll->get_act_follow(), tr, dist_to_attack); });
 
-	state->add_transition("Attacking", "Walking", [&state_cm, &fll, &tr, dist_to_attack]()
+	state->add_transition("Attacking", "Walking", [state_cm, fll, tr, dist_to_attack]()
 						  { return !state_cm->is_player_near(fll->get_act_follow(), tr, dist_to_attack); });
 
-	state->add_transition("Walking", "Backing", [&state_cm, &fll, &tr, dist_to_fallback]()
+	state->add_transition("Walking", "Backing", [state_cm, fll, tr, dist_to_fallback]()
 						  { return state_cm->is_player_near(fll->get_act_follow(), tr, dist_to_fallback); });
 
-	state->add_transition("Backing", "Walking", [&state_cm, &fll, &tr, dist_to_fallback, dist_to_attack]()
+	state->add_transition("Backing", "Walking", [state_cm, fll, tr, dist_to_fallback, dist_to_attack]()
 						  { return !state_cm->is_player_near(fll->get_act_follow(), tr, dist_to_fallback) &&
 								   !state_cm->is_player_near(fll->get_act_follow(), tr, dist_to_attack); });
 
-	state->add_transition("Attacking", "Backing", [&state_cm, &fll, &tr, dist_to_fallback]()
+	state->add_transition("Attacking", "Backing", [state_cm, fll, tr, dist_to_fallback]()
 						  { return state_cm->is_player_near(fll->get_act_follow(), tr, dist_to_fallback); });
 
-	state->add_transition("Backing", "Attacking", [&state_cm, &fll, &tr, dist_to_fallback]()
+	state->add_transition("Backing", "Attacking", [state_cm, fll, tr, dist_to_fallback]()
 						  { return !state_cm->is_player_near(fll->get_act_follow(), tr, dist_to_fallback); });
 
 	state->set_initial_state("Walking");
@@ -843,10 +828,10 @@ void GameScene::spawn_plim_plim(Vector2D posVec, ecs::sceneId_t scene)
 	state->add_state("Walking", walkingState);
 	state->add_state("Attacking", attackingState);
 
-	state->add_transition("Walking", "Attacking", [&state_cm, &fll, &tr]()
+	state->add_transition("Walking", "Attacking", [state_cm, fll, tr]()
 						  { return state_cm->is_player_near(fll->get_act_follow(), tr, 4.0f); });
 
-	state->add_transition("Attacking", "Walking", [&state_cm, &fll, &tr]()
+	state->add_transition("Attacking", "Walking", [state_cm, fll, tr]()
 						  { return !state_cm->is_player_near(fll->get_act_follow(), tr, 6.0f); });
 
 	state->set_initial_state("Walking");
@@ -882,17 +867,16 @@ void GameScene::spawn_boom(Vector2D posVec, ecs::sceneId_t scene)
 	Health *health = manager.getComponent<Health>(e);
 
 	Follow *fll = manager.getComponent<Follow>(e);
-	fll->act_follow();
-	
+
 	auto walkingState = std::make_shared<WalkingState>(tr, mc, fll);
 	auto attackingState = std::make_shared<AttackingState>(tr, fll, &weapon, false,
-														   [health]()
+														   [&health]()
 														   { health->takeDamage(health->getMaxHealth()); });
 
 	state->add_state("Walking", walkingState);
 	state->add_state("Attacking", attackingState);
 
-	state->add_transition("Walking", "Attacking", [&state_cm, &fll, &tr]()
+	state->add_transition("Walking", "Attacking", [state_cm, fll, tr]()
 						  { return state_cm->is_player_near(fll->get_act_follow(), tr, 1.0f); });
 
 	state->set_initial_state("Walking");
@@ -906,8 +890,7 @@ void GameScene::spawn_ratatouille(Vector2D posVec, ecs::sceneId_t scene)
 	int damage = 4;
 	auto &&manager = *Game::Instance()->get_mngr();
 
-	auto e = create_enemy(
-		GameStructs::EnemyProperties{
+	GameStructs::EnemyProperties ec = GameStructs::EnemyProperties{
 			"ratatouille",		  // sprite_key
 			posVec,				  // start_pos
 			GameStructs::DEFAULT, // enemy_type (especial, no usa weapon)
@@ -918,40 +901,64 @@ void GameScene::spawn_ratatouille(Vector2D posVec, ecs::sceneId_t scene)
 			{0.0f, 0.0f},		  // velocity
 			0.0f,				  // rotation
 			2.0f				  // scale
-		},
-		scene,
-		nullptr // Sin arma
-	);
+		};
 
-	// Componentes adicionales específicos para Ratatouille
+	
+	float randSize = float(sdlutils().rand().nextInt(6, 10)) / 10.0f;
+	auto &&rect = *new rect_component{0, 0, ec.width * randSize, ec.height * randSize};
+	auto &&rigidbody = *new rigidbody_component{rect_f32{{0.0f, -0.15f}, {0.5f, 0.6f}}, mass_f32{3.0f}, 0.05f};
+	auto &&tr_a = *new Transform(ec.start_pos, ec.dir, ec.r, ec.s * randSize);
+	auto &&fll = *new Follow(ec.follow);
+	auto &&col = *new collisionable{tr_a, rigidbody, rect, collisionable_option_none};
+	auto &&mc = *new MovementController(ec.max_speed, ec.acceleration, ec.decceleration * deccel_spawned_creatures_multi);
+	auto &&state = *new StateMachine();
+
+	auto e = create_entity(
+		ecs::grp::ENEMY,
+		scene,
+		&tr_a,
+		&rect,
+		new dyn_image(
+			rect_f32{{0, 0}, {1, 1}},
+			rect,
+			manager.getComponent<camera_component>(manager.getHandler(ecs::hdlr::CAMERA))->cam,
+			sdlutils().images().at(ec.sprite_key),
+			tr_a),
+		new Health(ec.health),
+		new FlipXController(),
+		new enemy_collision_triggerer(),
+		new id_component(),
+		&rigidbody,
+		&col,
+		&mc,
+		&state,
+		&fll);
+
 	manager.addComponent<ratatouille_collision_component>(e, damage, 2);
 
+	auto state_cm = state.getConditionManager();
 	Transform *tr = manager.getComponent<Transform>(e);
-	MovementController *mc = manager.getComponent<MovementController>(e);
-	StateMachine *state = manager.getComponent<StateMachine>(e);
-	auto state_cm = state->getConditionManager();
 
-	Follow *fll = manager.getComponent<Follow>(e);
-	fll->act_follow();
+	fll.act_follow();
 	
-	auto walkingState = std::make_shared<WalkingState>(tr, mc, fll);
-	auto rotatingState = std::make_shared<RotatingState>(tr, fll->get_act_follow(), mc);
+	auto walkingState = std::make_shared<WalkingState>(tr, &mc, &fll);
+	auto rotatingState = std::make_shared<RotatingState>(tr, &fll, &mc);
 
-	state->add_state("Walking", walkingState);
-	state->add_state("Rotating", rotatingState);
+	state.add_state("Walking", walkingState);
+	state.add_state("Rotating", rotatingState);
 
 	float dist_to_rotate = 3.5f;
 
 	// Condiciones de cada estado
 	// De: Walking a: Rotating, Condición: Jugador cerca
-	state->add_transition("Walking", "Rotating", [&state_cm, &fll, &tr, dist_to_rotate]()
-						  { return state_cm->is_player_near(fll->get_act_follow(), tr, dist_to_rotate); });
+	state.add_transition("Walking", "Rotating", [state_cm, fll, tr, dist_to_rotate]()
+						  { return state_cm->is_player_near(fll.get_act_follow(), tr, dist_to_rotate); });
 
 	// De: Rotating a: Walking, Condición: Jugador lejos
-	state->add_transition("Rotating", "Walking", [&state_cm, &fll,&tr, dist_to_rotate]()
-						  { return !state_cm->is_player_near(fll->get_act_follow(), tr, dist_to_rotate * 1.8f); });
+	state.add_transition("Rotating", "Walking", [state_cm, fll, tr, dist_to_rotate]()
+						  { return !state_cm->is_player_near(fll.get_act_follow(), tr, dist_to_rotate * 1.8f); });
 
-	state->set_initial_state("Walking");
+	state.set_initial_state("Walking");
 }
 #pragma endregion
 
@@ -996,11 +1003,11 @@ void GameScene::spawn_rata_basurera(Vector2D posVec, ecs::sceneId_t scene)
 
 	// Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador a distancia correcta
-	state->add_transition("Walking", "Attacking", [&state_cm, &fll, &tr]()
+	state->add_transition("Walking", "Attacking", [state_cm, fll, tr]()
 						  { return state_cm->is_player_near(fll->get_act_follow(), tr, 50.0f); });
 
 	// De: Attacking a: Walking, Condición: Jugador se aleja demasiado
-	state->add_transition("Attacking", "Walking", [&state_cm, &fll, &tr]()
+	state->add_transition("Attacking", "Walking", [state_cm, fll, tr]()
 						  { return !state_cm->is_player_near(fll->get_act_follow(), tr, 55.0f); });
 
 	state->set_initial_state("Walking");
@@ -1045,11 +1052,11 @@ void GameScene::spawn_rey_basurero(Vector2D posVec, ecs::sceneId_t scene)
 
 	// Condiciones de cada estado
 	// De: Walking a: Attacking, Condición: Jugador a distancia correcta
-	state->add_transition("Walking", "Attacking", [&state_cm, &fll, &tr]()
+	state->add_transition("Walking", "Attacking", [state_cm, fll, tr]()
 						  { return state_cm->is_player_near(fll->get_act_follow(), tr, 7.0f); });
 
 	// De: Attacking a: Walking, Condición: Jugador lejose aleja demasiado
-	state->add_transition("Attacking", "Walking", [&state_cm, &fll, &tr]()
+	state->add_transition("Attacking", "Walking", [state_cm, fll, tr]()
 						  { return !state_cm->is_player_near(fll->get_act_follow(), tr, 10.0f); });
 
 	state->set_initial_state("Walking");

@@ -116,6 +116,8 @@ void WaveManager::spawn_next_group_of_enemies()
     //spawn enemies
     enemy_spawn_caller* esc;
     std::string tipoEnemigo;
+    std::cout << tipoEnemigo << std::endl;
+
     switch ((enemyType)_enemy_types_for_current_wave[index])
     {
         case sarno_rata:
