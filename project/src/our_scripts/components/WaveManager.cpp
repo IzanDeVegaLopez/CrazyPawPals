@@ -246,7 +246,7 @@ void WaveManager::start_new_wave()
 
 void WaveManager::reset_wave_manager()
 {
-    _currentWave = 0;
+    _currentWave = -1;
 }
 
 
