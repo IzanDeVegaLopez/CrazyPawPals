@@ -96,6 +96,10 @@
       "file": "resources/images/projectiles/p_super_michi_mafioso.png"
     },
     {
+      "id": "p_super_michi_mafioso_attack2",
+      "file": "resources/images/projectiles/p_super_michi_attack2.png"
+    },
+    {
       "id": "p_wind_catkuza",
       "file": "resources/images/projectiles/catkuza_wind.png"
     },
