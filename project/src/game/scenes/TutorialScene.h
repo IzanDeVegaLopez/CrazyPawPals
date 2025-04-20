@@ -48,9 +48,6 @@ private:
 	bool _show_tutorial_hud;
 	bool _enemy_killed = false;
 
-	int _tutorial_time_seconds;
-	bool _show_tutorial_hud = false;
-
 	void create_pop_up();
 	ecs::entity_t create_change_scene_button(const GameStructs::ButtonProperties& bp, Game::State nextScene);
 };
