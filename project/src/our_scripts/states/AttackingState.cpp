@@ -14,8 +14,7 @@ void AttackingState::enter() {
 	if (_contador < _attack_times) {
 		_contador++;
 		Vector2D _target = _playerTr->getPos();
-		_weapon->shoot(_target);
-		sdlutils().soundEffects().at("enemy_shot").play();
+		if (_weapon->shoot(_target))	sdlutils().soundEffects().at("enemy_shot").play();
 
 		if (_onAttackCallback) _onAttackCallback();
 	}
