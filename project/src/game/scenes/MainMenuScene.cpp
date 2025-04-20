@@ -54,7 +54,8 @@ MainMenuScene::initScene()
 void
 MainMenuScene::enterScene()
 {
-	Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::MAINMENUSCENE);
+    Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::MAINMENUSCENE);
+    sdlutils().musics().at("main_menu_bgm").play();
 #ifdef GENERATE_LOG
 	log_writer_to_csv::Instance()->add_new_log();
 	log_writer_to_csv::Instance()->add_new_log("ENTERED MAIN MENU SCENE");

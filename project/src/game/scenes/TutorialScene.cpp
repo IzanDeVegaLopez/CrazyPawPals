@@ -29,11 +29,18 @@
 
 TutorialScene::TutorialScene()
 	: Scene(ecs::scene::TUTORIALSCENE),
-	_current_pop_up(0), _current_pop_up_entity(nullptr), 
-	_popup_timer(0), _tutorial_state(TutorialState::NONE), _player_health() {
+	_current_pop_up(0), _current_pop_up_entity(nullptr), _popup_timer(0),
+	_tutorial_state(TutorialState::NONE), _player_health(), _tutorial_time_seconds(0) {
 
 	event_system::event_manager::Instance()->suscribe_to_event(event_system::enemy_dead, this, &event_system::event_receiver::event_callback0);
+}
 
+TutorialScene::~TutorialScene()
+{
+	event_system::event_manager::Instance()->unsuscribe_to_event(event_system::change_deccel, this, &event_system::event_receiver::event_callback0);
+}
+
+void TutorialScene::initScene() {
 	GameScene::create_environment(ecs::scene::TUTORIALSCENE);
 	GameStructs::ButtonProperties mainMenuB = { {{ 0.025, 0.02f }, {0.1f, 0.08f}  }, 0.0f, "boton_mainmenu_tutorial" };
 	create_change_scene_button(mainMenuB, Game::MAINMENU);
@@ -43,7 +50,7 @@ TutorialScene::TutorialScene()
 			auto& input = *InputHandler::Instance();
 			return (input.isKeyDown(SDL_SCANCODE_W) || input.isKeyDown(SDL_SCANCODE_A) ||
 				input.isKeyDown(SDL_SCANCODE_S) || input.isKeyDown(SDL_SCANCODE_D))
-				||input.getRStick().getX() != 0.0f|| input.getRStick().getY() != 0.0f;
+				|| input.getRStick().getX() != 0.0f || input.getRStick().getY() != 0.0f;
 		},
 		3500,{{0.04f, 0.1f}, {0.4f, 0.4f}}
 		});
@@ -56,74 +63,71 @@ TutorialScene::TutorialScene()
 			auto player = mngr->getHandler(ecs::hdlr::TUTORIALPLAYER);
 			mngr->addComponent<PlayerHUD>(player);
 		}
-	});
+		});
 
 	_pop_ups.push_back({ "popup_use_card",
 		[]() {
 			auto& input = *InputHandler::Instance();
-			bool LT= input.isControllerButtonDown(InputHandler::CONTROLLER_BUTTONS::LT);
+			bool LT = input.isControllerButtonDown(InputHandler::CONTROLLER_BUTTONS::LT);
 			if (LT)input.consume(InputHandler::CONTROLLER_BUTTONS::LT);
 			return (input.mouseButtonDownEvent() && input.getMouseButtonState(InputHandler::RIGHT)) || LT;
 		},
 		2500,{{0.04f, 0.1f}, {0.4f, 0.4f}},
 		});
 
+	_pop_ups.push_back({ "popup_card",
+		[this]() { return has_pass_input(); },
+		200,{{0.04f, 0.1f}, {0.4f, 0.4f}},
+			});
 	_pop_ups.push_back({ "popup_reload",
 		[]() {
 			auto& input = *InputHandler::Instance();
 			bool B = input.isControllerButtonDown(InputHandler::CONTROLLER_BUTTONS::B);
 			if (B)input.consume(InputHandler::CONTROLLER_BUTTONS::B);
 			return input.isKeyDown(SDL_SCANCODE_SPACE) || B; },
-		2500, {{0.04f, 0.1f}, {0.4f, 0.4f}}
-	});
+		2000, {{0.04f, 0.1f}, {0.4f, 0.4f}}
+		});
 
 
 	_pop_ups.push_back({ "popup_attack",
-		[]() {
+		[this]() {
 			auto& input = *InputHandler::Instance();
 			bool RT = input.isControllerButtonDown(InputHandler::CONTROLLER_BUTTONS::RT);
 			if (RT)input.consume(InputHandler::CONTROLLER_BUTTONS::RT);
 			return (input.mouseButtonDownEvent() && input.getMouseButtonState(InputHandler::LEFT)) || RT;
 		},
-		3000, {{0.04f, 0.1f}, {0.4f, 0.4f}}
-	});
+		3500, {{0.04f, 0.1f}, {0.4f, 0.4f}}
+		});
 
 	_pop_ups.push_back({ "popup_enemy",
 		[this]() {
 			return _enemy_killed;
 		},
 		2000, {{0.6f, 0.6f}, {0.35f, 0.35f}},
-		[]() {GameScene::spawn_plim_plim({ 0.0f, 1.0f },ecs::scene::TUTORIALSCENE);}
-	});
+		[]() {GameScene::spawn_plim_plim({ 0.0f, 1.0f },ecs::scene::TUTORIALSCENE); }
+		});
 	_pop_ups.push_back({ "popup_oleada",
 		[this]() { return has_pass_input(); },
 		200, {{0.0f, 0.0f}, {1.0f, 1.0f}},
-		[]() {
-			auto hud = GameScene::create_hud(ecs::scene::TUTORIALSCENE);
-			Game::Instance()->get_mngr()->setHandler(ecs::hdlr::TURORIALHUD, hud);
-		}
-	});
+		[this]() {_show_tutorial_hud = true; }
+		});
 	_pop_ups.push_back({ "popup_objetos_miticos",
 		[this]() { return has_pass_input(); },
-		250, {{0.05f, 0.05f}, {0.85f, 0.85f}},
-	});
+		250, {{0.05f, 0.05f}, {0.9f, 0.9f}},
+		[this]() {_show_tutorial_hud = false; }
+		});
 	_pop_ups.push_back({ "popup_recompensa",
 		[this]() { return has_pass_input(); },
-		250, {{0.05f, 0.05f}, {0.85f, 0.85f}},
-	});
+		250, {{0.05f, 0.05f}, {0.9f, 0.9f}},
+		});
 	_pop_ups.push_back({ "popup_ganar",
 		[]() { return false; },
 		50, {{0.0f, 0.0f}, {1.0f, 1.0f}},
-	});
+		[this]() {
+			auto button = create_change_scene_button({ {{ 0.35, 0.6f }, {0.25f, 0.25f}  }, 0.0f, "enter_game" }, Game::SELECTIONMENU);
+			Game::Instance()->get_mngr()->setHandler(ecs::hdlr::TUTORIALBUTTON, button); }
+		});
 
-}	
-
-TutorialScene::~TutorialScene()
-{
-	event_system::event_manager::Instance()->unsuscribe_to_event(event_system::change_deccel, this, &event_system::event_receiver::event_callback0);
-}
-
-void TutorialScene::initScene() {
 	ecs::entity_t player = GameScene::create_player(ecs::scene::TUTORIALSCENE);
 	Game::Instance()->get_mngr()->setHandler(ecs::hdlr::TUTORIALPLAYER, player);
 
@@ -133,7 +137,7 @@ void TutorialScene::initScene() {
 	mngr->addComponent<id_component>(player);
 	mngr->addComponent<MythicComponent>(player);
 
-	std::list<Card*> cl = { new Fireball(), new Lighting(), new Minigun() };
+	std::list<Card*> cl = { new Fireball(), new Lighting()};
 	mngr->addComponent<Deck>(player, cl);
 	mngr->addComponent<KeyboardPlayerCtrl>(player);
 	mngr->addComponent<GamePadPlayerCtrl>(player);
@@ -156,20 +160,19 @@ void TutorialScene::enterScene()
 		}, *manager.getComponent<camera_component>(camera), *manager.getComponent<Transform>(player));
 
 
-	if(manager.hasComponent<PlayerHUD>(player))	manager.removeComponent<PlayerHUD>(player);
-	auto hud = manager.getHandler(ecs::hdlr::TURORIALHUD);
-	if (hud) manager.setAlive(hud,false);
+	if (manager.hasComponent<PlayerHUD>(player))	manager.removeComponent<PlayerHUD>(player);
+
 	auto play_button = manager.getHandler(ecs::hdlr::TUTORIALBUTTON);
 	if (play_button) manager.setAlive(play_button, false);
-	manager.refresh();
+
+	_enemy_killed = false;
+	_show_tutorial_hud = false;
 
 #ifdef GENERATE_LOG
 	log_writer_to_csv::Instance()->add_new_log();
 	log_writer_to_csv::Instance()->add_new_log("ENTERED TUTORIAL SCENE");
 #endif
 
-
-	_enemy_killed = false;
 }
 
 void TutorialScene::exitScene()
@@ -189,7 +192,7 @@ void TutorialScene::update(uint32_t delta_time) {
 	switch (_tutorial_state)
 	{
 	case TutorialState::NEXT_POP_UP:
-	    create_pop_up();
+		create_pop_up();
 		_popup_timer = 0;
 		_tutorial_state = _current_pop_up == _pop_ups.size() - 1 ? TutorialState::FINISHED : TutorialState::WAIT_FOR_ACTION;
 		break;
@@ -208,15 +211,47 @@ void TutorialScene::update(uint32_t delta_time) {
 		}
 		break;
 	case TutorialState::FINISHED:
-	{
-		auto button = create_change_scene_button({ {{ 0.4, 0.6f }, {0.25f, 0.25f}  }, 0.0f, "enter_game" }, Game::SELECTIONMENU);
-		Game::Instance()->get_mngr()->setHandler(ecs::hdlr::TUTORIALBUTTON, button);
 		break;
-	}
 	default:
 		break;
 	}
 
+
+}
+
+void TutorialScene::render()
+{
+	Scene::render();
+	if (_show_tutorial_hud) {
+		auto camera = Game::Instance()->get_mngr()->getComponent<camera_component>(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA));
+		rect_f32 num = rect_f32_screen_rect_from_viewport(rect_f32({ 0.85,0.1 }, { 0.07,0.05 }), camera->cam.screen);
+		SDL_Rect numtrue{
+			int(num.position.x),
+			int(num.position.y),
+			int(num.size.x),
+			int(num.size.y)
+		};
+		Texture numtex{
+			sdlutils().renderer(),
+			"01/10",
+			sdlutils().fonts().at("ARIAL16"),
+			SDL_Color(50,50,50,255) };
+		numtex.render(numtrue);
+
+		rect_f32 timer = rect_f32_screen_rect_from_viewport(rect_f32({ 0.45,0.05 }, { 0.1,0.14 }), camera->cam.screen);
+		SDL_Rect timertrue{
+			int(timer.position.x),
+			int(timer.position.y),
+			int(timer.size.x),
+			int(timer.size.y)
+		};
+		Texture timertex{
+			sdlutils().renderer(),
+			"60",
+			sdlutils().fonts().at("ARIAL16"),
+			SDL_Color(50,50,50,255) };
+		timertex.render(timertrue);
+	}
 
 }
 
@@ -268,8 +303,10 @@ ecs::entity_t TutorialScene::create_change_scene_button(const GameStructs::Butto
 		Game::Instance()->change_Scene(nextScene);
 		});
 
-	buttonComp->connectHover([buttonComp, imgComp, this]() { imgComp->_filter = true; });
-	buttonComp->connectExit([buttonComp, imgComp, this]() { imgComp->_filter = false; });
+	buttonComp->connectHover([buttonComp, imgComp, this]() {
+		imgComp->_filter = true; });
+	buttonComp->connectExit([buttonComp, imgComp, this]() {
+		imgComp->_filter = false; });
 
 	return e;
 }

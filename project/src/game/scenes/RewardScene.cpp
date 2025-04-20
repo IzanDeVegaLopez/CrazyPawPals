@@ -47,6 +47,7 @@ void RewardScene::enterScene()
     refresh_my_deck_cards(draw);
     refresh_rewards();
     check_number();
+    sdlutils().soundEffects().at("reward").play();
     Game::Instance()->get_mngr()->change_ent_scene(Game::Instance()->get_mngr()->getHandler(ecs::hdlr::CAMERA), ecs::scene::REWARDSCENE);
 #ifdef GENERATE_LOG
     log_writer_to_csv::Instance()->add_new_log();

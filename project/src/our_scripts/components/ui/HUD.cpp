@@ -78,6 +78,25 @@ void HUD::render()
 	}
 #pragma endregion
 
+#pragma region wave completed
+	if (_wm->wave_completed()) {
+
+		rect_f32 wave_completed = rect_f32_screen_rect_from_viewport(rect_f32({ 0.30,0.2 }, { 0.4,0.2 }), _camera->cam.screen);
+		SDL_Rect wave_completed_true{
+			int(wave_completed.position.x),
+			int(wave_completed.position.y),
+			int(wave_completed.size.x),
+			int(wave_completed.size.y)
+		};
+		Texture wave_completed_tex{
+		sdlutils().renderer(),
+		"WAVE COMPLETED NYA",
+		sdlutils().fonts().at("PROTEST_GUERRILLA100"),
+		SDL_Color(128, 0, 32, 255) };
+		wave_completed_tex.render(wave_completed_true);
+	}
+#pragma endregion
+
 }
 
 void HUD::start_new_wave()

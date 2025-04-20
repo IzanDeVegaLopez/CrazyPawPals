@@ -66,9 +66,8 @@ private:
     bool is_wave_finished();
     void erase_all_enemies();
     void erase_all_bullets();
-    bool wave_completed = false;
+
     uint32_t change_to_rewards_time;
-    Texture* _wave_completed_tex;
 #ifdef GENERATE_LOG
     inline static uint32_t _ticks_on_wave = 1;
 #endif
@@ -116,6 +115,7 @@ public:
     inline void reset_wave_time() { _currentWaveTime = 0; }
     inline int get_current_wave() { return _currentWave; }
     inline events get_current_event() { return _current_event; }
+    inline bool wave_completed() { return !_wave_active; }
     void event_callback0(const Msg& m) override;
     void event_callback1(const Msg& m) override;
     void newEnemy() { _numEnemies++; _enemiesSpawned++; };
