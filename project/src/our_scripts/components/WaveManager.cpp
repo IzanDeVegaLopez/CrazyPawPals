@@ -310,9 +310,7 @@ void WaveManager::endwave()
         fog->setFog(false);
         erase_all_bullets();
         erase_all_enemies();
-        //enterRewardsMenu();
     }
-
 }
 
 void WaveManager::event_callback0(const Msg& m)
