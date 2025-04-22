@@ -122,7 +122,7 @@ MythicScene::get_unique_mythic(std::unordered_set<std::string>& appeared_mythics
     std::string sprite;
     GameStructs::MythicType wt;
     do {
-        wt = (GameStructs::MythicType)sdlutils().rand().nextInt(0, GameStructs::LAST_MYTHIC);
+        wt = (GameStructs::MythicType)sdlutils().rand().nextInt(0, GameStructs::ZOOMIESINDUCER);
         sprite = select_mythic(wt);
     } while (appeared_mythics.find(sprite) != appeared_mythics.end()); // Repite si la carta ya apareci�
 
